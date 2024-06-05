@@ -1,5 +1,5 @@
 <template>
-  <div class="index-container">
+  <div class="main-left">
 
  
   <div class="side-wrapper">
@@ -18,6 +18,15 @@ import { ref } from "vue"
 </script>
 
 <style lang="scss" scoped>
+.main-left{
+  width: 180px;
+  position: sticky;
+  top: 80px;
+  margin-right: 20px;
+  height: fit-content;
+  border-radius: 4px;
+  background-color: #ffff;
+}
 .index-container{
   width: 180px;
   position: sticky;

@@ -8,6 +8,82 @@
       <MainRight></MainRight>
     </div> -->
     center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    <br>center
+    
   </div>
 </template>
 
@@ -21,6 +97,8 @@ import { ref } from "vue"
   display: flex;
   justify-content: space-between;
   background-color: #fff;
+  min-width: 720px;
+  margin-right: 10px;
 
 }
 </style>

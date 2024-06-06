@@ -7,7 +7,7 @@
       <el-main class="app-main">
         <div class="main-box">
           <MainLeft></MainLeft>
-          <CoreMain></CoreMain>
+            <CoreMain></CoreMain>
           <el-aside>
             <MainRight></MainRight>
           </el-aside>

@@ -5,7 +5,6 @@
       <ul class="title-ul">
         <li class="title-li active">
           <a href="/">首页</a>
-          <!-- <i>首页</i> -->
         </li>
         <li class="title-li">
           <a href="/">推荐</a>

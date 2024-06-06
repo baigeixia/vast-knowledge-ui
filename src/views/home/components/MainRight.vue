@@ -26,7 +26,7 @@
     <div class=" box-standard">
       <div class="context-title">
         <div class="context">推荐话题</div>
-        <div class="context-refresh">
+        <div class="context-refresh" style="cursor: pointer">
           <el-icon>
             <RefreshRight />
           </el-icon>

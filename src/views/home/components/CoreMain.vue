@@ -12,238 +12,308 @@
     </header>
     <div class="top-content">
       <div class="content-list">
-        <li class="item">
-          <div class="content-main">
-            <div class="title-row">预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
-              分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
-              分钟错过航班索赔 2400 元，此事责任在谁？</div>
-            <div class="row-text">
-              <img class="thumb"
-                src="https://picx.zhimg.com/v2-e7e538187231ad6b5d47adf7c06baf70_200x0.jpg?source=172ae18b">
+        <el-skeleton class="skeleton" animated :loading="false">
+          <template #template>
+            <div class="main-skeleton">
+              <el-skeleton-item variant="h1" />
+              <el-skeleton-item variant="h1" style="margin-bottom: 5px;" />
+              <div class="skeleton-right">
+                <el-skeleton-item variant="image" style="width: 120px; height: 90px; margin-bottom: 10px;" />
+                <div class="skeleton-right-p">
+                  <el-skeleton-item variant="p" />
+                  <el-skeleton-item variant="p" />
+                  <el-skeleton-item variant="p" />
+                  <el-skeleton-item variant="p" />
+                </div>
+              </div>
+              <div class="skeleton-bottom-p">
+                <el-skeleton-item variant="p" style="width:40%"/>
+                <el-skeleton-item variant="p" style="width:40%"/>
+              </div>
+            </div>
+            <div class="main-skeleton">
+              <el-skeleton-item variant="h1" />
+              <el-skeleton-item variant="h1" style="margin-bottom: 5px;" />
+              <div class="skeleton-right">
+                <el-skeleton-item variant="image" style="width: 120px; height: 90px; margin-bottom: 10px;" />
+                <div class="skeleton-right-p">
+                  <el-skeleton-item variant="p" />
+                  <el-skeleton-item variant="p" />
+                  <el-skeleton-item variant="p" />
+                  <el-skeleton-item variant="p" />
+                </div>
+              </div>
+              <div class="skeleton-bottom-p">
+                <el-skeleton-item variant="p" style="width:40%"/>
+                <el-skeleton-item variant="p" style="width:40%"/>
+              </div>
+            </div>
+            <div class="main-skeleton">
+              <el-skeleton-item variant="h1" />
+              <el-skeleton-item variant="h1" style="margin-bottom: 5px;" />
+              <div class="skeleton-right">
+                <el-skeleton-item variant="image" style="width: 120px; height: 90px; margin-bottom: 10px;" />
+                <div class="skeleton-right-p">
+                  <el-skeleton-item variant="p" />
+                  <el-skeleton-item variant="p" />
+                  <el-skeleton-item variant="p" />
+                  <el-skeleton-item variant="p" />
+                </div>
+              </div>
+              <div class="skeleton-bottom-p">
+                <el-skeleton-item variant="p" style="width:40%"/>
+                <el-skeleton-item variant="p" style="width:40%"/>
+              </div>
+            </div>
+            <div class="main-skeleton">
+              <el-skeleton-item variant="h1" />
+              <el-skeleton-item variant="h1" style="margin-bottom: 5px;" />
+              <div class="skeleton-right">
+                <el-skeleton-item variant="image" style="width: 120px; height: 90px; margin-bottom: 10px;" />
+                <div class="skeleton-right-p">
+                  <el-skeleton-item variant="p" />
+                  <el-skeleton-item variant="p" />
+                  <el-skeleton-item variant="p" />
+                  <el-skeleton-item variant="p" />
+                </div>
+              </div>
+              <div class="skeleton-bottom-p">
+                <el-skeleton-item variant="p" style="width:40%"/>
+                <el-skeleton-item variant="p" style="width:40%"/>
+              </div>
+            </div>
+          </template>
+          <li class="item">
+            <div class="content-main">
+              <div class="title-row">预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
+                分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
+                分钟错过航班索赔 2400 元，此事责任在谁？</div>
+              <div class="row-text">
+                <img class="thumb"
+                  src="https://picx.zhimg.com/v2-e7e538187231ad6b5d47adf7c06baf70_200x0.jpg?source=172ae18b">
+                <div class="abstract">
+                  95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。
+                </div>
+              </div>
+              <div class="row-footer">
+                <ul class="action-list">
+                  <li class="item-li">
+                    <a class="user-message" href="/">
+                      <div class="user-popover">小红帽的大灰狼</div>
+                    </a>
+                  </li>
+                  <li class="item-li view">
+                    <el-icon>
+                      <View />
+                    </el-icon>
+                    <span>106k</span>
+                  </li>
+                  <li class="item-li like">
+                    <el-icon>
+                      <Pointer />
+                    </el-icon>
+                    <span> 653</span>
+                  </li>
+                  <li class="dislike-item">
+                    <el-icon>
+                      <More />
+                    </el-icon>
+                  </li>
+                </ul>
+                <div class="row-footer-tags">
+                  <a class="footer-tag width-limited" href="/">后端</a>
+                  <a class="footer-tag width-limited" href="/">掘金·金石计划</a>
+                  <a class="footer-tag width-limited" href="/">前端</a>
+                </div>
+              </div>
+            </div>
+          </li>
+          <li class="item">
+            <div class="content-main">
+              <div class="title-row">预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
+                分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
+                分钟错过航班索赔 2400 元，此事责任在谁？</div>
+              <div class="row-text">
+                <img class="thumb"
+                  src="https://picx.zhimg.com/v2-66c834da6f1e83b6d1870615764d93d3_200x0.jpg?source=172ae18b">
 
-              <div class="abstract">
-                95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。
+                <div class="abstract">
+                  95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。
+                </div>
               </div>
-            </div>
 
-            <div class="row-footer">
-              <ul class="action-list">
-                <li class="item-li">
-                  <a class="user-message" href="/">
-                    <div class="user-popover">小红帽的大灰狼</div>
-                  </a>
-                </li>
-                <li class="item-li view">
-                  <el-icon>
-                    <View />
-                  </el-icon>
-                  <span>106k</span>
-                </li>
-                <li class="item-li like">
-                  <el-icon>
-                    <Pointer />
-                  </el-icon>
-                  <span> 653</span>
-                </li>
-                <li class="dislike-item">
-                  <el-icon>
-                    <More />
-                  </el-icon>
-                </li>
-              </ul>
-              <div class="row-footer-tags">
-                <a class="footer-tag width-limited" href="/">后端</a>
-                <a class="footer-tag width-limited" href="/">掘金·金石计划</a>
-                <a class="footer-tag width-limited" href="/">前端</a>
+              <div class="row-footer">
+                <ul class="action-list">
+                  <li class="item-li">
+                    <a class="user-message" href="/">
+                      <div class="user-popover">小红帽的大灰狼</div>
+                    </a>
+                  </li>
+                  <li class="item-li view">
+                    <el-icon>
+                      <View />
+                    </el-icon>
+                    <span>106k</span>
+                  </li>
+                  <li class="item-li like">
+                    <el-icon>
+                      <Pointer />
+                    </el-icon>
+                    <span> 653</span>
+                  </li>
+                  <li class="dislike-item">
+                    <el-icon>
+                      <More />
+                    </el-icon>
+                  </li>
+                </ul>
+                <div class="row-footer-tags">
+                  <a class="footer-tag width-limited" href="/">后端</a>
+                  <a class="footer-tag width-limited" href="/">掘金·金石计划</a>
+                  <a class="footer-tag width-limited" href="/">前端</a>
+                </div>
               </div>
             </div>
-          </div>
-        </li>
-        <li class="item">
-          <div class="content-main">
-            <div class="title-row">预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
-              分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
-              分钟错过航班索赔 2400 元，此事责任在谁？</div>
-            <div class="row-text">
-              <img class="thumb"
-                src="https://picx.zhimg.com/v2-66c834da6f1e83b6d1870615764d93d3_200x0.jpg?source=172ae18b">
+          </li>
+          <li class="item">
+            <div class="content-main">
+              <div class="title-row">预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
+                分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
+                分钟错过航班索赔 2400 元，此事责任在谁？</div>
+              <div class="row-text">
+                <img class="thumb"
+                  src="https://picx.zhimg.com/v2-66c834da6f1e83b6d1870615764d93d3_200x0.jpg?source=172ae18b">
 
-              <div class="abstract">
-                95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。
+                <div class="abstract">
+                  95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。
+                </div>
               </div>
-            </div>
 
-            <div class="row-footer">
-              <ul class="action-list">
-                <li class="item-li">
-                  <a class="user-message" href="/">
-                    <div class="user-popover">小红帽的大灰狼</div>
-                  </a>
-                </li>
-                <li class="item-li view">
-                  <el-icon>
-                    <View />
-                  </el-icon>
-                  <span>106k</span>
-                </li>
-                <li class="item-li like">
-                  <el-icon>
-                    <Pointer />
-                  </el-icon>
-                  <span> 653</span>
-                </li>
-                <li class="dislike-item">
-                  <el-icon>
-                    <More />
-                  </el-icon>
-                </li>
-              </ul>
-              <div class="row-footer-tags">
-                <a class="footer-tag width-limited" href="/">后端</a>
-                <a class="footer-tag width-limited" href="/">掘金·金石计划</a>
-                <a class="footer-tag width-limited" href="/">前端</a>
+              <div class="row-footer">
+                <ul class="action-list">
+                  <li class="item-li">
+                    <a class="user-message" href="/">
+                      <div class="user-popover">小红帽的大灰狼</div>
+                    </a>
+                  </li>
+                  <li class="item-li view">
+                    <el-icon>
+                      <View />
+                    </el-icon>
+                    <span>106k</span>
+                  </li>
+                  <li class="item-li like">
+                    <el-icon>
+                      <Pointer />
+                    </el-icon>
+                    <span> 653</span>
+                  </li>
+                  <li class="dislike-item">
+                    <el-icon>
+                      <More />
+                    </el-icon>
+                  </li>
+                </ul>
+                <div class="row-footer-tags">
+                  <a class="footer-tag width-limited" href="/">后端</a>
+                  <a class="footer-tag width-limited" href="/">掘金·金石计划</a>
+                  <a class="footer-tag width-limited" href="/">前端</a>
+                </div>
               </div>
             </div>
-          </div>
-        </li>
-        <li class="item">
-          <div class="content-main">
-            <div class="title-row">预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
-              分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
-              分钟错过航班索赔 2400 元，此事责任在谁？</div>
-            <div class="row-text">
-              <img class="thumb"
-                src="https://picx.zhimg.com/v2-66c834da6f1e83b6d1870615764d93d3_200x0.jpg?source=172ae18b">
+          </li>
+          <li class="item">
+            <div class="content-main">
+              <div class="title-row">预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
+                分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
+                分钟错过航班索赔 2400 元，此事责任在谁？</div>
+              <div class="row-text">
+                <img class="thumb"
+                  src="https://picx.zhimg.com/v2-66c834da6f1e83b6d1870615764d93d3_200x0.jpg?source=172ae18b">
+                <div class="abstract">
+                  95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。
+                </div>
+              </div>
 
-              <div class="abstract">
-                95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。
+              <div class="row-footer">
+                <ul class="action-list">
+                  <li class="item-li">
+                    <a class="user-message" href="/">
+                      <div class="user-popover">小红帽的大灰狼</div>
+                    </a>
+                  </li>
+                  <li class="item-li view">
+                    <el-icon>
+                      <View />
+                    </el-icon>
+                    <span>106k</span>
+                  </li>
+                  <li class="item-li like">
+                    <el-icon>
+                      <Pointer />
+                    </el-icon>
+                    <span> 653</span>
+                  </li>
+                  <li class="dislike-item">
+                    <el-icon>
+                      <More />
+                    </el-icon>
+                  </li>
+                </ul>
+                <div class="row-footer-tags">
+                  <a class="footer-tag width-limited" href="/">后端</a>
+                  <a class="footer-tag width-limited" href="/">掘金·金石计划</a>
+                  <a class="footer-tag width-limited" href="/">前端</a>
+                </div>
               </div>
             </div>
-
-            <div class="row-footer">
-              <ul class="action-list">
-                <li class="item-li">
-                  <a class="user-message" href="/">
-                    <div class="user-popover">小红帽的大灰狼</div>
-                  </a>
-                </li>
-                <li class="item-li view">
-                  <el-icon>
-                    <View />
-                  </el-icon>
-                  <span>106k</span>
-                </li>
-                <li class="item-li like">
-                  <el-icon>
-                    <Pointer />
-                  </el-icon>
-                  <span> 653</span>
-                </li>
-                <li class="dislike-item">
-                  <el-icon>
-                    <More />
-                  </el-icon>
-                </li>
-              </ul>
-              <div class="row-footer-tags">
-                <a class="footer-tag width-limited" href="/">后端</a>
-                <a class="footer-tag width-limited" href="/">掘金·金石计划</a>
-                <a class="footer-tag width-limited" href="/">前端</a>
+          </li>
+          <li class="item">
+            <div class="content-main">
+              <div class="title-row">预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
+                分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
+                分钟错过航班索赔 2400 元，此事责任在谁？</div>
+              <div class="row-text">
+                <img class="thumb"
+                  src="https://picx.zhimg.com/v2-66c834da6f1e83b6d1870615764d93d3_200x0.jpg?source=172ae18b">
+                <div class="abstract">
+                  95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。
+                </div>
+              </div>
+              <div class="row-footer">
+                <ul class="action-list">
+                  <li class="item-li">
+                    <a class="user-message" href="/">
+                      <div class="user-popover">小红帽的大灰狼</div>
+                    </a>
+                  </li>
+                  <li class="item-li view">
+                    <el-icon>
+                      <View />
+                    </el-icon>
+                    <span>106k</span>
+                  </li>
+                  <li class="item-li like">
+                    <el-icon>
+                      <Pointer />
+                    </el-icon>
+                    <span> 653</span>
+                  </li>
+                  <li class="dislike-item">
+                    <el-icon>
+                      <More />
+                    </el-icon>
+                  </li>
+                </ul>
+                <div class="row-footer-tags">
+                  <a class="footer-tag width-limited" href="/">后端</a>
+                  <a class="footer-tag width-limited" href="/">掘金·金石计划</a>
+                  <a class="footer-tag width-limited" href="/">前端</a>
+                </div>
               </div>
             </div>
-          </div>
-        </li>
-        <li class="item">
-          <div class="content-main">
-            <div class="title-row">预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
-              分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
-              分钟错过航班索赔 2400 元，此事责任在谁？</div>
-            <div class="row-text">
-              <img class="thumb"
-                src="https://picx.zhimg.com/v2-66c834da6f1e83b6d1870615764d93d3_200x0.jpg?source=172ae18b">
-              <div class="abstract">
-                95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。
-              </div>
-            </div>
-
-            <div class="row-footer">
-              <ul class="action-list">
-                <li class="item-li">
-                  <a class="user-message" href="/">
-                    <div class="user-popover">小红帽的大灰狼</div>
-                  </a>
-                </li>
-                <li class="item-li view">
-                  <el-icon>
-                    <View />
-                  </el-icon>
-                  <span>106k</span>
-                </li>
-                <li class="item-li like">
-                  <el-icon>
-                    <Pointer />
-                  </el-icon>
-                  <span> 653</span>
-                </li>
-                <li class="dislike-item">
-                  <el-icon>
-                    <More />
-                  </el-icon>
-                </li>
-              </ul>
-              <div class="row-footer-tags">
-                <a class="footer-tag width-limited" href="/">后端</a>
-                <a class="footer-tag width-limited" href="/">掘金·金石计划</a>
-                <a class="footer-tag width-limited" href="/">前端</a>
-              </div>
-            </div>
-          </div>
-        </li>
-        <li class="item">
-          <div class="content-main">
-            <div class="title-row">预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
-              分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
-              分钟错过航班索赔 2400 元，此事责任在谁？</div>
-            <div class="row-text">
-              <img class="thumb"
-                src="https://picx.zhimg.com/v2-66c834da6f1e83b6d1870615764d93d3_200x0.jpg?source=172ae18b">
-              <div class="abstract">
-                95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。
-              </div>
-            </div>
-            <div class="row-footer">
-              <ul class="action-list">
-                <li class="item-li">
-                  <a class="user-message" href="/">
-                    <div class="user-popover">小红帽的大灰狼</div>
-                  </a>
-                </li>
-                <li class="item-li view">
-                  <el-icon>
-                    <View />
-                  </el-icon>
-                  <span>106k</span>
-                </li>
-                <li class="item-li like">
-                  <el-icon>
-                    <Pointer />
-                  </el-icon>
-                  <span> 653</span>
-                </li>
-                <li class="dislike-item">
-                  <el-icon>
-                    <More />
-                  </el-icon>
-                </li>
-              </ul>
-              <div class="row-footer-tags">
-                <a class="footer-tag width-limited" href="/">后端</a>
-                <a class="footer-tag width-limited" href="/">掘金·金石计划</a>
-                <a class="footer-tag width-limited" href="/">前端</a>
-              </div>
-            </div>
-          </div>
-        </li>
+          </li>
+        </el-skeleton>
       </div>
     </div>
   </div>
@@ -259,6 +329,7 @@ import { ref } from "vue"
   background-color: #fff;
   min-width: 720px;
   max-width: 900px;
+  min-height: 820px;
   margin-right: 10px;
   border-radius: 4px;
 
@@ -266,6 +337,26 @@ import { ref } from "vue"
 
     .content-list {
       background-color: #fff;
+
+      .skeleton {
+        .main-skeleton {
+          padding: 20px;
+
+          .skeleton-bottom-p{
+            display: flex;
+            justify-content: space-between;
+          }
+          .skeleton-right {
+            display: flex;
+            align-items: center;
+            .skeleton-right-p {
+              margin-left: 10px;
+              // width: 100px;
+              width: calc(100% - 130px);
+            }
+          }
+        }
+      }
 
       .item:hover {
         background-color: #f7f8fa;
@@ -335,6 +426,7 @@ import { ref } from "vue"
             align-items: center;
             justify-content: space-between;
             flex-wrap: wrap;
+            padding-top: 10px;
 
             .row-footer-tags {
               display: flex;
@@ -413,7 +505,6 @@ import { ref } from "vue"
                     overflow: hidden;
                     text-overflow: ellipsis;
                     padding-right: 10px;
-                    border-right: 1px solid #c2c2c4;
 
                   }
                 }

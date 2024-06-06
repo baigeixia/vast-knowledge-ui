@@ -26,7 +26,7 @@ import HeaderMain from './components/HeaderMain.vue'
 
 <style lang="scss" scoped>
 .bo-wen {
-  background-color: #4e4e4e;
+  background-color: #f2f3f5;
 
   .main-header {
     background-color: #ffffff;
@@ -35,7 +35,7 @@ import HeaderMain from './components/HeaderMain.vue'
   .app-main {
     margin: 0 auto;
     min-width: 1200px;
-    min-height: 2000px;
+    // min-height: 2000px;
 
     .main-box {
       display: flex;

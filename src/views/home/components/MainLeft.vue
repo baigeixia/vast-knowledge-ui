@@ -2,86 +2,33 @@
   <div class="main-left">
     <div class="side-wrapper">
       <div class="item-wrap">
-        <div class="item-content">
+        <div class="item-content  is-active">
           <a class="item" href="/">
-            <div class="item-text">
-              大模型子站大模型子站
+            <el-icon>
+              <HelpFilled />
+            </el-icon>
+            <div class="item-text ">
+              大模型子站大
             </div>
           </a>
         </div>
         <div class="item-content">
           <a class="item" href="/">
+            <el-icon>
+              <HelpFilled />
+            </el-icon>
             <div class="item-text">
-              大模型子站大模型子站
+              综合
             </div>
           </a>
         </div>
         <div class="item-content">
           <a class="item" href="/">
+            <el-icon>
+              <HelpFilled />
+            </el-icon>
             <div class="item-text">
-              大模型子站大模型子站
-            </div>
-          </a>
-        </div> <div class="item-content">
-          <a class="item" href="/">
-            <div class="item-text">
-              大模型子站大模型子站
-            </div>
-          </a>
-        </div>
-        <div class="item-content">
-          <a class="item" href="/">
-            <div class="item-text">
-              大模型子站大模型子站
-            </div>
-          </a>
-        </div>
-        <div class="item-content">
-          <a class="item" href="/">
-            <div class="item-text">
-              大模型子站大模型子站
-            </div>
-          </a>
-        </div> <div class="item-content">
-          <a class="item" href="/">
-            <div class="item-text">
-              大模型子站大模型子站
-            </div>
-          </a>
-        </div> <div class="item-content">
-          <a class="item" href="/">
-            <div class="item-text">
-              大模型子站大模型子站
-            </div>
-          </a>
-        </div> <div class="item-content">
-          <a class="item" href="/">
-            <div class="item-text">
-              大模型子站大模型子站
-            </div>
-          </a>
-        </div> <div class="item-content">
-          <a class="item" href="/">
-            <div class="item-text">
-              大模型子站大模型子站
-            </div>
-          </a>
-        </div> <div class="item-content">
-          <a class="item" href="/">
-            <div class="item-text">
-              大模型子站大模型子站
-            </div>
-          </a>
-        </div> <div class="item-content">
-          <a class="item" href="/">
-            <div class="item-text">
-              大模型子站大模型子站
-            </div>
-          </a>
-        </div> <div class="item-content">
-          <a class="item" href="/">
-            <div class="item-text">
-              大模型子站大模型子站
+              前端
             </div>
           </a>
         </div>
@@ -109,23 +56,53 @@ import { ref } from "vue"
     box-sizing: border-box;
     padding: 8px;
     font-size: 16px;
-    color: #000;
 
     .item-wrap {
       display: flex;
       flex-direction: column;
+
+      .is-active {
+        background-color: #eaf2ff;
+        .el-icon {
+          color: #1e80ff;
+        }
+        .item-text {
+          color: #1e80ff;
+        }
+        
+      }
+
       .item-content {
-        display: flex;
+        padding: 10px 17px;
+
         .item {
-          color: #000;
-          .item-text {
-            vertical-align: middle;
-            position: relative;
+          display: flex;
+          align-items: center;
+          color: #515767;
+
+          .el-icon {
+            margin-right: 12px;
           }
 
-          .item-text:hover {
-            color: rgb(43, 196, 235);
+          .item-text {
+            font-size: 16px;
+            line-height: 24px;
           }
+
+        }
+      }
+
+
+
+      .item-content:not(.is-active):hover {
+        background-color: #f7f8fa;
+
+        .el-icon {
+          color: #1e80ff;
+        }
+
+        .item-text {
+          color: #1e80ff;
         }
       }
     }

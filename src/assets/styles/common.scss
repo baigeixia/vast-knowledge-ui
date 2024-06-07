@@ -43,6 +43,7 @@ s {
     font-style: inherit;
     font-family: Helvetica, Arial;
     word-break: break-all;
+    outline: none;
 }
  
  
@@ -54,6 +55,8 @@ body {
     font-family: Helvetica
 }
  
+
+    
 html, body, #app {
   border: 0;
   padding: 0;

@@ -43,16 +43,14 @@ import { ref } from "vue"
 
 <style lang="scss" scoped>
 .main-left {
-  width: 180px;
-  // position: sticky;
-  // top: 80px;
+  flex: 4;
   margin-right: 20px;
   height: fit-content;
   border-radius: 4px;
   background-color: #fff;
 
   .side-wrapper {
-    min-width: 180px;
+    // min-width: 180px;
     box-sizing: border-box;
     padding: 8px;
     font-size: 16px;

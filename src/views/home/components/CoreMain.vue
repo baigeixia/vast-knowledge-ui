@@ -18,70 +18,20 @@
               <el-skeleton-item variant="h1" />
               <el-skeleton-item variant="h1" style="margin-bottom: 5px;" />
               <div class="skeleton-right">
-                <el-skeleton-item variant="image" style="width: 120px; height: 90px; margin-bottom: 10px;" />
+                <el-skeleton-item variant="image"  style="width:20%; height: 90px; margin-bottom: 10px;" />
                 <div class="skeleton-right-p">
-                  <el-skeleton-item variant="p" />
+                  <el-skeleton-item variant="p"  />
                   <el-skeleton-item variant="p" />
                   <el-skeleton-item variant="p" />
                   <el-skeleton-item variant="p" />
                 </div>
               </div>
               <div class="skeleton-bottom-p">
-                <el-skeleton-item variant="p" style="width:40%"/>
-                <el-skeleton-item variant="p" style="width:40%"/>
+                <el-skeleton-item variant="p" style="width: 40%;" />
+                <el-skeleton-item variant="p" style="width: 40%;" />
               </div>
             </div>
-            <div class="main-skeleton">
-              <el-skeleton-item variant="h1" />
-              <el-skeleton-item variant="h1" style="margin-bottom: 5px;" />
-              <div class="skeleton-right">
-                <el-skeleton-item variant="image" style="width: 120px; height: 90px; margin-bottom: 10px;" />
-                <div class="skeleton-right-p">
-                  <el-skeleton-item variant="p" />
-                  <el-skeleton-item variant="p" />
-                  <el-skeleton-item variant="p" />
-                  <el-skeleton-item variant="p" />
-                </div>
-              </div>
-              <div class="skeleton-bottom-p">
-                <el-skeleton-item variant="p" style="width:40%"/>
-                <el-skeleton-item variant="p" style="width:40%"/>
-              </div>
-            </div>
-            <div class="main-skeleton">
-              <el-skeleton-item variant="h1" />
-              <el-skeleton-item variant="h1" style="margin-bottom: 5px;" />
-              <div class="skeleton-right">
-                <el-skeleton-item variant="image" style="width: 120px; height: 90px; margin-bottom: 10px;" />
-                <div class="skeleton-right-p">
-                  <el-skeleton-item variant="p" />
-                  <el-skeleton-item variant="p" />
-                  <el-skeleton-item variant="p" />
-                  <el-skeleton-item variant="p" />
-                </div>
-              </div>
-              <div class="skeleton-bottom-p">
-                <el-skeleton-item variant="p" style="width:40%"/>
-                <el-skeleton-item variant="p" style="width:40%"/>
-              </div>
-            </div>
-            <div class="main-skeleton">
-              <el-skeleton-item variant="h1" />
-              <el-skeleton-item variant="h1" style="margin-bottom: 5px;" />
-              <div class="skeleton-right">
-                <el-skeleton-item variant="image" style="width: 120px; height: 90px; margin-bottom: 10px;" />
-                <div class="skeleton-right-p">
-                  <el-skeleton-item variant="p" />
-                  <el-skeleton-item variant="p" />
-                  <el-skeleton-item variant="p" />
-                  <el-skeleton-item variant="p" />
-                </div>
-              </div>
-              <div class="skeleton-bottom-p">
-                <el-skeleton-item variant="p" style="width:40%"/>
-                <el-skeleton-item variant="p" style="width:40%"/>
-              </div>
-            </div>
+            
           </template>
           <li class="item">
             <div class="content-main">
@@ -121,9 +71,9 @@
                   </li>
                 </ul>
                 <div class="row-footer-tags">
-                  <a class="footer-tag width-limited" href="/">后端</a>
-                  <a class="footer-tag width-limited" href="/">掘金·金石计划</a>
-                  <a class="footer-tag width-limited" href="/">前端</a>
+                  <a class="footer-tag " href="/">后端</a>
+                  <a class="footer-tag " href="/">掘金·金石计划</a>
+                  <a class="footer-tag " href="/">前端</a>
                 </div>
               </div>
             </div>
@@ -326,21 +276,19 @@ import { ref } from "vue"
 
 <style lang="scss" scoped>
 .main-container {
+  flex: 15;
   background-color: #fff;
-  min-width: 720px;
-  max-width: 900px;
-  min-height: 820px;
-  margin-right: 10px;
+  margin-right: 20px;
   border-radius: 4px;
 
   .top-content {
-
     .content-list {
       background-color: #fff;
 
       .skeleton {
+        flex: 15;
         .main-skeleton {
-          padding: 20px;
+          padding: 12px 20px; 
 
           .skeleton-bottom-p{
             display: flex;
@@ -350,9 +298,8 @@ import { ref } from "vue"
             display: flex;
             align-items: center;
             .skeleton-right-p {
+              width: 80%;
               margin-left: 10px;
-              // width: 100px;
-              width: calc(100% - 130px);
             }
           }
         }
@@ -369,7 +316,6 @@ import { ref } from "vue"
         position: relative;
         background: #fff;
         padding: 12px 20px 0;
-        // flex-direction: column;
         align-items: center;
         padding-bottom: 12px;
         border-bottom: 1px solid #f1f2f5;
@@ -377,7 +323,7 @@ import { ref } from "vue"
 
 
         .content-main {
-          flex: 1 1 auto;
+          // flex: 1 1 auto;
 
           .title-row {
             font-weight: 600;
@@ -401,7 +347,7 @@ import { ref } from "vue"
 
             .thumb {
               flex: 0 0 auto;
-              width: 120px;
+              // width: 120px;
               height: 90px;
               margin-right: 24px;
               background-color: #ffffff;
@@ -437,7 +383,7 @@ import { ref } from "vue"
                 background-color: #f2f3f5;
                 // padding: 0 6px;
                 border-radius: 2px;
-                max-width: 76px;
+                // max-width: 76px;
                 box-sizing: border-box;
                 margin-left: 6px;
                 color: #8a919f;
@@ -448,9 +394,13 @@ import { ref } from "vue"
                 line-height: 18px;
               }
 
-              .width-limited {
-                max-width: 65px;
+              .footer-tag:hover{
+                color: #1e80ff;
               }
+
+              // .width-limited {
+              //   // max-width: 65px;
+              // }
             }
 
             .action-list {
@@ -491,7 +441,7 @@ import { ref } from "vue"
                 .user-message {
                   display: flex;
                   align-items: center;
-                  max-width: 132px;
+                  // max-width: 132px;
                   font-size: 13px;
                   line-height: 22px;
                   white-space: nowrap;

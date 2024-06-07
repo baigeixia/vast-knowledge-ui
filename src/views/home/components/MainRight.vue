@@ -35,7 +35,7 @@
       </div>
       <div class="context-main">
         <a href="/" class="main-itme">
-          <div class="main-itme-text"> #挑战每日一条沸点挑战每日一条沸点#</div>
+          <div class="main-itme-text"> #挑战每日一条沸点挑战每日一条沸点挑战每日一条沸点挑战每日一条沸点#</div>
         </a>
         <div class="main-text-heat">7.6m</div>
       </div>
@@ -110,6 +110,7 @@ import { ref } from "vue"
 
 <style lang="scss" scoped>
 .main-right {
+  flex: 5;
   border-radius: 4px;
 
   .box-standard {
@@ -155,6 +156,7 @@ import { ref } from "vue"
       align-items: center;
       justify-content: space-between;
     padding: 12px 0;
+    
 
     .main-itme {
       color: #252933;
@@ -165,10 +167,9 @@ import { ref } from "vue"
     }
 
     .main-itme-text {
-      max-width: 200px;
+      width: 200px;
       overflow: hidden;
       text-overflow: ellipsis;
-
     }
 
     .main-itme-text:hover {
@@ -176,6 +177,7 @@ import { ref } from "vue"
     }
 
     .main-text-heat {
+      white-space: nowrap;
       color: #8a919f;
       font-size: 12px;
       padding-left: 30px;
@@ -204,6 +206,7 @@ import { ref } from "vue"
 
   .aside-footer {
     // background-color: #fff;
+    padding: 0;
 
     .more-list {
       box-sizing: border-box;
@@ -234,7 +237,7 @@ import { ref } from "vue"
           color: #a1a1a1;
           box-sizing: border-box;
 
-          // margin: 0px 5px 0px 0px;
+          margin: 0px 5px 0px 0px;
           span {
             padding-right: 5px;
           }

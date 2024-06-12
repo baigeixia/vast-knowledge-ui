@@ -11,18 +11,6 @@
       </div>
       <el-button>去签到</el-button>
     </div>
-    <div class="signin-tip box-standard">
-      <div class="text-left">
-        <div class="context-start">
-          上午好！
-        </div>
-        <div class="context-end">
-          点亮在社区的每一天
-        </div>
-      </div>
-      <el-button>去签到</el-button>
-    </div>
-
     <div class=" box-standard">
       <div class="context-title">
         <div class="context">推荐话题</div>

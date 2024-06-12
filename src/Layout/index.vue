@@ -27,7 +27,7 @@ import HeaderMain from './components/HeaderMain.vue'
         display: flex;
         align-items: center;
         background-color: #ffffff;
-        margin: 0 200px;
+        padding: 0 250px;
     }
 
 .container-main {

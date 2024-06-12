@@ -21,7 +21,7 @@ const router = createRouter({
           children: [
             {
               path: '',
-              name: 'comment',  
+              name: 'comment',
               component: () => import('../views/Notifications/components/Comment.vue'),
             },
             {
@@ -45,7 +45,65 @@ const router = createRouter({
               component: () => import('../views/Notifications/components/System.vue'),
             },
           ]
-        },
+        }, 
+        {
+          path: '/user',
+          name: 'user',
+          component: () => import('../views/user/UserHome.vue'),
+          children: [
+            {
+              path: '/user/columns',
+              name: 'columns',
+              component: () => import('../views/user/components/UserColumns.vue'),
+            },
+            {
+              path: '/user/posts',
+              name: 'posts',
+              component: () => import('../views/user/components/UserPosts.vue'),
+            },
+            {
+              path: '/user/pins',
+              name: 'pins',
+              component: () => import('../views/user/components/UserPins.vue'),
+            },
+            {
+              path: '/user/collections',
+              name: 'collections',
+              component: () => import('../views/user/components/UserCollections.vue'),
+            },
+            {
+              path: '/user/tags',
+              name: 'tags',
+              component: () => import('../views/user/components/UserTags.vue'),
+            },
+            
+          ]
+        },{
+          path: '/user/settings',
+          name: 'settings',
+          component: () => import('../views/usersettings/UserProfile.vue'),
+          children: [
+            {
+              path: '/user/settings/account',
+              name: 'account',
+              component: () => import('../views/usersettings/components/UserAccount.vue'),
+            },
+            {
+              path: '/user/settings/common',
+              name: 'common',
+              component: () => import('../views/usersettings/components/UserCommon.vue'),
+            },
+            {
+              path: '/user/settings/message',
+              name: 'message',
+              component: () => import('../views/usersettings/components/UserMessage.vue'),
+            }, {
+              path: '/user/settings/block',
+              name: 'block',
+              component: () => import('../views/usersettings/components/UserBlock.vue'),
+            },
+          ]
+        }
       ]
     },
     {

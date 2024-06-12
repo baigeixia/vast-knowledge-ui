@@ -69,7 +69,7 @@ import { ref ,watch} from "vue"
 import { useRoute } from 'vue-router';
 
 const titleType = ref('1')
-const loading = ref(true)
+const loading = ref(false)
 
 const totitleType = (tab, event) => {
     titleType.value = tab.paneName
@@ -87,7 +87,7 @@ const handleDataLoaded = () => {
 
 watch(route,(to, from)=>{
     console.log('watch');
-    loading.value=true
+    // loading.value=true
 })
   
 

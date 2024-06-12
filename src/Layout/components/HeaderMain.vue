@@ -10,13 +10,11 @@
         </RouterLink>
         <RouterLink to="/">
           <div class="title-li active">
-            
             <i>推荐</i>
           </div>
         </RouterLink>
         <RouterLink to="/">
           <div class="title-li active">
-            
             <i>热榜</i>
           </div>
         </RouterLink>
@@ -79,6 +77,12 @@
               <div>头像</div>
             </div>
           </div>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <RouterLink to="/user"><el-dropdown-item>个人主页</el-dropdown-item></RouterLink>
+              <RouterLink to="/user/settings"><el-dropdown-item>我的设置</el-dropdown-item></RouterLink>
+            </el-dropdown-menu>
+          </template>
         </el-dropdown>
       </div>
     </div>
@@ -133,7 +137,7 @@ const headersearch = () => {
       }
 
       .title-li:hover {
-        i{
+        i {
           padding-bottom: 5px;
           border-bottom: 2px #1e80ff solid;
         }
@@ -142,7 +146,6 @@ const headersearch = () => {
       .active a {
         color: #1e80ff;
       }
-
 
     }
 
@@ -181,4 +184,5 @@ const headersearch = () => {
       }
     }
   }
-}</style>
+}
+</style>

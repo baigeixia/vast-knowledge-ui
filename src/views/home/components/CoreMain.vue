@@ -12,8 +12,42 @@
     </header>
     <div class="top-content">
       <div class="content-list">
-        <el-skeleton class="skeleton" animated :loading="false">
+        <el-skeleton class="skeleton" animated :loading="true">
           <template #template>
+            <div class="main-skeleton">
+              <el-skeleton-item variant="h1" />
+              <el-skeleton-item variant="h1" style="margin-bottom: 5px;" />
+              <div class="skeleton-right">
+                <el-skeleton-item variant="image"  style="width:20%; height: 90px; margin-bottom: 10px;" />
+                <div class="skeleton-right-p">
+                  <el-skeleton-item variant="p"  />
+                  <el-skeleton-item variant="p" />
+                  <el-skeleton-item variant="p" />
+                  <el-skeleton-item variant="p" />
+                </div>
+              </div>
+              <div class="skeleton-bottom-p">
+                <el-skeleton-item variant="p" style="width: 40%;" />
+                <el-skeleton-item variant="p" style="width: 40%;" />
+              </div>
+            </div>
+            <div class="main-skeleton">
+              <el-skeleton-item variant="h1" />
+              <el-skeleton-item variant="h1" style="margin-bottom: 5px;" />
+              <div class="skeleton-right">
+                <el-skeleton-item variant="image"  style="width:20%; height: 90px; margin-bottom: 10px;" />
+                <div class="skeleton-right-p">
+                  <el-skeleton-item variant="p"  />
+                  <el-skeleton-item variant="p" />
+                  <el-skeleton-item variant="p" />
+                  <el-skeleton-item variant="p" />
+                </div>
+              </div>
+              <div class="skeleton-bottom-p">
+                <el-skeleton-item variant="p" style="width: 40%;" />
+                <el-skeleton-item variant="p" style="width: 40%;" />
+              </div>
+            </div>
             <div class="main-skeleton">
               <el-skeleton-item variant="h1" />
               <el-skeleton-item variant="h1" style="margin-bottom: 5px;" />

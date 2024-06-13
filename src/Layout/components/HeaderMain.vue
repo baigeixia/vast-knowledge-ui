@@ -109,7 +109,7 @@ const headersearch = () => {
   align-items: center;
   justify-content: space-between;
   margin: 0 auto;
-  width: 100%;
+  // width: 100%;
 
   .logo {
     margin-right: 1rem;

@@ -18,7 +18,6 @@ import HeaderMain from './components/HeaderMain.vue'
 <style lang="scss" scoped>
 .bo-wen {
     overflow: hidden;
-    // height: 100%;
     min-height: 925px;
     background-color: #f2f3f5;
     min-width: 1100px;
@@ -27,7 +26,7 @@ import HeaderMain from './components/HeaderMain.vue'
         display: flex;
         align-items: center;
         background-color: #ffffff;
-        padding: 0 250px;
+        --el-header-padding: 0 ;
     }
 
 .container-main {

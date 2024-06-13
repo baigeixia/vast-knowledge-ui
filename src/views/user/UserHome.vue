@@ -132,11 +132,14 @@ const isActive = (path) => {
             margin-bottom: 1rem;
 
             .avatar {
+                display: flex;
+                align-items: center;
+                justify-content: center;
                 flex: 0 0 auto;
                 margin-right: 2.4rem;
                 width: 7.5rem;
                 height: 7.5rem;
-                background-color: #f9f9f9;
+                // background-color: #f9f9f9;
                 border-radius: 50%;
 
                 .avatar-img {

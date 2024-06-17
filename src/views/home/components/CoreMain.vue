@@ -12,7 +12,7 @@
     </header>
     <div class="top-content">
       <div class="content-list">
-        <el-skeleton class="skeleton" animated :loading="true">
+        <el-skeleton class="skeleton" animated :loading="false">
           <template #template>
             <div class="main-skeleton">
               <el-skeleton-item variant="h1" />

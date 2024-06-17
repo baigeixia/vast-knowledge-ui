@@ -16,9 +16,7 @@
                     <div class="user-info-icon">图标位置</div>
                     <div class="introduction">
                         <div class="left">你从事什么职业？ 标签</div>
-                        <div class="right">
-                            <RouterLink to="/user/settings"><el-button>设置</el-button></RouterLink>
-                        </div>
+                        <div class="right"><RouterLink to="/user/settings"><el-button><el-icon ><Setting /></el-icon></el-button></RouterLink></div>
                     </div>
                 </div>
             </div>
@@ -93,7 +91,6 @@ const isActive = (path) => {
                 background-color: #fff;
                 border-radius: .2rem .2rem 0 0;
                 border-bottom: 1px solid #e4e6eb;
-                z-index: 100;
 
                 .header-content {
                     display: flex;
@@ -209,6 +206,9 @@ const isActive = (path) => {
                     .right {
                         display: flex;
                         align-items: flex-end;
+                        .el-icon{
+                            font-size: 20px;
+                        }
                     }
                 }
 

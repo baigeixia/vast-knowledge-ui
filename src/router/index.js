@@ -17,32 +17,32 @@ const router = createRouter({
         {
           path: '/notifications',
           name: 'notifications',
-          component: () => import('../views/Notifications/Notification.vue'),
+          component: () => import('../views/notifications/Notification.vue'),
           children: [
             {
               path: '',
               name: 'comment',
-              component: () => import('../views/Notifications/components/Comment.vue'),
+              component: () => import('../views/notifications/components/Comment.vue'),
             },
             {
               path: '/notifications/digg',
               name: 'digg',
-              component: () => import('../views/Notifications/components/Digg.vue'),
+              component: () => import('../views/notifications/components/Digg.vue'),
             },
             {
               path: '/notifications/follow',
               name: 'follow',
-              component: () => import('../views/Notifications/components/Follow.vue'),
+              component: () => import('../views/notifications/components/Follow.vue'),
             },
             {
               path: '/notifications/im',
               name: 'im',
-              component: () => import('../views/Notifications/components/Im.vue'),
+              component: () => import('../views/notifications/components/Im.vue'),
             },
             {
               path: '/notifications/system',
               name: 'system',
-              component: () => import('../views/Notifications/components/System.vue'),
+              component: () => import('../views/notifications/components/System.vue'),
             },
           ]
         }, 

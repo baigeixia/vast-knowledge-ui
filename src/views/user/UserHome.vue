@@ -16,18 +16,20 @@
                     <div class="user-info-icon">图标位置</div>
                     <div class="introduction">
                         <div class="left">你从事什么职业？ 标签</div>
-                        <div class="right"><RouterLink to="/user/settings"><el-button>设置</el-button></RouterLink></div>
+                        <div class="right">
+                            <RouterLink to="/user/settings"><el-button>设置</el-button></RouterLink>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="list-block">
-                    <div class="list-header">
-                        <div class="header-content">
-                            <div class="nav-item">动态</div>
-                            <div class="nav-item">文章</div>
-                            <div class="nav-item">专栏</div>
-                        </div>
-                        <RouterView class="activity-list-box"></RouterView>
+                <div class="list-header">
+                    <div class="header-content">
+                        <div class="nav-item" :class="{active: headerBut==1}" @click="headerBut=1"><el-button link><span >动态</span></el-button></div>
+                        <div class="nav-item" :class="{active: headerBut==2}"  @click="headerBut=2"><el-button link><span>文章</span></el-button></div>
+                        <div class="nav-item" :class="{active: headerBut==3}" @click="headerBut=3"><el-button link><span>专栏</span></el-button></div>
+                    </div>
+                    <RouterView class="activity-list-box"></RouterView>
                 </div>
             </div>
         </div>
@@ -64,6 +66,9 @@
 </template>
 
 <script setup>
+import { ref } from "vue";
+const headerBut=ref(1)
+
 const isActive = (path) => {
     return route.path === path;
 };
@@ -100,20 +105,35 @@ const isActive = (path) => {
                     margin: 0 auto;
 
                     .nav-item {
-                        flex: 0 0 auto;
                         display: flex;
                         align-items: center;
                         justify-content: center;
-                        position: relative;
-                        padding: 16px;
-                        margin-right: 4px;
-                        height: 100%;
+                        padding: 0 15px;
+
+                        .el-button {
+                            font-size: 16px;
+                        }
+                    
+                        
+                    }
+                    .nav-item:not(.active):hover {
+                        .el-button {
+                            color: #252933;
+                            padding-bottom: 13px;
+                        }
+                    }
+                    .active {
+                        span{
+                            transition: border-bottom .1s;
+                            padding-bottom: 8px;
+                            border-bottom: 2px #1e80ff solid;
+                        }
                     }
                 }
             }
 
-            .activity-list-box{
-               background-color: #fff;
+            .activity-list-box {
+                background-color: #fff;
             }
         }
 

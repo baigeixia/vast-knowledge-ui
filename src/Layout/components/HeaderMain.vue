@@ -48,11 +48,11 @@
           </div>
           <template #dropdown>
             <el-dropdown-menu>
-              <RouterLink to="/notifications"><el-dropdown-item>评论</el-dropdown-item></RouterLink>
-              <RouterLink to="/notifications/digg"><el-dropdown-item>赞和收藏</el-dropdown-item></RouterLink>
-              <RouterLink to="/notifications/follow"><el-dropdown-item>新增粉丝</el-dropdown-item></RouterLink>
-              <RouterLink to="/notifications/im"><el-dropdown-item>私信</el-dropdown-item></RouterLink>
-              <RouterLink to="/notifications/system"><el-dropdown-item>系统通知</el-dropdown-item></RouterLink>
+              <RouterLink to="/notifications"><el-dropdown-item><el-icon><ChatLineSquare /></el-icon>评论</el-dropdown-item></RouterLink>
+              <RouterLink to="/notifications/digg"><el-dropdown-item><el-icon><CollectionTag /></el-icon>赞和收藏</el-dropdown-item></RouterLink>
+              <RouterLink to="/notifications/follow"><el-dropdown-item><el-icon><Notification /></el-icon>新增粉丝</el-dropdown-item></RouterLink>
+              <RouterLink to="/notifications/im"><el-dropdown-item><el-icon><ChatDotRound /></el-icon>私信</el-dropdown-item></RouterLink>
+              <RouterLink to="/notifications/system"><el-dropdown-item><el-icon><Bell /></el-icon>系统通知</el-dropdown-item></RouterLink>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -67,6 +67,15 @@
               </div>
             </el-badge>
           </div>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item @click="item_TO_WE(1)"><i class="bi bi-graph-up-arrow"></i>图文数据</el-dropdown-item>
+              <el-dropdown-item @click="item_TO_WE(2)"><i class="bi bi-columns-gap"></i>发布文章</el-dropdown-item>
+              <el-dropdown-item @click="item_TO_WE(3)"><i class="bi bi-layout-text-window-reverse"></i>内容列表</el-dropdown-item>
+              <el-dropdown-item @click="item_TO_WE(4)"><i class="bi bi-palette"></i>素材管理</el-dropdown-item>
+              <el-dropdown-item @click="item_TO_WE(5)"><i class="bi bi-person-hearts"></i>粉丝管理</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
         </el-dropdown>
         <el-dropdown style=" cursor: pointer;">
           <div class="right-li">
@@ -79,8 +88,8 @@
           </div>
           <template #dropdown>
             <el-dropdown-menu>
-              <RouterLink to="/user"><el-dropdown-item>个人主页</el-dropdown-item></RouterLink>
-              <RouterLink to="/user/settings"><el-dropdown-item>我的设置</el-dropdown-item></RouterLink>
+              <RouterLink to="/user"><el-dropdown-item><el-icon><User /></el-icon>个人主页</el-dropdown-item></RouterLink>
+              <RouterLink to="/user/settings"><el-dropdown-item><el-icon><Setting /></el-icon>我的设置</el-dropdown-item></RouterLink>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -100,6 +109,21 @@ const Cpuvalue = ref(true)
 
 const headersearch = () => {
   console.log(headerinput.value);
+}
+
+const item_TO_WE=(type)=>{
+  if(type===1){
+    window.location.href = 'http://localhost:5174/';
+  }else if (type===2){
+    window.location.href = 'http://localhost:5174/publish';
+  }else if (type===3){
+    window.location.href = 'http://localhost:5174/news';
+  }else if (type===4){
+    window.location.href = 'http://localhost:5174/material';
+  }else if (type===5){
+    window.location.href = 'http://localhost:5174/fans';
+  }
+  
 }
 </script>
 

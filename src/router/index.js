@@ -82,23 +82,28 @@ const router = createRouter({
           path: '/user/settings',
           name: 'settings',
           component: () => import('../views/usersettings/UserProfile.vue'),
+          redirect: '/user/settings/personal',
           children: [
             {
-              path: '/user/settings/account',
+              path: 'personal',
+              name: 'personal',
+              component: () => import('../views/usersettings/components/UserPersonal.vue'),
+            },{
+              path: 'account',
               name: 'account',
               component: () => import('../views/usersettings/components/UserAccount.vue'),
             },
             {
-              path: '/user/settings/common',
+              path: 'common',
               name: 'common',
               component: () => import('../views/usersettings/components/UserCommon.vue'),
             },
             {
-              path: '/user/settings/message',
+              path: 'message',
               name: 'message',
               component: () => import('../views/usersettings/components/UserMessage.vue'),
             }, {
-              path: '/user/settings/block',
+              path: 'block',
               name: 'block',
               component: () => import('../views/usersettings/components/UserBlock.vue'),
             },

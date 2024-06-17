@@ -95,6 +95,8 @@ watch(route,(to, from)=>{
 
 <style lang="scss" scoped>
 .main-notification {
+    display: flex;
+  flex-direction: column;
     width: 100%;
     background-color: #fff;
 
@@ -122,7 +124,8 @@ watch(route,(to, from)=>{
 
 
     .chat-view {
-        height: 90%;
+        flex: 1;
+        // height: 90%;
         margin: 0 auto;
         margin-top: 20px;
         width: 95%;

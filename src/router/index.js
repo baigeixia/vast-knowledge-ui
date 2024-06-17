@@ -45,7 +45,7 @@ const router = createRouter({
               component: () => import('../views/notifications/components/System.vue'),
             },
           ]
-        }, 
+        },
         {
           path: '/user',
           name: 'user',
@@ -76,9 +76,10 @@ const router = createRouter({
               name: 'tags',
               component: () => import('../views/user/components/UserTags.vue'),
             },
-            
+
           ]
-        },{
+        },
+        {
           path: '/user/settings',
           name: 'settings',
           component: () => import('../views/usersettings/UserProfile.vue'),
@@ -88,7 +89,7 @@ const router = createRouter({
               path: 'personal',
               name: 'personal',
               component: () => import('../views/usersettings/components/UserPersonal.vue'),
-            },{
+            }, {
               path: 'account',
               name: 'account',
               component: () => import('../views/usersettings/components/UserAccount.vue'),
@@ -106,9 +107,18 @@ const router = createRouter({
               path: 'block',
               name: 'block',
               component: () => import('../views/usersettings/components/UserBlock.vue'),
-            },
+            }
           ]
-        }
+        }, 
+        {
+          path: '/post/:postId',
+          name: 'post',
+          component: () => import('../views/post/PostHome.vue'),
+        },
+        {
+          path: '*',
+          redirect: '/', 
+        },
       ]
     },
     {
@@ -116,7 +126,6 @@ const router = createRouter({
       name: 'login',
       component: () => import('../views/login/Login.vue')
     },
-    ,
     {
       path: "/:pathMatch(.*)*",
       component: () => import('../views/error/404.vue'),
@@ -126,7 +135,7 @@ const router = createRouter({
       path: '/401',
       component: () => import('../views/error/401.vue'),
       hidden: true
-    },
+    }
   ]
 })
 

@@ -18,9 +18,9 @@
               <el-skeleton-item variant="h1" />
               <el-skeleton-item variant="h1" style="margin-bottom: 5px;" />
               <div class="skeleton-right">
-                <el-skeleton-item variant="image"  style="width:20%; height: 90px; margin-bottom: 10px;" />
+                <el-skeleton-item variant="image" style="width:20%; height: 90px; margin-bottom: 10px;" />
                 <div class="skeleton-right-p">
-                  <el-skeleton-item variant="p"  />
+                  <el-skeleton-item variant="p" />
                   <el-skeleton-item variant="p" />
                   <el-skeleton-item variant="p" />
                   <el-skeleton-item variant="p" />
@@ -35,9 +35,9 @@
               <el-skeleton-item variant="h1" />
               <el-skeleton-item variant="h1" style="margin-bottom: 5px;" />
               <div class="skeleton-right">
-                <el-skeleton-item variant="image"  style="width:20%; height: 90px; margin-bottom: 10px;" />
+                <el-skeleton-item variant="image" style="width:20%; height: 90px; margin-bottom: 10px;" />
                 <div class="skeleton-right-p">
-                  <el-skeleton-item variant="p"  />
+                  <el-skeleton-item variant="p" />
                   <el-skeleton-item variant="p" />
                   <el-skeleton-item variant="p" />
                   <el-skeleton-item variant="p" />
@@ -52,9 +52,9 @@
               <el-skeleton-item variant="h1" />
               <el-skeleton-item variant="h1" style="margin-bottom: 5px;" />
               <div class="skeleton-right">
-                <el-skeleton-item variant="image"  style="width:20%; height: 90px; margin-bottom: 10px;" />
+                <el-skeleton-item variant="image" style="width:20%; height: 90px; margin-bottom: 10px;" />
                 <div class="skeleton-right-p">
-                  <el-skeleton-item variant="p"  />
+                  <el-skeleton-item variant="p" />
                   <el-skeleton-item variant="p" />
                   <el-skeleton-item variant="p" />
                   <el-skeleton-item variant="p" />
@@ -65,10 +65,9 @@
                 <el-skeleton-item variant="p" style="width: 40%;" />
               </div>
             </div>
-            
           </template>
-          <li class="item">
-            <div class="content-main">
+          <div class="item">
+            <div class="content-main" @click="router.push('/post/222')">
               <div class="title-row">预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
                 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
                 分钟错过航班索赔 2400 元，此事责任在谁？</div>
@@ -79,39 +78,35 @@
                   95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。
                 </div>
               </div>
-              <div class="row-footer">
-                <ul class="action-list">
-                  <li class="item-li">
-                    <a class="user-message" href="/">
-                      <div class="user-popover">小红帽的大灰狼</div>
-                    </a>
-                  </li>
-                  <li class="item-li view">
-                    <el-icon>
-                      <View />
-                    </el-icon>
-                    <span>106k</span>
-                  </li>
-                  <li class="item-li like">
-                    <el-icon>
-                      <Pointer />
-                    </el-icon>
-                    <span> 653</span>
-                  </li>
-                  <li class="dislike-item">
-                    <el-icon>
-                      <More />
-                    </el-icon>
-                  </li>
-                </ul>
-                <div class="row-footer-tags">
-                  <a class="footer-tag " href="/">后端</a>
-                  <a class="footer-tag " href="/">掘金·金石计划</a>
-                  <a class="footer-tag " href="/">前端</a>
-                </div>
+            </div>
+            <div class="row-footer">
+              <ul class="action-list">
+                <li class="item-li">
+                  <RouterLink to="/user" class="user-message"><div class="user-popover">小红帽的大灰狼</div></RouterLink>
+                </li>
+                <li class="item-li view">
+                  <el-icon>
+                    <View />
+                  </el-icon>
+                  <span>106k</span>
+                </li>
+                <li class="item-li like">
+                  <i class="bi bi-suit-heart"></i>
+                  <span> 653</span>
+                </li>
+                <li class="dislike-item">
+                  <el-icon>
+                    <More />
+                  </el-icon>
+                </li>
+              </ul>
+              <div class="row-footer-tags">
+                <a class="footer-tag " href="/">后端</a>
+                <a class="footer-tag " href="/">掘金·金石计划</a>
+                <a class="footer-tag " href="/">前端</a>
               </div>
             </div>
-          </li>
+          </div>
           <li class="item">
             <div class="content-main">
               <div class="title-row">预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
@@ -305,7 +300,8 @@
 
 <script setup>
 import { ref } from "vue"
-
+import { useRouter } from 'vue-router';
+const router = useRouter();
 </script>
 
 <style lang="scss" scoped>
@@ -321,16 +317,19 @@ import { ref } from "vue"
 
       .skeleton {
         flex: 15;
-        .main-skeleton {
-          padding: 12px 20px; 
 
-          .skeleton-bottom-p{
+        .main-skeleton {
+          padding: 12px 20px;
+
+          .skeleton-bottom-p {
             display: flex;
             justify-content: space-between;
           }
+
           .skeleton-right {
             display: flex;
             align-items: center;
+
             .skeleton-right-p {
               width: 80%;
               margin-left: 10px;
@@ -344,7 +343,7 @@ import { ref } from "vue"
       }
 
       .item {
-        display: flex;
+        // display: flex;
         transition: all .3s ease-in;
         cursor: pointer;
         position: relative;
@@ -354,11 +353,9 @@ import { ref } from "vue"
         padding-bottom: 12px;
         border-bottom: 1px solid #f1f2f5;
 
-
-
         .content-main {
-          // flex: 1 1 auto;
 
+          // flex: 1 1 auto;
           .title-row {
             font-weight: 600;
             font-size: 18px;
@@ -397,107 +394,106 @@ import { ref } from "vue"
               -webkit-line-clamp: 3;
               -webkit-box-orient: vertical;
             }
-
           }
+        }
 
-          .row-footer {
+        .row-footer {
+          display: flex;
+          flex-direction: row;
+          align-items: center;
+          justify-content: space-between;
+          flex-wrap: wrap;
+          padding-top: 10px;
+
+          .row-footer-tags {
             display: flex;
             flex-direction: row;
             align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            padding-top: 10px;
 
-            .row-footer-tags {
-              display: flex;
-              flex-direction: row;
-              align-items: center;
-
-              .footer-tag {
-                background-color: #f2f3f5;
-                // padding: 0 6px;
-                border-radius: 2px;
-                // max-width: 76px;
-                box-sizing: border-box;
-                margin-left: 6px;
-                color: #8a919f;
-                text-overflow: ellipsis;
-                overflow: hidden;
-                white-space: nowrap;
-                min-height: 18px;
-                line-height: 18px;
-              }
-
-              .footer-tag:hover{
-                color: #1e80ff;
-              }
-
-              // .width-limited {
-              //   // max-width: 65px;
-              // }
+            .footer-tag {
+              background-color: #f2f3f5;
+              // padding: 0 6px;
+              border-radius: 2px;
+              // max-width: 76px;
+              box-sizing: border-box;
+              margin-left: 6px;
+              color: #8a919f;
+              text-overflow: ellipsis;
+              overflow: hidden;
+              white-space: nowrap;
+              min-height: 18px;
+              line-height: 18px;
             }
 
-            .action-list {
+            .footer-tag:hover {
+              color: #1e80ff;
+            }
+
+            // .width-limited {
+            //   // max-width: 65px;
+            // }
+          }
+
+          .action-list {
+            display: flex;
+            align-items: center;
+
+            .dislike-item {
+              display: none;
+            }
+
+            .like:hover {
+              color: #1e80ff;
+            }
+
+            .like {
+              color: #000;
+            }
+
+
+            .item-li {
               display: flex;
               align-items: center;
+              position: relative;
+              margin-right: 24px;
+              font-size: 13px;
+              line-height: 20px;
+              color: #8a919f;
+              flex-shrink: 0;
 
-              .dislike-item {
-                display: none;
+              .el-icon {
+                font-size: 16px;
               }
 
-              .like:hover {
+              span {
+                margin-left: 4px;
+              }
+
+              .user-message {
+                display: flex;
+                align-items: center;
+                // max-width: 132px;
+                font-size: 13px;
+                line-height: 22px;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                word-break: break-all;
+                color: #8a919f;
+
+                .user-popover {
+                  display: inline;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  padding-right: 10px;
+
+                }
+              }
+
+              .user-message :hover {
                 color: #1e80ff;
               }
 
-              .like {
-                color: #000;
-              }
-
-
-              .item-li {
-                display: flex;
-                align-items: center;
-                position: relative;
-                margin-right: 24px;
-                font-size: 13px;
-                line-height: 20px;
-                color: #8a919f;
-                flex-shrink: 0;
-
-                .el-icon {
-                  font-size: 16px;
-                }
-
-                span {
-                  margin-left: 4px;
-                }
-
-                .user-message {
-                  display: flex;
-                  align-items: center;
-                  // max-width: 132px;
-                  font-size: 13px;
-                  line-height: 22px;
-                  white-space: nowrap;
-                  overflow: hidden;
-                  text-overflow: ellipsis;
-                  word-break: break-all;
-                  color: #8a919f;
-
-                  .user-popover {
-                    display: inline;
-                    overflow: hidden;
-                    text-overflow: ellipsis;
-                    padding-right: 10px;
-
-                  }
-                }
-
-                .user-message :hover {
-                  color: #1e80ff;
-                }
-
-              }
             }
           }
         }
@@ -550,5 +546,4 @@ import { ref } from "vue"
       }
     }
   }
-}
-</style>
+}</style>

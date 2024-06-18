@@ -1,66 +1,328 @@
 <template>
     <el-container class="post-home-main">
         <div class="suspended-panel">
-            <div class="panel-btn" :class="{ 'active': isagree }">
-                <el-badge :color="isagree ? '#1e80ff' : '#b2b2b2'" :show-zero='false' :value="bellvalue"
-                    :offset="[10, 3]">
-                    <i class="bi bi-suit-heart-fill"></i>
-                </el-badge>
+            <div class="panel-btn" v-if="y > 180">
+                <img
+                    src="https://p6-passport.byteacctimg.com/img/user-avatar/507312f17bf5e7cefebbf297105f1742~100x100.awebp">
+                <div class="follow-area" v-if="isfollow">
+                    <div class="follow-text">关注</div>
+                </div>
             </div>
-            <div class="panel-btn" :class="{ 'active': ismsg }">
-                <el-badge :color="ismsg ? '#1e80ff' : '#b2b2b2'" :show-zero='false' :value="bellvalue"
-                    :offset="[10, 3]">
-                    <i class="bi bi-chat-left-text-fill"></i>
-                </el-badge>
-            </div>
-            <div class="panel-btn">
-                <i class="bi bi-star-fill"></i>
-            </div>
-            <div class="panel-btn">
-                <i class="bi bi-share-fill"></i>
-            </div>
-            <div class="panel-btn">
-                <i class="bi bi-exclamation-diamond-fill"></i>
-            </div>
+            <el-tooltip content="点赞" placement="left" effect="light">
+                <div class="panel-btn" :class="{ 'active': isagree }">
+                    <el-badge :color="isagree ? '#1e80ff' : '#b2b2b2'" :show-zero='false' :value="bellvalue"
+                        :offset="[10, 3]">
+                        <i class="bi bi-suit-heart-fill"></i>
+                    </el-badge>
+                </div>
+            </el-tooltip>
+            <el-tooltip content="评论" placement="left" effect="light">
+                <div class="panel-btn" :class="{ 'active': ismsg }" @click="drawer = true">
+                    <el-badge :color="ismsg ? '#1e80ff' : '#b2b2b2'" :show-zero='false' :value="bellvalue"
+                        :offset="[10, 3]">
+                        <i class="bi bi-chat-left-text-fill"></i>
+                    </el-badge>
+                </div>
+            </el-tooltip>
+            <el-tooltip content="收藏" placement="left" effect="light">
+                <div class="panel-btn">
+                    <i class="bi bi-star-fill"></i>
+                </div>
+            </el-tooltip>
+            <el-tooltip content="分享" placement="left" effect="light">
+                <div class="panel-btn">
+                    <i class="bi bi-share-fill"></i>
+                </div>
+            </el-tooltip>
+            <el-tooltip content="举报" placement="left" effect="light">
+                <div class="panel-btn">
+                    <i class="bi bi-exclamation-diamond-fill"></i>
+                </div>
+            </el-tooltip>
+
         </div>
         <el-container class="home-center">
-            <el-main class="center-main">Main </el-main>
-            <el-footer class="center-end">标签：</el-footer>
-            <div class="comment-box">
-                <div class="title">评论 14</div>
-                <div class="comment-editor">
-                    <div class="content">
-                        <div class="avatar-box">头像</div>
-                        <div class="form-box">文字输入框</div>
+            <el-container class="center-main">
+                <el-main class="center-main-text">
+                    <h1 class="article-title">为什么idea建议使用“+”拼接字符串 | 京东云技术团队</h1>
+                    <div class="author-info-box">
+                        <div class="author-name">
+                            <RouterLink to="/user/pins">京东云开发者</RouterLink>
+                        </div>
+                        <div class="meta-box">
+                            <div class="time">2023-11-01</div>
+                            <div class="read-time"><i class="bi bi-eye"></i><span>34,062</span></div>
+                            <div class="read-time"><i class="bi bi-clock"></i><span>阅读4分钟</span></div>
+                        </div>
+                    </div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                </el-main>
+                <el-footer class="comment-end">
+                    <div class="title">评论 14</div>
+                    <div class="comment-editor">
+                        <div class="content">
+                            <div class="avatar-box">头像----</div>
+                            <div class="form-box">文字输入框</div>
+                        </div>
+                    </div>
+                    <div class="comment-list-wrapper">
+                        <div class="comment-list-header">
+                            <div class="item active"><span>最热</span></div>
+                            <div class="item"><span>最新</span></div>
+                        </div>
+                    </div>
+                    <div class="comment-list">评论表单</div>
+                    <div class="fetch-more-comment"><span>查看全部评论 </span><i class="bi bi-arrow-down-short"></i></div>
+                </el-footer>
+            </el-container>
+            <el-aside class="home-right">
+                <div class="sidebar-block ">
+                    <div class="block-body author-block">
+                        <RouterLink class="user-item" to="/user">
+                            <div class="item-left">
+                                <img class="avatar-img"
+                                    src="https://p6-passport.byteacctimg.com/img/user-avatar/507312f17bf5e7cefebbf297105f1742~100x100.awebp">
+                            </div>
+                            <div class="item-right">
+                                <span class="username">程序员111</span>
+                                <div class="position">前端开发 @现在无业啦</div>
+                            </div>
+                        </RouterLink>
+                        <div class="count-container">
+                            <RouterLink class="stat-item" to="/user/posts">
+                                <div class="count">20</div>
+                                <div>文章</div>
+                            </RouterLink>
+                            <RouterLink class="stat-item" to="/user/posts">
+                                <div class="count">165k</div>
+                                <div>阅读</div>
+                            </RouterLink>
+                            <RouterLink class="stat-item" to="/user/tags">
+                                <div class="count">5555</div>
+                                <div>粉丝</div>
+                            </RouterLink>
+                        </div>
+                        <div class="operate-btn">
+                            <el-button type="primary">关注</el-button>
+                            <el-button>私信</el-button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="sidebar-block">
+                    <div class="block-title">
+                        相关推荐
+                    </div>
+                    <div class="block-body">
+                        <div class="entry-list">
+                            <a class="item" href="/">
+                                <div class="entry-title">
+                                    公司为什么禁止在SpringBoo公司为什么禁止在SpringBoo
+                                </div>
+                                <div class="entry-meta-box">
+                                    <div class="entry-meta">48k阅读</div>
+                                    <div class="entry-meta"> · </div>
+                                    <div class="entry-meta">501点赞</div>
+                                </div>
+                            </a>
+                            <a class="item" href="/">
+                                <div class="entry-title">
+                                    公司为什么禁止在SpringBoo公司为什么禁止在SpringBoo
+                                </div>
+                                <div class="entry-meta-box">
+                                    <div class="entry-meta">48k阅读</div>
+                                    <div class="entry-meta"> · </div>
+                                    <div class="entry-meta">501点赞</div>
+                                </div>
+                            </a>
+                            <a class="item" href="/">
+                                <div class="entry-title">
+                                    公司为什么禁止在SpringBoo公司为什么禁止在SpringBoo
+                                </div>
+                                <div class="entry-meta-box">
+                                    <div class="entry-meta">48k阅读</div>
+                                    <div class="entry-meta"> · </div>
+                                    <div class="entry-meta">501点赞</div>
+                                </div>
+                            </a>
+                            <a class="item" href="/">
+                                <div class="entry-title">
+                                    公司为什么禁止在SpringBoo公司为什么禁止在SpringBoo
+                                </div>
+                                <div class="entry-meta-box">
+                                    <div class="entry-meta">48k阅读</div>
+                                    <div class="entry-meta"> · </div>
+                                    <div class="entry-meta">501点赞</div>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </div>
-                <div class="comment-list-wrapper">
-                    <div class="comment-list-header">
-                        <div class="item active">最热</div>
-                        <div class="divider"></div>
-                        <div class="item">最新</div>
-                    </div>
-                </div>
-                <div class="comment-list">评论表单</div>
-                <div class="fetch-more-comment"><span>查看全部评论</span></div>
-            </div>
+            </el-aside>
         </el-container>
-        <el-aside class="home-right">Aside</el-aside>
+        <el-drawer class="drawer-left" v-model="drawer" direction="rtl" >
+            <template #header="{ titleId }">
+                <h4 :id="titleId" class="comment-drawer-header">
+                    <span class="title">评论</span>
+                </h4>
+            </template>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+            <div class="comment-form comment-editor">评论</div>
+        </el-drawer>
     </el-container>
 </template>
-
 <script setup>
 import { ref } from 'vue'
 const bellvalue = ref(1200)
 const isagree = ref(true)
 const ismsg = ref(false)
+const isfollow = ref(false)
+const drawer = ref(false)
+import { useScroll } from '@vueuse/core'
+const { y } = useScroll(window)
 
 </script>
 
 <style lang="scss" scoped>
+:deep(.el-overlay) {
+    background-color: rgba(0, 0, 0, 0.05);
+}
+
 .post-home-main {
     flex: 1;
-    background-color: #f2f3f5;
+    overflow-y: auto; 
+
+    .drawer-left {
+        .comment-drawer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 64px;
+            position: fixed;
+            padding: 0 22px 0 24px;
+            top: 0;
+            border-bottom: 1px solid #d9dbe0;
+            background: #ffffff;
+            width: 100%;
+            transform: translateX(-20px);
+            z-index: 100;
+
+            .title {
+                color: #252933;
+                font-size: 18px;
+                font-weight: 600;
+                line-height: 30px;
+            }
+        }
+
+        .comment-form {
+            display: flex;
+            position: relative;
+            border-radius: 2px;
+            flex-direction: column;
+        }
+
+        .comment-editor{
+            margin-top: 1px;
+        }
+    }
 
     .suspended-panel {
         position: fixed;
@@ -85,6 +347,43 @@ const ismsg = ref(false)
             text-align: center;
             font-size: 20px;
 
+            img {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                object-fit: cover;
+            }
+
+            .follow-area {
+                cursor: pointer;
+                padding: 0 3px 3px 3px;
+                position: absolute;
+                bottom: -9px;
+                left: 50%;
+                transition: tr;
+                transform: translateX(-50%);
+
+                .follow-text {
+                    color: #ffffff;
+                    border-radius: 100px;
+                    background: #1e80ff;
+                    justify-content: center;
+                    align-items: center;
+                    height: 16px;
+                    text-align: center;
+                    font-size: 10px;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: 10px;
+                    display: flex;
+                    width: 32px;
+                    white-space: nowrap;
+                }
+            }
+
             i {
                 color: #b2b2b2;
             }
@@ -107,34 +406,94 @@ const ismsg = ref(false)
     }
 
     .home-center {
-        .center-main{
-            background: #fff;
+        .center-main {
+            .center-main-text {
+                background-color: #fff;
 
-        }
-        .center-end{
-            background: #fff;
-        }
-        
-        .comment-box {
-            box-sizing: border-box;
-            border-radius: 4px;
-            background: #fff;
-            margin-top: 20px;
-            padding-top: 20px;
-            padding-bottom: 20px;
-            font-style: normal;
-            padding-left: 2.67rem;
-            padding-right: 2.67rem;
+                .article-title {
+                    margin: 0 0 1.3rem;
+                    font-size: 2rem;
+                    font-weight: 600;
+                    line-height: 1.31;
+                    color: #252933;
+                }
 
-            .title {
-                color: #252933;
-                font-size: 18px;
-                font-weight: 600;
-                line-height: 30px;
+                .author-info-box {
+                    display: flex;
+                    min-width: 0;
+                    flex-grow: 1;
+                    overflow: hidden;
+                    white-space: nowrap;
+                    text-overflow: ellipsis;
+                    flex-wrap: wrap;
+                    margin-bottom: 1.5rem;
+
+                    .author-name {
+                        height: 2rem;
+                        display: flex;
+                        align-items: center;
+                        margin-right: 16px;
+
+                        a {
+                            color: #515767;
+                        }
+                    }
+
+                    .author-name:hover {
+                        a {
+                            color: #1e80ff;
+                        }
+                    }
+
+                    .meta-box {
+                        flex-shrink: 0;
+                        font-size: 14px;
+                        line-height: 22px;
+                        display: flex;
+                        align-items: center;
+                        color: #98919f;
+
+                        .time {
+                            margin-right: 16px;
+                            white-space: nowrap;
+                        }
+
+                        .views-count {
+                            margin-right: 16px;
+                            white-space: nowrap;
+                        }
+
+                        .read-time {
+                            display: flex;
+                            align-items: center;
+
+                            i {
+                                font-size: 15px;
+                            }
+
+                            span {
+                                padding: 0 10px;
+                            }
+                        }
+                    }
+                }
             }
 
-            .comment-editor {
-                margin-top: 32px;
+            .comment-end {
+                height: auto;
+                margin-top: 20px;
+                padding-top: 20px;
+                padding-bottom: 20px;
+                border-radius: 4px;
+                background: #fff;
+                font-style: normal;
+
+                .title {
+                    color: #252933;
+                    font-size: 18px;
+                    font-weight: 600;
+                    line-height: 30px;
+                }
 
                 .content {
                     display: flex;
@@ -148,39 +507,57 @@ const ismsg = ref(false)
                         flex: 1;
                     }
                 }
-            }
 
-            .comment-list-wrapper {
-                margin-top: 32px;
+                .comment-editor {
+                    margin-top: 32px;
 
-                .comment-list-header {
-                    box-sizing: border-box;
+                    .content {
+                        display: flex;
+                        align-items: flex-start;
 
-                    .divider {
-                        display: inline-block;
-                        width: 1px;
-                        height: 13px;
-                        background: #e4e6eb;
-                        position: relative;
-                        top: 2px;
-                        margin: 0 3px;
+                        .avatar-box {
+                            flex: 0 0 auto;
+                        }
+
+                        .form-box {
+                            flex: 1;
+                        }
+                    }
+                }
+
+                .comment-list-wrapper {
+                    margin-top: 32px;
+
+                    .comment-list-header {
+                        display: flex;
+                        align-content: center;
+
+                        .item {
+                            font-size: 15px;
+                            line-height: 22px;
+                            font-weight: 400;
+                            cursor: pointer;
+                            padding: 3px 4px;
+
+                            span {
+                                padding-left: 10px;
+                                border-left: 2px solid #e4e6eb;
+                            }
+                        }
+
+                        .item:first-child {
+                            span {
+                                padding-left: 0px;
+                                border: none;
+                            }
+                        }
+
+                        .active {
+                            color: #1e80ff;
+                        }
+
                     }
 
-                    .item {
-                        font-size: 15px;
-                        font-weight: 500;
-                        line-height: 22px;
-                        display: inline-block;
-                        color: #515767;
-                        font-weight: 400;
-                        cursor: pointer;
-                        border-radius: 2px;
-                        padding: 3px 4px;
-                    }
-
-                    .active {
-                        color: #1e80ff;
-                    }
 
                 }
 
@@ -188,26 +565,212 @@ const ismsg = ref(false)
                     min-height: 120px;
                     margin-top: 4px;
                 }
+
+                .fetch-more-comment {
+                    margin-top: 12px;
+                    border-radius: 4px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #515767;
+                    font-size: 15px;
+                    height: 52px;
+                    cursor: pointer;
+                    background: #f7f8fa;
+                    font-weight: 500;
+                    transition: all .2s;
+
+                    i {
+                        font-size: 20px;
+                    }
+                }
+
+                .fetch-more-comment:hover {
+                    background-color: #f2f3f5;
+                }
+
             }
 
-            .fetch-more-comment {
-                margin-top: 12px;
+        }
+
+
+        .home-right {
+            display: flex;
+            flex-direction: column;
+            // justify-content: center;
+            align-items: center;
+            justify-content: flex-start;
+
+            .sidebar-block {
+                width: 100%;
+                /* 设置宽度为父容器宽度 */
                 border-radius: 4px;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                color: #515767;
-                font-size: 15px;
-                height: 52px;
-                cursor: pointer;
-                background: #f7f8fa;
-                font-weight: 500;
-                transition: all .2s;
+                width: 260px;
+                background: #ffffff;
+                box-shadow: -2px 0 4px rgba(0, 0, 0, 0.2);
+                margin-bottom: 20px;
+
+                /* 添加阴影效果 */
+                .block-title {
+                    padding: 16px 0;
+                    margin: 0 20px;
+                    font-size: 16px;
+                    color: #252933;
+                    font-weight: 500;
+                    border-bottom: 1px solid #e4e6eb;
+                    white-space: nowrap;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+
+                }
+
+                .author-block {
+                    border-radius: 4px;
+                    background: #fff;
+                    padding: 20px;
+                }
+
+                .block-body {
+                    .user-item {
+                        padding-bottom: 8px;
+                        color: #000;
+                        display: flex;
+
+
+                        .item-left {
+                            flex: 0 0 auto;
+                            width: 4rem;
+                            height: 4rem;
+                            border-radius: 50%;
+
+                            .avatar-img {
+                                border-radius: 50%;
+                                width: 100%;
+                                height: 100%;
+                                object-fit: cover;
+                                background-color: #f7f8fa;
+                            }
+                        }
+
+                        .item-right {
+                            flex: 1 1 auto;
+                            min-width: 0;
+                            margin-left: 12px;
+
+                            .username {
+                                font-size: 16px;
+                                font-weight: 500;
+                                line-height: 2rem;
+                                color: #252933;
+                                white-space: pre-wrap;
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                            }
+
+                            .position {
+                                font-size: 14px;
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                                color: #8a919f;
+                                font-weight: 400;
+                                line-height: 22px;
+                            }
+                        }
+                    }
+
+                    .operate-btn {
+                        display: flex;
+                        justify-content: space-between;
+                        margin-top: 10px;
+
+                        .el-button {
+                            width: 120px;
+                        }
+                    }
+
+                    .count-container {
+                        display: flex;
+                        align-items: center;
+                        justify-content: space-around;
+
+
+
+                        .count {
+                            color: #252933;
+                            font-size: 16px;
+                            font-weight: 500;
+                            line-height: 24px;
+                        }
+
+                        .stat-item {
+                            color: #8a919f;
+                            font-size: 13px;
+                            font-weight: 400;
+                            line-height: 22px;
+                        }
+
+                        .stat-item:hover {
+                            color: #1e80ff;
+
+                            .count {
+                                color: #1e80ff;
+
+                            }
+                        }
+
+
+
+                    }
+
+
+
+                    .entry-list {
+                        padding-bottom: 20px;
+
+                        .item {
+                            display: block;
+                            padding: 12px 20px 0;
+                            padding-top: 16px;
+
+                            .entry-title {
+                                line-height: 22px;
+                                font-size: 14px;
+                                font-weight: 400;
+                                color: #252933;
+                                white-space: nowrap;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
+                            }
+
+                            .entry-meta-box {
+                                margin-top: 4px;
+                                display: flex;
+
+                                .entry-meta {
+                                    display: flex;
+                                    font-size: 15px;
+                                    line-height: 22px;
+                                    color: #8a919f;
+                                    font-weight: 400;
+                                }
+                            }
+                        }
+
+                        .item:hover {
+                            .entry-title {
+                                color: #1e80ff;
+                            }
+                        }
+                    }
+                }
             }
         }
+
+
     }
-    .home-right{
-        background-color: #f2f3f5;
-    }
+
+
 }
 </style>

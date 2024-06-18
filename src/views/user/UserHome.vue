@@ -16,21 +16,52 @@
                     <div class="user-info-icon">图标位置</div>
                     <div class="introduction">
                         <div class="left">你从事什么职业？ 标签</div>
-                        <div class="right"><RouterLink to="/user/settings"><el-button><el-icon ><Setting /></el-icon></el-button></RouterLink></div>
+                        <div class="right">
+                            <RouterLink to="/user/settings"><el-button><el-icon>
+                                        <Setting />
+                                    </el-icon></el-button></RouterLink>
+                        </div>
                     </div>
                 </div>
             </div>
             <div class="list-block">
                 <div class="list-header">
                     <div class="header-content">
-                        <div class="nav-item" :class="{active: headerBut==1}" @click="headerBut=1"><el-button link><span >动态</span></el-button></div>
-                        <div class="nav-item" :class="{active: headerBut==2}"  @click="headerBut=2"><el-button link><span>文章</span></el-button></div>
-                        <div class="nav-item" :class="{active: headerBut==3}" @click="headerBut=3"><el-button link><span>专栏</span></el-button></div>
+                        <RouterLink to="/user/pins">
+                            <div class="nav-item" :class="{ active: headerBut == 1 }" @click="headerBut = 1">
+                                <el-button link><span>动态</span></el-button>
+                            </div>
+                        </RouterLink>
+                        <RouterLink to="/user/posts">
+                            <div class="nav-item" :class="{ active: headerBut == 2 }" @click="headerBut = 2">
+                                <el-button link><span>文章</span></el-button>
+                            </div>
+                        </RouterLink>
+                        <RouterLink to="/user/columns">
+                            <div class="nav-item" :class="{ active: headerBut == 3 }" @click="headerBut = 3">
+                                <el-button link><span>专栏</span></el-button>
+                            </div>
+                        </RouterLink>
+                        <RouterLink to="/user/collections">
+                            <div class="nav-item" :class="{ active: headerBut == 4 }" @click="headerBut = 4">
+                                <el-button link><span>收藏集</span></el-button>
+                            </div>
+                        </RouterLink>
+                        <RouterLink to="/user/tags">
+                            <div class="nav-item" :class="{ active: headerBut == 5 }" @click="headerBut = 5">
+                                <el-button link><span>关注</span></el-button>
+                            </div>
+                        </RouterLink>
+                        <!-- <div class="nav-item" :class="{ active: headerBut == 6 }" @click="headerBut = 6">
+                            <el-button link><span>作品</span></el-button>
+                        </div> -->
                     </div>
-                    <RouterView class="activity-list-box"></RouterView>
+
                 </div>
             </div>
+            <RouterView class="activity-list-box"></RouterView>
         </div>
+
         <div class="minor-area">
             <div class="sticky">
                 <div class="follow-block">
@@ -65,7 +96,7 @@
 
 <script setup>
 import { ref } from "vue";
-const headerBut=ref(1)
+const headerBut = ref(1)
 
 const isActive = (path) => {
     return route.path === path;
@@ -80,7 +111,14 @@ const isActive = (path) => {
 
     // width: 100%;
     .major-area {
+        display: flex;
+  flex-direction: column;
         flex: 1 1 auto;
+
+        .activity-list-box {
+            flex: 1;            
+            background-color: #fff;
+        }
 
         .list-block {
             .list-header {
@@ -100,6 +138,7 @@ const isActive = (path) => {
                     white-space: nowrap;
                     position: relative;
                     margin: 0 auto;
+                    border-bottom: 1px solid #e4e6eb;
 
                     .nav-item {
                         display: flex;
@@ -110,17 +149,19 @@ const isActive = (path) => {
                         .el-button {
                             font-size: 16px;
                         }
-                    
-                        
+
+
                     }
+
                     .nav-item:not(.active):hover {
                         .el-button {
                             color: #252933;
                             padding-bottom: 13px;
                         }
                     }
+
                     .active {
-                        span{
+                        span {
                             transition: border-bottom .1s;
                             padding-bottom: 8px;
                             border-bottom: 2px #1e80ff solid;
@@ -129,9 +170,7 @@ const isActive = (path) => {
                 }
             }
 
-            .activity-list-box {
-                background-color: #fff;
-            }
+
         }
 
         .user-info-block {
@@ -206,7 +245,8 @@ const isActive = (path) => {
                     .right {
                         display: flex;
                         align-items: flex-end;
-                        .el-icon{
+
+                        .el-icon {
                             font-size: 20px;
                         }
                     }

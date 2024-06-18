@@ -50,29 +50,30 @@ const router = createRouter({
           path: '/user',
           name: 'user',
           component: () => import('../views/user/UserHome.vue'),
+          redirect: '/user/pins',
           children: [
             {
-              path: '/user/columns',
-              name: 'columns',
-              component: () => import('../views/user/components/UserColumns.vue'),
-            },
-            {
-              path: '/user/posts',
-              name: 'posts',
-              component: () => import('../views/user/components/UserPosts.vue'),
-            },
-            {
-              path: '/user/pins',
+              path: 'pins',
               name: 'pins',
               component: () => import('../views/user/components/UserPins.vue'),
             },
             {
-              path: '/user/collections',
+              path: 'posts',
+              name: 'posts',
+              component: () => import('../views/user/components/UserPosts.vue'),
+            },
+            {
+              path: 'columns',
+              name: 'columns',
+              component: () => import('../views/user/components/UserColumns.vue'),
+            },
+            {
+              path: 'collections',
               name: 'collections',
               component: () => import('../views/user/components/UserCollections.vue'),
             },
             {
-              path: '/user/tags',
+              path: 'tags',
               name: 'tags',
               component: () => import('../views/user/components/UserTags.vue'),
             },
@@ -114,11 +115,7 @@ const router = createRouter({
           path: '/post/:postId',
           name: 'post',
           component: () => import('../views/post/PostHome.vue'),
-        },
-        {
-          path: '*',
-          redirect: '/', 
-        },
+        }
       ]
     },
     {

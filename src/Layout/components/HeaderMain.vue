@@ -34,7 +34,6 @@
         <div class="right-li">
           <el-button style="border-radius:15px;" type="primary">发布</el-button>
         </div>
-
         <el-dropdown style=" cursor: pointer;">
           <div class="right-li">
             <el-badge :show-zero='false' :value="Bellvalue" :offset="[5, 3]">
@@ -185,6 +184,9 @@ const item_TO_WE=(type)=>{
       align-items: center;
       justify-content: start;
 
+      .el-scrollbar{
+        z-index: 1000;
+      }
 
       .right-li {
         padding: 0 10px 0 10px;

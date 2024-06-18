@@ -28,27 +28,27 @@
                 <div class="list-header">
                     <div class="header-content">
                         <RouterLink to="/user/pins">
-                            <div class="nav-item" :class="{ active: headerBut == 1 }" @click="headerBut = 1">
+                            <div class="nav-item" :class="{ 'active': isActive('/user/pins') }">
                                 <el-button link><span>动态</span></el-button>
                             </div>
                         </RouterLink>
                         <RouterLink to="/user/posts">
-                            <div class="nav-item" :class="{ active: headerBut == 2 }" @click="headerBut = 2">
+                            <div class="nav-item" :class="{ 'active': isActive('/user/posts') }">
                                 <el-button link><span>文章</span></el-button>
                             </div>
                         </RouterLink>
                         <RouterLink to="/user/columns">
-                            <div class="nav-item" :class="{ active: headerBut == 3 }" @click="headerBut = 3">
+                            <div class="nav-item" :class="{ 'active': isActive('/user/columns') }">
                                 <el-button link><span>专栏</span></el-button>
                             </div>
                         </RouterLink>
                         <RouterLink to="/user/collections">
-                            <div class="nav-item" :class="{ active: headerBut == 4 }" @click="headerBut = 4">
+                            <div class="nav-item" :class="{ 'active': isActive('/user/collections') }">
                                 <el-button link><span>收藏集</span></el-button>
                             </div>
                         </RouterLink>
                         <RouterLink to="/user/tags">
-                            <div class="nav-item" :class="{ active: headerBut == 5 }" @click="headerBut = 5">
+                            <div class="nav-item" :class="{ 'active': isActive('/user/tags') }">
                                 <el-button link><span>关注</span></el-button>
                             </div>
                         </RouterLink>
@@ -59,7 +59,27 @@
 
                 </div>
             </div>
-            <RouterView class="activity-list-box"></RouterView>
+            <el-skeleton animated :loading="loading">
+                <template #template>
+                    <div class="itme">
+                        <div class="itme-right">
+                            <el-skeleton-item style="width: 40%;" variant="h1" />
+                            <br>
+                            <el-skeleton-item style="width: 70%;" variant="h1" />
+                            <el-skeleton-item style="width: 100%;" variant="h1" />
+                        </div>
+                    </div>
+                    <div class="itme">
+                        <div class="itme-right">
+                            <el-skeleton-item style="width: 40%;" variant="h1" />
+                            <br>
+                            <el-skeleton-item style="width: 70%;" variant="h1" />
+                            <el-skeleton-item style="width: 100%;" variant="h1" />
+                        </div>
+                    </div>
+                </template>
+                <RouterView class="activity-list-box"></RouterView>
+            </el-skeleton>
         </div>
 
         <div class="minor-area">
@@ -96,7 +116,11 @@
 
 <script setup>
 import { ref } from "vue";
+import { useRoute } from 'vue-router';
+const route = useRoute();
+
 const headerBut = ref(1)
+const loading = ref(false)
 
 const isActive = (path) => {
     return route.path === path;
@@ -112,12 +136,14 @@ const isActive = (path) => {
     // width: 100%;
     .major-area {
         display: flex;
-  flex-direction: column;
+        flex-direction: column;
         flex: 1 1 auto;
+        background-color: #fff;
+
 
         .activity-list-box {
-            flex: 1;            
-            background-color: #fff;
+            flex: 1;
+            margin:  20px 20px;
         }
 
         .list-block {
@@ -173,6 +199,22 @@ const isActive = (path) => {
 
         }
 
+        .itme {
+            display: flex;
+            align-items: center;
+            margin: 20px 20px;
+
+            .itme-left {
+                height: 50px;
+                width: 50px;
+                margin-right: 10px;
+                margin-bottom: 10px;
+            }
+
+            .itme-right {
+                width:100%;
+            }
+        }
         .user-info-block {
             display: flex;
             padding: 2.5rem;

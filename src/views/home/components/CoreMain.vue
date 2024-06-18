@@ -107,191 +107,129 @@
               </div>
             </div>
           </div>
-          <li class="item">
-            <div class="content-main">
+          <div class="item">
+            <div class="content-main" @click="router.push('/post/222')">
               <div class="title-row">预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
                 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
                 分钟错过航班索赔 2400 元，此事责任在谁？</div>
               <div class="row-text">
                 <img class="thumb"
-                  src="https://picx.zhimg.com/v2-66c834da6f1e83b6d1870615764d93d3_200x0.jpg?source=172ae18b">
-
+                  src="https://picx.zhimg.com/v2-e7e538187231ad6b5d47adf7c06baf70_200x0.jpg?source=172ae18b">
                 <div class="abstract">
                   95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。
                 </div>
               </div>
-
-              <div class="row-footer">
-                <ul class="action-list">
-                  <li class="item-li">
-                    <a class="user-message" href="/">
-                      <div class="user-popover">小红帽的大灰狼</div>
-                    </a>
-                  </li>
-                  <li class="item-li view">
-                    <el-icon>
-                      <View />
-                    </el-icon>
-                    <span>106k</span>
-                  </li>
-                  <li class="item-li like">
-                    <el-icon>
-                      <Pointer />
-                    </el-icon>
-                    <span> 653</span>
-                  </li>
-                  <li class="dislike-item">
-                    <el-icon>
-                      <More />
-                    </el-icon>
-                  </li>
-                </ul>
-                <div class="row-footer-tags">
-                  <a class="footer-tag width-limited" href="/">后端</a>
-                  <a class="footer-tag width-limited" href="/">掘金·金石计划</a>
-                  <a class="footer-tag width-limited" href="/">前端</a>
-                </div>
+            </div>
+            <div class="row-footer">
+              <ul class="action-list">
+                <li class="item-li">
+                  <RouterLink to="/user" class="user-message"><div class="user-popover">小红帽的大灰狼</div></RouterLink>
+                </li>
+                <li class="item-li view">
+                  <el-icon>
+                    <View />
+                  </el-icon>
+                  <span>106k</span>
+                </li>
+                <li class="item-li like">
+                  <i class="bi bi-suit-heart"></i>
+                  <span> 653</span>
+                </li>
+                <li class="dislike-item">
+                  <el-icon>
+                    <More />
+                  </el-icon>
+                </li>
+              </ul>
+              <div class="row-footer-tags">
+                <a class="footer-tag " href="/">后端</a>
+                <a class="footer-tag " href="/">掘金·金石计划</a>
+                <a class="footer-tag " href="/">前端</a>
               </div>
             </div>
-          </li>
-          <li class="item">
-            <div class="content-main">
+          </div>
+          <div class="item">
+            <div class="content-main" @click="router.push('/post/222')">
               <div class="title-row">预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
                 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
                 分钟错过航班索赔 2400 元，此事责任在谁？</div>
               <div class="row-text">
                 <img class="thumb"
-                  src="https://picx.zhimg.com/v2-66c834da6f1e83b6d1870615764d93d3_200x0.jpg?source=172ae18b">
-
+                  src="https://picx.zhimg.com/v2-e7e538187231ad6b5d47adf7c06baf70_200x0.jpg?source=172ae18b">
                 <div class="abstract">
                   95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。
                 </div>
               </div>
-
-              <div class="row-footer">
-                <ul class="action-list">
-                  <li class="item-li">
-                    <a class="user-message" href="/">
-                      <div class="user-popover">小红帽的大灰狼</div>
-                    </a>
-                  </li>
-                  <li class="item-li view">
-                    <el-icon>
-                      <View />
-                    </el-icon>
-                    <span>106k</span>
-                  </li>
-                  <li class="item-li like">
-                    <el-icon>
-                      <Pointer />
-                    </el-icon>
-                    <span> 653</span>
-                  </li>
-                  <li class="dislike-item">
-                    <el-icon>
-                      <More />
-                    </el-icon>
-                  </li>
-                </ul>
-                <div class="row-footer-tags">
-                  <a class="footer-tag width-limited" href="/">后端</a>
-                  <a class="footer-tag width-limited" href="/">掘金·金石计划</a>
-                  <a class="footer-tag width-limited" href="/">前端</a>
-                </div>
+            </div>
+            <div class="row-footer">
+              <ul class="action-list">
+                <li class="item-li">
+                  <RouterLink to="/user" class="user-message"><div class="user-popover">小红帽的大灰狼</div></RouterLink>
+                </li>
+                <li class="item-li view">
+                  <el-icon>
+                    <View />
+                  </el-icon>
+                  <span>106k</span>
+                </li>
+                <li class="item-li like">
+                  <i class="bi bi-suit-heart"></i>
+                  <span> 653</span>
+                </li>
+                <li class="dislike-item">
+                  <el-icon>
+                    <More />
+                  </el-icon>
+                </li>
+              </ul>
+              <div class="row-footer-tags">
+                <a class="footer-tag " href="/">后端</a>
+                <a class="footer-tag " href="/">掘金·金石计划</a>
+                <a class="footer-tag " href="/">前端</a>
               </div>
             </div>
-          </li>
-          <li class="item">
-            <div class="content-main">
+          </div>
+          <div class="item">
+            <div class="content-main" @click="router.push('/post/222')">
               <div class="title-row">预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
                 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
                 分钟错过航班索赔 2400 元，此事责任在谁？</div>
               <div class="row-text">
                 <img class="thumb"
-                  src="https://picx.zhimg.com/v2-66c834da6f1e83b6d1870615764d93d3_200x0.jpg?source=172ae18b">
+                  src="https://picx.zhimg.com/v2-e7e538187231ad6b5d47adf7c06baf70_200x0.jpg?source=172ae18b">
                 <div class="abstract">
                   95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。
                 </div>
               </div>
-
-              <div class="row-footer">
-                <ul class="action-list">
-                  <li class="item-li">
-                    <a class="user-message" href="/">
-                      <div class="user-popover">小红帽的大灰狼</div>
-                    </a>
-                  </li>
-                  <li class="item-li view">
-                    <el-icon>
-                      <View />
-                    </el-icon>
-                    <span>106k</span>
-                  </li>
-                  <li class="item-li like">
-                    <el-icon>
-                      <Pointer />
-                    </el-icon>
-                    <span> 653</span>
-                  </li>
-                  <li class="dislike-item">
-                    <el-icon>
-                      <More />
-                    </el-icon>
-                  </li>
-                </ul>
-                <div class="row-footer-tags">
-                  <a class="footer-tag width-limited" href="/">后端</a>
-                  <a class="footer-tag width-limited" href="/">掘金·金石计划</a>
-                  <a class="footer-tag width-limited" href="/">前端</a>
-                </div>
+            </div>
+            <div class="row-footer">
+              <ul class="action-list">
+                <li class="item-li">
+                  <RouterLink to="/user" class="user-message"><div class="user-popover">小红帽的大灰狼</div></RouterLink>
+                </li>
+                <li class="item-li view">
+                  <el-icon>
+                    <View />
+                  </el-icon>
+                  <span>106k</span>
+                </li>
+                <li class="item-li like">
+                  <i class="bi bi-suit-heart"></i>
+                  <span> 653</span>
+                </li>
+                <li class="dislike-item">
+                  <el-icon>
+                    <More />
+                  </el-icon>
+                </li>
+              </ul>
+              <div class="row-footer-tags">
+                <a class="footer-tag " href="/">后端</a>
+                <a class="footer-tag " href="/">掘金·金石计划</a>
+                <a class="footer-tag " href="/">前端</a>
               </div>
             </div>
-          </li>
-          <li class="item">
-            <div class="content-main">
-              <div class="title-row">预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
-                分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
-                分钟错过航班索赔 2400 元，此事责任在谁？</div>
-              <div class="row-text">
-                <img class="thumb"
-                  src="https://picx.zhimg.com/v2-66c834da6f1e83b6d1870615764d93d3_200x0.jpg?source=172ae18b">
-                <div class="abstract">
-                  95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。
-                </div>
-              </div>
-              <div class="row-footer">
-                <ul class="action-list">
-                  <li class="item-li">
-                    <a class="user-message" href="/">
-                      <div class="user-popover">小红帽的大灰狼</div>
-                    </a>
-                  </li>
-                  <li class="item-li view">
-                    <el-icon>
-                      <View />
-                    </el-icon>
-                    <span>106k</span>
-                  </li>
-                  <li class="item-li like">
-                    <el-icon>
-                      <Pointer />
-                    </el-icon>
-                    <span> 653</span>
-                  </li>
-                  <li class="dislike-item">
-                    <el-icon>
-                      <More />
-                    </el-icon>
-                  </li>
-                </ul>
-                <div class="row-footer-tags">
-                  <a class="footer-tag width-limited" href="/">后端</a>
-                  <a class="footer-tag width-limited" href="/">掘金·金石计划</a>
-                  <a class="footer-tag width-limited" href="/">前端</a>
-                </div>
-              </div>
-            </div>
-          </li>
+          </div>
         </el-skeleton>
       </div>
     </div>

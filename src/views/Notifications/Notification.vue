@@ -69,7 +69,7 @@ import { ref ,watch} from "vue"
 import { useRoute } from 'vue-router';
 
 const titleType = ref('1')
-const loading = ref(false)
+const loading = ref(true)
 
 const totitleType = (tab, event) => {
     titleType.value = tab.paneName

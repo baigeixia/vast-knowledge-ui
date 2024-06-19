@@ -8,27 +8,27 @@
               <HelpFilled />
             </el-icon>
             <div class="item-text ">
-              大模型子站大
+              大模型子站大aaaaaaaaaaaaaaaa
             </div>
           </a>
         </div>
-        <div class="item-content">
+        <div class="item-content ">
           <a class="item" href="/">
             <el-icon>
               <HelpFilled />
             </el-icon>
-            <div class="item-text">
-              综合
+            <div class="item-text ">
+              大模型子站大aaaaaaaaaaaaaaaa
             </div>
           </a>
         </div>
-        <div class="item-content">
+        <div class="item-content ">
           <a class="item" href="/">
             <el-icon>
               <HelpFilled />
             </el-icon>
-            <div class="item-text">
-              前端
+            <div class="item-text ">
+              大模型子站大aaaaaaaaaaaaaaaa
             </div>
           </a>
         </div>
@@ -50,41 +50,67 @@ import { ref } from "vue"
   background-color: #fff;
 
   .side-wrapper {
-    // min-width: 180px;
-    box-sizing: border-box;
-    padding: 8px;
-    font-size: 16px;
 
+    // min-width: 180px;
     .item-wrap {
+      max-height: 830px;
+      overflow-y: auto;
+      border-radius: 4px;
+      background-color: #fff;
+      box-sizing: border-box;
+      // padding: 8px;
+      font-size: 16px;
+      position: fixed;
       display: flex;
       flex-direction: column;
+      max-width: 180px;
+      padding: 8px;
+      top: 80px;
+      left: 350px;
+
+
 
       .is-active {
         background-color: #eaf2ff;
+
         .el-icon {
           color: #1e80ff;
+
         }
+
         .item-text {
           color: #1e80ff;
         }
-        
+
       }
 
       .item-content {
-        padding: 10px 17px;
+        padding: 10px 10px;
+        margin: 2px 0;
 
         .item {
           display: flex;
           align-items: center;
           color: #515767;
+          width: 100%;
+
 
           .el-icon {
             margin-right: 12px;
+            flex-shrink: 0;
           }
 
           .item-text {
             font-size: 16px;
             line-height: 24px;
+            white-space: nowrap;
+            /* Prevent text from wrapping */
+            overflow: hidden;
+            /* Hide overflowing text */
+            text-overflow: ellipsis;
+            /* Show ellipsis for overflowing text */
+            flex-grow: 1;
+
           }
 
         }
@@ -106,5 +132,4 @@ import { ref } from "vue"
     }
 
   }
-}
-</style>
+}</style>

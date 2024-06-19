@@ -106,6 +106,116 @@
                     <div>Main</div>
                     <div>Main</div>
                     <div>Main</div>
+                    <div>Main</div><div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div><div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div><div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div><div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div><div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
+                    <div>Main</div>
                     <div>Main</div>
                 </el-main>
                 <el-footer class="comment-end">
@@ -159,7 +269,7 @@
                     </div>
 
                 </div>
-                <div class="sidebar-block">
+                <div class="sidebar-block " :class="{'is-top' : y>1000}">
                     <div class="block-title">
                         相关推荐
                     </div>
@@ -217,63 +327,18 @@
                 </h4>
             </template>
             <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
-            <div class="comment-form comment-editor">评论</div>
         </el-drawer>
     </el-container>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+
 const bellvalue = ref(1200)
 const isagree = ref(true)
 const ismsg = ref(false)
 const isfollow = ref(false)
 const drawer = ref(false)
+const formdate = ref('')
 import { useScroll } from '@vueuse/core'
 const { y } = useScroll(window)
 
@@ -287,7 +352,6 @@ const { y } = useScroll(window)
 .post-home-main {
     flex: 1;
     overflow-y: auto; 
-
     .drawer-left {
         .comment-drawer-header {
             display: flex;
@@ -600,6 +664,12 @@ const { y } = useScroll(window)
             align-items: center;
             justify-content: flex-start;
 
+            .is-top{
+                position: fixed;
+                transform: translateY(20px);
+                transition: transform 0.5s ease;
+            }
+
             .sidebar-block {
                 width: 100%;
                 /* 设置宽度为父容器宽度 */
@@ -609,6 +679,8 @@ const { y } = useScroll(window)
                 box-shadow: -2px 0 4px rgba(0, 0, 0, 0.2);
                 margin-bottom: 20px;
 
+                transition: transform 0.5s ease;
+                
                 /* 添加阴影效果 */
                 .block-title {
                     padding: 16px 0;

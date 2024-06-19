@@ -1,4 +1,5 @@
 import axios from 'axios'
+import NProgress from 'nprogress';
 
 // 创建axios实例
 const request = axios.create({

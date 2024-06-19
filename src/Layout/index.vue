@@ -1,6 +1,6 @@
 <template>
     <el-container class="bo-wen">
-        <el-header class="main-header">
+        <el-header class="main-header" :class="{ 'hidden':  ishide }">
             <HeaderMain></HeaderMain>
         </el-header>
         <div class="header-placeholder"></div>
@@ -20,11 +20,45 @@
 </template>
 
 <script setup>
-import { ref } from "vue"
+import { ref, watch } from "vue"
 import { RouterView } from "vue-router"
 import HeaderMain from './components/HeaderMain.vue'
 import { useScroll } from '@vueuse/core'
 const { y } = useScroll(window)
+
+const ishide = ref(false);
+const threshold = 378;
+let maxY = 0;
+let currentY = 0;
+
+// let var1 = 0;
+
+// watch(y, (newValue) => {
+//     if (newValue > 126) {
+
+//         currentY=newValue
+//     } else {
+//         ishide.value = false;
+//     }
+// });
+
+
+watch(y, (newValue) => {
+    if (newValue > 126) {
+        if (newValue > currentY) {
+            maxY=newValue
+            ishide.value = true;
+        }else{
+           if( Math.abs(maxY-newValue) > threshold){
+            ishide.value = false;
+           }
+        }
+        currentY = newValue;
+    } else {
+        ishide.value = false;
+    }
+});
+
 const totop = () => {
     console.log(y.value);
     y.value = 0
@@ -88,6 +122,12 @@ const totop = () => {
         top: 0;
         width: 100%;
         z-index: 1000;
+        transition: top 0.3s ease;
+    }
+
+    .hidden {
+        top: -70px;
+        /* 将头部移出视图 */
     }
 
     .header-placeholder {

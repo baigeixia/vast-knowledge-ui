@@ -1,6 +1,6 @@
 <template>
     <el-container class="bo-wen">
-        <el-header class="main-header" :class="{ 'hidden':  ishide }">
+        <el-header class="main-header" :class="{ 'hidden': ishide }">
             <HeaderMain></HeaderMain>
         </el-header>
         <div class="header-placeholder"></div>
@@ -27,21 +27,9 @@ import { useScroll } from '@vueuse/core'
 const { y } = useScroll(window)
 
 const ishide = ref(false);
-const threshold = 378;
+const threshold = 300;
 let maxY = 0;
 let currentY = 0;
-
-// let var1 = 0;
-
-// watch(y, (newValue) => {
-//     if (newValue > 126) {
-
-//         currentY=newValue
-//     } else {
-//         ishide.value = false;
-//     }
-// });
-
 
 watch(y, (newValue) => {
     if (newValue > 126) {

@@ -55,175 +55,234 @@
                             <div class="read-time"><i class="bi bi-clock"></i><span>阅读4分钟</span></div>
                         </div>
                     </div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div><div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div><div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div><div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div><div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div><div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
-                    <div>Main</div>
+                    <ExternalLinkGuard class="guard-box">
+                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <a style="color:red" href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
+                        <div><a style="color:red" href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a></div>
+                        <div>Main</div>
+
+                        <a href="/internal-page">访问内部22222链接</a>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                        <div>Main</div>
+                    </ExternalLinkGuard>
                 </el-main>
                 <el-footer class="comment-end">
                     <div class="title">评论 14</div>
                     <div class="comment-editor">
                         <div class="content">
-                            <div class="avatar-box">头像----</div>
-                            <div class="form-box">文字输入框</div>
+                            <div class="avatar-box">
+                                <div class="avatar">
+                                    <img class="avatar-img"
+                                        src="https://p6-passport.byteacctimg.com/img/user-avatar/38a427aaac159fe4f4fa7a201b5876b5~50x50.awebp">
+                                </div>
+                            </div>
+                            <div class="form-box">
+                                <div class="comment-input">
+                                    <div class="auth-card">
+                                        <!-- <el-input v-model="textarea" style="width: 240px" :rows="2" type="textarea"
+                                            placeholder="平等表达，友善交流" /> -->
+                                        <el-input v-model="commentinput" placeholder="平等表达，友善交流" clearable />
+                                        <div class="action-box">
+                                            <div class="emoji-container">
+                                                <div class="emoji-box" @click.stop="emoji = !emoji">
+                                                    <i class="bi bi-emoji-laughing"></i>
+                                                </div>
+                                                <div class="emoji-box">
+                                                    <i class="bi bi-card-image"></i>
+                                                </div>
+                                            </div>
+                                            <div class="text-count-wrapper">
+                                            </div>
+                                            <el-button>发送</el-button>
+                                        </div>
+                                        <EmojiFileInput class="emoji-input" :class="{ 'emoji-input-out': emoji }" />
+                                    </div>
+                                </div>
+                                <!-- <EmojiFileInput></EmojiFileInput> -->
+                            </div>
                         </div>
                     </div>
                     <div class="comment-list-wrapper">
@@ -233,7 +292,7 @@
                         </div>
                     </div>
                     <div class="comment-list">评论表单</div>
-                    <div class="fetch-more-comment"><span>查看全部评论 </span><i class="bi bi-arrow-down-short"></i></div>
+                    <div class="fetch-more-comment"><span>11111</span><i class="bi bi-arrow-down-short"></i></div>
                 </el-footer>
             </el-container>
             <el-aside class="home-right">
@@ -241,7 +300,8 @@
                     <div class="block-body author-block">
                         <RouterLink class="user-item" to="/user">
                             <div class="item-left">
-                                <img class="avatar-img" src="https://p6-passport.byteacctimg.com/img/user-avatar/507312f17bf5e7cefebbf297105f1742~100x100.awebp">
+                                <img class="avatar-img"
+                                    src="https://p6-passport.byteacctimg.com/img/user-avatar/507312f17bf5e7cefebbf297105f1742~100x100.awebp">
                             </div>
                             <div class="item-right">
                                 <span class="username">程序员111</span>
@@ -269,7 +329,7 @@
                     </div>
 
                 </div>
-                <div class="sidebar-block " :class="{'is-top' : y>1000}">
+                <div class="sidebar-block " :class="{ 'is-top': y > 1000 }">
                     <div class="block-title">
                         相关推荐
                     </div>
@@ -320,7 +380,7 @@
                 </div>
             </el-aside>
         </el-container>
-        <el-drawer class="drawer-left" v-model="drawer" direction="rtl" >
+        <el-drawer class="drawer-left" v-model="drawer" direction="rtl">
             <template #header="{ titleId }">
                 <h4 :id="titleId" class="comment-drawer-header">
                     <span class="title">评论</span>
@@ -331,17 +391,38 @@
     </el-container>
 </template>
 <script setup>
-import { onMounted, ref } from 'vue'
+import { ref, onMounted, onBeforeUnmount } from 'vue';
+import EmojiFileInput from '@/Layout/components/EmojiFileInput.vue';
+
 
 const bellvalue = ref(1200)
 const isagree = ref(true)
 const ismsg = ref(false)
 const isfollow = ref(false)
 const drawer = ref(false)
+const emoji = ref(false)
+const commentinput = ref('')
 const formdate = ref('')
+
+const fileList = ref([])
 import { useScroll } from '@vueuse/core'
 const { y } = useScroll(window)
 
+
+const handleClickOutside = (event) => {
+    const emojiInput = document.querySelector('.emoji-input');
+    if (emojiInput && !emojiInput.contains(event.target)) {
+        emoji.value = false;
+    }
+};
+
+onMounted(() => {
+    document.addEventListener("click", handleClickOutside);
+});
+
+onBeforeUnmount(() => {
+    document.removeEventListener("click", handleClickOutside);
+});
 </script>
 
 <style lang="scss" scoped>
@@ -351,7 +432,8 @@ const { y } = useScroll(window)
 
 .post-home-main {
     flex: 1;
-    overflow-y: auto; 
+    overflow-y: auto;
+
     .drawer-left {
         .comment-drawer-header {
             display: flex;
@@ -382,7 +464,7 @@ const { y } = useScroll(window)
             flex-direction: column;
         }
 
-        .comment-editor{
+        .comment-editor {
             margin-top: 1px;
         }
     }
@@ -481,6 +563,12 @@ const { y } = useScroll(window)
                     color: #252933;
                 }
 
+                .guard-box {
+                    a {
+                        color: #000;
+                    }
+                }
+
                 .author-info-box {
                     display: flex;
                     min-width: 0;
@@ -564,10 +652,81 @@ const { y } = useScroll(window)
 
                     .avatar-box {
                         flex: 0 0 auto;
+
+                        .avatar {
+                            margin-right: 16px;
+                            width: 40px;
+                            height: 40px;
+                            border-radius: 50%;
+
+                            .avatar-img {
+                                border-radius: 50%;
+                                width: 100%;
+                                height: 100%;
+                                -o-object-fit: cover;
+                                object-fit: cover;
+                                background-color: #f7f8fa;
+                            }
+                        }
                     }
 
                     .form-box {
                         flex: 1;
+
+                        .comment-input {
+                            box-sizing: border-box;
+
+                            .auth-card {
+                                position: relative;
+
+                                .emoji-input {
+                                    position: absolute;
+                                    top: 75px;
+                                    left: -370px;
+                                    transition: left 0.2s ease-in-out;
+                                }
+
+
+
+                                .emoji-input-out {
+                                    left: 0;
+                                }
+
+                            }
+
+                            .action-box {
+                                height: 48px;
+                                padding: 0 11px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: space-between;
+
+                                .emoji-container {
+                                    position: relative;
+                                    display: flex;
+                                    align-items: center;
+
+                                    .emoji-box {
+                                        font-size: 20px;
+                                        padding: 6px;
+                                        display: flex;
+                                        align-items: center;
+                                        position: relative;
+                                        color: #8a919f;
+                                        cursor: pointer;
+
+
+                                    }
+                                }
+
+                                .text-count-wrapper {
+                                    display: flex;
+                                    align-items: center;
+                                    color: #8a919f;
+                                    margin-right: 16px;
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -664,7 +823,7 @@ const { y } = useScroll(window)
             align-items: center;
             justify-content: flex-start;
 
-            .is-top{
+            .is-top {
                 position: fixed;
                 transform: translateY(20px);
                 transition: transform 0.5s ease;
@@ -680,7 +839,7 @@ const { y } = useScroll(window)
                 margin-bottom: 20px;
 
                 transition: transform 0.5s ease;
-                
+
                 /* 添加阴影效果 */
                 .block-title {
                     padding: 16px 0;

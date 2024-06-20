@@ -111,6 +111,11 @@ const totop = () => {
         width: 100%;
         z-index: 1000;
         transition: top 0.3s ease;
+        .guard{
+            a{
+                color: #007fff;
+            }
+        }
     }
 
     .hidden {

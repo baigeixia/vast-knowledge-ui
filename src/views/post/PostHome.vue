@@ -261,27 +261,8 @@
                             </div>
                             <div class="form-box">
                                 <div class="comment-input">
-                                    <div class="auth-card">
-                                        <!-- <el-input v-model="textarea" style="width: 240px" :rows="2" type="textarea"
-                                            placeholder="平等表达，友善交流" /> -->
-                                        <el-input v-model="commentinput" placeholder="平等表达，友善交流" clearable />
-                                        <div class="action-box">
-                                            <div class="emoji-container">
-                                                <div class="emoji-box" @click.stop="emoji = !emoji">
-                                                    <i class="bi bi-emoji-laughing"></i>
-                                                </div>
-                                                <div class="emoji-box">
-                                                    <i class="bi bi-card-image"></i>
-                                                </div>
-                                            </div>
-                                            <div class="text-count-wrapper">
-                                            </div>
-                                            <el-button>发送</el-button>
-                                        </div>
-                                        <EmojiFileInput class="emoji-input" :class="{ 'emoji-input-out': emoji }" />
-                                    </div>
+                                    <PostComment/>
                                 </div>
-                                <!-- <EmojiFileInput></EmojiFileInput> -->
                             </div>
                         </div>
                     </div>
@@ -292,7 +273,7 @@
                         </div>
                     </div>
                     <div class="comment-list">评论表单</div>
-                    <div class="fetch-more-comment"><span>11111</span><i class="bi bi-arrow-down-short"></i></div>
+                    <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div>
                 </el-footer>
             </el-container>
             <el-aside class="home-right">
@@ -327,7 +308,6 @@
                             <el-button>私信</el-button>
                         </div>
                     </div>
-
                 </div>
                 <div class="sidebar-block " :class="{ 'is-top': y > 1000 }">
                     <div class="block-title">
@@ -393,7 +373,11 @@
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import EmojiFileInput from '@/Layout/components/EmojiFileInput.vue';
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { useScroll } from '@vueuse/core'
+import PostComment from './component/PostComment.vue';
 
+const { y } = useScroll(window)
 
 const bellvalue = ref(1200)
 const isagree = ref(true)
@@ -402,11 +386,64 @@ const isfollow = ref(false)
 const drawer = ref(false)
 const emoji = ref(false)
 const commentinput = ref('')
-const formdate = ref('')
 
-const fileList = ref([])
-import { useScroll } from '@vueuse/core'
-const { y } = useScroll(window)
+const fileInput = ref(null)
+const imageUrl = ref('')
+const dialogImageUrl = ref('')
+const dialogVisible = ref(false)
+
+const parentImageUrl = ref('')
+
+const handleImageUploaded = (url) => {
+    parentImageUrl.value = url
+}
+
+const handleImageRemoved = () => {
+    parentImageUrl.value = ''
+}
+
+const handleClick = () => {
+    fileInput.value.click()
+}
+
+const handleFileChange = (event) => {
+    const file = event.target.files[0]
+    if (!file) return
+
+    const isImage = file.type.startsWith('image/')
+    const isLt10M = file.size / 1024 / 1024 < 10
+
+    if (!isImage) {
+        ElMessage.error('只能上传图片文件!')
+        return
+    }
+
+    if (!isLt10M) {
+        ElMessage.error('上传图片大小不能超过 10MB!')
+        return
+    }
+
+    const reader = new FileReader()
+    reader.readAsDataURL(file)
+    reader.onload = () => {
+        imageUrl.value = reader.result
+        ElMessage.success('上传成功')
+    }
+}
+
+const removeImage = () => {
+    imageUrl.value = ''
+    ElMessage.info('图片已移除')
+}
+
+const showLargePreview = () => {
+    dialogImageUrl.value = imageUrl.value
+    dialogVisible.value = true
+}
+
+
+
+
 
 
 const handleClickOutside = (event) => {
@@ -675,57 +712,6 @@ onBeforeUnmount(() => {
 
                         .comment-input {
                             box-sizing: border-box;
-
-                            .auth-card {
-                                position: relative;
-
-                                .emoji-input {
-                                    position: absolute;
-                                    top: 75px;
-                                    left: -370px;
-                                    transition: left 0.2s ease-in-out;
-                                }
-
-
-
-                                .emoji-input-out {
-                                    left: 0;
-                                }
-
-                            }
-
-                            .action-box {
-                                height: 48px;
-                                padding: 0 11px;
-                                display: flex;
-                                align-items: center;
-                                justify-content: space-between;
-
-                                .emoji-container {
-                                    position: relative;
-                                    display: flex;
-                                    align-items: center;
-
-                                    .emoji-box {
-                                        font-size: 20px;
-                                        padding: 6px;
-                                        display: flex;
-                                        align-items: center;
-                                        position: relative;
-                                        color: #8a919f;
-                                        cursor: pointer;
-
-
-                                    }
-                                }
-
-                                .text-count-wrapper {
-                                    display: flex;
-                                    align-items: center;
-                                    color: #8a919f;
-                                    margin-right: 16px;
-                                }
-                            }
                         }
                     }
                 }

@@ -50,24 +50,26 @@ import { ref } from "vue"
   background-color: #fff;
 
   .side-wrapper {
-
     // min-width: 180px;
     .item-wrap {
       max-height: 830px;
-      overflow-y: auto;
       border-radius: 4px;
       background-color: #fff;
       box-sizing: border-box;
       // padding: 8px;
       font-size: 16px;
-      position: fixed;
       display: flex;
       flex-direction: column;
       max-width: 180px;
       padding: 8px;
-      top: 80px;
-      left: 350px;
-
+      // position: absolute;
+      // top: 0px;
+      // left: 0px;
+      position: fixed;
+  //     top: 0;
+  // left: 0;
+  // right: 0;
+  transition: transform .2s;
 
 
       .is-active {

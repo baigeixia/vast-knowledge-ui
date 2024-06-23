@@ -59,6 +59,7 @@ const toggleEmoji = () => {
 
 const commentinputfocus = (emoji) => {
     if (emoji) {
+        console.log('mian ',emoji);
         commentinput.value = commentinput.value + emoji?.i
     }
     if (!isFocused) {

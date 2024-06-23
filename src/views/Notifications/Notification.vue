@@ -1,28 +1,29 @@
 <template>
     <div class="main-notification">
         <div class="main-header">
-            <RouterLink to="/notifications">
-                <el-button :class="{ 'tabs': true, 'active': isActive('/notifications') }" size="large" link>评论</el-button>
+            <RouterLink class="header-link" to="/notifications">
+                <el-button :class="{ 'tabs': true, 'active': isActive('/notifications') }" size="large"
+                    link>评论</el-button>
             </RouterLink>
-            <RouterLink to="/notifications/digg">
-                <el-button :class="{ 'tabs': true, 'active': isActive('/notifications/digg') }" size="large"
-                    link>赞和收藏</el-button>
+            <RouterLink class="header-link" to="/notifications/digg">
+                <el-button :class="{ 'tabs': true, 'active': isActive('/notifications/digg') }" size="large" link>赞和收藏
+                </el-button>
             </RouterLink>
-            <RouterLink to="/notifications/follow">
+            <RouterLink class="header-link" to="/notifications/follow">
                 <el-button :class="{ 'tabs': true, 'active': isActive('/notifications/follow') }" size="large"
                     link>新增粉丝</el-button>
             </RouterLink>
-            <RouterLink to="/notifications/im">
+            <RouterLink class="header-link" to="/notifications/im">
                 <el-button :class="{ 'tabs': true, 'active': isActive('/notifications/im') }" size="large"
                     link>私信</el-button>
             </RouterLink>
-            <RouterLink to="/notifications/system">
+            <RouterLink class="header-link" to="/notifications/system">
                 <el-button :class="{ 'tabs': true, 'active': isActive('/notifications/system') }" size="large"
                     link>系统通知</el-button>
             </RouterLink>
         </div>
         <div class="chat-view">
-            <el-skeleton animated  :loading="loading">
+            <el-skeleton animated :loading="loading">
                 <template #template>
                     <div class="itme">
                         <div class="itme-left">
@@ -65,7 +66,7 @@
 </template>
 
 <script setup>
-import { ref ,watch} from "vue"
+import { ref, watch } from "vue"
 import { useRoute } from 'vue-router';
 
 const titleType = ref('1')
@@ -85,31 +86,37 @@ const handleDataLoaded = () => {
     loading.value = false;
 };
 
-watch(route,(to, from)=>{
+watch(route, (to, from) => {
     console.log('watch');
     // loading.value=true
 })
-  
+
 
 </script>
 
 <style lang="scss" scoped>
 .main-notification {
     display: flex;
-  flex-direction: column;
+    flex-direction: column;
     width: 100%;
     background-color: #fff;
 
     .main-header {
-        
         height: 46px;
-        padding: 10px 30px;
+        padding: 0 30px;
         border-bottom: 3px solid #f2f3f5;
         display: flex;
         align-items: center;
 
-        .tabs {
+        .header-link {
             margin-right: 40px;
+        }
+
+        .tabs {
+            height: 3rem;
+            /* 设置按钮高度为40px */
+            line-height: 3rem;
+            /* 设置按钮内文字的行高为按钮高度，使文字垂直居中 */
         }
 
         .active {
@@ -143,7 +150,7 @@ watch(route,(to, from)=>{
             }
 
             .itme-right {
-                width:100%;
+                width: 100%;
             }
         }
 

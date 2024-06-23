@@ -1,6 +1,5 @@
 <template>
     <div ref="guardMainBox" class="guard-main-box">
-        <slot></slot>
         <div class="overlay" v-if="showOverlay" @click="showOverlay = !showOverlay">
             <div class="popup">
                 <p class="popup-title">即将离开本站，请注意账号财产安全</p>

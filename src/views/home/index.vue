@@ -1,4 +1,9 @@
 <template>
+  <!-- <div class="container">
+    <div class="main-left"><MainLeft/></div>
+    <div class="core-main"><CoreMain/>CoreMain</div>
+    <div class="main-right"><MainRight/>MainRight</div>
+</div> -->
     <MainLeft></MainLeft>
     <CoreMain></CoreMain>
     <MainRight></MainRight>

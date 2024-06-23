@@ -272,7 +272,9 @@
                             <div class="item"><span>最新</span></div>
                         </div>
                     </div>
-                    <div class="comment-list">评论表单</div>
+                    <div class="comment-list">
+                        <PostCommentList :comments="comments"/>
+                    </div>
                     <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div>
                 </el-footer>
             </el-container>
@@ -372,10 +374,9 @@
 </template>
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
-import EmojiFileInput from '@/Layout/components/EmojiFileInput.vue';
-import { ElMessage, ElMessageBox } from 'element-plus'
 import { useScroll } from '@vueuse/core'
 import PostComment from './component/PostComment.vue';
+import PostCommentList from './component/PostCommentList.vue'
 
 const { y } = useScroll(window)
 
@@ -385,66 +386,39 @@ const ismsg = ref(false)
 const isfollow = ref(false)
 const drawer = ref(false)
 const emoji = ref(false)
-const commentinput = ref('')
-
-const fileInput = ref(null)
-const imageUrl = ref('')
-const dialogImageUrl = ref('')
-const dialogVisible = ref(false)
-
-const parentImageUrl = ref('')
-
-const handleImageUploaded = (url) => {
-    parentImageUrl.value = url
-}
-
-const handleImageRemoved = () => {
-    parentImageUrl.value = ''
-}
-
-const handleClick = () => {
-    fileInput.value.click()
-}
-
-const handleFileChange = (event) => {
-    const file = event.target.files[0]
-    if (!file) return
-
-    const isImage = file.type.startsWith('image/')
-    const isLt10M = file.size / 1024 / 1024 < 10
-
-    if (!isImage) {
-        ElMessage.error('只能上传图片文件!')
-        return
-    }
-
-    if (!isLt10M) {
-        ElMessage.error('上传图片大小不能超过 10MB!')
-        return
-    }
-
-    const reader = new FileReader()
-    reader.readAsDataURL(file)
-    reader.onload = () => {
-        imageUrl.value = reader.result
-        ElMessage.success('上传成功')
-    }
-}
-
-const removeImage = () => {
-    imageUrl.value = ''
-    ElMessage.info('图片已移除')
-}
-
-const showLargePreview = () => {
-    dialogImageUrl.value = imageUrl.value
-    dialogVisible.value = true
-}
-
-
-
-
-
+const comments = ref([
+  {
+    id: 1,
+    avatar: 'https://via.placeholder.com/40',
+    username: '用户A',
+    position: '工程师',
+    text: '使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
+    time: '7个月前',
+    likes: 7,
+    replies: [
+      {
+        id: 2,
+        avatar: 'https://via.placeholder.com/40',
+        username: '用户B',
+        position: '前端开发',
+        text: '回复 用户A：这是一个回复',
+        time: '7个月前',
+        likes: 3,
+        replies: []
+      }
+    ]
+  },
+  {
+    id: 3,
+    avatar: 'https://via.placeholder.com/40',
+    username: '用户C',
+    position: '设计师',
+    text: '这是另一个评论\n这是另一个评论\n这是另一个评论',
+    time: '6个月前',
+    likes: 5,
+    replies: []
+  }
+]);
 
 const handleClickOutside = (event) => {
     const emojiInput = document.querySelector('.emoji-input');
@@ -476,7 +450,7 @@ onBeforeUnmount(() => {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            height: 64px;
+            // height: 64px;
             position: fixed;
             padding: 0 22px 0 24px;
             top: 0;
@@ -588,6 +562,7 @@ onBeforeUnmount(() => {
     }
 
     .home-center {
+        overflow-y: hidden;
         .center-main {
             .center-main-text {
                 background-color: #fff;
@@ -769,10 +744,10 @@ onBeforeUnmount(() => {
 
                 }
 
-                .comment-list {
-                    min-height: 120px;
-                    margin-top: 4px;
-                }
+                // .comment-list {
+                //     min-height: 120px;
+                //     margin-top: 4px;
+                // }
 
                 .fetch-more-comment {
                     margin-top: 12px;

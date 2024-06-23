@@ -14,13 +14,15 @@ const emit = defineEmits(['emoji-click'])
 
 const emitEmojiClick=()=>{
     if (selectedEmoji.value) {
-        // 通过 $emit 触发 'emoji-click' 事件，并传递选中的 emoji
         emit('emoji-click', selectedEmoji.value);
+        selectedEmoji.value=null
       }
 }
 function onSelectEmoji(emoji) {
-    console.log('emoji',emoji)
-    selectedEmoji.value = emoji;
+    if(emoji){
+        console.log('emoji',emoji)
+        selectedEmoji.value = emoji;
+    }
 }
 
 </script>

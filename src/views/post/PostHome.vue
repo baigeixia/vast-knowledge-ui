@@ -261,7 +261,7 @@
                             </div>
                             <div class="form-box">
                                 <div class="comment-input">
-                                    <PostComment/>
+                                    <PostComment />
                                 </div>
                             </div>
                         </div>
@@ -273,7 +273,8 @@
                         </div>
                     </div>
                     <div class="comment-list">
-                        <PostCommentList :comments="comments"/>
+                        <!-- <PostCommentList :comments="comments" /> -->
+                        <PostCommentItem v-for="comment in comments" :key="comment.id" :comment="comment" />
                     </div>
                     <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div>
                 </el-footer>
@@ -288,7 +289,7 @@
                             </div>
                             <div class="item-right">
                                 <span class="username">程序员111</span>
-                                <div class="position">前端开发 @现在无业啦</div>
+                                <div class="position">前端开发 @现在啦</div>
                             </div>
                         </RouterLink>
                         <div class="count-container">
@@ -376,7 +377,7 @@
 import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useScroll } from '@vueuse/core'
 import PostComment from './component/PostComment.vue';
-import PostCommentList from './component/PostCommentList.vue'
+import PostCommentItem from './component/PostCommentItem.vue';
 
 const { y } = useScroll(window)
 
@@ -387,37 +388,54 @@ const isfollow = ref(false)
 const drawer = ref(false)
 const emoji = ref(false)
 const comments = ref([
-  {
-    id: 1,
-    avatar: 'https://via.placeholder.com/40',
-    username: '用户A',
-    position: '工程师',
-    text: '使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
-    time: '7个月前',
-    likes: 7,
-    replies: [
-      {
-        id: 2,
+    {
+        id: 1,
         avatar: 'https://via.placeholder.com/40',
-        username: '用户B',
-        position: '前端开发',
-        text: '回复 用户A：这是一个回复',
+        username: '用户1',
+        position: '工程师',
+        text: '使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
         time: '7个月前',
-        likes: 3,
+        likes: 7,
+        childcommentcount: 17,
+        replies: [
+            {
+                id: 2,
+                avatar: 'https://via.placeholder.com/40',
+                username: '用户2',
+                position: '前端开发',
+                text: '这是一个回复使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
+                time: '7个月前',
+                likes: 3,
+                replies: [],
+            },
+            {
+                id: 3,
+                avatar: 'https://via.placeholder.com/40',
+                username: '用户3',
+                position: '前端开发',
+                text: '这是一个回复',
+                time: '7个月前',
+                likes: 3,
+                replies: [],
+                replytoauthor: {
+                    id: 2,
+                    avatar: 'https://via.placeholder.com/40',
+                    username: '用户2',
+                    position: '前端开发2',
+                },
+            }
+        ]
+    },
+    {
+        id: 3,
+        avatar: 'https://via.placeholder.com/40',
+        username: '用户C',
+        position: '设计师',
+        text: '使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，',
+        time: '6个月前',
+        likes: 5,
         replies: []
-      }
-    ]
-  },
-  {
-    id: 3,
-    avatar: 'https://via.placeholder.com/40',
-    username: '用户C',
-    position: '设计师',
-    text: '这是另一个评论\n这是另一个评论\n这是另一个评论',
-    time: '6个月前',
-    likes: 5,
-    replies: []
-  }
+    }
 ]);
 
 const handleClickOutside = (event) => {
@@ -450,7 +468,6 @@ onBeforeUnmount(() => {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            // height: 64px;
             position: fixed;
             padding: 0 22px 0 24px;
             top: 0;
@@ -563,6 +580,7 @@ onBeforeUnmount(() => {
 
     .home-center {
         overflow-y: hidden;
+
         .center-main {
             .center-main-text {
                 background-color: #fff;

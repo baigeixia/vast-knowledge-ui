@@ -165,6 +165,8 @@ onBeforeUnmount(() => {
         top: calc(100% - 1rem);
         left: -370px;
         transition: left 0.2s ease-in-out;
+        z-index: 1000;
+
     }
 
 

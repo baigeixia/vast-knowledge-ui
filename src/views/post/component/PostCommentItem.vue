@@ -1,24 +1,22 @@
 <template>
     <div class="comment-item">
-        <div class="comment-avatar">
-            <img @mouseover="showUserInfo(comment.id)" @mouseleave="hideUserInfo" :src="comment.avatar" alt="avatar"
+        <div class="comment-avatar" >
+            <img v-if="comment.author" @mouseover="showUserInfo(comment.author.id)" @mouseleave="hideUserInfo" :src="comment.author.avatar" alt="avatar"
                 class="avatar" />
-
-            <div class="user-info-popup" :class="{ 'small-popup': isLoading }" v-if="isHovering">
+            <div class="user-info-popup" :style="{ left: mouseX + 'px' }" :class="{ 'small-popup': isLoading }" v-if="isHovering">
                 <div class="loading-dots" v-if="isLoading">
-                    <!-- 加载中... -->
                     <div class="dot"></div>
                     <div class="dot"></div>
                     <div class="dot"></div>
                 </div>
                 <div v-else>
-                    <div v-if="comment.replytoauthor">
+                    <div v-if="isReplytoauthor">
                         <p>用户名：{{ comment.replytoauthor.username }}</p>
                         <p>职位：{{ comment.replytoauthor.position }}</p>
                     </div>
                     <div v-else>
-                        <p>用户名：{{ comment.username }}</p>
-                        <p>职位：{{ comment.position }}</p>
+                        <p>用户名：{{ comment.author.username }}</p>
+                        <p>职位：{{ comment.author.position }}</p>
                     </div>
                 </div>
             </div>
@@ -26,20 +24,20 @@
         <div class="comment-content">
             <div class="user-info">
                 <div class="comment-header">
-                    <span class="username" @mouseover="showUserInfo(comment.id)" @mouseleave="hideUserInfo">
-                        {{ comment.username }}
+                    <span class="username" @mouseover="showUserInfo(comment.author.id)" @mouseleave="hideUserInfo">
+                        {{ comment.author.username }}
                     </span>
-                    <span class="position">{{ comment.position }}</span>
+                    <span class="position">{{ comment.author.position }}</span>
                 </div>
                 <div v-if="comment.replytoauthor" class="comment-header">
                     <i class="bi bi-caret-right-fill"></i>
-                    <span class="username" @mouseover="showUserInfo(comment.replytoauthor.id)" @mouseleave="hideUserInfo">
+                    <span class="username"  @mouseover="showReplytoauthor(comment.replytoauthor.id, $event.clientX)"
+                        @mouseleave="hideUserInfo">
                         {{ comment.replytoauthor.username }}
                     </span>
                     <span class="position">{{ comment.replytoauthor.position }}</span>
                 </div>
             </div>
-
             <div class="comment-text">
                 <div ref="contentRef" class="content" :class="{ 'expand': expanded }">{{ comment.text }}</div>
                 <div ref="expandRef" class="expand-action-wrap">
@@ -51,10 +49,10 @@
                 <span>点赞 {{ comment.likes }}</span>
                 <span>回复</span>
             </div>
-            <div class="replies" v-if="comment.replies && comment.replies.length">
-                <PostCommentItem v-for="reply in comment.replies" :key="reply.id" :comment="reply" class="reply-item" />
+            <div class="replies" v-if="comment.childcomments && comment.childcomments.length">
+                <PostCommentItem v-for="reply in comment.childcomments" :key="reply.id" :comment="reply" class="reply-item" />
             </div>
-            <div v-if="comment.childcommentcount > 2" class="top-has-more">
+            <div v-if="comment?.childcommentcount > 2" class="top-has-more">
                 <span @click="selectcomment" :class="{ 'loading': isLoading }">
                     {{ buttonText }}
                     <i v-if="isLoading" class="bi bi-arrow-repeat rotate"></i>
@@ -67,7 +65,6 @@
 
 <script setup>
 import { ref, computed, onMounted, reactive } from 'vue';
-import { directive } from 'vue-tippy'
 const props = defineProps({
     comment: {
         type: Object,
@@ -75,16 +72,25 @@ const props = defineProps({
     }
 });
 
+console.log(props.comment.author.username);
 
-
+const mouseX = ref(0)
+const mouseY = ref(0)
 const isHovering = ref(false)
 const isLoading = ref(false)
+const isReplytoauthor = ref(false)
 const contentRef = ref(null)
 const expandRef = ref(null)
 const buttonText = ref(`查看全部 ${props.comment.childcommentcount} 条回复 `);
 
-
-const showUserInfo = (id, event) => {
+const showReplytoauthor=(id, clientX)=>{
+    mouseX.value = clientX-600;
+    console.log(mouseX.value);
+    console.log(clientX);
+    isReplytoauthor.value=true;
+    showUserInfo(id)
+}
+const showUserInfo = (id) => {
     console.log('id', id);
     isHovering.value = true;
     // 在这里可以添加加载数据的逻辑，比如设置 isLoading 为 true，然后异步加载用户信息
@@ -94,13 +100,16 @@ const showUserInfo = (id, event) => {
         // 假设加载完成后的回调
         isLoading.value = false;
         // 这里可以设置实际的用户信息数据
-    }, 2000); // 模拟2秒的加载时间
+    }, 100); // 模拟2秒的加载时间
 
 }
+
 const hideUserInfo = () => {
     isHovering.value = false;
     // 在这里可以取消加载数据的逻辑，比如取消异步加载
     isLoading.value = false;
+    isReplytoauthor.value=false;
+    mouseX.value = 0
 }
 
 
@@ -169,14 +178,15 @@ const expanded = ref(false);
 
         .user-info-popup {
             position: absolute;
-            top: calc(100% + 10px); // 将弹窗定位在用户名或头像下方
-            left: 0;
-            z-index: 1000;
+            // position: sticky;
+            top: calc(90%); // 将弹窗定位在用户名或头像下方
+            left: 15px;
+            z-index: 50;
             background-color: #fff;
             border: 1px solid #ccc;
             border-radius: 10px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); // 添加阴影效果
-            transition: width 0.3s ease, height 0.3s ease; // 添加过渡效果
+            transition: width 0.2s ease, height 0.3s ease; // 添加过渡效果
 
             &.small-popup {
                 width: 120px;
@@ -331,6 +341,8 @@ const expanded = ref(false);
             text-overflow: ellipsis;
             white-space: nowrap;
             font-size: 16px;
+            z-index: 1;
+
         }
 
         .position {

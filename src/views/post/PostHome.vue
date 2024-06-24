@@ -390,33 +390,112 @@ const emoji = ref(false)
 const comments = ref([
     {
         id: 1,
-        avatar: 'https://via.placeholder.com/40',
-        username: '用户1',
-        position: '工程师',
+        author: {
+            id: 1,
+            avatar: 'https://via.placeholder.com/40',
+            username: '用户1',
+            position: '工程师',
+        },
         text: '使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
-        time: '7个月前',
-        likes: 7,
+        time: '1个月前',
+        likes: 1,
         childcommentcount: 17,
-        replies: [
+        childcomments: [
             {
                 id: 2,
-                avatar: 'https://via.placeholder.com/40',
-                username: '用户2',
-                position: '前端开发',
+                author: {
+                    id: 2,
+                    avatar: 'https://via.placeholder.com/40',
+                    username: '用户2',
+                    position: '前端开发2',
+                },
                 text: '这是一个回复使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
-                time: '7个月前',
-                likes: 3,
-                replies: [],
+                time: '2个月前',
+                likes: 2,
             },
             {
                 id: 3,
-                avatar: 'https://via.placeholder.com/40',
-                username: '用户3',
-                position: '前端开发',
+                author: {
+                    id: 3,
+                    avatar: 'https://via.placeholder.com/40',
+                    username: '用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3',
+                    position: '前端开发3',
+                },
                 text: '这是一个回复',
-                time: '7个月前',
+                time: '3个月前',
                 likes: 3,
-                replies: [],
+                replytoauthor: {
+                    id: 2,
+                    avatar: 'https://via.placeholder.com/40',
+                    username: '用户2',
+                    position: '前端开发2',
+                },
+            },
+            {
+                id: 3,
+                author: {
+                    id: 3,
+                    avatar: 'https://via.placeholder.com/40',
+                    username: '用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3',
+                    position: '前端开发3',
+                },
+                text: '这是一个回复',
+                time: '3个月前',
+                likes: 3,
+                replytoauthor: {
+                    id: 2,
+                    avatar: 'https://via.placeholder.com/40',
+                    username: '用户2',
+                    position: '前端开发2',
+                },
+            },
+            {
+                id: 3,
+                author: {
+                    id: 3,
+                    avatar: 'https://via.placeholder.com/40',
+                    username: '用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3',
+                    position: '前端开发3',
+                },
+                text: '这是一个回复',
+                time: '3个月前',
+                likes: 3,
+                replytoauthor: {
+                    id: 2,
+                    avatar: 'https://via.placeholder.com/40',
+                    username: '用户2',
+                    position: '前端开发2',
+                },
+            },
+            {
+                id: 3,
+                author: {
+                    id: 3,
+                    avatar: 'https://via.placeholder.com/40',
+                    username: '用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3',
+                    position: '前端开发3',
+                },
+                text: '这是一个回复',
+                time: '3个月前',
+                likes: 3,
+                replytoauthor: {
+                    id: 2,
+                    avatar: 'https://via.placeholder.com/40',
+                    username: '用户2',
+                    position: '前端开发2',
+                },
+            },
+            {
+                id: 3,
+                author: {
+                    id: 3,
+                    avatar: 'https://via.placeholder.com/40',
+                    username: '用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3',
+                    position: '前端开发3',
+                },
+                text: '这是一个回复',
+                time: '3个月前',
+                likes: 3,
                 replytoauthor: {
                     id: 2,
                     avatar: 'https://via.placeholder.com/40',
@@ -428,13 +507,16 @@ const comments = ref([
     },
     {
         id: 3,
-        avatar: 'https://via.placeholder.com/40',
-        username: '用户C',
-        position: '设计师',
+        author: {
+            id: 31,
+            avatar: 'https://via.placeholder.com/40',
+            username: '用户C',
+            position: '设计师',
+        },
         text: '使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，',
         time: '6个月前',
         likes: 5,
-        replies: []
+        childcomments: []
     }
 ]);
 

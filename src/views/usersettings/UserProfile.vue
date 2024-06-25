@@ -20,11 +20,11 @@
                 <User />
               </el-icon>账号设置</div>
           </RouterLink>
-          <RouterLink to="common">
+          <!-- <RouterLink to="common">
             <div class="nav-item" :class="{'active': isActive('/user/settings/common')}"><el-icon>
                 <Setting />
               </el-icon>通用设置</div>
-          </RouterLink>
+          </RouterLink> -->
           <RouterLink to="message">
             <div class="nav-item" :class="{'active': isActive('/user/settings/message')}"><el-icon>
                 <ChatDotRound />

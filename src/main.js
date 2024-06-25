@@ -12,21 +12,20 @@ import 'element-plus/theme-chalk/dark/css-vars.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import "bootstrap-icons/font/bootstrap-icons.css";
 import 'nprogress/nprogress.css';
-import ExternalLinkGuard from './Layout/components/ExternalLinkGuard.vue';
+
+
 const app = createApp(App)
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 
-app.component('ExternalLinkGuard', ExternalLinkGuard);
 
 app.use(router)
 app.use(ElementPlus, {
     locale: zhCn,
   })
 
-  
 app.use(createPinia())
 
 app.mount('#app')

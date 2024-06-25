@@ -3,10 +3,13 @@
         <el-header class="main-header" :class="{ 'hidden': ishide }">
             <HeaderMain></HeaderMain>
         </el-header>
-        <div class="header-placeholder"></div>
-        <el-main class="container-main">
-            <RouterView></RouterView>
-        </el-main>
+        <ExternalLinkGuard class="guard-box">
+            <div class="header-placeholder"></div>
+            <el-main class="container-main">
+                <RouterView></RouterView>
+            </el-main>
+        </ExternalLinkGuard>
+
         <div class="global-component-box">
             <div class="suspension-panel">
                 <el-tooltip effect="light" content="建议反馈" placement="left">
@@ -24,6 +27,8 @@ import { ref, watch } from "vue"
 import { RouterView } from "vue-router"
 import HeaderMain from './components/HeaderMain.vue'
 import { useScroll } from '@vueuse/core'
+import ExternalLinkGuard from '@/Layout/components/ExternalLinkGuard.vue';
+
 const { y } = useScroll(window)
 
 const ishide = ref(false);
@@ -34,12 +39,12 @@ let currentY = 0;
 watch(y, (newValue) => {
     if (newValue > 126) {
         if (newValue > currentY) {
-            maxY=newValue
+            maxY = newValue
             ishide.value = true;
-        }else{
-           if( Math.abs(maxY-newValue) > threshold){
-            ishide.value = false;
-           }
+        } else {
+            if (Math.abs(maxY - newValue) > threshold) {
+                ishide.value = false;
+            }
         }
         currentY = newValue;
     } else {
@@ -60,6 +65,13 @@ const totop = () => {
     background-color: #f2f3f5;
     min-width: 1100px;
 
+    .guard-box {
+            :deep(a) {
+                color: #1e80ff;
+                margin: 0 2px;
+            }
+        }
+        
     .global-component-box {
         .suspension-panel {
             display: flex;
@@ -111,8 +123,9 @@ const totop = () => {
         width: 100%;
         z-index: 1000;
         transition: top 0.3s ease;
-        .guard{
-            a{
+
+        .guard {
+            a {
                 color: #007fff;
             }
         }
@@ -134,6 +147,7 @@ const totop = () => {
         padding: 20px 0;
         border-radius: 5px;
 
+       
     }
 }
 </style>

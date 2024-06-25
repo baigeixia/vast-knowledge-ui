@@ -39,7 +39,6 @@
                     <i class="bi bi-exclamation-diamond-fill"></i>
                 </div>
             </el-tooltip>
-
         </div>
         <el-container class="home-center">
             <el-container class="center-main">
@@ -55,7 +54,6 @@
                             <div class="read-time"><i class="bi bi-clock"></i><span>阅读4分钟</span></div>
                         </div>
                     </div>
-                    <ExternalLinkGuard class="guard-box">
                         <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
                         <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
                         <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
@@ -78,176 +76,12 @@
                         <a style="color:red" href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
                         <div><a style="color:red" href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a></div>
                         <div>Main</div>
-
                         <a href="/internal-page">访问内部22222链接</a>
                         <div>Main</div>
                         <div>Main</div>
                         <div>Main</div>
                         <div>Main</div>
                         <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                    </ExternalLinkGuard>
                 </el-main>
                 <el-footer class="comment-end">
                     <div class="title">评论 14</div>
@@ -273,7 +107,6 @@
                         </div>
                     </div>
                     <div class="comment-list">
-                        <!-- <PostCommentList :comments="comments" /> -->
                         <PostCommentItem v-for="comment in comments" :key="comment.id" :comment="comment" />
                     </div>
                     <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div>
@@ -378,6 +211,7 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useScroll } from '@vueuse/core'
 import PostComment from './component/PostComment.vue';
 import PostCommentItem from './component/PostCommentItem.vue';
+import ExternalLinkGuard from '@/Layout/components/ExternalLinkGuard.vue';
 
 const { y } = useScroll(window)
 
@@ -396,7 +230,7 @@ const comments = ref([
             username: '用户1',
             position: '工程师',
         },
-        text: '使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
+        text: '使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，<a href="https://github.com/vueComponent/ant-design-vue">链接</a> 取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
         time: '1个月前',
         likes: 1,
         childcommentcount: 17,
@@ -418,7 +252,7 @@ const comments = ref([
                 author: {
                     id: 3,
                     avatar: 'https://via.placeholder.com/40',
-                    username: '用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3',
+                    username: '用户3',
                     position: '前端开发3',
                 },
                 text: '这是一个回复',
@@ -436,7 +270,7 @@ const comments = ref([
                 author: {
                     id: 3,
                     avatar: 'https://via.placeholder.com/40',
-                    username: '用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3',
+                    username: '用户3',
                     position: '前端开发3',
                 },
                 text: '这是一个回复',
@@ -454,7 +288,7 @@ const comments = ref([
                 author: {
                     id: 3,
                     avatar: 'https://via.placeholder.com/40',
-                    username: '用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3',
+                    username: '用户3',
                     position: '前端开发3',
                 },
                 text: '这是一个回复',
@@ -472,7 +306,7 @@ const comments = ref([
                 author: {
                     id: 3,
                     avatar: 'https://via.placeholder.com/40',
-                    username: '用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3',
+                    username: '用户3',
                     position: '前端开发3',
                 },
                 text: '这是一个回复',
@@ -490,7 +324,7 @@ const comments = ref([
                 author: {
                     id: 3,
                     avatar: 'https://via.placeholder.com/40',
-                    username: '用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3用户3',
+                    username: '用户3',
                     position: '前端开发3',
                 },
                 text: '这是一个回复',
@@ -675,11 +509,7 @@ onBeforeUnmount(() => {
                     color: #252933;
                 }
 
-                .guard-box {
-                    a {
-                        color: #000;
-                    }
-                }
+                
 
                 .author-info-box {
                     display: flex;

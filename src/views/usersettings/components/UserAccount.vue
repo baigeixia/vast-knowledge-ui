@@ -84,7 +84,7 @@
 
       .account {
         flex: 1 0 auto;
-        font-size: 1.1rem;
+        font-size: 1rem;
         color: #8a919f;
       }
       .action-box {

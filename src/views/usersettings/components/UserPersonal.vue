@@ -5,27 +5,27 @@
         </div>
         <div class="user-infos">
             <div class="info-input">
-                <el-form class="info-form" :model="form" label-width="auto" style="max-width: 600px">
+                <el-form class="info-form"  ref="formRef" :model="form" label-width="auto" style="max-width: 600px">
                     <div class="title">基本信息</div>
-                    <el-form-item label="用户名" :rules="[
+                    <el-form-item label="用户名" prop="name" :rules="[
                         { required: true, message: '请填写用户名' },
                     ]">
                         <el-input v-model="form.name" show-word-limit type="text" maxlength="20" placeholder="请填写用户名" />
                     </el-form-item>
-                    <el-form-item label="开始工作" :rules="[
+                    <el-form-item label="开始工作" prop="datatime" :rules="[
                         { required: true, message: '请填写开始工作时间' },
                     ]">
-                        <el-date-picker style="width: 100%;" :clearable="false" v-model="form.datatime" type="month"
+                        <el-date-picker style="width: 100%;" :clearable="false" v-model="form.datatime" type="month"   :disabled-date="disabledDate"
                             placeholder="请选择时间" />
                     </el-form-item>
-                    <el-form-item label="职业方向" :rules="[
+                    <el-form-item label="职业方向" prop="occupation" :rules="[
                         { required: true, message: '请选择职业方向' },
                     ]">
                         <el-select v-model="form.occupation" placeholder="Select" style="width: 100%">
                             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="职位">
+                    <el-form-item label="职位" >
                         <el-input v-model="form.position" type="text" show-word-limit maxlength="100"
                             placeholder="请输入您的职位" />
                     </el-form-item>
@@ -38,7 +38,7 @@
                             placeholder="请输入您的个人主页" />
                     </el-form-item>
                     <el-form-item label="个人介绍">
-                        <el-input v-model="form.describe" type="textarea" clearable :autosize="{ minRows: 2, maxRows: 30 }"
+                        <el-input v-model="form.describe" type="textarea" clearable :autosize="{ minRows: 4, maxRows: 30 }"
                             show-word-limit maxlength="200" placeholder="请填写职业技能、擅长的事情、兴趣爱好等" />
                     </el-form-item>
                     <div class="title">兴趣标签管理 <div class="error-message" v-if="showError">请选择兴趣标签</div>
@@ -57,7 +57,7 @@
                     </el-form-item>
                     <el-form-item>
                         <el-button class="submitbutton" style="width: 150px;" type="primary"
-                            @click="onSubmit">保存</el-button>
+                            @click="onSubmit(formRef)">保存</el-button>
                     </el-form-item>
                 </el-form>
             </div>
@@ -71,7 +71,7 @@
                             <el-icon class="avatar-uploader-icon avatar-icon">
                                 <Plus />
                             </el-icon>
-                            <div class="upload-text">点击修改</div>
+                            <!-- <div class="upload-text">点击修改</div> -->
                         </div>
                     </el-upload>
                     <div class="upload-info">
@@ -88,13 +88,18 @@
 import { ref, reactive } from "vue"
 import { ElMessage } from 'element-plus'
 
-const avatarUrl = ref('https://p6-passport.byteacctimg.com/img/user-avatar/1bf58cd098cf0a7766aa83b991cfc571~50x50.awebp')
+const avatarUrl = ref('')
+
+const disabledDate = (time) => {
+  return time.getTime() > Date.now()
+}
 
 const handleAvatarChange = (file, fileList) => {
     const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg'
     if (!isJPG) {
         return
     }
+    console.log(isJPG);
     const reader = new FileReader()
     reader.onload = (e) => {
         avatarUrl.value = e.target.result
@@ -124,9 +129,17 @@ const tags = [
 
 const selectedTags = ref([])
 const showError = ref(false)
+const formRef = ref()
 
-const onSubmit = () => {
-    console.log('form!', form.name)
+const onSubmit = (formEl) => {
+    if (!formEl) return
+  formEl.validate((valid) => {
+    if (valid) {
+      console.log('submit!')
+    } else {
+      console.log('error submit!')
+    }
+  })
 }
 
 const toggleTag = (tag) => {
@@ -197,8 +210,7 @@ const options = ref([
             border: 1px dashed #d9d9d9;
 
             :deep(.el-upload) {
-                width: 100%;
-                height: 100%;
+
                 object-fit: cover;
             }
 
@@ -338,7 +350,7 @@ const options = ref([
 
             .info-form {
                 padding: 20px;
-          
+
 
                 .profile-title {
                     padding: 20px 0;

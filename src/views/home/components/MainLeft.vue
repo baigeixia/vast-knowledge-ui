@@ -1,36 +1,24 @@
 <template>
   <div class="main-left">
     <div class="side-wrapper">
-      <div class="item-wrap">
-        <div class="item-content  is-active">
-          <a class="item" href="/">
+      <div class="item-wrap" v-if="channelStore.channellist>0">
+        <div class="item-content " v-for="itme in channelStore.channellist" :key="itme.id">
+          <!-- <a class="item" href="/">
             <el-icon>
               <HelpFilled />
             </el-icon>
             <div class="item-text ">
               大模型子站大aaaaaaaaaaaaaaaa
             </div>
-          </a>
-        </div>
-        <div class="item-content ">
-          <a class="item" href="/">
+          </a> -->
+          <div class="item" >
             <el-icon>
               <HelpFilled />
             </el-icon>
             <div class="item-text ">
-              大模型子站大aaaaaaaaaaaaaaaa
+              {{itme.name}}
             </div>
-          </a>
-        </div>
-        <div class="item-content ">
-          <a class="item" href="/">
-            <el-icon>
-              <HelpFilled />
-            </el-icon>
-            <div class="item-text ">
-              大模型子站大aaaaaaaaaaaaaaaa
-            </div>
-          </a>
+          </div>
         </div>
       </div>
     </div>
@@ -38,7 +26,21 @@
 </template>
 
 <script setup>
-import { ref } from "vue"
+import { ref ,onMounted} from "vue"
+import { channelAppStore } from "@/stores/admin/channel";
+
+const data = ref({
+  name: undefined,
+  status: undefined,
+  pageNum: 1,
+  pageSize: 10,
+})
+
+const channelStore = channelAppStore()
+onMounted(()=>channelStore.getchannellist(data))
+console.log(channelStore.channellist);
+
+
 </script>
 
 <style lang="scss" scoped>

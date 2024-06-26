@@ -3,7 +3,7 @@ import NProgress from 'nprogress';
 
 // 创建axios实例
 const request = axios.create({
-  baseURL: 'http://pcapi-xiaotuxian-front-devtest.itheima.net',
+  baseURL: 'http://localhost:19006',
   timeout: 5000
 })
 

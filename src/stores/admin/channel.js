@@ -3,12 +3,13 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 export const channelAppStore = defineStore(
   'channel', () => {
-    const channellist = ref({})
+    const channellist = ref([])
 
     const getchannellist = async (data) => {
       const { name, status, pageSize, pageNum } = data.value
       const res = await getlist({ name, status, pageSize, pageNum })
-      channellist.value = res.data
+      channellist.value = res.records
+      console.log('channellist', channellist.value );
     }
 
     const STATUSMAP = {

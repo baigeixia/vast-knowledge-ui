@@ -3,7 +3,7 @@ import NProgress from 'nprogress';
 
 // 创建axios实例
 const request = axios.create({
-  baseURL: 'http://localhost:19006',
+  baseURL: 'http://localhost:16001/dev-api/analyze',
   timeout: 5000
 })
 

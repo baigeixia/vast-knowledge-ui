@@ -54,37 +54,14 @@
                             <div class="read-time"><i class="bi bi-clock"></i><span>阅读4分钟</span></div>
                         </div>
                     </div>
-                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <a href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <a style="color:red" href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a>
-                        <div><a style="color:red" href="https://github.com/vueComponent/ant-design-vue">访问外部链接</a></div>
-                        <div>Main</div>
-                        <a href="/internal-page">访问内部22222链接</a>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
-                        <div>Main</div>
+                    <!-- <p class="context-box" v-html="$sanitizeHtml(content)"></p> -->
+                    <p class="context-box" v-html="$sanitizeHtml(content)"></p>
                 </el-main>
                 <el-footer class="comment-end">
                     <div class="title">评论 14</div>
+
+                    <div class="div" v-html="highlightedCode"></div>
+
                     <div class="comment-editor">
                         <div class="content">
                             <div class="avatar-box">
@@ -212,10 +189,74 @@ import { useScroll } from '@vueuse/core'
 import PostComment from './component/PostComment.vue';
 import PostCommentItem from './component/PostCommentItem.vue';
 import ExternalLinkGuard from '@/Layout/components/ExternalLinkGuard.vue';
+import { lowlight } from '@/utils/helpers/lowlightconfig'
+
+const code = `
+.tiptap {
+    &gt;*+* {
+        margin-top: 0.75em;
+    }
+
+    ul,
+    ol {
+        padding: 0 1rem;
+    }
+}
+`;
+const highlightedCode = lowlight.highlight('css', code).value;
+
+console.log('highlightedCode', highlightedCode);
+
 
 const { y } = useScroll(window)
 
 const bellvalue = ref(1200)
+const content = ref(`
+<p><span style="color: rgb(112, 207, 248)">1.微信小程序开发者工具打开正常，上传到微信开发者平台扫码后，发现找不到，</span></p><h3>解决方式：打开调试工具，提示找不到page/index/index目录，模版项目只有page/index,进行修改多一层文件夹就可以了。或者微信后台修改地址</h3><p><span style="color: rgb(112, 207, 248)"><strong>2. 代码质量报按需导入报错，在uniapp项目的manifest.json中源码试图里进行配置</strong></span></p><h2><span style="color: rgb(112, 207, 248)"><strong><em class="the-text-italic">3. message：Error: 上传失败：网络请求错误 非法的文件，错误信息：invalid fil？</em></strong></span></h2><p><s>没有将es6转成es5 在开发者工具勾选</s></p><h2><code>5.进行打包后发布h5，无法访问</code></h2><blockquote><p>解决方式：将web打包路径设置成./(会默认走hash模式) <a target="_blank" rel="noopener noreferrer nofollow" class="the-text-link" href="http://ask.dcloud.net.cn/article/374…">ask.dcloud.net.cn/article/374…</a></p></blockquote><pre><code class="language-css">.tiptap {
+    &gt;*+* {
+        margin-top: 0.75em;
+    }
+
+    ul,
+    ol {
+        padding: 0 1rem;
+    }
+}</code></pre><h2></h2><hr class="the-text-horizontalRule" contenteditable="true"><ul class="the-text-bulletList"><li><p><code>个人账号无法给他人使用，需要公司账号，进行认证后。</code></p></li></ul><pre><code></code></pre><p></p><table style="minWidth: 75px"><colgroup><col><col><col></colgroup><tbody><tr><th colspan="1" rowspan="1"><p style="text-align: center"><strong><em class="the-text-italic">张三</em></strong></p></th><th colspan="1" rowspan="1"><p>张三2</p></th><th colspan="1" rowspan="1"><p>张三</p></th></tr><tr><td colspan="1" rowspan="1"><p>2</p></td><td colspan="1" rowspan="1"><p style="text-align: center"><span style="font-family: monospace">张三2</span></p></td><th colspan="1" rowspan="1"><p style="text-align: center"><mark data-color="#8ce99a" style="background-color: #8ce99a; color: inherit">张三3</mark></p></th></tr><tr><td colspan="1" rowspan="1"><blockquote><p>张三6</p></blockquote></td><td colspan="1" rowspan="1"><p style="text-align: center"><s>张三5</s></p></td><td colspan="1" rowspan="1"><p><span style="color: rgb(149, 141, 241)">张三4</span></p></td></tr></tbody></table><p></p><h4><sup>10.ucharts-tooltip</sup></h4><p>需求：点击图表进行下钻数据</p><ol class="the-text-orderedList"><li><p>双击柱子：直接用组件引入ucharts,点击后不知道事件类型，但是我们可以模拟，连续点击一定事件时间范围内，认为是双击，再结合@getIndex事件，就可以不影响tooltip的情况下进行点击下钻数据。</p></li></ol><h4>15. 如何进行分包？设置分包了，如何验证自己的分包配置成功？</h4><p>解决方式：<a target="_blank" rel="noopener noreferrer nofollow" class="the-text-link" href="https://link.juejin.cn?target=https%3A%2F%2Fdevelopers.weixin.qq.com%2Fminiprogram%2Fdev%2Fframework%2Fsubpackages%2Findependent.html">官方分包方法</a></p><p>通俗来讲，就是创建一个文件夹，里边存储一些你认为可以独立运行的页面、组件、静态资源，接着在pages.json 按照微信分包的目录格式进行配置，在打包的时候，就会生成一个主包和一个分包。若不配置或者配置不正确，就只有主包生成，分包方式如下：</p><pre><code>@Setter&nbsp;&nbsp;
+
+@Getter&nbsp;&nbsp;
+
+public&nbsp;class&nbsp;ResultResponse&lt;T&gt;&nbsp;implements&nbsp;Serializable&nbsp;{&nbsp;&nbsp;
+
+&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;static&nbsp;final&nbsp;long&nbsp;serialVersionUID&nbsp;=&nbsp;-1133637474601003587L;&nbsp;&nbsp;
+
+&nbsp;&nbsp;&nbsp;&nbsp;/**&nbsp;&nbsp;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;接口响应状态码&nbsp;&nbsp;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/&nbsp;&nbsp;
+
+&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;Integer&nbsp;code;&nbsp;&nbsp;
+
+&nbsp;&nbsp;&nbsp;&nbsp;/**&nbsp;&nbsp;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;接口响应信息&nbsp;&nbsp;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*/&nbsp;&nbsp;
+
+&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;String&nbsp;msg;&nbsp;&nbsp;
+
+&nbsp;&nbsp;&nbsp;&nbsp;/**&nbsp;&nbsp;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*&nbsp;接口响应的数据&nbsp;&nbsp;
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;T&nbsp;data;
+
+}&nbsp;&nbsp;&nbsp;&nbsp;
+
+</code></pre><p><code>在pages.json中配置</code></p><p><code>到这里分包配置已完成，分包后访问路径，前缀是分包的包名</code></p><p><code>运行到小程序模拟器微信开发者工具后，查看分包：</code></p><p></p><p><code>就可以看到具体的分包、主包大小</code></p><p>查看分析报告，可以看到代码中导致体积过大的问题在哪里，开发者可以依据这个进行删除不需要的文件、更换合适大小的插件、静态资源的引入方式、分包进行处理，处理后并验证自己的处理是否生效，如以下问题:</p><p><code>uni_modules引入的插件过大，导致打包一直很慢，一直卡,提醒某个包过大，跳过es6转化压缩。</code></p><p>主要是因为uni_modules会打包进主包，主包超过一定的体积，会自动跳过es6转化和压缩，这有时候会导致项目无法运行、甚至无法发布。</p><p>解决方式：</p><ol class="the-text-orderedList"><li><p>按需引入。 寻找插件的定制化化包（如echart定制化），只引入需要的，减小它的体积，若不能再减了，又需要使用，就使用以下方式处理。</p></li><li><p>分包处理。把该插件当成分包里的组件进行引入,不放在uni_modules里，这样处理就不会打包在主包里，主包体积就会相应减小，就能顺利打包发布了。</p></li></ol><h4>16. 页面滚动问题</h4><p>遇到的问题：</p><p></p><p></p><p>a</p><p>aaaa<br><br></p><p></p><p></p><p>啊啊</p><p></p><p></p><p><br><br><br></p><p></p><p></p><p></p><p></p><p></p><p></p><p></p><ol class="the-text-orderedList"><li><p>ios橡皮筋效果，导致页面滑动卡顿、不流畅，用户甚至会误触，细节上体验不佳</p></li><li><p>期望：顶部tab不动且无橡皮筋效果，仅中间内容能滑动、提高滑动流畅度，避免误触</p></li></ol><p>解决方式：</p><ol class="the-text-orderedList"><li><p>关掉橡皮筋：在page.json,将"disableScroll"设置为false</p></li></ol><p><br><br><br><br><br><br><br><br></p>
+`)
 const isagree = ref(true)
 const ismsg = ref(false)
 const isfollow = ref(false)
@@ -230,7 +271,13 @@ const comments = ref([
             username: '用户1',
             position: '工程师',
         },
-        text: '使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现     <a href="http://localhost:5173/post/222">222</a> <a href="https://github.com/vueComponent/ant-design-vue">链接</a> 取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
+        text: '使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现 <img src="invalid-image" onerror="alert(\'XSS Attack!\')" />  https://github.com/vueComponent/ant-design-vue',
+        pics: {
+            url: "https://p9-passport.byteacctimg.com/img/user-avatar/7afb026d59be994d6e7e27c9d28944b5~50x50.awebp",
+            width: 530,
+            height: 523,
+            type: 1
+        },
         time: '1个月前',
         likes: 1,
         childcommentcount: 17,
@@ -243,7 +290,13 @@ const comments = ref([
                     username: '用户2',
                     position: '前端开发2',
                 },
-                text: '这是一个回复使一个 JWT  http://localhost:5173/post/222 (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
+                text: '这是一个回复使一个 JWT <script>alert("XSS Attack!")<//script>  1111111 <img src="invalid-image" onerror="alert(\'XSS Attack!\')" />  立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
+                pics: {
+                    url: "https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4b52a24b8e5c4e2ab24654194c4cf2e0~tplv-k3u1fbpfcp-jj-mark:120:120:120:120:q75.avis#?w=523&h=530&s=17160&e=png&b=ffffff",
+                    width: 530,
+                    height: 523,
+                    type: 1
+                },
                 time: '2个月前',
                 likes: 2,
             },
@@ -255,7 +308,61 @@ const comments = ref([
                     username: '用户3',
                     position: '前端开发3',
                 },
-                text: '这是一个回复',
+                text: '<a href="https://example.com">Link</a>',
+                pics: {
+                    url: "https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4b52a24b8e5c4e2ab24654194c4cf2e0~tplv-k3u1fbpfcp-jj-mark:120:120:120:120:q75.avis#?w=523&h=530&s=17160&e=png&b=ffffff",
+                    width: 530,
+                    height: 523,
+                    type: 1
+                },
+                time: '3个月前',
+                likes: 3,
+                replytoauthor: {
+                    id: 2,
+                    avatar: 'https://via.placeholder.com/40',
+                    username: '用户2',
+                    position: '前端开发2',
+                },
+            },
+            {
+                id: 3,
+                author: {
+                    id: 3,
+                    avatar: 'https://via.placeholder.com/40',
+                    username: '用户3',
+                    position: '前端开发3',
+                },
+                text: '<script>alert("XSS Attack!")<//script>',
+                // pics: {
+                //     url: "https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4b52a24b8e5c4e2ab24654194c4cf2e0~tplv-k3u1fbpfcp-jj-mark:120:120:120:120:q75.avis#?w=523&h=530&s=17160&e=png&b=ffffff",
+                //     width: 530,
+                //     height: 523,
+                //     type: 1
+                // },
+                time: '3个月前',
+                likes: 3,
+                replytoauthor: {
+                    id: 2,
+                    avatar: 'https://via.placeholder.com/40',
+                    username: '用户2',
+                    position: '前端开发2',
+                },
+            },
+            {
+                id: 3,
+                author: {
+                    id: 3,
+                    avatar: 'https://via.placeholder.com/40',
+                    username: '用户3',
+                    position: '前端开发3',
+                },
+                text: '<div style="color:red;">Text</div>',
+                pics: {
+                    url: "https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4b52a24b8e5c4e2ab24654194c4cf2e0~tplv-k3u1fbpfcp-jj-mark:120:120:120:120:q75.avis#?w=523&h=530&s=17160&e=png&b=ffffff",
+                    width: 530,
+                    height: 523,
+                    type: 1
+                },
                 time: '3个月前',
                 likes: 3,
                 replytoauthor: {
@@ -274,6 +381,12 @@ const comments = ref([
                     position: '前端开发3',
                 },
                 text: '这是一个回复',
+                pics: {
+                    url: "https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4b52a24b8e5c4e2ab24654194c4cf2e0~tplv-k3u1fbpfcp-jj-mark:120:120:120:120:q75.avis#?w=523&h=530&s=17160&e=png&b=ffffff",
+                    width: 530,
+                    height: 523,
+                    type: 1
+                },
                 time: '3个月前',
                 likes: 3,
                 replytoauthor: {
@@ -292,42 +405,12 @@ const comments = ref([
                     position: '前端开发3',
                 },
                 text: '这是一个回复',
-                time: '3个月前',
-                likes: 3,
-                replytoauthor: {
-                    id: 2,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户2',
-                    position: '前端开发2',
+                pics: {
+                    url: "https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4b52a24b8e5c4e2ab24654194c4cf2e0~tplv-k3u1fbpfcp-jj-mark:120:120:120:120:q75.avis#?w=523&h=530&s=17160&e=png&b=ffffff",
+                    width: 530,
+                    height: 523,
+                    type: 1
                 },
-            },
-            {
-                id: 3,
-                author: {
-                    id: 3,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户3',
-                    position: '前端开发3',
-                },
-                text: '这是一个回复',
-                time: '3个月前',
-                likes: 3,
-                replytoauthor: {
-                    id: 2,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户2',
-                    position: '前端开发2',
-                },
-            },
-            {
-                id: 3,
-                author: {
-                    id: 3,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户3',
-                    position: '前端开发3',
-                },
-                text: '这是一个回复',
                 time: '3个月前',
                 likes: 3,
                 replytoauthor: {
@@ -348,6 +431,12 @@ const comments = ref([
             position: '设计师',
         },
         text: '使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，',
+        pics: {
+            url: "https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4b52a24b8e5c4e2ab24654194c4cf2e0~tplv-k3u1fbpfcp-jj-mark:120:120:120:120:q75.avis#?w=523&h=530&s=17160&e=png&b=ffffff",
+            width: 530,
+            height: 523,
+            type: 1
+        },
         time: '6个月前',
         likes: 5,
         childcomments: []
@@ -377,9 +466,13 @@ onBeforeUnmount(() => {
 
 .post-home-main {
     flex: 1;
-    overflow-y: auto;
+   
+ 
 
     .drawer-left {
+        :deep(.el- el-drawer__close){
+            display: none;
+        }
         .comment-drawer-header {
             display: flex;
             justify-content: space-between;
@@ -387,6 +480,7 @@ onBeforeUnmount(() => {
             position: fixed;
             padding: 0 22px 0 24px;
             top: 0;
+            height: 64px;
             border-bottom: 1px solid #d9dbe0;
             background: #ffffff;
             width: 100%;
@@ -509,7 +603,176 @@ onBeforeUnmount(() => {
                     color: #252933;
                 }
 
-                
+
+
+                .context-box {
+                    >* + *  {
+                        margin-top: 0.8em;
+                    }
+
+
+                    :deep(hr) {
+                        border: none;
+                        border-top-width: medium;
+                        border-top-style: none;
+                        border-top-color: currentcolor;
+                        // background-color: #1cd7f8;
+                        border-top: 2px solid rgba(13, 13, 13, 0.1);
+                        margin: 2rem 0;
+                    }
+
+
+
+                    .ProseMirror {
+                        height: 100%;
+                        outline: 0 !important;
+                    }
+
+                    :deep(em) {
+                        font-style: italic;
+                    }
+
+                    :deep(blockquote) {
+                        padding-left: 1rem;
+                        border-left: 2px solid rgba(13, 13, 13, 0.1);
+                    }
+
+                    :deep(pre) {
+                        background: #0D0D0D;
+                        color: #FFF;
+                        font-family: 'JetBrainsMono', monospace;
+                        padding: 0.75rem 1rem;
+                        border-radius: 0.5rem;
+
+                        code {
+                            color: inherit;
+                            padding: 0;
+                            background: none;
+                            font-size: 0.8rem;
+                        }
+
+
+                        .hljs-comment,
+                        .hljs-quote {
+                            color: #616161;
+                        }
+
+                        .hljs-variable,
+                        .hljs-template-variable,
+                        .hljs-attribute,
+                        .hljs-tag,
+                        .hljs-name,
+                        .hljs-regexp,
+                        .hljs-link,
+                        .hljs-name,
+                        .hljs-selector-id,
+                        .hljs-selector-class {
+                            color: #F98181;
+                        }
+
+                        .hljs-number,
+                        .hljs-meta,
+                        .hljs-built_in,
+                        .hljs-builtin-name,
+                        .hljs-literal,
+                        .hljs-type,
+                        .hljs-params {
+                            color: #FBBC88;
+                        }
+
+                        .hljs-string,
+                        .hljs-symbol,
+                        .hljs-bullet {
+                            color: #B9F18D;
+                        }
+
+                        .hljs-title,
+                        .hljs-section {
+                            color: #FAF594;
+                        }
+
+                        .hljs-keyword,
+                        .hljs-selector-tag {
+                            color: #70CFF8;
+                        }
+
+                        .hljs-emphasis {
+                            font-style: italic;
+                        }
+
+                        .hljs-strong {
+                            font-weight: 700;
+                        }
+
+
+                    }
+
+                    :deep(table) {
+                        border-collapse: collapse;
+                        table-layout: fixed;
+                        width: 100%;
+                        margin: 0;
+                        overflow: hidden;
+
+                        td,
+                        th {
+                            min-width: 1em;
+                            border: 2px solid #ced4da;
+                            padding: 3px 5px;
+                            vertical-align: top;
+                            box-sizing: border-box;
+                            position: relative;
+
+                            >* {
+                                margin-bottom: 0;
+                            }
+                        }
+
+                        th {
+                            font-weight: bold;
+                            text-align: left;
+                            background-color: #f1f3f5;
+                        }
+
+                        .selectedCell:after {
+                            z-index: 2;
+                            position: absolute;
+                            content: "";
+                            left: 0;
+                            right: 0;
+                            top: 0;
+                            bottom: 0;
+                            background: rgba(200, 200, 255, 0.4);
+                            pointer-events: none;
+                        }
+
+                        .column-resize-handle {
+                            position: absolute;
+                            right: -2px;
+                            top: 0;
+                            bottom: -2px;
+                            width: 4px;
+                            background-color: #adf;
+                            pointer-events: none;
+                        }
+
+                        p {
+                            margin: 0;
+                        }
+                    }
+
+
+
+                    li {
+                        list-style: decimal;
+                    }
+
+                    :deep(code) {
+                        background-color: rgba(97, 97, 97, 0.1);
+                        color: #616161;
+                    }
+
+                }
 
                 .author-info-box {
                     display: flex;
@@ -893,5 +1156,4 @@ onBeforeUnmount(() => {
     }
 
 
-}
-</style>
+}</style>

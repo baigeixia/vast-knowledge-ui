@@ -1,7 +1,7 @@
 <template>
   <div class="main-left">
     <div class="side-wrapper">
-      <div class="item-wrap" v-if="channelStore.channellist">
+      <div class="item-wrap " v-if="channelStore.channellist">
         <div class="item-content " v-for="itme in channelStore.channellist" :key="itme.id">
           <div class="item" >
             <el-icon>
@@ -44,8 +44,8 @@ console.log(channelStore.channellist);
   background-color: #fff;
 
   .side-wrapper {
-    // min-width: 180px;
     .item-wrap {
+      width: 180px;
       max-height: 830px;
       border-radius: 4px;
       background-color: #fff;

@@ -53,8 +53,8 @@ onBeforeUnmount(() => {
 <style lang="scss" scoped>
 .guard-main-box {
     position: relative;
-
     .overlay {
+
         position: fixed;
         top: 0;
         left: 0;

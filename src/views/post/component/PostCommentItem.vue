@@ -32,10 +32,16 @@
                 </div>
             </div>
             <div class="comment-text">
-                <div ref="contentRef" class="content" :class="{ 'expand': expanded } ">
+                <div ref="contentRef" class="content" :class="{ 'expand': expanded }">
                     <!-- {{ comment.text }} -->
-                    <p v-html="comment.text"></p>
+                    <p v-html="$sanitizeHtml(renderLinks(comment.text),{ALLOWED_TAGS: ['a','i'], ALLOWED_ATTR: [ 'href','class','target', 'src', 'alt'],})"></p>
+                </div>
+                <div class="comment-img-box" v-if="comment.pics">
+                    <div class="comment-img">
+                        <img :src="comment.pics.url">
                     </div>
+                </div>
+
                 <div ref="expandRef" class="expand-action-wrap">
                     <span @click="expanded = !expanded" class="expand-action">{{ expanded ? '收起' : '展开' }}</span>
                 </div>
@@ -101,6 +107,23 @@ const contentRefOP = () => {
     }
 }
 
+const renderLinks = (text) => {
+    // 匹配 HTTP 或 HTTPS URL 的正则表达式
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    // 使用 replace 方法将 URL 替换为带有 <a> 标签的链接
+    const htmlText = text.replace(urlRegex, (match) => {
+        try {
+            const url = new URL(match);
+            return `<a href="${url.href}" target="_blank"><i class="bi bi-link-45deg"></i>${url.hostname}</a>`;
+        } catch (error) {
+            console.error('Invalid URL:', match);
+            return match; // 返回原始的匹配文本
+        }
+    });
+
+    return htmlText;
+}
+
 
 </script>
 
@@ -143,6 +166,7 @@ const contentRefOP = () => {
 
 .comment-content {
     flex: 1;
+
     .top-has-more {
         color: #8a919f;
         display: flex;
@@ -176,6 +200,28 @@ const contentRefOP = () => {
     .comment-text {
         margin-top: 0.5rem;
 
+        .comment-img-box {
+            margin-top: 8px;
+
+            .comment-img {
+                box-sizing: border-box;
+                position: relative;
+                border-radius: 4px;
+                display: inline-block;
+                width: 120px;
+                height: 120px;
+                margin-right: 12px;
+                border: 1px solid #f1f2f5;
+                overflow: hidden;
+                cursor: zoom-in;
+
+                img {
+                    object-fit: cover;
+                    width: 100%;
+                    height: 100%;
+                }
+            }
+        }
 
         .content {
             color: #252933;

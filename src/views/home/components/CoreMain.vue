@@ -11,7 +11,7 @@
       </div>
     </header>
     <div class="top-content">
-      <div class="content-list">
+      <div class="content-list " v-infinite-scroll="loadMore">
         <el-skeleton class="skeleton" animated :loading="false">
           <template #template>
             <div class="main-skeleton">
@@ -82,130 +82,9 @@
             <div class="row-footer">
               <ul class="action-list">
                 <li class="item-li">
-                  <RouterLink to="/user" class="user-message"><div class="user-popover">小红帽的大灰狼</div></RouterLink>
-                </li>
-                <li class="item-li view">
-                  <el-icon>
-                    <View />
-                  </el-icon>
-                  <span>106k</span>
-                </li>
-                <li class="item-li like">
-                  <i class="bi bi-suit-heart"></i>
-                  <span> 653</span>
-                </li>
-                <li class="dislike-item">
-                  <el-icon>
-                    <More />
-                  </el-icon>
-                </li>
-              </ul>
-              <div class="row-footer-tags">
-                <a class="footer-tag " href="/">后端</a>
-                <a class="footer-tag " href="/">掘金·金石计划</a>
-                <a class="footer-tag " href="/">前端</a>
-              </div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="content-main" @click="router.push('/post/222')">
-              <div class="title-row">预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
-                分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
-                分钟错过航班索赔 2400 元，此事责任在谁？</div>
-              <div class="row-text">
-                <img class="thumb"
-                  src="https://picx.zhimg.com/v2-e7e538187231ad6b5d47adf7c06baf70_200x0.jpg?source=172ae18b">
-                <div class="abstract">
-                  95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。
-                </div>
-              </div>
-            </div>
-            <div class="row-footer">
-              <ul class="action-list">
-                <li class="item-li">
-                  <RouterLink to="/user" class="user-message"><div class="user-popover">小红帽的大灰狼</div></RouterLink>
-                </li>
-                <li class="item-li view">
-                  <el-icon>
-                    <View />
-                  </el-icon>
-                  <span>106k</span>
-                </li>
-                <li class="item-li like">
-                  <i class="bi bi-suit-heart"></i>
-                  <span> 653</span>
-                </li>
-                <li class="dislike-item">
-                  <el-icon>
-                    <More />
-                  </el-icon>
-                </li>
-              </ul>
-              <div class="row-footer-tags">
-                <a class="footer-tag " href="/">后端</a>
-                <a class="footer-tag " href="/">掘金·金石计划</a>
-                <a class="footer-tag " href="/">前端</a>
-              </div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="content-main" @click="router.push('/post/222')">
-              <div class="title-row">预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
-                分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
-                分钟错过航班索赔 2400 元，此事责任在谁？</div>
-              <div class="row-text">
-                <img class="thumb"
-                  src="https://picx.zhimg.com/v2-e7e538187231ad6b5d47adf7c06baf70_200x0.jpg?source=172ae18b">
-                <div class="abstract">
-                  95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。
-                </div>
-              </div>
-            </div>
-            <div class="row-footer">
-              <ul class="action-list">
-                <li class="item-li">
-                  <RouterLink to="/user" class="user-message"><div class="user-popover">小红帽的大灰狼</div></RouterLink>
-                </li>
-                <li class="item-li view">
-                  <el-icon>
-                    <View />
-                  </el-icon>
-                  <span>106k</span>
-                </li>
-                <li class="item-li like">
-                  <i class="bi bi-suit-heart"></i>
-                  <span> 653</span>
-                </li>
-                <li class="dislike-item">
-                  <el-icon>
-                    <More />
-                  </el-icon>
-                </li>
-              </ul>
-              <div class="row-footer-tags">
-                <a class="footer-tag " href="/">后端</a>
-                <a class="footer-tag " href="/">掘金·金石计划</a>
-                <a class="footer-tag " href="/">前端</a>
-              </div>
-            </div>
-          </div>
-          <div class="item">
-            <div class="content-main" @click="router.push('/post/222')">
-              <div class="title-row">预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
-                分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
-                分钟错过航班索赔 2400 元，此事责任在谁？</div>
-              <div class="row-text">
-                <img class="thumb"
-                  src="https://picx.zhimg.com/v2-e7e538187231ad6b5d47adf7c06baf70_200x0.jpg?source=172ae18b">
-                <div class="abstract">
-                  95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。
-                </div>
-              </div>
-            </div>
-            <div class="row-footer">
-              <ul class="action-list">
-                <li class="item-li">
-                  <RouterLink to="/user" class="user-message"><div class="user-popover">小红帽的大灰狼</div></RouterLink>
+                  <RouterLink to="/user" class="user-message">
+                    <div class="user-popover">小红帽的大灰狼</div>
+                  </RouterLink>
                 </li>
                 <li class="item-li view">
                   <el-icon>
@@ -235,11 +114,25 @@
     </div>
   </div>
 </template>
-
 <script setup>
 import { ref } from "vue"
 import { useRouter } from 'vue-router';
 const router = useRouter();
+
+const page = ref(0)
+const pagesize = ref(10)
+
+const loadMore = () => {
+  page.value +=1
+  console.log(page.value);
+  console.log(pagesize.value);
+
+  // 模拟异步加载数据
+  setTimeout(() => {
+    // const newData = [...data.value, ...mockData]; // 假设 mockData 是新加载的数据
+    // data.value = newData;
+  }, 1000); // 延迟加载，模拟异步加载数据
+}
 </script>
 
 <style lang="scss" scoped>
@@ -248,6 +141,7 @@ const router = useRouter();
   background-color: #fff;
   margin-right: 20px;
   border-radius: 4px;
+  min-height: 800px;
 
   .top-content {
     .content-list {
@@ -388,7 +282,9 @@ const router = useRouter();
               color: #000;
             }
 
-
+            .view{
+                cursor: default;
+              }
             .item-li {
               display: flex;
               align-items: center;
@@ -398,7 +294,7 @@ const router = useRouter();
               line-height: 20px;
               color: #8a919f;
               flex-shrink: 0;
-
+              
               .el-icon {
                 font-size: 16px;
               }

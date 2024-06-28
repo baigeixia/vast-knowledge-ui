@@ -1,7 +1,7 @@
 <template>
   <div class="main-left">
     <div class="side-wrapper">
-      <div class="item-wrap " v-if="channelStore.channellist">
+      <div class="item-wrap " v-if="channelStore.channellist>0">
         <div class="item-content " v-for="itme in channelStore.channellist" :key="itme.id">
           <div class="item" >
             <el-icon>

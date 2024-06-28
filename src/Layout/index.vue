@@ -16,7 +16,8 @@
                     <el-button link class="btn meiqia-btn"><i class="bi bi-send-exclamation"></i></el-button>
                 </el-tooltip>
                 <el-button v-if="y > 60" link class="btn meiqia-btn fade-in" @click="totop"><i
-                        class="bi bi-chevron-bar-up"></i></el-button>
+                        class="bi bi-chevron-bar-up"></i>
+                </el-button>
             </div>
         </div>
     </el-container>
@@ -66,12 +67,12 @@ const totop = () => {
     min-width: 1100px;
 
     .guard-box {
-            :deep(a) {
-                color: #1e80ff;
-                margin: 0 2px;
-            }
+        :deep(a) {
+            color: #1e80ff;
+            margin: 0 2px;
         }
-        
+    }
+
     .global-component-box {
         .suspension-panel {
             display: flex;
@@ -146,9 +147,9 @@ const totop = () => {
         display: flex;
         padding: 20px 0;
         border-radius: 5px;
-        
 
-       
+
+
     }
 }
 </style>

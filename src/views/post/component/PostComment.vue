@@ -3,16 +3,21 @@
         @mouseover="isHovered = true" @mouseleave="isHovered = false">
         <el-input ref="commentinputRef" :autosize="{ minRows: 2, maxRows: 30 }" @keydown.enter.prevent show-word-limi
             maxlength="1000" type="textarea" v-model="commentinput" placeholder="平等表达，友善交流" clearable
-             @focus="isFocused = true" @blur="isFocused = false" />
+            @focus="isFocused = true" @blur="isFocused = false" />
         <div v-if="imageUrl" class="small-preview-box">
             <img :src="imageUrl" alt="预览图片" class="small-preview-image" @click="showLargePreview">
             <i class="remove-icon bi bi-x-circle" @click="removeImage"></i>
         </div>
         <div class="action-box">
             <div class="emoji-container">
-                <div class="emoji-box" :class="{ 'emoji-color-op': emoji }" @click.stop="toggleEmoji">
-                    <i class="bi bi-emoji-laughing"></i>
-                </div>
+                <el-popover width="280px" popper-style="padding: 0" :show-arrow='false' placement="bottom" trigger="click">
+                    <template #reference>
+                        <div class="emoji-box"   >
+                            <i class="bi bi-emoji-laughing"></i>
+                        </div>
+                    </template>
+                    <EmojiFileInput ref="EmojiFileInputRef" class="emoji-input" @emoji-click="commentinputfocus"/>
+                </el-popover>
                 <div class="emoji-box" @click="handleClick">
                     <el-tooltip content="上传图片最大 10mb" placement="bottom">
                         <i class="bi bi-card-image upload-icon"></i>
@@ -20,14 +25,11 @@
                 </div>
                 <input type="file" ref="fileInput" @change="handleFileChange" accept="image/*" style="display: none;">
             </div>
-
             <div class="text-count-wrapper">
                 <span>{{ commentinput.length }}/1000</span>
                 <el-button>发送</el-button>
             </div>
         </div>
-        <EmojiFileInput class="emoji-input" @emoji-click="commentinputfocus"
-            :class="{ 'emoji-input-out': emoji, 'emoji-input-out-preview': isFocused }" />
         <el-dialog v-model:visible="dialogVisible" width="50%">
             <img width="100%" :src="dialogImageUrl" alt="预览图片">
         </el-dialog>
@@ -35,14 +37,13 @@
 </template>
   
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref} from 'vue';
 import { ElMessage } from 'element-plus'
 import EmojiFileInput from '@/Layout/components/EmojiFileInput.vue';
-
 const commentinput = ref('')
 const commentinputRef = ref(null)
-const emoji = ref(false)
 const fileInput = ref(null)
+const EmojiFileInputRef = ref(null)
 const imageUrl = ref('')
 const dialogImageUrl = ref('')
 const dialogVisible = ref(false)
@@ -52,21 +53,16 @@ const isFocused = ref(false)
 const handleClick = () => {
     fileInput.value.click()
 }
-const toggleEmoji = () => {
-    emoji.value = !emoji.value
-    commentinputfocus()
-}
 
 const commentinputfocus = (emoji) => {
     if (emoji) {
-        console.log('mian ',emoji);
+        console.log('mian ', emoji);
         commentinput.value = commentinput.value + emoji?.i
     }
     if (!isFocused) {
         commentinputRef.value.focus();
     }
 }
-
 
 const handleFileChange = (event) => {
     const file = event.target.files[0]
@@ -104,20 +100,6 @@ const showLargePreview = () => {
 }
 
 
-const handleClickOutside = (event) => {
-    const emojiInput = document.querySelector('.emoji-input');
-    if (emojiInput && !emojiInput.contains(event.target)) {
-        emoji.value = false;
-    }
-};
-
-onMounted(() => {
-    document.addEventListener("click", handleClickOutside);
-});
-
-onBeforeUnmount(() => {
-    document.removeEventListener("click", handleClickOutside);
-});
 </script>
   
 <style lang="scss" scoped>
@@ -137,6 +119,7 @@ onBeforeUnmount(() => {
     padding: 10px;
     outline: none;
 }
+
 
 
 
@@ -163,7 +146,7 @@ onBeforeUnmount(() => {
     .emoji-input {
         position: absolute;
         top: calc(100% - 1rem);
-        left: -370px;
+        left: -800px;
         transition: left 0.2s ease-in-out;
         z-index: 1000;
 
@@ -190,10 +173,7 @@ onBeforeUnmount(() => {
     }
 
 
-    .emoji-input-out {
-        left: 0;
-    }
-
+  
     .action-box {
         height: 40px;
         padding: 0 10px;
@@ -220,6 +200,10 @@ onBeforeUnmount(() => {
                 i {
                     color: #1e80ff;
                 }
+            }
+
+            .popperclass {
+                padding: 0;
             }
 
             .emoji-box {

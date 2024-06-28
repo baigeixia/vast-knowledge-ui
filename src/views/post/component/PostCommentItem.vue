@@ -33,13 +33,11 @@
             </div>
             <div class="comment-text">
                 <div ref="contentRef" class="content" :class="{ 'expand': expanded }">
-                    <!-- {{ comment.text }} -->
-                    <p v-html="$sanitizeHtml(renderLinks(comment.text),{ALLOWED_TAGS: ['a','i'], ALLOWED_ATTR: [ 'href','class','target', 'src', 'alt'],})"></p>
+                    <p v-html="sanitizeString(comment.text)"></p>
                 </div>
                 <div class="comment-img-box" v-if="comment.pics">
-                    <div class="comment-img">
-                        <img :src="comment.pics.url">
-                    </div>
+                        <el-image class="comment-img" :src="comment.pics.url" :zoom-rate="1.2" :max-scale="7"
+                            :min-scale="0.2" :preview-src-list="[comment.pics.url]"  fit="cover" :hide-on-click-modal="true" lazy />
                 </div>
 
                 <div ref="expandRef" class="expand-action-wrap">
@@ -48,8 +46,11 @@
             </div>
             <div class="comment-meta">
                 <span>{{ comment.time }}</span>
-                <span>点赞 {{ comment.likes }}</span>
-                <span>回复</span>
+                <span class="action-itme" :class="{'action':true}"><i class="bi bi-suit-heart-fill"></i> 点赞 {{ comment.likes }}</span>
+                <span class="action-itme" :class="{'action':isanswer}" @click="opisanswer"> <i class="bi bi-chat-left-text-fill"></i> {{isanswer ? '取消回复' :'回复'}}</span>
+            </div>
+            <div class="comment-reply-editor" v-if="isanswer">
+                <PostComment />
             </div>
             <div class="replies" v-if="comment.childcomments && comment.childcomments.length">
                 <PostCommentItem v-for="reply in comment.childcomments" :key="reply.id" :comment="reply"
@@ -69,6 +70,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import UserInfoPopover from './UserInfoPopover.vue'
+import PostComment from './PostComment.vue';
+
 const props = defineProps({
     comment: {
         type: Object,
@@ -77,6 +80,7 @@ const props = defineProps({
 });
 
 const expanded = ref(false);
+const isanswer = ref(false);
 const isLoading = ref(false)
 const contentRef = ref(null)
 const expandRef = ref(null)
@@ -99,6 +103,10 @@ onMounted(() =>
     contentRefOP(),
 )
 
+const opisanswer=()=>{
+    isanswer.value=!isanswer.value
+}
+
 const contentRefOP = () => {
     if (contentRef.value.scrollHeight > contentRef.value.clientHeight) {
         expandRef.value.style.display = 'block';
@@ -106,6 +114,26 @@ const contentRefOP = () => {
         expandRef.value.style.display = 'none';
     }
 }
+
+const sanitizeString = (str) => {
+    const urlRegex = /(https?:\/\/[\w-]+\.[\w-]+(\/[\w- .\/?%&=]*)?)/g;
+    const escapedString = escapeHtml(str);
+    const sanitizedString = escapedString.replace(urlRegex, (match) => {
+        const url = new URL(match); // 使用 new URL() 获取 URL 对象
+        return `<a href="${url.href}" target="_blank" title="${url.href}"><i class="bi bi-link-45deg"></i>${url.hostname}</a>`;
+    });
+    return sanitizedString;
+}
+
+const escapeHtml = (unsafe) => {
+    return unsafe.replace(/[&<"']/g, match => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '"': '&quot;',
+        '\'': '&#39;'
+    }[match]));
+}
+
 
 const renderLinks = (text) => {
     // 匹配 HTTP 或 HTTPS URL 的正则表达式
@@ -204,16 +232,13 @@ const renderLinks = (text) => {
             margin-top: 8px;
 
             .comment-img {
-                box-sizing: border-box;
-                position: relative;
-                border-radius: 4px;
-                display: inline-block;
                 width: 120px;
                 height: 120px;
-                margin-right: 12px;
-                border: 1px solid #f1f2f5;
                 overflow: hidden;
-                cursor: zoom-in;
+                
+                :deep(.el-image__preview){
+                    cursor: zoom-in;
+                }
 
                 img {
                     object-fit: cover;
@@ -292,11 +317,7 @@ const renderLinks = (text) => {
 
 
     }
-
-
 }
-
-
 
 
 .comment-meta {
@@ -305,6 +326,21 @@ const renderLinks = (text) => {
     color: gray;
     font-size: 0.9rem;
     margin-top: 0.5rem;
+    .action-itme{
+        cursor: pointer;
+    }
+
+    .action-itme:not(.action):hover{
+        color: #1e80ff;
+    }
+
+    .action{
+        color: #1e80ff;
+    }
+}
+
+.comment-reply-editor{
+    margin: 10px 0;
 }
 
 .replies {

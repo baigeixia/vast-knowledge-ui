@@ -1,7 +1,7 @@
 <template>
-    <div class="emoji-file-input" @click="emitEmojiClick">
-        <EmojiPicker :native="true" :disable-skin-tones="true" @select="onSelectEmoji" />
-    </div>
+        <EmojiPicker class="emoji-file-input" @click="emitEmojiClick" :native="true" :disable-skin-tones="true" @select="onSelectEmoji" />
+    <!-- <div class="emoji-file-input" @click="emitEmojiClick">
+    </div> -->
 </template>
   
 <script setup>
@@ -28,6 +28,9 @@ function onSelectEmoji(emoji) {
 </script>
   
 <style lang="scss" scoped>
+.emoji-file-input{
+    width: 100%;
+}
 
 :deep(.v3-header) {
         .v3-spacing {

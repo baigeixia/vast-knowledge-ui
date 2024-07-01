@@ -85,7 +85,11 @@
 </template>
 
 <script setup>
-import { ref, reactive } from "vue"
+import { ref, reactive ,onMounted} from "vue"
+const pageTitle = ref('个人设置');
+onMounted(() => {
+  document.title = pageTitle.value;
+});
 import { ElMessage } from 'element-plus'
 
 const avatarUrl = ref('')

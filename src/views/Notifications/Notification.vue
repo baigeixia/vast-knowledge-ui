@@ -59,18 +59,19 @@
                         </div>
                     </div>
                 </template>
-                <RouterView @data-loaded="handleDataLoaded" />
+                <RouterView  @data-loaded="handleDataLoaded" />
             </el-skeleton>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, watch } from "vue"
+import { ref, watch ,onMounted} from "vue"
+
 import { useRoute } from 'vue-router';
 
 const titleType = ref('1')
-const loading = ref(true)
+const loading = ref(false)
 
 const totitleType = (tab, event) => {
     titleType.value = tab.paneName

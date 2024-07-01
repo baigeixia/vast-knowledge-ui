@@ -9,7 +9,7 @@ const defaultConfig = {
 };
 
 export function sanitizeHtml(html, config = {}) {
-    console.log('sanitizeHtml');
+    // console.log('sanitizeHtml');
     // const mergedConfig = { ...defaultConfig, ...config };
     // return DOMPurify.sanitize(html, mergedConfig);
     return DOMPurify.sanitize(html, config);

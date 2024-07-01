@@ -14,7 +14,11 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { ref,onMounted } from 'vue';
+const pageTitle = ref('私信');
+onMounted(() => {
+  document.title = pageTitle.value;
+});
 const searchinput = ref('')
 const emit = defineEmits(['data-loaded']);
 

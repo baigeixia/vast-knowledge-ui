@@ -3,7 +3,12 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
+import { ref,onMounted } from 'vue';
+const pageTitle = ref('评论');
+onMounted(() => {
+  document.title = pageTitle.value;
+});
+
 
 const emit = defineEmits(['data-loaded']);
 

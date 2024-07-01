@@ -33,7 +33,11 @@
 </template>
   
 <script setup>
-import { ref } from "vue"
+import { ref,onMounted } from 'vue';
+const pageTitle = ref('屏蔽管理');
+onMounted(() => {
+  document.title = pageTitle.value;
+});
 const type = ref(1)
 const loading = ref(false)
 

@@ -14,7 +14,9 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import 'nprogress/nprogress.css';
 import { sanitizeHtml } from './utils/helpers/sanitizeHtml';
 
+
 const app = createApp(App)
+
 
 for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)

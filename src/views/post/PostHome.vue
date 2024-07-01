@@ -59,15 +59,12 @@
                 </el-main>
                 <el-footer class="comment-end">
                     <div class="title">评论 14</div>
-
-                    <div class="div" v-html="highlightedCode"></div>
-
                     <div class="comment-editor">
                         <div class="content">
                             <div class="avatar-box">
                                 <div class="avatar">
                                     <img class="avatar-img"
-                                        src="https://p6-passport.byteacctimg.com/img/user-avatar/38a427aaac159fe4f4fa7a201b5876b5~50x50.awebp">
+                                        src="https://pica.zhimg.com/v2-f57e645ceb13a99ebada96a799c8dca6_b.jpg">
                                 </div>
                             </div>
                             <div class="form-box">
@@ -182,6 +179,7 @@
             <div class="comment-form comment-editor">评论</div>
         </el-drawer>
     </el-container>
+
     <el-image-viewer v-if="showImageViewer" :url-list="[imgPreviewUrl]" @close="close"
         :hide-on-click-modal="true"></el-image-viewer>
 </template>
@@ -190,30 +188,28 @@ import { ref, onMounted, onBeforeUnmount } from 'vue';
 import { useScroll } from '@vueuse/core'
 import PostComment from './component/PostComment.vue';
 import PostCommentItem from './component/PostCommentItem.vue';
-import { lowlight } from '@/utils/helpers/lowlightconfig'
+import hljs from 'highlight.js/lib/common';
+import 'highlight.js/styles/github.css';
 
-const code = `
-.tiptap {
-    &gt;*+* {
-        margin-top: 0.75em;
-    }
+onMounted(() => {
+    hljs.highlightAll();
+})
 
-    ul,
-    ol {
-        padding: 0 1rem;
-    }
-}
-`;
-const highlightedCode = lowlight.highlight('css', code).value;
+console.log('hljs',hljs.initHighlightingOnLoad());
 
-console.log('highlightedCode', highlightedCode);
+const pageTitle = ref('post4 文章');
+onMounted(() => {
+    document.title = pageTitle.value;
+});
 
 
 const { y } = useScroll(window)
 
 const bellvalue = ref(1200)
 const content = ref(`
-<p></p><img src="https://pic1.zhimg.com/v2-1b7613394478133a0a2419310600e6ac_b.jpg"><p><span style="color: rgb(112, 207, 248)">1.微信小程序开发者工具打开正常，上传到微信开发者平台扫码后，发现找不到，</span></p><h3>解决方式：打开调试工具，提示找不到page/index/index目录，模版项目只有page/index,进行修改多一层文件夹就可以了。或者微信后台修改地址</h3><p><span style="color: rgb(112, 207, 248)"><strong>2. 代码质量报按需导入报错，在uniapp项目的manifest.json中源码试图里进行配置</strong></span></p><p></p><img src="https://pic3.zhimg.com/v2-fa28f9c725d94fe973cb9054b76a5d3a_b.jpg"><p><s>没有将es6转成es5 在开发者工具勾选</s></p><h2><code>5.进行打包后发布h5，无法访问</code></h2><blockquote><p>解决方式：将web打包路径设置成./(会默认走hash模式) <a target="_blank" rel="noopener noreferrer nofollow" class="the-text-link" href="http://ask.dcloud.net.cn/article/374…">ask.dcloud.net.cn/article/374…</a></p></blockquote><pre><code class="language-css">.tiptap {
+<p></p><img src="https://pic1.zhimg.com/v2-1b7613394478133a0a2419310600e6ac_b.jpg"><p><span style="color: rgb(112, 207, 248)">1.微信小程序开发者工具打开正常，上传到微信开发者平台扫码后，发现找不到，</span></p><h3>解决方式：打开调试工具，提示找不到page/index/index目录，模版项目只有page/index,进行修改多一层文件夹就可以了。或者微信后台修改地址</h3><p><span style="color: rgb(112, 207, 248)"><strong>2. 代码质量报按需导入报错，在uniapp项目的manifest.json中源码试图里进行配置</strong></span></p><p></p><img src="https://pic3.zhimg.com/v2-fa28f9c725d94fe973cb9054b76a5d3a_b.jpg"><p><s>没有将es6转成es5 在开发者工具勾选</s></p><h2><code>5.进行打包后发布h5，无法访问</code></h2><blockquote><p>解决方式：将web打包路径设置成./(会默认走hash模式) <a target="_blank" rel="noopener noreferrer nofollow" class="the-text-link" href="http://ask.dcloud.net.cn/article/374…">ask.dcloud.net.cn/article/374…</a></p></blockquote>
+<pre><code class="language-css">
+    .tiptap {
     &gt;*+* {
         margin-top: 0.75em;
     }
@@ -222,7 +218,8 @@ const content = ref(`
     ol {
         padding: 0 1rem;
     }
-}</code></pre><h2></h2><hr class="the-text-horizontalRule" contenteditable="true"><ul class="the-text-bulletList"><li><p><code>个人账号无法给他人使用，需要公司账号，进行认证后。</code></p></li></ul><pre><code></code></pre><p></p><p>啊啊啊啊啊啊啊啊啊啊啊</p><table style="minWidth: 75px"><colgroup><col><col><col></colgroup><tbody><tr><th colspan="1" rowspan="1"><p style="text-align: center"><strong><em class="the-text-italic">张三</em></strong></p></th><th colspan="1" rowspan="1"><p>张三2</p></th><th colspan="1" rowspan="1"><p>张三</p></th></tr><tr><td colspan="1" rowspan="1"><p>2</p></td><td colspan="1" rowspan="1"><p style="text-align: center"><span style="font-family: monospace">张三2</span></p></td><th colspan="1" rowspan="1"><p style="text-align: center"><mark data-color="#8ce99a" style="background-color: #8ce99a; color: inherit">张三3</mark></p></th></tr><tr><td colspan="1" rowspan="1"><blockquote><p>张三6</p></blockquote></td><td colspan="1" rowspan="1"><p style="text-align: center"><s>张三5</s></p></td><td colspan="1" rowspan="1"><p><span style="color: rgb(149, 141, 241)">张三4</span></p></td></tr></tbody></table><h2><strong>7. h5跨域</strong></h2><h2 style="text-align: center"><strong>7. input双向绑定失效</strong></h2><p style="text-align: right">基础库选择最高<br>8. uniapp解决 vendor.js 体积过大的问题</p><p><span style="color: rgb(185, 241, 141)">排除引入比较大的插件、静态资源（js、img），运行时 勾选进行压缩 、分包</span></p><h4><mark data-color="#8ce99a" style="background-color: #8ce99a; color: inherit">9.页面参数兼容性</mark></h4><h3>route在h5可以获取，微信小程序获取失败切换成this.route在h5可以获取，微信小程序获取失败 切换成<sup>this.route</sup>在h5可以获取，<a target="_blank" rel="noopener noreferrer nofollow" class="the-text-link" href="http://微信小程序获取失败切换成this.mp">微信小程序获取失败切换成this.mp</a></h3><h4><sup>10.ucharts-tooltip</sup></h4><ol class="the-text-orderedList"><li><p><span style="font-family: serif">ucharts图表 h5 tooltip显示无问题，但是微信小程序tooltip不展示 原因：使用了scroll-view，在qiun-data-charts组件加上inScrollView即可</span></p></li></ol><p><span style="font-family: cursive">2.无法修改tooltip样式，原因： ucharts官方表示不支持插入html文本（写入标签样式代码，不会进行解析编译，当成纯文本展示出来，返回String） ，</span><a target="_blank" rel="noopener noreferrer nofollow" class="the-text-link" href="http://详情可查看www.ucharts.cn/v2/#/ask/qu…"><span style="font-family: cursive">详情可查看www.ucharts.cn/v2/#/ask/qu…</span></a></p><h4>11.uchart 图卡、样式错乱</h4><p>开启最新基础库，启用canvas2d</p><h4>12. uview无法组件内修改原生样式</h4><p>尝试过样式穿透也是无效</p><p>解决方法：common.wxss里修改，注意选择器命名规范，避免冲突。</p><h4>14. ucharts 图表点击事件</h4><p>需求：点击图表进行下钻数据</p><ol class="the-text-orderedList"><li><p>点击X轴数据点：点击后，只能获取坐标信息，无法准确获取点击的坐标轴信息（@getIndex事件）</p></li><li><p>点击柱子：点击后，会与tooltip事件冲突，并且uniapp里移动端无法在tooltip中进行点击，也无法进行修改样式（html不会被解析）。</p></li><li><p>双击柱子：直接用组件引入ucharts,点击后不知道事件类型，但是我们可以模拟，连续点击一定事件时间范围内，认为是双击，再结合@getIndex事件，就可以不影响tooltip的情况下进行点击下钻数据。</p></li></ol><h4>15. 如何进行分包？设置分包了，如何验证自己的分包配置成功？</h4><p>解决方式：<a target="_blank" rel="noopener noreferrer nofollow" class="the-text-link" href="https://link.juejin.cn?target=https%3A%2F%2Fdevelopers.weixin.qq.com%2Fminiprogram%2Fdev%2Fframework%2Fsubpackages%2Findependent.html">官方分包方法</a></p><p>通俗来讲，就是创建一个文件夹，里边存储一些你认为可以独立运行的页面、组件、静态资源，接着在pages.json 按照微信分包的目录格式进行配置，在打包的时候，就会生成一个主包和一个分包。若不配置或者配置不正确，就只有主包生成，分包方式如下：</p><pre><code>@Setter&nbsp;&nbsp;
+}</code></pre>
+<h2></h2><hr class="the-text-horizontalRule" contenteditable="true"><ul class="the-text-bulletList"><li><p><code>个人账号无法给他人使用，需要公司账号，进行认证后。</code></p></li></ul><pre><code></code></pre><p></p><p>啊啊啊啊啊啊啊啊啊啊啊</p><table style="minWidth: 75px"><colgroup><col><col><col></colgroup><tbody><tr><th colspan="1" rowspan="1"><p style="text-align: center"><strong><em class="the-text-italic">张三</em></strong></p></th><th colspan="1" rowspan="1"><p>张三2</p></th><th colspan="1" rowspan="1"><p>张三</p></th></tr><tr><td colspan="1" rowspan="1"><p>2</p></td><td colspan="1" rowspan="1"><p style="text-align: center"><span style="font-family: monospace">张三2</span></p></td><th colspan="1" rowspan="1"><p style="text-align: center"><mark data-color="#8ce99a" style="background-color: #8ce99a; color: inherit">张三3</mark></p></th></tr><tr><td colspan="1" rowspan="1"><blockquote><p>张三6</p></blockquote></td><td colspan="1" rowspan="1"><p style="text-align: center"><s>张三5</s></p></td><td colspan="1" rowspan="1"><p><span style="color: rgb(149, 141, 241)">张三4</span></p></td></tr></tbody></table><h2><strong>7. h5跨域</strong></h2><h2 style="text-align: center"><strong>7. input双向绑定失效</strong></h2><p style="text-align: right">基础库选择最高<br>8. uniapp解决 vendor.js 体积过大的问题</p><p><span style="color: rgb(185, 241, 141)">排除引入比较大的插件、静态资源（js、img），运行时 勾选进行压缩 、分包</span></p><h4><mark data-color="#8ce99a" style="background-color: #8ce99a; color: inherit">9.页面参数兼容性</mark></h4><h3>route在h5可以获取，微信小程序获取失败切换成this.route在h5可以获取，微信小程序获取失败 切换成<sup>this.route</sup>在h5可以获取，<a target="_blank" rel="noopener noreferrer nofollow" class="the-text-link" href="http://微信小程序获取失败切换成this.mp">微信小程序获取失败切换成this.mp</a></h3><h4><sup>10.ucharts-tooltip</sup></h4><ol class="the-text-orderedList"><li><p><span style="font-family: serif">ucharts图表 h5 tooltip显示无问题，但是微信小程序tooltip不展示 原因：使用了scroll-view，在qiun-data-charts组件加上inScrollView即可</span></p></li></ol><p><span style="font-family: cursive">2.无法修改tooltip样式，原因： ucharts官方表示不支持插入html文本（写入标签样式代码，不会进行解析编译，当成纯文本展示出来，返回String） ，</span><a target="_blank" rel="noopener noreferrer nofollow" class="the-text-link" href="http://详情可查看www.ucharts.cn/v2/#/ask/qu…"><span style="font-family: cursive">详情可查看www.ucharts.cn/v2/#/ask/qu…</span></a></p><h4>11.uchart 图卡、样式错乱</h4><p>开启最新基础库，启用canvas2d</p><h4>12. uview无法组件内修改原生样式</h4><p>尝试过样式穿透也是无效</p><p>解决方法：common.wxss里修改，注意选择器命名规范，避免冲突。</p><h4>14. ucharts 图表点击事件</h4><p>需求：点击图表进行下钻数据</p><ol class="the-text-orderedList"><li><p>点击X轴数据点：点击后，只能获取坐标信息，无法准确获取点击的坐标轴信息（@getIndex事件）</p></li><li><p>点击柱子：点击后，会与tooltip事件冲突，并且uniapp里移动端无法在tooltip中进行点击，也无法进行修改样式（html不会被解析）。</p></li><li><p>双击柱子：直接用组件引入ucharts,点击后不知道事件类型，但是我们可以模拟，连续点击一定事件时间范围内，认为是双击，再结合@getIndex事件，就可以不影响tooltip的情况下进行点击下钻数据。</p></li></ol><h4>15. 如何进行分包？设置分包了，如何验证自己的分包配置成功？</h4><p>解决方式：<a target="_blank" rel="noopener noreferrer nofollow" class="the-text-link" href="https://link.juejin.cn?target=https%3A%2F%2Fdevelopers.weixin.qq.com%2Fminiprogram%2Fdev%2Fframework%2Fsubpackages%2Findependent.html">官方分包方法</a></p><p>通俗来讲，就是创建一个文件夹，里边存储一些你认为可以独立运行的页面、组件、静态资源，接着在pages.json 按照微信分包的目录格式进行配置，在打包的时候，就会生成一个主包和一个分包。若不配置或者配置不正确，就只有主包生成，分包方式如下：</p><pre><code>@Setter&nbsp;&nbsp;
 
 @Getter&nbsp;&nbsp;
 
@@ -293,7 +290,7 @@ const comments = ref([
                 },
                 text: '这是一个回复使一个 JWT <script>alert("XSS Attack!")<//script>  1111111 <img src="invalid-image" onerror="alert(\'XSS Attack!\')" />  立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
                 pics: {
-                    url: "https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4b52a24b8e5c4e2ab24654194c4cf2e0~tplv-k3u1fbpfcp-jj-mark:120:120:120:120:q75.avis#?w=523&h=530&s=17160&e=png&b=ffffff",
+                    url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
                     width: 530,
                     height: 523,
                     type: 1
@@ -335,7 +332,7 @@ const comments = ref([
                 },
                 text: '<script>alert("XSS Attack!")<//script>',
                 // pics: {
-                //     url: "https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4b52a24b8e5c4e2ab24654194c4cf2e0~tplv-k3u1fbpfcp-jj-mark:120:120:120:120:q75.avis#?w=523&h=530&s=17160&e=png&b=ffffff",
+                //     url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
                 //     width: 530,
                 //     height: 523,
                 //     type: 1
@@ -359,7 +356,7 @@ const comments = ref([
                 },
                 text: '<div style="color:red;">Text</div>',
                 pics: {
-                    url: "https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4b52a24b8e5c4e2ab24654194c4cf2e0~tplv-k3u1fbpfcp-jj-mark:120:120:120:120:q75.avis#?w=523&h=530&s=17160&e=png&b=ffffff",
+                    url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
                     width: 530,
                     height: 523,
                     type: 1
@@ -383,7 +380,7 @@ const comments = ref([
                 },
                 text: '这是一个回复',
                 pics: {
-                    url: "https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4b52a24b8e5c4e2ab24654194c4cf2e0~tplv-k3u1fbpfcp-jj-mark:120:120:120:120:q75.avis#?w=523&h=530&s=17160&e=png&b=ffffff",
+                    url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
                     width: 530,
                     height: 523,
                     type: 1
@@ -433,7 +430,7 @@ const comments = ref([
         },
         text: '使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，',
         pics: {
-            url: "https://p6-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/4b52a24b8e5c4e2ab24654194c4cf2e0~tplv-k3u1fbpfcp-jj-mark:120:120:120:120:q75.avis#?w=523&h=530&s=17160&e=png&b=ffffff",
+            url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
             width: 530,
             height: 523,
             type: 1
@@ -450,7 +447,7 @@ const close = () => {
     showImageViewer.value = false
 }
 
-window.previewImg= (url) =>{
+window.previewImg = (url) => {
     imgPreviewUrl.value = url
     showImageViewer.value = true
 }
@@ -461,7 +458,7 @@ const textLabelsUp = () => {
 }
 
 const replaceImgWithTag = (str) => {
-    return str.replace(/<img\s+src="([^"]+)"[^>]*>/g, (match,src) => {
+    return str.replace(/<img\s+src="([^"]+)"[^>]*>/g, (match, src) => {
         return `<img class="comment-img" onclick="previewImg('${src}')" src=${src}>`;
     });
 }

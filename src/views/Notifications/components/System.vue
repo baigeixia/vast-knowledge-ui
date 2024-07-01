@@ -3,8 +3,11 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
-
+import { ref,onMounted } from 'vue';
+const pageTitle = ref('系统通知');
+onMounted(() => {
+  document.title = pageTitle.value;
+});
 const emit = defineEmits(['data-loaded']);
 
 // 使用组合式API中的 onMounted 钩子

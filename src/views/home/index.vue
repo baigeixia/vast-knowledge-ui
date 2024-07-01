@@ -13,6 +13,11 @@
 import CoreMain from './components/CoreMain.vue'
 import MainLeft from './components/MainLeft.vue'
 import MainRight from './components/MainRight.vue'
+import { ref,onMounted } from 'vue';
+const pageTitle = ref('首页');
+onMounted(() => {
+  document.title = pageTitle.value;
+});
 </script>
 
 <style lang="scss" scoped>

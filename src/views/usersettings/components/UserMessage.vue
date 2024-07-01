@@ -17,7 +17,11 @@
 </template>
   
 <script setup>
-import { ref} from "vue"
+  import { ref,onMounted } from 'vue';
+const pageTitle = ref('消息设置');
+onMounted(() => {
+  document.title = pageTitle.value;
+});
 const radio = ref(1)
 </script>
   

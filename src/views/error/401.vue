@@ -3,7 +3,11 @@
 </template>
 
 <script setup>
-import {ref} from "vue"
+import { ref,onMounted } from 'vue';
+const pageTitle = ref('401');
+onMounted(() => {
+  document.title = pageTitle.value;
+});
 </script>
 
 <style lang="scss" scoped>

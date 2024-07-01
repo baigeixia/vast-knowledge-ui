@@ -10,7 +10,7 @@
         </div>
         <div class="action-box">
             <div class="emoji-container">
-                <el-popover width="280px" popper-style="padding: 0" :show-arrow='false' placement="bottom" trigger="click">
+                <el-popover  width="280px" popper-style="padding: 0; border-radius: 10px;" :show-arrow='false' placement="bottom" trigger="click">
                     <template #reference>
                         <div class="emoji-box"   >
                             <i class="bi bi-emoji-laughing"></i>
@@ -186,6 +186,9 @@ const showLargePreview = () => {
             display: flex;
             align-items: center;
 
+            // :deep(.el-popover){
+            //     border-radius: 10px;
+            // }
             .preview-box {
                 margin-top: 20px;
                 text-align: center;

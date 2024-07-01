@@ -192,16 +192,39 @@ import hljs from 'highlight.js/lib/common';
 import 'highlight.js/styles/github.css';
 
 onMounted(() => {
-    hljs.highlightAll();
+
+    hljs.highlightAll()
+
+    const codeBlocks = document.querySelectorAll('pre code[class*="language-"]');
+
+codeBlocks.forEach((block) => {
+
+    const match = block.className.match(/\blanguage-([a-zA-Z0-9-]+)\b/);
+    if(match){
+
+    // 获取语言类别
+    // const language = block.className.split('-')[1];
+    const language = match[1]; 
+    if (language.includes('undefined') || language.includes('nohighlight') || language.includes('plaintext')) {
+    return; // 跳出当前循环
+  }
+
+    // 创建语言标签元素
+    const languageLabel = document.createElement('span');
+    languageLabel.textContent = language;
+
+    // 将语言标签插入到代码块的父元素的开头
+    block.parentNode.insertBefore(languageLabel, block.parentNode.firstChild);
+}
+});
 })
 
-console.log('hljs',hljs.initHighlightingOnLoad());
+// console.log('hljs', hljs);
 
 const pageTitle = ref('post4 文章');
 onMounted(() => {
     document.title = pageTitle.value;
 });
-
 
 const { y } = useScroll(window)
 
@@ -466,6 +489,28 @@ const replaceImgWithTag = (str) => {
 </script>
 
 <style lang="scss" scoped>
+.hljs-ln-numbers {
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+
+    text-align: center;
+    color: #ccc;
+    border-right: 1px solid #CCC;
+    vertical-align: top;
+    padding-right: 5px;
+
+    /* your custom style here */
+}
+
+/* for block of code */
+.hljs-ln-code {
+    padding-left: 10px;
+}
+
 :deep(.el-overlay) {
     background-color: rgba(0, 0, 0, 0.05);
 }

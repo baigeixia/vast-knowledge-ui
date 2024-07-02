@@ -22,7 +22,6 @@ onMounted(() => {
 
 <style lang="scss" scoped>
 
-
 :deep(.el-input__wrapper) {
   border-radius: 20px;
 }

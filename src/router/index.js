@@ -116,6 +116,18 @@ const router = createRouter({
           path: '/post/:postId',
           name: 'post',
           component: () => import('../views/post/PostHome.vue'),
+        }, 
+        {
+          path: '/search',
+          name: 'search',
+          component: () => import('../views/search/PostSearch.vue'),
+          props: route => ({
+            query: route.query.query,
+            fromSeo: route.query.fromSeo,
+            fromHistory: route.query.fromHistory,
+            fromSuggest: route.query.fromSuggest,
+            type: route.query.type
+          }),
         }
       ]
     },

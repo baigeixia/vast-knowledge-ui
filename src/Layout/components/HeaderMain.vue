@@ -99,6 +99,10 @@
 <script setup>
 import { ref } from "vue"
 import { byLoading } from '@/utils/Loading'
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
 const headerinput = ref('')
 const Bellvalue = ref(12)
 const Roundvalue = ref(99)
@@ -106,7 +110,19 @@ const Cpuvalue = ref(true)
 
 const headersearch = () => {
   console.log(headerinput.value);
-}
+  const query = encodeURIComponent('先活着再生活');
+      const queryParams = {
+        query: '先活着再生活',
+        fromSeo: 0,
+        fromHistory: 0,
+        fromSuggest: 0,
+        type: 0
+      };
+
+      // 使用 router.push 导航到带查询参数的路由
+      router.push({ name: 'search', query: queryParams });
+    };
+
 
 const item_TO_WE=(type)=>{
   if(type===1){

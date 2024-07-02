@@ -27,8 +27,8 @@
 import { ref, watch } from "vue"
 import { RouterView } from "vue-router"
 import HeaderMain from './components/HeaderMain.vue'
-import { useScroll } from '@vueuse/core'
 import ExternalLinkGuard from '@/Layout/components/ExternalLinkGuard.vue';
+import { useScroll } from '@vueuse/core'
 
 const { y } = useScroll(window)
 
@@ -54,7 +54,6 @@ watch(y, (newValue) => {
 });
 
 const totop = () => {
-    console.log(y.value);
     y.value = 0
 }
 </script>
@@ -139,6 +138,7 @@ const totop = () => {
 
     .header-placeholder {
         height: 60px;
+
     }
 
     .container-main {
@@ -147,9 +147,7 @@ const totop = () => {
         display: flex;
         padding: 20px 0;
         border-radius: 5px;
-
-
-
+        min-height: calc(100vh - 90px);
     }
 }
 </style>

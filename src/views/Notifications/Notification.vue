@@ -97,15 +97,18 @@ watch(route, (to, from) => {
 
 <style lang="scss" scoped>
 .main-notification {
+    // position:relative;
     display: flex;
     flex-direction: column;
-    width: 100%;
+    flex: 1;
     background-color: #fff;
 
     .main-header {
-        height: 46px;
+    position: fixed;
+    width: 100%;
+        height: 50px;
         padding: 0 30px;
-        border-bottom: 3px solid #f2f3f5;
+        border-bottom: 1px solid #f2f3f5;
         display: flex;
         align-items: center;
 
@@ -135,8 +138,8 @@ watch(route, (to, from) => {
         flex: 1;
         // height: 90%;
         margin: 0 auto;
-        margin-top: 20px;
         width: 95%;
+        margin-top: 70px;
 
         .itme {
             display: flex;

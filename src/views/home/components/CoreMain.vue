@@ -11,7 +11,7 @@
       </div>
     </header>
     <div class="top-content">
-      <div class="content-list " v-infinite-scroll="loadMore">
+      <div class="content-list " v-infinite-scroll="loadMore" infinite-scroll-disabled="isLoading">
         <el-skeleton class="skeleton" animated :loading="false">
           <template #template>
             <div class="main-skeleton">
@@ -121,17 +121,24 @@ const router = useRouter();
 
 const page = ref(0)
 const pagesize = ref(10)
+const isLoading = ref(false)
 
 const loadMore = () => {
-  page.value +=1
+  if (isLoading.value) return;
+
+  isLoading.value = true;
+
   console.log(page.value);
   console.log(pagesize.value);
+  page.value += 2
 
+  isLoading.value = false;
   // 模拟异步加载数据
-  setTimeout(() => {
-    // const newData = [...data.value, ...mockData]; // 假设 mockData 是新加载的数据
-    // data.value = newData;
-  }, 1000); // 延迟加载，模拟异步加载数据
+  // setTimeout(() => {
+  //   // const newData = [...data.value, ...mockData]; // 假设 mockData 是新加载的数据
+  //   // data.value = newData;
+  //   isLoading.value = false;
+  // }, 1000); // 延迟加载，模拟异步加载数据
 }
 </script>
 

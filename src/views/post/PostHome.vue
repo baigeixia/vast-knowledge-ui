@@ -839,7 +839,7 @@ const replaceImgWithTag = (str) => {
                             color: inherit;
                             padding: 0;
                             background: none;
-                            font-size: 0.8rem;
+                            //font-size: 0.8rem;
                         }
 
 

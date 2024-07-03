@@ -29,10 +29,10 @@ import { RouterView } from "vue-router"
 import HeaderMain from './components/HeaderMain.vue'
 import ExternalLinkGuard from '@/Layout/components/ExternalLinkGuard.vue';
 import { useScroll } from '@vueuse/core'
-
+import {ishide} from '@/components/Publicvariables'
 const { y } = useScroll(window)
 
-const ishide = ref(false);
+// const ishide = ref(false);
 const threshold = 300;
 let maxY = 0;
 let currentY = 0;

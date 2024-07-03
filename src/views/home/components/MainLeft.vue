@@ -1,14 +1,14 @@
 <template>
   <div class="main-left">
     <div class="side-wrapper">
-      <div class="item-wrap " v-if="channelStore.channellist>0">
+      <div class="item-wrap " v-if="channelStore.channellist > 0">
         <div class="item-content " v-for="itme in channelStore.channellist" :key="itme.id">
-          <div class="item" >
+          <div class="item">
             <el-icon>
               <HelpFilled />
             </el-icon>
             <div class="item-text ">
-              {{itme.name}}
+              {{ itme.name }}
             </div>
           </div>
         </div>
@@ -18,7 +18,7 @@
 </template>
 
 <script setup>
-import { ref ,onMounted} from "vue"
+import { ref, onMounted } from "vue"
 import { channelAppStore } from "@/stores/admin/channel";
 
 const data = ref({
@@ -29,8 +29,8 @@ const data = ref({
 })
 
 const channelStore = channelAppStore()
-onMounted(()=>channelStore.getchannellist(data))
-console.log(channelStore.channellist);
+// onMounted(() => channelStore.getchannellist(data))
+// console.log(channelStore.channellist);
 
 
 </script>
@@ -60,10 +60,10 @@ console.log(channelStore.channellist);
       // top: 0px;
       // left: 0px;
       position: fixed;
-  //     top: 0;
-  // left: 0;
-  // right: 0;
-  transition: transform .2s;
+      //     top: 0;
+      // left: 0;
+      // right: 0;
+      transition: transform .2s;
 
 
       .is-active {
@@ -128,4 +128,5 @@ console.log(channelStore.channellist);
     }
 
   }
-}</style>
+}
+</style>

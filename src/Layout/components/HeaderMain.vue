@@ -109,7 +109,7 @@ const Roundvalue = ref(99)
 const Cpuvalue = ref(true)
 
 const headersearch = () => {
-  console.log(headerinput.value);
+  // console.log(headerinput.value);
   const query = encodeURIComponent('先活着再生活');
       const queryParams = {
         query: '先活着再生活',

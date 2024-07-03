@@ -3,7 +3,7 @@
         <el-header class="main-header" :class="{ 'hidden': ishide }">
             <HeaderMain></HeaderMain>
         </el-header>
-        <ExternalLinkGuard class="guard-box">
+        <ExternalLinkGuard class="guard-box" v-infinite-scroll="maincontent.loadMore" :infinite-scroll-disabled="maincontent.isLoading">
             <div class="header-placeholder"></div>
             <el-main class="container-main">
                 <RouterView></RouterView>
@@ -30,7 +30,11 @@ import HeaderMain from './components/HeaderMain.vue'
 import ExternalLinkGuard from '@/Layout/components/ExternalLinkGuard.vue';
 import { useScroll } from '@vueuse/core'
 import {ishide} from '@/components/Publicvariables'
+import {maincontentAppStore} from '@/stores/admin/maincontent'
+const  maincontent=maincontentAppStore()
+
 const { y } = useScroll(window)
+
 
 // const ishide = ref(false);
 const threshold = 300;

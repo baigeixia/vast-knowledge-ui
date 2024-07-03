@@ -4,7 +4,7 @@
             <div class="header-title">
                 <div class="title" :class="{ active: type == 0 }" @click="switchPage(0)">综合</div>
                 <div class="title" :class="{ active: type == 1 }" @click="switchPage(1)">文章</div>
-                <div class="title" :class="{ active: type == 2 }" @click="switchPage(2)">课程</div>
+                <!-- <div class="title" :class="{ active: type == 2 }" @click="switchPage(2)">课程</div> -->
                 <div class="title" :class="{ active: type == 3 }" @click="switchPage(3)">标签</div>
                 <div class="title" :class="{ active: type == 4 }" @click="switchPage(4)">用户</div>
             </div>
@@ -30,59 +30,25 @@
                     </div>
                 </div>
             </div>
-            <Maincontentlist :contents="contentItems" class="search-content" v-infinite-scroll="loadMore" :infinite-scroll-disabled="isLoading" />
+            <div class="search-content">
+                <Maincontentlist :contents="maincontent.maincontentllist"  />
+            </div>
         </el-main>
     </el-container>
 </template>
 
 <script setup>
 import { ref, onMounted, watchEffect } from "vue"
-import { useScroll } from '@vueuse/core'
 import { ishide } from '@/components/Publicvariables'
 import { useRouter } from 'vue-router';
 import Maincontentlist from '@/views/home/components/Maincontentlist.vue'
+import {maincontentAppStore} from '@/stores/admin/maincontent'
+const  maincontent=maincontentAppStore()
 
-const contentItems = ref([
-  {
-    id: 22,
-    thumb: 'https://picx.zhimg.com/v2-e7e538187231ad6b5d47adf7c06baf70_200x0.jpg?source=172ae18b',
-    title: `预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8
-                        分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到 8 分钟错过航班索赔 2400 元，此事责任在谁？预留 5 分钟「极限登机」，乘客因预约的网约车迟到
-                        8
-                        分钟错过航班索赔 2400 元，此事责任在谁？`,
-    abstract: ` 95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。95，双非本科，多段大厂前端背景，未婚未育，北漂快七年。总包六折结束北漂，聊聊换城市。卷王也不一定能卷的动。`,
-    author: {
-      id: 1,
-      avatar: 'https://via.placeholder.com/40',
-      username: '小红帽的大灰狼',
-      position: '工程师',
-    },
-    browse: '106k',
-    like: '653',
-    tags: [
-      {
-        id:1,
-        url: '/',
-        name: '后端',
-      },
-      {
-        id:2,
-        url: '/',
-        name: '掘金·金石计划',
-      },
-      {
-        id:3,
-        url: '/',
-        name: '前端',
-      },
-    ],
-  }
-])
 
 const router = useRouter();
 const searchtime = ref('1')
 const searchSorting = ref(0)
-const { y } = useScroll(window)
 const options = [
     {
         value: '1',
@@ -110,39 +76,6 @@ const props = defineProps({
     fromSuggest: String,
     type: String
 });
-
-
-const page = ref(0)
-const pagesize = ref(10)
-const isLoading = ref(true)
-
-const loadMore = async () => {
-    if (isLoading.value) return;
-
-    isLoading.value = true;
-
-    console.log(page.value);
-    console.log(pagesize.value);
-    try {
-        // Simulate an asynchronous operation (e.g., API call)
-        await fetchMoreData();
-        page.value += 2; // Update page number
-    } catch (error) {
-        console.error('Error loading more data:', error);
-    } finally {
-        isLoading.value = false; // Reset loading state
-    }
-}
-
-const fetchMoreData = () => {
-    // Simulate fetching more data (replace with actual API call)
-    return new Promise((resolve, reject) => {
-        setTimeout(() => {
-            // Simulated successful data fetch
-            resolve();
-        }, 1000); // Simulated delay
-    });
-};
 
 const queryParams = ref(
     {
@@ -173,27 +106,6 @@ const switchPage = (type) => {
     max-width: 800px;
     margin: 0 auto;
 
-    // .infinite-list {
-    //     height: 300px;
-    //     padding: 0;
-    //     margin: 0;
-    //     list-style: none;
-    // }
-
-    // .infinite-list .infinite-list-item {
-    //     display: flex;
-    //     align-items: center;
-    //     justify-content: center;
-    //     height: 50px;
-    //     background: var(--el-color-primary-light-9);
-    //     margin: 10px;
-    //     color: var(--el-color-primary);
-    // }
-
-    // .infinite-list .infinite-list-item+.list-item {
-    //     margin-top: 10px;
-    // }
-
     .search-header {
         height: 50px;
         background-color: #fff;
@@ -207,8 +119,8 @@ const switchPage = (type) => {
 
         .header-title {
             height: 100%;
-            width: 800px;
-            margin: 0 auto;
+        width: 800px;
+        margin: 0 auto;
             display: flex;
             align-items: center;
 

@@ -104,13 +104,14 @@ watch(route, (to, from) => {
     background-color: #fff;
 
     .main-header {
-    position: fixed;
-    width: 100%;
+    // position: fixed;
+    // width: 100%;
         height: 50px;
         padding: 0 30px;
         border-bottom: 1px solid #f2f3f5;
         display: flex;
         align-items: center;
+        z-index: 200;
 
         .header-link {
             margin-right: 40px;
@@ -139,7 +140,7 @@ watch(route, (to, from) => {
         // height: 90%;
         margin: 0 auto;
         width: 95%;
-        margin-top: 70px;
+        margin-top: 40px;
 
         .itme {
             display: flex;

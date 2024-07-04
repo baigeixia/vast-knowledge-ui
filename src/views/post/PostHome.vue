@@ -55,7 +55,7 @@
                         </div>
                     </div>
                     <!-- <p class="context-box" v-html="$sanitizeHtml(content)"></p> -->
-                    <p class="context-box" v-html="textLabelsUp($sanitizeHtml(content))"></p>
+                    <p class="context-box" v-html="textLabelsUp(escapeHtml(content))"></p>
                 </el-main>
                 <el-footer class="comment-end">
                     <div class="title">评论 14</div>
@@ -205,6 +205,7 @@ import PostComment from './component/PostComment.vue';
 import PostCommentItem from './component/PostCommentItem.vue';
 import hljs from 'highlight.js/lib/common';
 import 'highlight.js/styles/github.css';
+import {escapeHtml} from '@/utils/escapeHtml'
 
 onMounted(() => {
 

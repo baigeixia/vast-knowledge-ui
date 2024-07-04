@@ -3,12 +3,14 @@
         <el-header class="main-header" :class="{ 'hidden': ishide }">
             <HeaderMain></HeaderMain>
         </el-header>
-        <ExternalLinkGuard class="guard-box" v-infinite-scroll="maincontent.loadMore" :infinite-scroll-disabled="maincontent.isLoading">
+        <!-- <ExternalLinkGuard class="guard-box" v-infinite-scroll="maincontent.loadMore" :infinite-scroll-disabled="maincontent.isLoading"> -->
+        <ExternalLinkGuard class="guard-box">
             <div class="header-placeholder"></div>
             <el-main class="container-main">
                 <RouterView></RouterView>
             </el-main>
         </ExternalLinkGuard>
+        <!-- </ExternalLinkGuard> -->
 
         <div class="global-component-box">
             <div class="suspension-panel">
@@ -29,9 +31,9 @@ import { RouterView } from "vue-router"
 import HeaderMain from './components/HeaderMain.vue'
 import ExternalLinkGuard from '@/Layout/components/ExternalLinkGuard.vue';
 import { useScroll } from '@vueuse/core'
-import {ishide} from '@/components/Publicvariables'
-import {maincontentAppStore} from '@/stores/admin/maincontent'
-const  maincontent=maincontentAppStore()
+import { ishide } from '@/components/Publicvariables'
+import { maincontentAppStore } from '@/stores/admin/maincontent'
+const maincontent = maincontentAppStore()
 
 const { y } = useScroll(window)
 
@@ -152,6 +154,7 @@ const totop = () => {
         padding: 20px 0;
         border-radius: 5px;
         min-height: calc(100vh - 90px);
+        overflow-y: hidden;
     }
 }
 </style>

@@ -56,12 +56,11 @@
             </template>
             <div class="content-skeleton-item" v-for="content in  contents" :key="content.id">
                 <div class="content-skeleton-main" @click="router.push(`/post/${content.id}`)">
-                    <div class="title-row">{{ content.title }}</div>
+                    <!-- <div class="title-row" v-html=" content.title">{{ content.title }}</div> -->
+                    <div class="title-row" v-html="escapeHtml(content.title)"></div>
                     <div class="row-text">
                         <img class="thumb" :src="content.thumb">
-                        <div class="abstract">
-                            {{ content.abstract }}
-                        </div>
+                        <div class="abstract" v-html="escapeHtml(content.abstract)"></div>
                     </div>
                 </div>
                 <div class="row-footer">
@@ -99,6 +98,8 @@
 <script setup>
 import { onMounted, ref, nextTick } from "vue"
 import { useRouter } from 'vue-router';
+import {escapeHtml} from '@/utils/escapeHtml'
+
 
 const router = useRouter();
 const mainLoading = ref(true)
@@ -107,7 +108,9 @@ onMounted(() => {
     nextTick(() => {
         mainLoading.value = false;
     });
+ 
 })
+
 
 const props = defineProps({
     contents: {
@@ -120,6 +123,7 @@ const props = defineProps({
 
 <style lang="scss" scoped>
 .content-list {
+    flex: 1;
     background-color: #fff;
 
     .skeleton {

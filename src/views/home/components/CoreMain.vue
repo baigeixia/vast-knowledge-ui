@@ -12,7 +12,7 @@
     </header>
     <div class="top-content">
       <!-- <Maincontentlist class="top-content-list" :contents="contentItems" :infinite-scroll-distance="100"  v-infinite-scroll="loadMore" :infinite-scroll-disabled="isLoading" /> -->
-      <Maincontentlist :contents="maincontent.maincontentllist" />
+      <Maincontentlist :contents="maincontent.maincontentllist"  v-infinite-scroll="maincontent.loadMore" :infinite-scroll-disabled="maincontent.isLoading" />
     </div>
   </div>
 </template>
@@ -21,6 +21,7 @@ import { ref, computed } from "vue"
 import Maincontentlist from './Maincontentlist.vue'
 import {maincontentAppStore} from '@/stores/admin/maincontent'
 const  maincontent=maincontentAppStore()
+
 </script>
 
 <style lang="scss" scoped>
@@ -36,31 +37,7 @@ const  maincontent=maincontentAppStore()
 
 
   .top-content {
-    flex: 1;
     padding: 10px;
-
-    .infinite-list {
-      overflow-y: hidden;
-      height: 700px;
-      padding: 0;
-      margin: 0;
-      list-style: none;
-    }
-
-    .infinite-list-item {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 50px;
-      background: var(--el-color-primary-light-9);
-      margin: 10px;
-      color: var(--el-color-primary);
-    }
-
-    .infinite-list-item+.list-item {
-      margin-top: 10px;
-    }
-
   }
 
   .list-header {

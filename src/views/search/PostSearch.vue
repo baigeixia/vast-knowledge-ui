@@ -9,7 +9,7 @@
                 <div class="title" :class="{ active: type == 4 }" @click="switchPage(4)">用户</div>
             </div>
         </el-header>
-        <el-main class="search-main">
+        <div class="search-main">
             <div class="list-header">
                 <div class="list-nav">
                     <div class="nav-list-left">
@@ -31,9 +31,9 @@
                 </div>
             </div>
             <div class="search-content">
-                <Maincontentlist :contents="maincontent.maincontentllist"  />
+                <Maincontentlist :contents="maincontent.maincontentllist" v-infinite-scroll="maincontent.loadMore" :infinite-scroll-disabled="maincontent.isLoading" />
             </div>
-        </el-main>
+        </div>
     </el-container>
 </template>
 
@@ -156,13 +156,13 @@ const switchPage = (type) => {
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
 
         .list-header {
-            padding: 0 0 1rem 0;
-            border-bottom: 1px solid hsla(0, 0%, 59.2%, .1);
-
+     
             .list-nav {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
+                padding: 1rem 1.66rem;
+  border-bottom: 1px solid #f2f3f5;
 
                 .nav-list-left {
                     display: flex;
@@ -186,6 +186,7 @@ const switchPage = (type) => {
         }
 
         .search-content {
+            padding: 10px;
             :deep(.content-skeleton-item) {
                 padding-bottom: 12px;
             }

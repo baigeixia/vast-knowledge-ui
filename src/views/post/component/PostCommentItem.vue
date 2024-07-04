@@ -71,7 +71,7 @@
 import { ref, onMounted } from 'vue';
 import UserInfoPopover from './UserInfoPopover.vue'
 import PostComment from './PostComment.vue';
-
+import {escapeHtml} from '@/utils/escapeHtml'
 const props = defineProps({
     comment: {
         type: Object,
@@ -125,14 +125,14 @@ const sanitizeString = (str) => {
     return sanitizedString;
 }
 
-const escapeHtml = (unsafe) => {
-    return unsafe.replace(/[&<"']/g, match => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '"': '&quot;',
-        '\'': '&#39;'
-    }[match]));
-}
+// const escapeHtml = (unsafe) => {
+//     return unsafe.replace(/[&<"']/g, match => ({
+//         '&': '&amp;',
+//         '<': '&lt;',
+//         '"': '&quot;',
+//         '\'': '&#39;'
+//     }[match]));
+// }
 
 
 const renderLinks = (text) => {

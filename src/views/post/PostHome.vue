@@ -195,8 +195,8 @@
         </el-drawer>
     </el-container>
 
-    <el-image-viewer v-if="showImageViewer" :url-list="[imgPreviewUrl]" @close="close"
-        :hide-on-click-modal="true"></el-image-viewer>
+    <el-image-viewer v-if="showImageViewer" :preview-teleported="false" :url-list="[imgPreviewUrl]" @close="showImageViewerclose"
+        hide-on-click-modal="true"></el-image-viewer>
 </template>
 <script setup>
 import { ref, onMounted, onBeforeUnmount } from 'vue';
@@ -557,6 +557,11 @@ const comments = ref([
 const imgPreviewUrl = ref('');
 
 
+const showImageViewerclose = () => {
+    document.body.style.overflow = 'auto';
+    showImageViewer.value=false
+}
+
 const collect = () => {
     console.log('收藏');
 }
@@ -573,6 +578,7 @@ const report = () => {
 window.previewImg = (url) => {
     imgPreviewUrl.value = url
     showImageViewer.value = true
+    document.body.style.overflow = 'hidden';
 }
 
 
@@ -624,7 +630,7 @@ const replaceImgWithTag = (str) => {
     flex: 1;
 
     .drawer-left {
-        :deep(.el- el-drawer__close) {
+        :deep(.el-el-drawer__close) {
             display: none;
         }
 

@@ -137,10 +137,10 @@ watch(route, (to, from) => {
 
     .chat-view {
         flex: 1;
-        // height: 90%;
+        display: flex;
         margin: 0 auto;
         width: 95%;
-        margin-top: 40px;
+        margin-top: 10px;
 
         .itme {
             display: flex;

@@ -30,7 +30,10 @@ const checkLink = (event) => {
 }
 
 const continueVisit = () => {
-    window.location.href = externalLink.value
+    window.open(externalLink.value, '_blank');
+  showOverlay.value = false;
+
+    // window.location.href = externalLink.value
 }
 
 const cancelVisit = () => {
@@ -53,6 +56,7 @@ onBeforeUnmount(() => {
 <style lang="scss" scoped>
 .guard-main-box {
     position: relative;
+
     .overlay {
 
         position: fixed;

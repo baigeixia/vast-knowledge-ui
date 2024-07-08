@@ -1,5 +1,5 @@
 <template>
-    <div class="comment-item">
+    <div ref="refInstance" class="comment-item" :id="comment.id">
         <div class="comment-avatar">
             <user-info-popover :author="comment.author">
                 <template v-slot:reference>
@@ -36,8 +36,9 @@
                     <p v-html="sanitizeString(comment.text)"></p>
                 </div>
                 <div class="comment-img-box" v-if="comment.pics">
-                        <el-image class="comment-img" :src="comment.pics.url" :zoom-rate="1.2" :max-scale="7"
-                            :min-scale="0.2" :preview-src-list="[comment.pics.url]"  fit="cover" :hide-on-click-modal="true" lazy />
+                    <el-image class="comment-img" :src="comment.pics.url" :zoom-rate="1.2" :max-scale="7"
+                        :min-scale="0.2" :preview-src-list="[comment.pics.url]" fit="cover" :hide-on-click-modal="true"
+                        lazy />
                 </div>
 
                 <div ref="expandRef" class="expand-action-wrap">
@@ -46,8 +47,11 @@
             </div>
             <div class="comment-meta">
                 <span>{{ comment.time }}</span>
-                <span class="action-itme" :class="{'action':true}"><i class="bi bi-suit-heart-fill"></i> 点赞 {{ comment.likes }}</span>
-                <span class="action-itme" :class="{'action':isanswer}" @click="opisanswer"> <i class="bi bi-chat-left-text-fill"></i> {{isanswer ? '取消回复' :'回复'}}</span>
+                <span class="action-itme" :class="{ 'action': true }"><i class="bi bi-suit-heart-fill"></i> 点赞 {{
+        comment.likes
+    }}</span>
+                <span class="action-itme" :class="{ 'action': isanswer }" @click="opisanswer"> <i
+                        class="bi bi-chat-left-text-fill"></i> {{ isanswer ? '取消回复' : '回复' }}</span>
             </div>
             <div class="comment-reply-editor" v-if="isanswer">
                 <PostComment />
@@ -68,19 +72,63 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
+import { ref, onMounted, nextTick } from 'vue';
 import UserInfoPopover from './UserInfoPopover.vue'
 import PostComment from './PostComment.vue';
-import {escapeHtml} from '@/utils/escapeHtml'
-
+import { escapeHtml } from '@/utils/escapeHtml'
+import { maincommentAppStore } from '@/stores/admin/maincomment'
+const maincomments = maincommentAppStore()
 const props = defineProps({
     comment: {
         type: Object,
         required: true
     }
 });
+const refInstance = ref(null);
+onMounted(() => {
+    if (!maincomments.commentitemRefidMap[props.comment.id]) {
+        maincomments.commentitemRefidMap[props.comment.id] = refInstance
+    }
+    nextTick(() => {
+        //对应文章id
+        const element = maincomments.commentitemRefidMap[47];
+        const offset = element.getBoundingClientRect().top; // 获取元素相对于视口的位置
+        // maincomments.commentitemRefidMap[41].scrollIntoView({ behavior: 'smooth', block: 'center' });
+        window.scrollTo({
+            top: window.scrollY + offset - window.innerHeight / 2, // 滚动到元素中心位置
+            behavior: 'smooth' // 平滑滚动
+        });
+
+        // const observer = new IntersectionObserver(entries => {
+        //     entries.forEach(entry => {
+        //         if (entry.isIntersecting) {
+        //             entry.target.classList.add('flash-animation');
+        //             setTimeout(() => {
+        //                 entry.target.classList.remove('flash-animation');
+        //             }, 500); // 闪动一秒钟后移除动画类名
+        //         }
+        //     });
+        // }, { threshold: 0.5 }); // 当元素至少50%可见时触发
+
+        // observer.observe(element);
+
+        const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+                entry.target.classList.remove('transition-background');
+                entry.target.style.backgroundColor = '#f2f3f5'; // 当元素不在视口时恢复背景色为灰色
+                setTimeout(() => {
+                    entry.target.classList.add('transition-background');
+                    entry.target.style.backgroundColor = 'white'; // 当元素进入视口时设置背景色为白色
+                    }, 500); 
+            });
+        }, { threshold: 0.5 }); // 当元素至少50%可见时触发
+
+        observer.observe(element);
+    })
+})
 
 
+const commentitemRef = ref(null);
 const expanded = ref(false);
 const isanswer = ref(false);
 const isLoading = ref(false)
@@ -105,8 +153,8 @@ onMounted(() =>
     contentRefOP(),
 )
 
-const opisanswer=()=>{
-    isanswer.value=!isanswer.value
+const opisanswer = () => {
+    isanswer.value = !isanswer.value
 }
 
 const contentRefOP = () => {
@@ -161,6 +209,28 @@ const renderLinks = (text) => {
 </script>
 
 <style lang="scss" scoped>
+// @keyframes flash {
+//   0%, 100% {
+//     opacity: 1;
+//   }
+//   50% {
+//     opacity: 0;
+//   }
+// }
+
+// .flash-animation {
+//   animation: flash 0.5s infinite;
+// }
+
+.transition-background {
+    transition: background-color 0.5s ease;
+    /* 背景色变化的过渡动画，持续1秒 */
+    background-color: #f2f3f5;
+    /* 初始背景色为灰色 */
+}
+
+
+
 .rotate {
     animation: rotateAnimation 1s infinite linear;
 }
@@ -240,8 +310,8 @@ const renderLinks = (text) => {
                 width: 120px;
                 height: 120px;
                 overflow: hidden;
-                
-                :deep(.el-image__preview){
+
+                :deep(.el-image__preview) {
                     cursor: zoom-in;
                 }
 
@@ -331,20 +401,21 @@ const renderLinks = (text) => {
     color: gray;
     font-size: 0.9rem;
     margin-top: 0.5rem;
-    .action-itme{
+
+    .action-itme {
         cursor: pointer;
     }
 
-    .action-itme:not(.action):hover{
+    .action-itme:not(.action):hover {
         color: #1e80ff;
     }
 
-    .action{
+    .action {
         color: #1e80ff;
     }
 }
 
-.comment-reply-editor{
+.comment-reply-editor {
     margin: 10px 0;
 }
 

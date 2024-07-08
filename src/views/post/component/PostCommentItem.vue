@@ -72,12 +72,14 @@ import { ref, onMounted } from 'vue';
 import UserInfoPopover from './UserInfoPopover.vue'
 import PostComment from './PostComment.vue';
 import {escapeHtml} from '@/utils/escapeHtml'
+
 const props = defineProps({
     comment: {
         type: Object,
         required: true
     }
 });
+
 
 const expanded = ref(false);
 const isanswer = ref(false);
@@ -117,6 +119,7 @@ const contentRefOP = () => {
 
 const sanitizeString = (str) => {
     const urlRegex = /(https?:\/\/[\w-]+\.[\w-]+(\/[\w- .\/?%&=]*)?)/g;
+    // const urlRegex =  /(https?[^ \n]+)/g;
     // const urlRegex = /^(https?|http):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]$/;
     // const urlRegex = /(http|https):\/\/([\w.]+\/?)\S*/ig;
     const escapedString = escapeHtml(str);
@@ -348,7 +351,7 @@ const renderLinks = (text) => {
 .replies {
     margin-top: 1rem;
     margin-left: 2rem;
-    border-left: 2px solid #e0e0e0;
+    // border-left: 2px solid #e0e0e0;
     padding-left: 1rem;
 }
 </style>

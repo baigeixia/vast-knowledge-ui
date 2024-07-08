@@ -1,5 +1,7 @@
 <template>
-  <div class="">system</div>
+  <div class="">
+    system
+    </div>
 </template>
 
 <script setup>

@@ -16,22 +16,29 @@
                 :src="message.user_type == 'sender' ? testmessage.sender.avatar_url : testmessage.receiver.avatar_url">
             </div>
           </div>
-          <el-tooltip trigger="click" popper-class="chat-tooltip-message-popper" :style="{ fontSize: '20px' }"  show-after="200" :placement="message.user_type == 'receiver'? 'left'  : 'right' "  :show-arrow="false" effect="light">
+          <el-tooltip :offset="0" trigger="click" popper-class="chat-tooltip-message-popper" :show-after="200"
+            :placement="message.user_type == 'receiver' ? 'left' : 'right'" :show-arrow="false" effect="light">
             <div class="message-content">
               <div class="message-text" v-html="message.text"></div>
             </div>
             <template #content>
-              <div class="content-status">
-                <i class="bi bi-three-dots-vertical"></i>
-                <!-- <div class="status-wrapper">
-                  <div class="status-more">
-                    悬浮框
+              <el-tooltip placement="bottom" popper-class="chat-tooltip-status-popper" effect="light" trigger="click">
+                <div class="content-status">
+                  <i class="bi bi-three-dots"></i>
+                </div>
+                <template #content>
+                  <div class="content-status-op">
+                    <el-button  @click="statusopendel" link>
+                      删除
+                    </el-button>
+                    <!-- <el-button  link>
+                      举报
+                    </el-button> -->
                   </div>
-                </div> -->
-              </div>
+                </template>
+              </el-tooltip>
             </template>
           </el-tooltip>
-
         </div>
       </div>
       <div v-if="true" class="loading-animation">
@@ -46,8 +53,8 @@
     <div class="inputBox">
       <div class="toolBar">
         <div class="emoji-container">
-          <el-popover width="280px" popper-style="padding: 0; border-radius: 10px;" :show-arrow='false'
-            placement="bottom" trigger="click">
+          <el-popover width="280px" popper-style="padding: 0; border-radius: 10px;" :show-arrow='false' placement="bottom"
+            trigger="click">
             <template #reference>
               <div class="emoji-box">
                 <i class="bi bi-emoji-laughing"></i>
@@ -68,19 +75,18 @@
           placeholder="发送消息 . . ." @keyup.enter.ctrl.prevent="sendmessage" />
       </div>
       <div class="inputBox-footer">
-        <span class="footer-hint">按Enter换行,按Ctrl+Enter键发送 </span>
-        <el-button type="primary" :disabled="!commentinput" @click="sendmessage">发送</el-button>
+        <span class="footer-hint">按Enter换行 </span>
+        <el-button type="primary" :disabled="!commentinput" @click="sendmessage">发送(Ctrl+Enter)</el-button>
       </div>
     </div>
-
   </div>
-
 </template>
 
 <script setup>
 import { ref, onMounted, nextTick } from "vue"
 import EmojiFileInput from '@/Layout/components/EmojiFileInput.vue';
 import { escapeHtml } from '@/utils/escapeHtml'
+import  {safeHtml}  from '@/utils/domPurifyConfig'
 
 const fileInput = ref(null)
 const EmojiFileInputRef = ref(null)
@@ -105,7 +111,7 @@ const testmessage = ref(
       {
         "id": "1407317459048861696",
         "type": "message",
-        "text": `不好意思现在才看到你消息。没有接触过她，望加油`,
+        "text": `凌鲨(linksaas)是专注于软件研发团队的效率工具，里面提供了很多研发小工具。整个项目是开源的，`,
         "created_time": 1628310628,
         "content_type": 0,
         "image": null,
@@ -115,7 +121,7 @@ const testmessage = ref(
       {
         "id": "1407317459048861696",
         "type": "message",
-        "text": `嘿哥们，你好。打扰你一下。请问下这个妹子你联系过没有，加了好友吗，现在是断了联系，还是说还正在保持联系？就是问你一声，如果已经没联系我就接触一下，还在联系，我就不加好友了。因为我不想多线操作，也不想被多线。谢谢，打扰了~ \u003ca href=\"https://www.zhihu.com/people/annie-37-28-90\" class=\"internal\"\u003e\u003cspan class=\"invisible\"\u003ehttps://www.\u003c/span\u003e\u003cspan class=\"visible\"\u003ezhihu.com/people/annie-\u003c/span\u003e\u003cspan class=\"invisible\"\u003e37-28-90\u003c/span\u003e\u003cspan class=\"ellipsis\"\u003e\u003c/span\u003e\u003c/a\u003e`,
+        "text": `凌鲨(linksaas)是专注于软件研发团队的效率工具，里面提供了很多研发小工具。整个项目是开源的，凌鲨(linksaas)是专注于软件研发团队的效率工具，里面提供了很多研发小工具。整个项目是开源的，`,
         "created_time": 1628310628,
         "content_type": 0,
         "image": null,
@@ -125,7 +131,7 @@ const testmessage = ref(
       {
         "id": "1407317459048861696",
         "type": "message",
-        "text": `不好意思现在才看到你消息。没有接触过她，望加油`,
+        "text": `凌鲨(linksaas)是专注于软件研发团队的效率工具，里面提供了很多研发小工具。整个项目是开源的，`,
         "created_time": 1628310628,
         "content_type": 0,
         "image": null,
@@ -151,7 +157,8 @@ const upmessage = ref({
     {
       "id": "1407317459048861696",
       "type": "message",
-      "text": `凌鲨(linksaas)是专注于软件研发团队的效率工具，里面提供了很多研发小工具。整个项目是开源的，可以根据需要二次开发，代码地址 linksaas / desktop · 极狐GitLab (jihulab.com) 。预编译版本 凌鲨 软件研发团队信息枢纽 (linksaas.pro)凌鲨(linksaas)是专注于软件研发团队的效率工具，里面提供了很多研发小工具。整个项目是开源的，可以根据需要二次开发，代码地址 linksaas / desktop · 极狐GitLab (jihulab.com) 。预编译版本 凌鲨 软件研发团队信息枢纽 (linksaas.pro)`,
+      "text": ` &lt;img src=x onerror=alert(1)//>
+<a href="https://www.google.com/search?q=dompurify%E4%BD%BF%E7%94%A8&amp;newwindow=1&amp;client=firefox-b-d&amp;sca_esv=44aafcd442c2ff9c&amp;sca_upv=1&amp;sxsrf=ADLYWIIDMup5-whHfIeqNTDabjGUFqbZpw%3A1720419864454&amp;ei=GIaLZsmtG9q74-EPkvy7yA8&amp;oq=DOMPurify&amp;gs_lp=Egxnd3Mtd2l6LXNlcnAiCURPTVB1cmlmeSoCCAAyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEdIsAVQAFgAcAF4AZABAJgBAKABAKoBALgBAcgBAJgCAaACC5gDAIgGAZAGCpIHATGgBwA&amp;sclient=gws-wiz-serp" target="_blank" title="https://www.google.com/search?q=dompurify%E4%BD%BF%E7%94%A8&amp;newwindow=1&amp;client=firefox-b-d&amp;sca_esv=44aafcd442c2ff9c&amp;sca_upv=1&amp;sxsrf=ADLYWIIDMup5-whHfIeqNTDabjGUFqbZpw%3A1720419864454&amp;ei=GIaLZsmtG9q74-EPkvy7yA8&amp;oq=DOMPurify&amp;gs_lp=Egxnd3Mtd2l6LXNlcnAiCURPTVB1cmlmeSoCCAAyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEdIsAVQAFgAcAF4AZABAJgBAKABAKoBALgBAcgBAJgCAaACC5gDAIgGAZAGCpIHATGgBwA&amp;sclient=gws-wiz-serp"><i class="bi bi-link-45deg"></i>www.google.com</a> 11111`,
       "created_time": 1628310628,
       "content_type": 0,
       "image": null,
@@ -161,7 +168,10 @@ const upmessage = ref({
     {
       "id": "1407317459048861696",
       "type": "message",
-      "text": `凌鲨(linksaas)是专注于软件研发团队的效率工具，里面提供了很多研发小工具。整个项目是开源的，可以根据需要二次开发，代码地址 linksaas / desktop · 极狐GitLab (jihulab.com) 。预编译版本 凌鲨 软件研发团队信息枢纽 (linksaas.pro)凌鲨(linksaas)是专注于软件研发团队的效率工具，里面提供了很多研发小工具。整个项目是开源的，可以根据需要二次开发，代码地址 linksaas / desktop · 极狐GitLab (jihulab.com) 。预编译版本 凌鲨 软件研发团队信息枢纽 (linksaas.pro)`,
+      "text": `&lt;img src=x onerror=alert(1)//>
+<a href="https://element-plus.org/zh-CN/component/message-box.html#%E9%85%8D%E7%BD%AE%E9%A1%B9" target="_blank" title="https://element-plus.org/zh-CN/component/message-box.html#%E9%85%8D%E7%BD%AE%E9%A1%B9"><i class="bi bi-link-45deg"></i>element-plus.org</a> 111
+<a href="https://element-plus.org/zh-CN/component/message-box.html#%E9%85%8D%E7%BD%AE%E9%A1%B9" target="_blank" title="https://element-plus.org/zh-CN/component/message-box.html#%E9%85%8D%E7%BD%AE%E9%A1%B9"><i class="bi bi-link-45deg"></i>element-plus.org</a>
+555`,
       "created_time": 1628310628,
       "content_type": 0,
       "image": null,
@@ -210,21 +220,29 @@ const formatDate = (timestamp) => {
   const minutes = ('0' + date.getMinutes()).slice(-2);
   return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
-
 const sendmessage = () => {
-  const vluse = sanitizeString(commentinput.value)
+
+  // const vluse =safeHtml(commentinput.value)
+  const vluse =sanitizeString(commentinput.value)
+
+  // console.log('消息', escapedString);
   console.log('消息', vluse);
+
+  commentinput.value=''
 }
 const sanitizeString = (str) => {
-  const urlRegex = /(https?:\/\/[\w-]+\.[\w-]+(\/[\w- .\/?%&=]*)?)/g;
+  // const urlRegex = /(https?:\/\/[\w-]+\.[\w-]+(\/[\w- .\/?%&=]*)?)/g;
+  const urlRegex =  /(https?[^ \n]+)/g;
   const escapestr = escapeHtml(str)
+  // const escapestr =safeHtml(str)
   const sanitizedString = escapestr.replace(urlRegex, (match) => {
     const url = new URL(match); // 使用 new URL() 获取 URL 对象
     return `<a href="${url.href}" target="_blank" title="${url.href}"><i class="bi bi-link-45deg"></i>${url.hostname}</a>`;
   });
 
+
+  // return escapedString;
   return sanitizedString;
-  // return escapeHtml(sanitizedString);
 }
 
 const commentinputfocus = (emoji) => {
@@ -266,12 +284,51 @@ const handleFileChange = (event) => {
   }
 }
 
+const statusopendel=()=>{
+  ElMessageBox.confirm(
+    '是否删除该条消息',
+    '删除消息',
+    {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning',
+    }
+  )
+    .then(() => {
+      ElMessage({
+        type: 'success',
+        message: '删除成功',
+      })
+    })
+    .catch(() => {
+      ElMessage({
+        type: 'info',
+        message: '取消成功',
+      })
+    })
+}
+
 
 </script>
 
 <style lang="scss">
-.chat-tooltip-message-popper{
-  background-color:#000000 ;
+.chat-tooltip-message-popper {
+  border: none !important;
+  font-size: 15px;
+
+}
+
+.chat-tooltip-status-popper {
+
+  .content-status-op {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    .el-button{
+      margin: 10px 10px;
+    }
+  }
 }
 </style>
 <style lang="scss" scoped>
@@ -493,7 +550,7 @@ const handleFileChange = (event) => {
           }
         }
 
-      
+
         .message-content {
           box-sizing: border-box;
           min-width: 0px;
@@ -525,6 +582,7 @@ const handleFileChange = (event) => {
 
         .content-status {
           background-color: #fff;
+
           .status-wrapper {
             position: relative;
 

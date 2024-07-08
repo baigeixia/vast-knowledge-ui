@@ -30,7 +30,7 @@
                 </div>
             </el-tooltip>
             <el-tooltip content="分享" placement="left" effect="light">
-                <div class="panel-btn" @click="share()" >
+                <div class="panel-btn" @click="share()">
                     <i class="bi bi-share-fill"></i>
                 </div>
             </el-tooltip>
@@ -188,25 +188,25 @@
                     </div>
                 </div>
                 <div class="comment-list">
-                    <PostCommentItem v-for="comment in comments" :key="comment.id" :comment="comment" />
+                    <PostCommentItem :ref="registerPostCommentRef(comment.id)" v-for="comment in comments" :key="comment.id"
+                        :comment="comment" />
                 </div>
                 <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div>
             </div>
         </el-drawer>
     </el-container>
 
-    <el-image-viewer v-if="showImageViewer" :preview-teleported="false" :url-list="[imgPreviewUrl]" @close="showImageViewerclose"
-        hide-on-click-modal="true"></el-image-viewer>
+    <el-image-viewer v-if="showImageViewer" :preview-teleported="false" :url-list="[imgPreviewUrl]"
+        @close="showImageViewerclose" hide-on-click-modal="true"></el-image-viewer>
 </template>
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from 'vue';
+import { ref, onMounted, onBeforeUnmount,reactive, nextTick, watchEffect } from 'vue';
 import { useScroll } from '@vueuse/core'
 import PostComment from './component/PostComment.vue';
 import PostCommentItem from './component/PostCommentItem.vue';
 import hljs from 'highlight.js/lib/common';
 import 'highlight.js/styles/github.css';
-import {escapeHtml} from '@/utils/escapeHtml'
-
+import { escapeHtml } from '@/utils/escapeHtml'
 onMounted(() => {
 
     hljs.highlightAll()
@@ -245,12 +245,49 @@ onMounted(() => {
         }
     });
 })
-
-
 const pageTitle = ref('post4 文章');
 onMounted(() => {
     document.title = pageTitle.value;
 });
+
+// const postCommentItemRefs = ref([]);
+
+const postCommentItemRefs = ref(new Map());
+
+onMounted(() => {
+    // scrollToCommentItem(33)
+    watchEffect(() => {
+        if (drawer.value) {
+            scrollToCommentItem(33)
+        }
+    })
+})
+
+const registerPostCommentRef = (id) => (el) => {
+    if (el && !postCommentItemRefs.value.has(id)) {
+        console.log('eltypr',typeof(el));
+        postCommentItemRefs.value.set(id, el);
+    }
+};
+
+const scrollToCommentItem = (id) => {
+    console.log('id', id);
+    console.log('postCommentItemRefs.value', postCommentItemRefs);
+    // const element = postCommentItemRefs.value[id];
+    // if (element) {
+    //     element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    // }
+    const element = postCommentItemRefs.value.get(id);
+    console.log('element',  typeof(element));
+    console.log('element 22', element instanceof HTMLElement );
+    if (element instanceof HTMLElement ) {
+        element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+};
+
+
+
+
 
 const { y } = useScroll(window)
 
@@ -535,7 +572,7 @@ const comments = ref([
         ]
     },
     {
-        id: 3,
+        id: 33,
         author: {
             id: 31,
             avatar: 'https://via.placeholder.com/40',
@@ -558,9 +595,10 @@ const comments = ref([
 const imgPreviewUrl = ref('');
 
 
+
 const showImageViewerclose = () => {
     document.body.style.overflow = 'auto';
-    showImageViewer.value=false
+    showImageViewer.value = false
 }
 
 const collect = () => {
@@ -757,28 +795,29 @@ const replaceImgWithTag = (str) => {
         margin-top: 5px;
         box-sizing: border-box;
     }
+
     .fetch-more-comment {
-                    margin-top: 12px;
-                    border-radius: 4px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    color: #515767;
-                    font-size: 15px;
-                    height: 52px;
-                    cursor: pointer;
-                    background: #f7f8fa;
-                    font-weight: 500;
-                    transition: all .2s;
+        margin-top: 12px;
+        border-radius: 4px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #515767;
+        font-size: 15px;
+        height: 52px;
+        cursor: pointer;
+        background: #f7f8fa;
+        font-weight: 500;
+        transition: all .2s;
 
-                    i {
-                        font-size: 20px;
-                    }
-                }
+        i {
+            font-size: 20px;
+        }
+    }
 
-                .fetch-more-comment:hover {
-                    background-color: #f2f3f5;
-                }
+    .fetch-more-comment:hover {
+        background-color: #f2f3f5;
+    }
 
     .home-center {
         overflow-y: hidden;
@@ -1099,7 +1138,7 @@ const replaceImgWithTag = (str) => {
                     }
                 }
 
-                
+
 
             }
 

@@ -133,7 +133,7 @@
 <script setup>
 import { ref, onMounted, computed } from 'vue';
 import { ElMessage } from 'element-plus'
-import ChatChatBox from './ChatChatBox.vue';
+import ChatChatBox from './components/ChatChatBox.vue';
 const useractive = ref('')
 const recentlist = ref([
   {

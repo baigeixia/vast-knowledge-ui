@@ -23,7 +23,7 @@ onMounted(() => {
 .guard-box {
   :deep(a) {
     color: #1e80ff;
-    margin: 0 2px;
+    margin: 0 5px;
   }
 }
 

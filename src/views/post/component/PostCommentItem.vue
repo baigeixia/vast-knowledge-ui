@@ -117,6 +117,8 @@ const contentRefOP = () => {
 
 const sanitizeString = (str) => {
     const urlRegex = /(https?:\/\/[\w-]+\.[\w-]+(\/[\w- .\/?%&=]*)?)/g;
+    // const urlRegex = /^(https?|http):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]$/;
+    // const urlRegex = /(http|https):\/\/([\w.]+\/?)\S*/ig;
     const escapedString = escapeHtml(str);
     const sanitizedString = escapedString.replace(urlRegex, (match) => {
         const url = new URL(match); // 使用 new URL() 获取 URL 对象

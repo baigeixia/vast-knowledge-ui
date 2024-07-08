@@ -6,7 +6,7 @@
         <el-autocomplete v-model="searchinput"  @select="handleSelect" :fetch-suggestions="querySearch" prefix-icon="Search" :trigger-on-focus="false" style="width: 240px" placeholder="搜索联系人" clearable  @change="searchchange" />
       </div>
       <div class="contacts-list">
-        <el-menu default-active="1" class="contacts-list-tac" :unique-opened="true" @open="handleOpen">
+        <el-menu :default-openeds="['1']" class="contacts-list-tac" :unique-opened="true" @open="handleOpen">
           <el-sub-menu index="1">
             <template #title>最近联系</template>
             <div class="menu-list" v-infinite-scroll="loadrecent">

@@ -1,5 +1,5 @@
 <template>
-    <div  class="comment-item" :id="vice ? comment.id :null">
+    <div class="comment-item" :id="vice ? comment.id : null">
         <div class="comment-avatar">
             <user-info-popover :author="comment.author">
                 <template v-slot:reference>
@@ -34,28 +34,32 @@
             <div class="comment-text">
                 <div ref="contentRef" class="content" :class="{ 'expand': expanded }">
                     <p v-html="sanitizeString(comment.text)"></p>
+                    <!-- <p v-html="comment.text"></p> -->
                 </div>
                 <div ref="expandRef" class="expand-action-wrap">
                     <span @click="expanded = !expanded" class="expand-action">{{ expanded ? '收起' : '展开' }}</span>
                 </div>
                 <div class="comment-img-box" v-if="comment.pics">
-                    <el-image class="comment-img" :src="comment.pics.url" :zoom-rate="1.2" :max-scale="7" :min-scale="0.2"
-                        :preview-src-list="[comment.pics.url]" fit="cover" :hide-on-click-modal="true" lazy />
+                    <el-image class="comment-img" :src="comment.pics.url" :zoom-rate="1.2" :max-scale="7"
+                        :min-scale="0.2" :preview-src-list="[comment.pics.url]" fit="cover" :hide-on-click-modal="true"
+                        lazy />
                 </div>
             </div>
             <div class="comment-meta">
                 <span>{{ comment.time }}</span>
-                <span class="action-itme" :class="{ 'action': true }"><i class="bi bi-suit-heart-fill"></i> 点赞 {{
-                    comment.likes
-                }}</span>
-                <span class="action-itme" :class="{ 'action': isAnswerOpen === comment.id }" @click="toggleAnswer(comment.id)"> <i
-                        class="bi bi-chat-left-text-fill"></i> {{ isAnswerOpen === comment.id? '取消回复' : '回复' }}</span>
+                <span class="action-itme" :class="{ 'action': true }">
+                    <i class="bi bi-suit-heart-fill"></i> 点赞 {{ comment.likes }}
+                </span>
+                <span class="action-itme" :class="{ 'action': isOpenreply }"
+                    @click="toggleAnswer(commentId)">
+                    <i class="bi bi-chat-left-text-fill"></i> {{ isOpenreply ? '取消回复' : '回复' }}</span>
             </div>
-            <div class="comment-reply-editor" v-if="isAnswerOpen == comment.id">
+            <div class="comment-reply-editor" v-if="isOpenreply">
                 <PostComment />
             </div>
             <div class="replies" v-if="comment.childcomments && comment.childcomments.length">
-                <PostCommentItem  :id="vice ? reply.id :null " v-for="reply in comment.childcomments" :key="reply.id"  :comment="reply" class="reply-item" />
+                <PostCommentItem :id="vice ? reply.id : null" v-for="reply in comment.childcomments" :key="reply.id"
+                    :comment="reply" class="reply-item" />
             </div>
             <div v-if="comment?.childcommentcount > 2" class="top-has-more">
                 <span @click="selectcomment" :class="{ 'loading': isLoading }">
@@ -69,8 +73,9 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from 'vue';
-import UserInfoPopover from './UserInfoPopover.vue'
+import { ref, onMounted, computed, nextTick } from 'vue';
+// import UserInfoPopover from '@/ ./UserInfoPopover.vue'
+import UserInfoPopover from '@/components/UserInfoPopover.vue'
 import PostComment from './PostComment.vue';
 import { escapeHtml } from '@/utils/escapeHtml'
 import { maincommentAppStore } from '@/stores/admin/maincomment'
@@ -80,12 +85,17 @@ const { isAnswerOpen } = storeToRefs(maincomments)
 
 const toggleAnswer = maincomments.toggleAnswer;
 
+const isOpenreply = computed(() =>
+   isAnswerOpen.value === commentId.value
+)
+const commentId = computed(() =>props.vice ? `vice-${props.comment.id}` : props.comment.id );
+
 const props = defineProps({
     comment: {
         type: Object,
         required: true
     },
-    vice:{
+    vice: {
         type: Boolean,
         required: false
     }
@@ -120,7 +130,6 @@ const opisanswer = () => {
 }
 
 const contentRefOP = () => {
-
     if (contentRef.value.scrollHeight > contentRef.value.clientHeight) {
         expandRef.value.style.display = '-webkit-box';
     } else {
@@ -130,9 +139,6 @@ const contentRefOP = () => {
 
 const sanitizeString = (str) => {
     const urlRegex = /(https?:\/\/[\w-]+\.[\w-]+(\/[\w- .\/?%&=]*)?)/g;
-    // const urlRegex =  /(https?[^ \n]+)/g;
-    // const urlRegex = /^(https?|http):\/\/[-A-Za-z0-9+&@#/%?=~_|!:,.;]+[-A-Za-z0-9+&@#/%=~_|]$/;
-    // const urlRegex = /(http|https):\/\/([\w.]+\/?)\S*/ig;
     const escapedString = escapeHtml(str);
     const sanitizedString = escapedString.replace(urlRegex, (match) => {
         const url = new URL(match); // 使用 new URL() 获取 URL 对象
@@ -164,7 +170,6 @@ const renderLinks = (text) => {
 </script>
 
 <style lang="scss" scoped>
-
 .rotate {
     animation: rotateAnimation 1s infinite linear;
 }

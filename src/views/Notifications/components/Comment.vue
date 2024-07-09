@@ -1,9 +1,12 @@
 <template>
-    <div class="">comment</div>
+    <div class="comment-box">
+        <NotificationList />
+    </div>
 </template>
 
 <script setup>
 import { ref,onMounted } from 'vue';
+import NotificationList from '@/components/NotificationList.vue'
 const pageTitle = ref('评论');
 onMounted(() => {
   document.title = pageTitle.value;
@@ -22,4 +25,8 @@ onMounted(() => {
 });
 </script>
 
-<style lang="scss" scoped></style>
+<style lang="scss" scoped>
+.comment-box{
+    flex: 1;
+}
+</style>

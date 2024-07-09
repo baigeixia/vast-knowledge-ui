@@ -64,7 +64,7 @@
                             <div class="avatar-box">
                                 <div class="avatar">
                                     <img class="avatar-img"
-                                        src="https://pica.zhimg.com/v2-f57e645ceb13a99ebada96a799c8dca6_b.jpg">
+                                        src="https://pica.zhimg.com/v2-3385f8c86358be2b085231a4035e7709_l.jpg">
                                 </div>
                             </div>
                             <div class="form-box">
@@ -81,7 +81,7 @@
                         </div>
                     </div>
                     <div class="comment-list">
-                        <PostCommentItem v-for="comment in comments" :key="comment.id" :comment="comment" />
+                        <PostCommentItemAsync v-for="comment in comments" :key="comment.id" :comment="comment" />
                     </div>
                     <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div>
                 </el-footer>
@@ -208,9 +208,8 @@ import PostCommentItem from './component/PostCommentItem.vue';
 import hljs from 'highlight.js/lib/common';
 import 'highlight.js/styles/github.css';
 import { escapeHtml } from '@/utils/escapeHtml'
-import { maincommentAppStore } from '@/stores/admin/maincomment'
-const maincomments = maincommentAppStore()
-
+import { defineAsyncComponent } from 'vue';
+const PostCommentItemAsync = defineAsyncComponent(() => import('./component/PostCommentItem.vue'));
 const notice = ref({
     id: 1,
     isdrawer: true
@@ -464,7 +463,7 @@ const comments = ref([
                 },
                 text: '<a href="https://example.com">Link</a> 3',
                 pics: {
-                    url: "https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg",
+                    url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
                     width: 530,
                     height: 523,
                     type: 1
@@ -689,7 +688,7 @@ const comments = ref([
                 },
                 text: '<a href="https://example.com">Link</a> 43',
                 pics: {
-                    url: "https://fuss10.elemecdn.com/a/3f/3302e58f9a181d2509f3dc0fa68b0jpeg.jpeg",
+                    url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
                     width: 530,
                     height: 523,
                     type: 1

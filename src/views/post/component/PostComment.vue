@@ -1,7 +1,7 @@
 <template>
     <div class="auth-card" :class="{ 'auth-card-hovered': isHovered, 'auth-card-focused': (isFocused || commentinput) }"
         @mouseover="isHovered = true" @mouseleave="isHovered = false">
-        <el-input ref="commentinputRef" :autosize="{ minRows: 2, maxRows: 30 }" @keydown.enter.prevent show-word-limi
+        <el-input ref="commentinputRef" :autosize="{ minRows: 2, maxRows: 10 }" @keydown.enter.prevent show-word-limi
             maxlength="1000" type="textarea" v-model="commentinput" placeholder="平等表达，友善交流" clearable
             @focus="isFocused = true" @blur="isFocused = false" />
         <div v-if="imageUrl" class="small-preview-box">
@@ -106,7 +106,8 @@ const showLargePreview = () => {
 :deep(.el-textarea__inner) {
     // background-color: #f4f4f4;
     background-color: #e4e6eb;
-    font-size: 18px;
+    // font-size: 18px;
+    font-size: 16px;
     min-height: 44px;
     width: 100%;
     line-height: 1.4;
@@ -138,6 +139,7 @@ const showLargePreview = () => {
     background-color: #f4f4f4;
     padding: 10px;
     border-radius: 8px;
+    margin: 2px;
 
     .small-preview-box:hover .remove-icon {
         display: block;

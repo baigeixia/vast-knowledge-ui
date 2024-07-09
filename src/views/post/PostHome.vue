@@ -81,7 +81,7 @@
                         </div>
                     </div>
                     <div class="comment-list">
-                        <PostCommentItem   v-for="comment in comments" :key="comment.id" :comment="comment" />
+                        <PostCommentItem v-for="comment in comments" :key="comment.id" :comment="comment" />
                     </div>
                     <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div>
                 </el-footer>
@@ -170,27 +170,29 @@
                 </div>
             </el-aside>
         </el-container>
-        <el-drawer class="drawer-left" v-model="drawer" direction="rtl" :lock-scroll="false">
+        <el-drawer class="drawer-left" size="33.5%" v-model="drawer" direction="rtl" :lock-scroll="false"
+            @opened="onDrawerOpen">
             <template #header="{ titleId }">
                 <h4 :id="titleId" class="comment-drawer-header">
                     <span class="title">评论</span>
                 </h4>
             </template>
-            <div class="comment-form comment-editor">
-                <div class="comment-input">
-                    <PostComment />
-                </div>
-
-                <div class="comment-list-wrapper">
-                    <div class="comment-list-header">
-                        <div class="item active"><span>最热</span></div>
-                        <div class="item"><span>最新</span></div>
+            <div class="comment-list-box">
+                <div class="comment-form comment-editor">
+                    <div class="comment-input">
+                        <PostComment />
                     </div>
+                    <div class="comment-list-wrapper">
+                        <div class="comment-list-header">
+                            <div class="item active"><span>最热</span></div>
+                            <div class="item"><span>最新</span></div>
+                        </div>
+                    </div>
+                    <div class="comment-list" v-infinite-scroll="load">
+                        <PostCommentItem :vice="true" v-for="comment in comments" :key="comment.id" :comment="comment" />
+                    </div>
+                    <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div>
                 </div>
-                <div class="comment-list">
-                    <PostCommentItem v-for="comment in comments" :key="comment.id" :comment="comment" />
-                </div>
-                <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div>
             </div>
         </el-drawer>
     </el-container>
@@ -199,13 +201,55 @@
         @close="showImageViewerclose" hide-on-click-modal="true"></el-image-viewer>
 </template>
 <script setup>
-import { ref, onMounted, onBeforeUnmount, reactive, nextTick, watchEffect ,isProxy ,isReactive,isReadonly} from 'vue';
+import { ref, onMounted, onBeforeUnmount, reactive, nextTick, toRaw, watchEffect, isProxy, isReactive, isReadonly } from 'vue';
 import { useScroll } from '@vueuse/core'
 import PostComment from './component/PostComment.vue';
 import PostCommentItem from './component/PostCommentItem.vue';
 import hljs from 'highlight.js/lib/common';
 import 'highlight.js/styles/github.css';
 import { escapeHtml } from '@/utils/escapeHtml'
+import { maincommentAppStore } from '@/stores/admin/maincomment'
+const maincomments = maincommentAppStore()
+
+const notice = ref({
+    id: 1,
+    isdrawer: true
+})
+
+const page = ref(0)
+const load = () => {
+    page.value++
+    console.log(page.value);
+    comments.value = [...comments.value, ...upcomments.value]
+}
+
+const onDrawerOpen = () => {
+    let id = notice.value.id
+    if (id) {
+        nextTick(() => {
+            const element = document.getElementById(id);
+            if (element) {
+                element.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" })
+                const observer = new IntersectionObserver(entries => {
+                    entries.forEach(entry => {
+                        entry.target.classList.remove('transition-background');
+                        entry.target.style.backgroundColor = '#f2f3f5'; // 当元素不在视口时恢复背景色为灰色
+                        setTimeout(() => {
+                            entry.target.classList.add('transition-background');
+                            entry.target.style.backgroundColor = 'white'; // 当元素进入视口时设置背景色为白色
+                        }, 500);
+
+                        observer.disconnect();
+                    });
+                }, { threshold: 0.5 }); // 当元素至少50%可见时触发
+
+                observer.observe(element);
+            }
+        })
+    }
+};
+
+
 onMounted(() => {
 
     hljs.highlightAll()
@@ -247,6 +291,7 @@ onMounted(() => {
 const pageTitle = ref('post4 文章');
 onMounted(() => {
     document.title = pageTitle.value;
+
 });
 
 const { y } = useScroll(window)
@@ -370,7 +415,7 @@ const showImageViewer = ref(false)
 const isagree = ref(true)
 const ismsg = ref(false)
 const isfollow = ref(false)
-const drawer = ref(false)
+const drawer = ref(true)
 const comments = ref([
     {
         id: 1,
@@ -543,7 +588,7 @@ const comments = ref([
         time: '6个月前',
         likes: 5,
         childcomments: []
-    },{
+    }, {
         id: 34,
         author: {
             id: 31,
@@ -561,7 +606,7 @@ const comments = ref([
         time: '6个月前',
         likes: 5,
         childcomments: []
-    },{
+    }, {
         id: 35,
         author: {
             id: 31,
@@ -579,7 +624,7 @@ const comments = ref([
         time: '6个月前',
         likes: 5,
         childcomments: []
-    },{
+    }, {
         id: 36,
         author: {
             id: 31,
@@ -597,7 +642,7 @@ const comments = ref([
         time: '6个月前',
         likes: 5,
         childcomments: []
-    },{
+    }, {
         id: 41,
         author: {
             id: 1,
@@ -752,6 +797,48 @@ const comments = ref([
     },
 ]);
 
+const upcomments = ref([
+    {
+        id: 1,
+        author: {
+            id: 1,
+            avatar: 'https://via.placeholder.com/40',
+            username: '用户1',
+            position: '工程师',
+        },
+        text: '1 https://www.zhihu.com/people/annie-37-28-90 <script>alert("XSS Attack!")<//script>使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现 <img src="invalid-image" onerror="alert(\'XSS Attack!\')" />  https://github.com/vueComponent/ant-design-vue',
+        pics: {
+            url: "https://p9-passport.byteacctimg.com/img/user-avatar/7afb026d59be994d6e7e27c9d28944b5~50x50.awebp",
+            width: 530,
+            height: 523,
+            type: 1
+        },
+        time: '1个月前',
+        likes: 1,
+        childcommentcount: 17,
+        childcomments: [
+            {
+                id: 2,
+                author: {
+                    id: 2,
+                    avatar: 'https://via.placeholder.com/40',
+                    username: '用户2',
+                    position: '前端开发2',
+                },
+                text: '2 这是一个回复使一个 JWT <script>alert("XSS Attack!")<//script>  1111111 <img src="invalid-image" onerror="alert(\'XSS Attack!\')" />  立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
+                pics: {
+                    url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
+                    width: 530,
+                    height: 523,
+                    type: 1
+                },
+                time: '2个月前',
+                likes: 2,
+            }
+        ]
+    }
+]);
+
 const imgPreviewUrl = ref('');
 
 
@@ -794,6 +881,14 @@ const replaceImgWithTag = (str) => {
 </script>
 
 <style lang="scss" scoped>
+.transition-background {
+    background-color: #f2f3f5;
+
+    transition: background-color 0.2s ease;
+    transition: background-color 0.5s ease-out;
+}
+
+
 .hljs-ln-numbers {
 
     -webkit-touch-callout: none;
@@ -823,6 +918,8 @@ const replaceImgWithTag = (str) => {
 
 :deep(.el-drawer__body) {
     padding-top: 0;
+    padding-right: 0;
+    // overflow-y: hidden;
 }
 
 .post-home-main {
@@ -831,6 +928,16 @@ const replaceImgWithTag = (str) => {
     .drawer-left {
         :deep(.el-el-drawer__close) {
             display: none;
+        }
+
+        .comment-list-box{
+            height: 800;
+            .comment-form {
+            display: flex;
+            position: relative;
+            border-radius: 2px;
+            flex-direction: column;
+        }
         }
 
         .comment-drawer-header {
@@ -855,13 +962,7 @@ const replaceImgWithTag = (str) => {
             }
         }
 
-        .comment-form {
-            display: flex;
-            position: relative;
-            border-radius: 2px;
-            flex-direction: column;
-        }
-
+       
 
     }
 
@@ -947,8 +1048,9 @@ const replaceImgWithTag = (str) => {
     }
 
     .comment-list {
-        min-height: 120px;
-        margin-top: 10px;
+        // margin-top: 10px;
+        // padding-right: 15px;
+        padding: 20px;
     }
 
     .comment-input {

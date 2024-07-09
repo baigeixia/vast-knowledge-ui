@@ -3,16 +3,18 @@
     <el-aside class="im-left">
       <div class="left-herder-search">
         <!-- <el-input v-model="searchinput" style="width: 240px" placeholder="搜索联系人" suffix-icon="Search" clearable  @change="searchchange" /> -->
-        <el-autocomplete v-model="searchinput"  @select="handleSelect" :fetch-suggestions="querySearch" prefix-icon="Search" :trigger-on-focus="false" style="width: 240px" placeholder="搜索联系人" clearable  @change="searchchange" />
+        <el-autocomplete v-model="searchinput" @select="handleSelect" :fetch-suggestions="querySearch"
+          prefix-icon="Search" :trigger-on-focus="false" style="width: 240px" placeholder="搜索联系人" clearable
+          @change="searchchange" />
       </div>
       <div class="contacts-list">
         <el-menu :default-openeds="['1']" class="contacts-list-tac" :unique-opened="true" @open="handleOpen">
           <el-sub-menu index="1">
             <template #title>最近联系</template>
             <div class="menu-list" v-infinite-scroll="loadrecent">
-              <div v-if="recentlist.length === 0"   class="list-EmptyState">还没有对话</div>
-              <div v-else class="listItem" :class="{ 'listItem-active': useractive === item.id }" @click="sendmessage(item.id)"
-                v-for="item in recentlist" :key="item.id">
+              <div v-if="recentlist.length === 0" class="list-EmptyState">还没有对话</div>
+              <div v-else class="listItem" :class="{ 'listItem-active': useractive === item.id }"
+                @click="sendmessage(item.id)" v-for="item in recentlist" :key="item.id">
                 <div class="info-avatar">
                   <img class="info-avatar-img" :src="item.avatar">
                 </div>
@@ -40,9 +42,9 @@
           <el-sub-menu index="2">
             <template #title>陌生人私信</template>
             <div class="menu-list" v-infinite-scroll="loadrecent">
-              <div v-if="strangerlist.length === 0"   class="list-EmptyState">还没有对话</div>
-              <div v-else class="listItem" :class="{ 'listItem-active': useractive === item.id }" @click="sendmessage(item.id)"
-                v-for="item in strangerlist" :key="item.id">
+              <div v-if="strangerlist.length === 0" class="list-EmptyState">还没有对话</div>
+              <div v-else class="listItem" :class="{ 'listItem-active': useractive === item.id }"
+                @click="sendmessage(item.id)" v-for="item in strangerlist" :key="item.id">
                 <div class="info-avatar">
                   <img class="info-avatar-img" :src="item.avatar">
                 </div>
@@ -70,9 +72,9 @@
           <el-sub-menu index="3">
             <template #title>互相关注</template>
             <div class="menu-list" v-infinite-scroll="loadrecent">
-              <div v-if="mutualconcernlist.length === 0"   class="list-EmptyState">还没有对话</div>
-              <div v-else class="listItem" :class="{ 'listItem-active': useractive === item.id }" @click="sendmessage(item.id)"
-                v-for="item in mutualconcernlist" :key="item.id">
+              <div v-if="mutualconcernlist.length === 0" class="list-EmptyState">还没有对话</div>
+              <div v-else class="listItem" :class="{ 'listItem-active': useractive === item.id }"
+                @click="sendmessage(item.id)" v-for="item in mutualconcernlist" :key="item.id">
                 <div class="info-avatar">
                   <img class="info-avatar-img" :src="item.avatar">
                 </div>
@@ -121,13 +123,11 @@
       </template>
     </el-dialog>
 
-    <el-main class="chat-main">    
+    <el-main class="chat-main">
       <ChatChatBox></ChatChatBox>
-</el-main>
+    </el-main>
     <!-- {{ useractive }} -->
   </el-container>
-
-
 </template>
 
 <script setup>
@@ -324,26 +324,26 @@ const handleSelect = (item) => {
 
 
 const querySearch = (queryString, cb) => {
-  const results= []
+  const results = []
 
   console.log(queryString);
-  
-  searchInList(recentlist,queryString,results);
-  searchInList(strangerlist,queryString,results);
-  searchInList(mutualconcernlist,queryString,results)
+
+  searchInList(recentlist, queryString, results);
+  searchInList(strangerlist, queryString, results);
+  searchInList(mutualconcernlist, queryString, results)
 
   cb(results)
 }
 
-const searchInList = (list,queryString,results) => {
-    list.value.forEach((item, index) => {
-      if (item.name.includes(queryString)) {
-        results.push({ value: item.name, id: item.id });
-      }
-    });
-  };
+const searchInList = (list, queryString, results) => {
+  list.value.forEach((item, index) => {
+    if (item.name.includes(queryString)) {
+      results.push({ value: item.name, id: item.id });
+    }
+  });
+};
 
- 
+
 
 
 const loadrecent = () => {
@@ -443,8 +443,8 @@ onMounted(() => {
 .im-box {
   flex: 1;
 
-  .chat-main{
-    
+  .chat-main {
+
     padding-top: 0;
   }
 
@@ -517,9 +517,10 @@ onMounted(() => {
           transition: height 300ms;
           height: 390px;
           overflow-y: auto;
-          .list-EmptyState{
-  padding: 32px 0;
-  text-align: center;
+
+          .list-EmptyState {
+            padding: 32px 0;
+            text-align: center;
           }
         }
 

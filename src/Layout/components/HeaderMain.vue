@@ -56,14 +56,13 @@
         </el-dropdown>
         <el-dropdown style=" cursor: pointer;">
           <div class="right-li">
-            <el-badge :is-dot="Cpuvalue" :offset="[-10, 5]">
+            <!-- <el-badge :is-dot="Cpuvalue" :offset="[-10, 5]"> -->
               <div class="right-li-datails">
                 <el-icon>
                   <Cpu />
                 </el-icon>
                 <div>创作中心</div>
               </div>
-            </el-badge>
           </div>
           <template #dropdown>
             <el-dropdown-menu>

@@ -64,41 +64,123 @@
                     </div>
                 </div>
                 <div class="row-footer">
-                    <ul class="action-list">
-                        <li class="item-li">
+                    <div class="action-list">
+                        <div class="item-li">
                             <RouterLink to="/user" class="user-message">
                                 <div class="user-popover">{{ content.author.username }}</div>
                             </RouterLink>
-                        </li>
-                        <li class="item-li view">
+                        </div>
+                        <div class="item-li view">
                             <el-icon>
                                 <View />
                             </el-icon>
                             <span> {{ content.browse }}</span>
-                        </li>
-                        <li class="item-li like">
+                        </div>
+                        <div class="item-li like">
                             <i class="bi bi-suit-heart"></i>
                             <span> {{ content.like }}</span>
-                        </li>
-                        <li class="dislike-item">
+                        </div>
+                        <div class="dislike-item">
                             <el-icon>
                                 <More />
                             </el-icon>
-                        </li>
-                    </ul>
+                        </div>
+                        <div class="item-li">
+                            <el-dropdown class="dropdown-menu">
+                                <div><i class="bi bi-three-dots dots"></i></div>
+                                <template #dropdown>
+                                    <el-dropdown-menu>
+                                        <el-dropdown-item>
+                                            <div @click="dislike(content.id)">不感兴趣</div>
+                                        </el-dropdown-item>
+                                        <el-dropdown-item>
+                                            <div @click="report(content.id)">举报</div>
+                                            <!-- <div @click="reportdialog=true">举报</div> -->
+                                        </el-dropdown-item>
+                                    </el-dropdown-menu>
+                                </template>
+                            </el-dropdown>
+                        </div>
+                    </div>
                     <div class="row-footer-tags">
-                        <a class="footer-tag " :href='tag.url' v-for="tag in content.tags" :key="tag.id">{{ tag.name }}</a>
+                        <a class="footer-tag " :href='tag.url' v-for="tag in content.tags" :key="tag.id">{{ tag.name
+                            }}</a>
                     </div>
                 </div>
             </div>
         </el-skeleton>
+        <el-dialog class="report-dialog" v-model="reportdialog" title="举报" width="650"
+            :before-close="reportdialogClose">
+            <div class="report-group-title">
+                <div class="title-marl">*</div>
+                请选择举报类型
+            </div>
+            <el-radio-group class="report-group" v-model="reporting" size="large">
+                <el-radio-button v-for="city in cities" :key="city" :value="city">
+                    {{ city }}
+                </el-radio-button>
+            </el-radio-group>
+            <template #footer>
+                <div class="report-dialog-footer">
+                    <el-button :disabled="!reporting" type="primary" round @click="reportsubmit()">
+                        提交举报
+                    </el-button>
+                </div>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
 <script setup>
 import { onMounted, ref, nextTick } from "vue"
-import {escapeHtml} from '@/utils/escapeHtml'
+import { escapeHtml } from '@/utils/escapeHtml'
 import { useRouter } from 'vue-router';
+
+const cities = ['涉政有害', '不友善', '垃圾广告'
+    , '涉嫌侵权'
+    , '色情低俗'
+    , '网络暴力'
+    , '涉未成年'
+    , '自杀自残'
+    , '不实信息'
+    , '扰乱社区秩序'
+    , '涉嫌诈骗'
+    , '冒充'
+]
+
+const reporting = ref(null)
+const reportdialog = ref(false);
+const reportuserid = ref('')
+
+const reportsubmit = () => {
+    console.log('举报理由', reporting.value)
+    if (reporting.value) {
+        ElMessage.success('已提交举报申请')
+    } else {
+        ElMessage.warning('请选择举报理由')
+    }
+    console.log('id',reportuserid.value,'举报',reporting.value);
+    reportdialog.value = false
+    reporting.value = ''
+    reportuserid.value=''
+}
+
+const reportdialogClose = () => {
+    reportdialog.value = false
+    reporting.value = null
+    reportuserid.value=''
+}
+
+const dislike = (id) => {
+    console.log('不喜欢', id);
+}
+
+
+const report = (id) => {
+    console.log('举报', id);
+    reportdialog.value=true
+    reportuserid.value=id
+}
 
 
 const router = useRouter();
@@ -108,7 +190,7 @@ onMounted(() => {
     nextTick(() => {
         mainLoading.value = false;
     });
- 
+
 })
 
 
@@ -122,9 +204,58 @@ const props = defineProps({
 </script>
 
 <style lang="scss" scoped>
+
+
 .content-list {
     flex: 1;
     background-color: #fff;
+
+    .report-dialog {
+
+.report-group-title {
+    margin-bottom: 20px;
+    display: flex;
+    box-sizing: border-box;
+    // margin: 0px;
+    min-width: 0px;
+    font-weight: 600;
+    font-size: 16px;
+    color: rgb(25, 27, 31);
+
+    .title-marl {
+        color: rgb(217, 83, 80);
+        margin-left: 10px;
+        margin-right: 5px;
+
+    }
+}
+
+.report-group {
+    justify-content: center;
+
+    .el-radio-button {
+        margin: 5px;
+        border: var(--el-border);
+
+        :deep(.el-radio-button__inner) {
+            width: 174px;
+            border: #f2f3f5;
+        }
+    }
+}
+
+.report-dialog-footer {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+
+    .el-button {
+        width: 370px;
+    }
+}
+
+}
 
     .skeleton {
         .main-skeleton {
@@ -149,6 +280,17 @@ const props = defineProps({
 
     .content-skeleton-item:hover {
         background-color: #f7f8fa;
+
+        .row-footer {
+            .action-list {
+                .item-li {
+                    .dots {
+                        display: block;
+                    }
+                }
+            }
+        }
+
     }
 
     .content-skeleton-item {
@@ -263,6 +405,7 @@ const props = defineProps({
                     cursor: default;
                 }
 
+
                 .item-li {
                     display: flex;
                     align-items: center;
@@ -272,6 +415,23 @@ const props = defineProps({
                     line-height: 20px;
                     color: #8a919f;
                     flex-shrink: 0;
+
+                    .dropdown-menu {
+                        .menu-item {
+                            line-height: 40px;
+                            box-sizing: border-box;
+                            cursor: pointer;
+                            display: block;
+                            padding: 0 20px;
+                            text-align: left;
+                        }
+                    }
+
+
+                    .dots {
+                        display: none;
+                        cursor: pointer;
+                    }
 
                     .el-icon {
                         font-size: 16px;

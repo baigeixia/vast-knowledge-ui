@@ -15,13 +15,23 @@
         <div class="global-component-box">
             <div class="suspension-panel">
                 <el-tooltip effect="light" content="建议反馈" placement="left">
-                    <el-button link class="btn meiqia-btn"><i class="bi bi-send-exclamation"></i></el-button>
+                    <el-button @click="dialogVisible=true" link class="btn meiqia-btn"><i class="bi bi-send-exclamation"></i></el-button>
                 </el-tooltip>
                 <el-button v-if="y > 60" link class="btn meiqia-btn fade-in" @click="totop"><i
                         class="bi bi-chevron-bar-up"></i>
                 </el-button>
             </div>
         </div>
+        <el-dialog v-model="dialogVisible" title="反馈 & 建议" width="500" :before-close="handleClose">
+            <el-input :autosize="{ minRows: 10, maxRows: 20 }" resize="none" type="textarea" v-model="commentinput" placeholder="宝贵建议填写处 . . ." />
+            <template #footer>
+                <div class="dialog-footer">
+                    <el-button :disabled="commentinput.length < 1" type="primary" @click="sendpropose">
+                        发送
+                    </el-button>
+                </div>
+            </template>
+        </el-dialog>
     </el-container>
 </template>
 
@@ -37,8 +47,18 @@ const maincontent = maincontentAppStore()
 
 const { y } = useScroll(window)
 
-
-// const ishide = ref(false);
+const sendpropose = () => {
+    dialogVisible.value = false
+    console.log('意见提交',commentinput.value);
+    commentinput.value=''
+    //发消息
+}
+const handleClose = () => {
+    dialogVisible.value = false
+     commentinput.value=''
+}
+const dialogVisible = ref(false);
+const commentinput = ref('');
 const threshold = 300;
 let maxY = 0;
 let currentY = 0;
@@ -65,6 +85,15 @@ const totop = () => {
 </script>
 
 <style lang="scss" scoped>
+:deep(.el-textarea__inner) {
+    min-height: 85px;
+    display: block;
+    /* 禁止用户手动调整大小 */
+    // resize: none;
+    /* 根据需要调整内边距 */
+    padding: 10px;
+    outline: none;
+}
 .bo-wen {
     overflow: hidden;
     min-height: 925px;

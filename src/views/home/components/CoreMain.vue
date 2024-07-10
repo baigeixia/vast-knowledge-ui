@@ -4,9 +4,13 @@
       <div class="list">
         <ul class="list-ul">
           <li class="list-li is-active">
-            <a href="/">推荐</a>
+            <!-- <a href="/"></a> -->
+            <RouterLink to="/"> 推荐</RouterLink>
           </li>
-          <li class="list-li"><a href="/">最新</a></li>
+          <li class="list-li">
+            <!-- <a href="/">最新</a> -->
+            <RouterLink to="/"> 最新</RouterLink>
+          </li>
         </ul>
       </div>
     </header>

@@ -10,7 +10,11 @@
       <div class="contacts-list">
         <el-menu :default-openeds="['1']" class="contacts-list-tac" :unique-opened="true" @open="handleOpen">
           <el-sub-menu index="1">
-            <template #title>最近联系</template>
+            <template #title>
+              <el-badge :value="recentCount" :offset="[0, 15]" :is-dot="focusonCount < 2">
+                最近联系
+              </el-badge>
+            </template>
             <div class="menu-list" v-infinite-scroll="loadrecent">
               <div v-if="recentlist.length === 0" class="list-EmptyState">还没有对话</div>
               <div v-else class="listItem" :class="{ 'listItem-active': useractive === item.id }"
@@ -20,7 +24,9 @@
                 </div>
                 <div class="info-content">
                   <div class="info-name">
-                    <div class="name-top">{{ item.name }}</div>
+                    <el-badge :offset="[3, 4]" :is-dot="item.unread">
+                      <div class="name-top">{{ item.name }}</div>
+                    </el-badge>
                     <time>刚刚</time>
                   </div>
                   <div class="info-snippet">{{ item.snippet }}</div>
@@ -40,7 +46,10 @@
             </div>
           </el-sub-menu>
           <el-sub-menu index="2">
-            <template #title>陌生人私信</template>
+            <template #title>
+              <el-badge :value="strangerCount" :offset="[0, 15]" :is-dot="focusonCount < 2">
+                陌生人私信
+              </el-badge></template>
             <div class="menu-list" v-infinite-scroll="loadrecent">
               <div v-if="strangerlist.length === 0" class="list-EmptyState">还没有对话</div>
               <div v-else class="listItem" :class="{ 'listItem-active': useractive === item.id }"
@@ -50,7 +59,9 @@
                 </div>
                 <div class="info-content">
                   <div class="info-name">
-                    <div class="name-top">{{ item.name }}</div>
+                    <el-badge :offset="[3, 4]" :is-dot="item.unread">
+                      <div class="name-top">{{ item.name }}</div>
+                    </el-badge>
                     <time>刚刚</time>
                   </div>
                   <div class="info-snippet">{{ item.snippet }}</div>
@@ -70,7 +81,11 @@
             </div>
           </el-sub-menu>
           <el-sub-menu index="3">
-            <template #title>互相关注</template>
+            <template #title>
+              <el-badge :value="focusonCount" :offset="[0, 15]" :is-dot="focusonCount < 2">
+                互相关注
+              </el-badge>
+            </template>
             <div class="menu-list" v-infinite-scroll="loadrecent">
               <div v-if="mutualconcernlist.length === 0" class="list-EmptyState">还没有对话</div>
               <div v-else class="listItem" :class="{ 'listItem-active': useractive === item.id }"
@@ -80,7 +95,11 @@
                 </div>
                 <div class="info-content">
                   <div class="info-name">
-                    <div class="name-top">{{ item.name }}</div>
+                    <el-badge :offset="[3, 4]" :is-dot="item.unread">
+                      <div class="name-top">
+                        {{ item.name }}
+                      </div>
+                    </el-badge>
                     <time>刚刚</time>
                   </div>
                   <div class="info-snippet">{{ item.snippet }}</div>
@@ -135,6 +154,9 @@ import { ref, onMounted, computed } from 'vue';
 import { ElMessage } from 'element-plus'
 import ChatChatBox from './components/ChatChatBox.vue';
 const useractive = ref('')
+const focusonCount = ref(1)
+const strangerCount = ref(2)
+const recentCount = ref(2)
 const recentlist = ref([
   {
     id: '11',
@@ -144,7 +166,8 @@ const recentlist = ref([
 8 旬老太直播卖货流水百万；
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`
+「全媒体运营官培养计划」限额参加～`,
+unread:true
   },
   {
     id: '11',
@@ -154,7 +177,8 @@ const recentlist = ref([
 8 旬老太直播卖货流水百万；
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`
+「全媒体运营官培养计划」限额参加～`,
+unread:false
   },
   {
     id: '11',
@@ -164,7 +188,8 @@ const recentlist = ref([
 8 旬老太直播卖货流水百万；
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`
+「全媒体运营官培养计划」限额参加～`,
+unread:false
   },
   {
     id: '11',
@@ -174,7 +199,8 @@ const recentlist = ref([
 8 旬老太直播卖货流水百万；
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`
+「全媒体运营官培养计划」限额参加～`,
+unread:false
   },
   {
     id: '11',
@@ -184,7 +210,8 @@ const recentlist = ref([
 8 旬老太直播卖货流水百万；
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`
+「全媒体运营官培养计划」限额参加～`,
+unread:false
   },
   {
     id: '11',
@@ -194,7 +221,8 @@ const recentlist = ref([
 8 旬老太直播卖货流水百万；
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`
+「全媒体运营官培养计划」限额参加～`,
+unread:false
   },
   {
     id: '11',
@@ -204,7 +232,8 @@ const recentlist = ref([
 8 旬老太直播卖货流水百万；
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`
+「全媒体运营官培养计划」限额参加～`,
+unread:false
   },
 ])
 const testlist = ref([
@@ -216,7 +245,8 @@ const testlist = ref([
 8 旬老太直播卖货流水百万；
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`
+「全媒体运营官培养计划」限额参加～`,
+unread:false
   },])
 const strangerlist = ref([
   {
@@ -227,7 +257,8 @@ const strangerlist = ref([
 8 旬老太直播卖货流水百万；
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`
+「全媒体运营官培养计划」限额参加～`,
+unread:false
 
   },
   {
@@ -238,7 +269,8 @@ const strangerlist = ref([
 8 旬老太直播卖货流水百万；
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`
+「全媒体运营官培养计划」限额参加～`,
+unread:false
   },
   {
     id: '5',
@@ -248,7 +280,8 @@ const strangerlist = ref([
 8 旬老太直播卖货流水百万；
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`
+「全媒体运营官培养计划」限额参加～`,
+unread:false
   },
 ])
 const mutualconcernlist = ref([
@@ -260,7 +293,8 @@ const mutualconcernlist = ref([
 8 旬老太直播卖货流水百万；
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`
+「全媒体运营官培养计划」限额参加～`,
+unread:false
   },
   {
     id: '7',
@@ -270,7 +304,8 @@ const mutualconcernlist = ref([
 8 旬老太直播卖货流水百万；
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`
+「全媒体运营官培养计划」限额参加～`,
+unread:false
   },
   {
     id: '8',
@@ -280,7 +315,8 @@ const mutualconcernlist = ref([
 8 旬老太直播卖货流水百万；
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`
+「全媒体运营官培养计划」限额参加～`,
+unread:false
   },
   {
     id: '8',
@@ -290,7 +326,8 @@ const mutualconcernlist = ref([
 8 旬老太直播卖货流水百万；
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`
+「全媒体运营官培养计划」限额参加～`,
+unread:false
   },
   {
     id: '8',
@@ -300,7 +337,8 @@ const mutualconcernlist = ref([
 8 旬老太直播卖货流水百万；
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`
+「全媒体运营官培养计划」限额参加～`,
+unread:false
   },
   {
     id: '8',
@@ -310,7 +348,8 @@ const mutualconcernlist = ref([
 8 旬老太直播卖货流水百万；
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`
+「全媒体运营官培养计划」限额参加～`,
+unread:false
   },
 
 ])

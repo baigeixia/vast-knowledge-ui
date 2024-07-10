@@ -2,24 +2,37 @@
     <div class="main-notification">
         <div class="main-header">
             <RouterLink class="header-link" to="/notifications">
-                <el-button :class="{ 'tabs': true, 'active': isActive('/notifications') }" size="large"
-                    link>评论</el-button>
+                <el-button :class="{ 'tabs': true, 'active': isActive('/notifications') }" size="large" link>
+                    <el-badge :value="comment" :show-zero="false" :offset="[1, 5]" >
+                        评论与回复
+                    </el-badge>
+                </el-button>
             </RouterLink>
             <RouterLink class="header-link" to="/notifications/digg">
-                <el-button :class="{ 'tabs': true, 'active': isActive('/notifications/digg') }" size="large" link>赞和收藏
+                <el-button :class="{ 'tabs': true, 'active': isActive('/notifications/digg') }" size="large" link>
+                    <el-badge :value="digg" :show-zero="false" :offset="[1, 5]">
+                        赞和收藏
+                    </el-badge>
                 </el-button>
             </RouterLink>
             <RouterLink class="header-link" to="/notifications/follow">
-                <el-button :class="{ 'tabs': true, 'active': isActive('/notifications/follow') }" size="large"
-                    link>新增粉丝</el-button>
+                <el-button :class="{ 'tabs': true, 'active': isActive('/notifications/follow') }" size="large" link>
+                    <el-badge  :value="follow" :show-zero="false" :offset="[1, 5]">
+                        新增粉丝
+                    </el-badge></el-button>
             </RouterLink>
             <RouterLink class="header-link" to="/notifications/im">
-                <el-button :class="{ 'tabs': true, 'active': isActive('/notifications/im') }" size="large"
-                    link>私信</el-button>
+                <el-button :class="{ 'tabs': true, 'active': isActive('/notifications/im') }" size="large" link>
+                <el-badge
+                        :value="im" :show-zero="false" :offset="[1, 5]">
+                        私信
+                    </el-badge></el-button>
             </RouterLink>
             <RouterLink class="header-link" to="/notifications/system">
                 <el-button :class="{ 'tabs': true, 'active': isActive('/notifications/system') }" size="large"
-                    link>系统通知</el-button>
+                    link><el-badge :value="system" :show-zero="false" :offset="[1, 5]">
+                        系统通知
+                    </el-badge></el-button>
             </RouterLink>
         </div>
         <div class="chat-view">
@@ -59,19 +72,24 @@
                         </div>
                     </div>
                 </template>
-                <RouterView  @data-loaded="handleDataLoaded" />
+                <RouterView @data-loaded="handleDataLoaded" />
             </el-skeleton>
         </div>
     </div>
 </template>
 
 <script setup>
-import { ref, watch ,onMounted} from "vue"
+import { ref, watch, onMounted } from "vue"
 
 import { useRoute } from 'vue-router';
 
 const titleType = ref('1')
 const loading = ref(false)
+const system = ref(1)
+const comment = ref(2)
+const digg = ref(3)
+const follow = ref(4)
+const im = ref(150)
 
 const totitleType = (tab, event) => {
     titleType.value = tab.paneName
@@ -104,8 +122,8 @@ watch(route, (to, from) => {
     background-color: #fff;
 
     .main-header {
-    // position: fixed;
-    // width: 100%;
+        // position: fixed;
+        // width: 100%;
         height: 50px;
         padding: 0 30px;
         border-bottom: 1px solid #f2f3f5;

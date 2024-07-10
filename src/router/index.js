@@ -116,6 +116,10 @@ const router = createRouter({
           path: '/post/:postId',
           name: 'post',
           component: () => import('../views/post/PostHome.vue'),
+          props: route => ({
+            postId: route.params.postId,
+            notificationId: route.query.notificationId
+          })
         }, 
         {
           path: '/search',

@@ -170,7 +170,7 @@
                 </div>
             </el-aside>
         </el-container>
-        <el-drawer class="drawer-left" size="33.5%" v-model="drawer" direction="rtl" :lock-scroll="false"
+        <el-drawer class="drawer-right" size="33.5%" v-model="drawer" direction="rtl" :lock-scroll="false"
             @opened="onDrawerOpen">
             <template #header="{ titleId }">
                 <h4 :id="titleId" class="comment-drawer-header">
@@ -210,10 +210,16 @@ import 'highlight.js/styles/github.css';
 import { escapeHtml } from '@/utils/escapeHtml'
 import { defineAsyncComponent } from 'vue';
 const PostCommentItemAsync = defineAsyncComponent(() => import('./component/PostCommentItem.vue'));
-const notice = ref({
-    id: 1,
-    isdrawer: true
-})
+const props =defineProps({
+    postId: {
+      type: String,
+      required: true
+    },
+    notificationId: {
+      type: String,
+      default: ''
+    }
+}) 
 
 const page = ref(0)
 const load = () => {
@@ -221,9 +227,15 @@ const load = () => {
     console.log(page.value);
     comments.value = [...comments.value, ...upcomments.value]
 }
+onMounted(()=>{
+    let id = props.notificationId
+    if (id) {
+        drawer.value=true
+    }
+})
 
 const onDrawerOpen = () => {
-    let id = notice.value.id
+    let id = props.notificationId
     if (id) {
         nextTick(() => {
             const element = document.getElementById(id);
@@ -287,10 +299,10 @@ onMounted(() => {
         }
     });
 })
+
 const pageTitle = ref('post4 文章');
 onMounted(() => {
     document.title = pageTitle.value;
-
 });
 
 const { y } = useScroll(window)
@@ -414,7 +426,8 @@ const showImageViewer = ref(false)
 const isagree = ref(true)
 const ismsg = ref(false)
 const isfollow = ref(false)
-const drawer = ref(true)
+const drawer = ref(false)
+
 const comments = ref([
     {
         id: 1,
@@ -841,7 +854,6 @@ const upcomments = ref([
 const imgPreviewUrl = ref('');
 
 
-
 const showImageViewerclose = () => {
     document.body.style.overflow = 'auto';
     showImageViewer.value = false
@@ -924,10 +936,11 @@ const replaceImgWithTag = (str) => {
 .post-home-main {
     flex: 1;
 
-    .drawer-left {
+    .drawer-right {
         :deep(.el-el-drawer__close) {
             display: none;
         }
+    
 
         .comment-list-box{
             height: 800;

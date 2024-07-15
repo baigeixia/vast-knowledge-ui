@@ -16,6 +16,7 @@
     "dompurify": "^3.1.5",
     "element-plus": "^2.7.4",
     "highlight.js": "^11.9.0",
+    "js-cookie": "3.0.1",
     "nprogress": "^0.2.0",
     "pinia": "^2.1.7",
     "sass": "^1.77.4",

@@ -29,8 +29,8 @@ const data = ref({
 })
 
 const channelStore = channelAppStore()
-// onMounted(() => channelStore.getchannellist(data))
-// console.log(channelStore.channellist);
+onMounted(() => channelStore.getchannellist(data))
+console.log(channelStore.channellist);
 
 
 </script>

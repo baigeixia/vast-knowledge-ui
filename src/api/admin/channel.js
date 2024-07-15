@@ -1,7 +1,7 @@
-import request from '@/utils/request'
+import { collectionRequest } from '@/utils/request'
 
 export function getlist({name,status,pageSize,pageNum}) {
-    return request({
+    return collectionRequest({
       url: '/adChannel/page',
       method: 'GET',
       // params:{

@@ -304,9 +304,9 @@ const totop = () => {
         }
 
         .login-dialog-form-right {
-            flex: 1;
-            box-sizing: border-box;
-            padding-left: 20px;
+                flex: 1;
+                box-sizing: border-box;
+                padding-left: 20px;
 
             .login-dialog-title {
                 font-size: 1.1rem;

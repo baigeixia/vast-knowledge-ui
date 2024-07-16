@@ -9,7 +9,7 @@ export const channelAppStore = defineStore(
       const { name, status, pageSize, pageNum } = data.value
       const res = await getlist({ name, status, pageSize, pageNum })
       channellist.value = res.records
-      console.log('channellist', channellist.value );
+      // console.log('channellist', channellist.value );
     }
 
     const STATUSMAP = {

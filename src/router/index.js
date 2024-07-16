@@ -1,7 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import Home from '../views/home/index.vue'
 import Layout from '../Layout/index.vue'
-import NProgress from 'nprogress';
+import NProgress from 'nprogress'
+import { getToken } from '@/utils/auth'
+import { useUserStore } from '@/stores/admin/user'
+
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -150,17 +153,15 @@ const router = createRouter({
       component: () => import('../views/error/401.vue'),
       hidden: true
     }
-  ]
+  ],
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else {
+      return { top: 0 }
+    }
+  },
 })
 
-router.beforeEach((to, from, next) => {
-  NProgress.start();
-  next();
-});
-
-router.afterEach(() => {
-  NProgress.done();
-  window.scrollTo(0, 0);
-});
 
 export default router

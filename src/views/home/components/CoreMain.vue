@@ -3,11 +3,11 @@
     <header class="list-header">
       <div class="list">
         <ul class="list-ul">
-          <li class="list-li is-active">
+          <li class="list-li" :class="{' is-active' :  maincontent.navigationtype===0 }" @click="navigationtypeSwit(0)">
             <!-- <a href="/"></a> -->
-            <RouterLink to="/"> 推荐</RouterLink>
+            <RouterLink to="/" > 推荐</RouterLink>
           </li>
-          <li class="list-li">
+          <li class="list-li" :class="{' is-active' :  maincontent.navigationtype===1 }"  @click="navigationtypeSwit(1)">
             <!-- <a href="/">最新</a> -->
             <RouterLink to="/"> 最新</RouterLink>
           </li>
@@ -25,6 +25,11 @@ import { ref, computed } from "vue"
 import Maincontentlist from './Maincontentlist.vue'
 import {maincontentAppStore} from '@/stores/admin/maincontent'
 const  maincontent=maincontentAppStore()
+
+const navigationtypeSwit = (type) => {
+  console.log(type);
+  maincontent.navigationtype = type
+}
 
 </script>
 
@@ -60,6 +65,7 @@ const  maincontent=maincontentAppStore()
           font-size: 15px;
           padding: 0 1.36rem;
           line-height: 2rem;
+          cursor: pointer;
 
           a {
             color: #909090;

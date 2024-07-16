@@ -4,6 +4,8 @@ export const maincontentAppStore = defineStore(
     'maincontent', () => {
         const page = ref(0)
         const pagesize = ref(10)
+        const tabtype= ref(1)
+        const navigationtype= ref(0)
         const isLoading = ref(false)
 
         const maincontentllist = ref([{
@@ -214,6 +216,8 @@ export const maincontentAppStore = defineStore(
         }
 
         return {
+            tabtype,
+            navigationtype,
             maincontentllist,
             loadMore,
             page,

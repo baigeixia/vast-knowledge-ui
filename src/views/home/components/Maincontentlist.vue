@@ -86,7 +86,7 @@
                             </el-icon>
                         </div>
                         <div class="item-li">
-                            <el-dropdown class="dropdown-menu">
+                            <el-dropdown class="dropdown-menu" >
                                 <div><i class="bi bi-three-dots dots"></i></div>
                                 <template #dropdown>
                                     <el-dropdown-menu>

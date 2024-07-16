@@ -4,17 +4,17 @@
     <div class="header-title">
       <div class="title-ul">
         <RouterLink to="/">
-          <div class="title-li active">
+          <div class="title-li active" :class="{ 'isactive': header.headertype === 1 }" @click="upheadertype(1)">
             <i>首页</i>
           </div>
         </RouterLink>
         <RouterLink to="/">
-          <div class="title-li active">
+          <div class="title-li active" :class="{ 'isactive': header.headertype === 2 }" @click="upheadertype(2)">
             <i>推荐</i>
           </div>
         </RouterLink>
         <RouterLink to="/">
-          <div class="title-li active">
+          <div class="title-li active" :class="{ 'isactive': header.headertype === 3 }" @click="upheadertype(3)">
             <i>热榜</i>
           </div>
         </RouterLink>
@@ -46,29 +46,40 @@
           </div>
           <template #dropdown>
             <el-dropdown-menu>
-              <RouterLink to="/notifications"><el-dropdown-item><el-icon><ChatLineSquare /></el-icon>评论</el-dropdown-item></RouterLink>
-              <RouterLink to="/notifications/digg"><el-dropdown-item><el-icon><CollectionTag /></el-icon>赞和收藏</el-dropdown-item></RouterLink>
-              <RouterLink to="/notifications/follow"><el-dropdown-item><el-icon><Notification /></el-icon>新增粉丝</el-dropdown-item></RouterLink>
-              <RouterLink to="/notifications/im"><el-dropdown-item><el-icon><ChatDotRound /></el-icon>私信</el-dropdown-item></RouterLink>
-              <RouterLink to="/notifications/system"><el-dropdown-item><el-icon><Bell /></el-icon>系统通知</el-dropdown-item></RouterLink>
+              <RouterLink to="/notifications"><el-dropdown-item><el-icon>
+                    <ChatLineSquare />
+                  </el-icon>评论</el-dropdown-item></RouterLink>
+              <RouterLink to="/notifications/digg"><el-dropdown-item><el-icon>
+                    <CollectionTag />
+                  </el-icon>赞和收藏</el-dropdown-item></RouterLink>
+              <RouterLink to="/notifications/follow"><el-dropdown-item><el-icon>
+                    <Notification />
+                  </el-icon>新增粉丝</el-dropdown-item></RouterLink>
+              <RouterLink to="/notifications/im"><el-dropdown-item><el-icon>
+                    <ChatDotRound />
+                  </el-icon>私信</el-dropdown-item></RouterLink>
+              <RouterLink to="/notifications/system"><el-dropdown-item><el-icon>
+                    <Bell />
+                  </el-icon>系统通知</el-dropdown-item></RouterLink>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
         <el-dropdown style=" cursor: pointer;">
           <div class="right-li">
             <!-- <el-badge :is-dot="Cpuvalue" :offset="[-10, 5]"> -->
-              <div class="right-li-datails">
-                <el-icon>
-                  <Cpu />
-                </el-icon>
-                <div>创作中心</div>
-              </div>
+            <div class="right-li-datails">
+              <el-icon>
+                <Cpu />
+              </el-icon>
+              <div>创作中心</div>
+            </div>
           </div>
           <template #dropdown>
             <el-dropdown-menu>
               <el-dropdown-item @click="item_TO_WE(1)"><i class="bi bi-graph-up-arrow"></i>图文数据</el-dropdown-item>
               <el-dropdown-item @click="item_TO_WE(2)"><i class="bi bi-columns-gap"></i>发布文章</el-dropdown-item>
-              <el-dropdown-item @click="item_TO_WE(3)"><i class="bi bi-layout-text-window-reverse"></i>内容列表</el-dropdown-item>
+              <el-dropdown-item @click="item_TO_WE(3)"><i
+                  class="bi bi-layout-text-window-reverse"></i>内容列表</el-dropdown-item>
               <el-dropdown-item @click="item_TO_WE(4)"><i class="bi bi-palette"></i>素材管理</el-dropdown-item>
               <el-dropdown-item @click="item_TO_WE(5)"><i class="bi bi-person-hearts"></i>粉丝管理</el-dropdown-item>
             </el-dropdown-menu>
@@ -85,8 +96,12 @@
           </div>
           <template #dropdown>
             <el-dropdown-menu>
-              <RouterLink to="/user"><el-dropdown-item><el-icon><User /></el-icon>个人主页</el-dropdown-item></RouterLink>
-              <RouterLink to="/user/settings"><el-dropdown-item><el-icon><Setting /></el-icon>我的设置</el-dropdown-item></RouterLink>
+              <RouterLink to="/user"><el-dropdown-item><el-icon>
+                    <User />
+                  </el-icon>个人主页</el-dropdown-item></RouterLink>
+              <RouterLink to="/user/settings"><el-dropdown-item><el-icon>
+                    <Setting />
+                  </el-icon>我的设置</el-dropdown-item></RouterLink>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -99,6 +114,8 @@
 import { ref } from "vue"
 import { byLoading } from '@/utils/Loading'
 import { useRouter } from 'vue-router';
+import headerAppStore from '@/stores/admin/header'
+const header = headerAppStore()
 
 const router = useRouter();
 
@@ -107,35 +124,39 @@ const Bellvalue = ref(12)
 const Roundvalue = ref(99)
 const Cpuvalue = ref(true)
 
+const upheadertype = (type) => {
+  header.headertype = type
+}
+
 const headersearch = () => {
   // console.log(headerinput.value);
   const query = encodeURIComponent('先活着再生活');
-      const queryParams = {
-        query: '先活着再生活',
-        fromSeo: 0,
-        fromHistory: 0,
-        fromSuggest: 0,
-        type: 0
-      };
+  const queryParams = {
+    query: '先活着再生活',
+    fromSeo: 0,
+    fromHistory: 0,
+    fromSuggest: 0,
+    type: 0
+  };
 
-      // 使用 router.push 导航到带查询参数的路由
-      router.push({ name: 'search', query: queryParams });
-    };
+  // 使用 router.push 导航到带查询参数的路由
+  router.push({ name: 'search', query: queryParams });
+};
 
 
-const item_TO_WE=(type)=>{
-  if(type===1){
+const item_TO_WE = (type) => {
+  if (type === 1) {
     window.location.href = 'http://localhost:5174/';
-  }else if (type===2){
+  } else if (type === 2) {
     window.location.href = 'http://localhost:5174/publish';
-  }else if (type===3){
+  } else if (type === 3) {
     window.location.href = 'http://localhost:5174/news';
-  }else if (type===4){
+  } else if (type === 4) {
     window.location.href = 'http://localhost:5174/material';
-  }else if (type===5){
+  } else if (type === 5) {
     window.location.href = 'http://localhost:5174/fans';
   }
-  
+
 }
 </script>
 
@@ -183,6 +204,16 @@ const item_TO_WE=(type)=>{
         color: #1e80ff;
       }
 
+      .isactive {
+        color: #1e80ff;
+
+        i {
+          padding-bottom: 5px;
+          border-bottom: 2px #1e80ff solid;
+        }
+
+      }
+
     }
 
 
@@ -197,7 +228,7 @@ const item_TO_WE=(type)=>{
       align-items: center;
       justify-content: start;
 
-      .el-scrollbar{
+      .el-scrollbar {
         z-index: 1000;
       }
 
@@ -223,5 +254,4 @@ const item_TO_WE=(type)=>{
       }
     }
   }
-}
-</style>
+}</style>

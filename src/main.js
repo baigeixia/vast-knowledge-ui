@@ -14,7 +14,7 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import "bootstrap-icons/font/bootstrap-icons.css";
 import 'nprogress/nprogress.css';
 import { sanitizeHtml } from './utils/helpers/sanitizeHtml';
-
+import './loginblocking' 
 
 const app = createApp(App)
 

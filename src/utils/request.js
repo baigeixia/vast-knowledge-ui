@@ -7,19 +7,19 @@ import errorCode from '@/utils/errorCode'
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 
 const systemRequest = axios.create({
-  baseURL: import.meta.env.VITE_APP_BASE_API_SYSTEM + '/dev-api',
+  baseURL: import.meta.env.VITE_APP_BASE_API_SYSTEM + '/dev-system',
   timeout: 5000
 })
 
 
 const coreRequest = axios.create({
-  baseURL: import.meta.env.VITE_APP_BASE_API_CORE + '/dev-api',
+  baseURL: import.meta.env.VITE_APP_BASE_API_CORE + '/dev-core',
   timeout: 5000
 })
 
 
 const collectionRequest = axios.create({
-  baseURL: import.meta.env.VITE_APP_BASE_API_COLLECTION + '/dev-api',
+  baseURL: import.meta.env.VITE_APP_BASE_API_COLLECTION + '/dev-collection',
   timeout: 5000,
 })
 

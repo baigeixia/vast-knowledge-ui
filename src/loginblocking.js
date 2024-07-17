@@ -19,6 +19,7 @@ router.beforeEach((to, from, next) => {
         }else{
             userStore.isnotlogin=true;
             next({ ...to, replace: true }) 
+            NProgress.done()
         }
     }
 });

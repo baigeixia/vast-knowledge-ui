@@ -203,8 +203,6 @@ export const maincontentAppStore = defineStore(
 
             isLoading.value = true;
 
-            console.log(page.value);
-            console.log(pagesize.value);
             try {
                 maincontentllist.value=[...maincontentllist.value,...upcontentItems.value]
                 page.value += 1;

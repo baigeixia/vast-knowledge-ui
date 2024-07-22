@@ -23,8 +23,10 @@
 <script setup>
 import { ref, computed } from "vue"
 import Maincontentlist from './Maincontentlist.vue'
-import {maincontentAppStore} from '@/stores/admin/maincontent'
-const  maincontent=maincontentAppStore()
+
+import { channelAppStore } from "@/stores/admin/channel";
+const  maincontent=channelAppStore()
+
 
 const navigationtypeSwit = (type) => {
   console.log(type);

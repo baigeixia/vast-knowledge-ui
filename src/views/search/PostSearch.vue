@@ -42,9 +42,9 @@ import { ref, onMounted, watchEffect } from "vue"
 import { ishide } from '@/components/Publicvariables'
 import { useRouter } from 'vue-router';
 import Maincontentlist from '@/views/home/components/Maincontentlist.vue'
-import {maincontentAppStore} from '@/stores/admin/maincontent'
-const  maincontent=maincontentAppStore()
 
+import { channelAppStore } from "@/stores/admin/channel";
+const maincontent = channelAppStore()
 
 const router = useRouter();
 const searchtime = ref('1')

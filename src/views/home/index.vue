@@ -10,8 +10,7 @@ import MainLeft from './components/MainLeft.vue'
 import MainRight from './components/MainRight.vue'
 import { ref, onMounted } from 'vue';
 import ExternalLinkGuard from '@/Layout/components/ExternalLinkGuard.vue';
-import { maincontentAppStore } from '@/stores/admin/maincontent'
-const maincontent = maincontentAppStore()
+
 
 const pageTitle = ref('首页');
 onMounted(() => {

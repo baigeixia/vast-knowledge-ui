@@ -114,8 +114,10 @@
 import { ref } from "vue"
 import { byLoading } from '@/utils/Loading'
 import { useRouter } from 'vue-router';
-import headerAppStore from '@/stores/admin/header'
-const header = headerAppStore()
+
+import { channelAppStore } from "@/stores/admin/channel";
+const header = channelAppStore()
+
 
 const router = useRouter();
 

@@ -189,12 +189,12 @@ const report = (id) => {
 const router = useRouter();
 // const mainLoading = ref(true)
 
-onMounted(() => {
-    nextTick(() => {
-        mainLoading.value = false;
-    });
+// onMounted(() => {
+//     nextTick(() => {
+//         mainLoading.value = false;
+//     });
 
-})
+// })
 
 
 const props = defineProps({

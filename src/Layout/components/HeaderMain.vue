@@ -78,8 +78,7 @@
             <el-dropdown-menu>
               <el-dropdown-item @click="item_TO_WE(1)"><i class="bi bi-graph-up-arrow"></i>图文数据</el-dropdown-item>
               <el-dropdown-item @click="item_TO_WE(2)"><i class="bi bi-columns-gap"></i>发布文章</el-dropdown-item>
-              <el-dropdown-item @click="item_TO_WE(3)"><i
-                  class="bi bi-layout-text-window-reverse"></i>内容列表</el-dropdown-item>
+              <el-dropdown-item @click="item_TO_WE(3)"><i class="bi bi-layout-text-window-reverse"></i>内容列表</el-dropdown-item>
               <el-dropdown-item @click="item_TO_WE(4)"><i class="bi bi-palette"></i>素材管理</el-dropdown-item>
               <el-dropdown-item @click="item_TO_WE(5)"><i class="bi bi-person-hearts"></i>粉丝管理</el-dropdown-item>
             </el-dropdown-menu>
@@ -148,15 +147,15 @@ const headersearch = () => {
 
 const item_TO_WE = (type) => {
   if (type === 1) {
-    window.location.href = 'http://localhost:5174/';
+    window.location.href = 'http://localhost:8081/';
   } else if (type === 2) {
-    window.location.href = 'http://localhost:5174/publish';
+    window.location.href = 'http://localhost:8081/publish';
   } else if (type === 3) {
-    window.location.href = 'http://localhost:5174/news';
+    window.location.href = 'http://localhost:8081/news';
   } else if (type === 4) {
-    window.location.href = 'http://localhost:5174/material';
+    window.location.href = 'http://localhost:8081/material';
   } else if (type === 5) {
-    window.location.href = 'http://localhost:5174/fans';
+    window.location.href = 'http://localhost:8081/fans';
   }
 
 }

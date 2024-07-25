@@ -4,7 +4,7 @@
     <div class="header-title">
       <div class="title-ul">
         <RouterLink to="/">
-          <div class="title-li active" :class="{ 'isactive': header.headertype === 1 }" @click="upheadertype(1)">
+          <div class="title-li active" :class="{ 'isactive': route.path === '/' }" >
             <i>首页</i>
           </div>
         </RouterLink>
@@ -112,11 +112,12 @@
 <script setup>
 import { ref } from "vue"
 import { byLoading } from '@/utils/Loading'
-import { useRouter } from 'vue-router';
+import { useRouter,useRoute } from 'vue-router';
 
 import { channelAppStore } from "@/stores/admin/channel";
 const header = channelAppStore()
 
+const route = useRoute();
 
 const router = useRouter();
 

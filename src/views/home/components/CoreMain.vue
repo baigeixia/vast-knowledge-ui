@@ -16,17 +16,25 @@
     </header>
     <div class="top-content">
       <!-- <Maincontentlist class="top-content-list" :contents="contentItems" :infinite-scroll-distance="100"  v-infinite-scroll="loadMore" :infinite-scroll-disabled="isLoading" /> -->
-      <Maincontentlist :contents="maincontent.maincontentllist"  v-infinite-scroll="maincontent.loadMore" :infinite-scroll-disabled="maincontent.isLoading" />
+      <!-- <Maincontentlist :contents="maincontent.maincontentllist"  v-infinite-scroll="maincontent.loadMore" :infinite-scroll-disabled="maincontent.isLoading" /> -->
+      <Maincontentlist :contents="articleStore.articleList.records"  v-infinite-scroll="articleStore.loadMore" :infinite-scroll-disabled="articleStore.isLoading" />
     </div>
   </div>
 </template>
 <script setup>
-import { ref, computed } from "vue"
+import { ref, computed ,onMounted} from "vue"
 import Maincontentlist from './Maincontentlist.vue'
 
 import { channelAppStore } from "@/stores/admin/channel";
 const  maincontent=channelAppStore()
 
+
+import articleAppStore from "@/stores/admin/article";
+const articleStore = articleAppStore()
+
+onMounted(()=>{
+    articleStore.getarticleList()
+})
 
 const navigationtypeSwit = (type) => {
   console.log(type);

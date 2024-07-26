@@ -57,28 +57,30 @@
             <div class="content-skeleton-item" v-for="content in  contents" :key="content.id">
                 <div class="content-skeleton-main" @click="router.push(`/post/${content.id}`)">
                     <!-- <div class="title-row" v-html=" content.title">{{ content.title }}</div> -->
-                    <div class="title-row" v-html="escapeHtml(content.title)"></div>
+                    <!-- <div class="title-row" v-html="escapeHtml(content.title)"></div> -->
+                    <div class="title-row" v-html="content.title"></div>
                     <div class="row-text">
-                        <img class="thumb" :src="content.thumb">
-                        <div class="abstract" v-html="escapeHtml(content.abstract)"></div>
+                        <img class="thumb" :src="content.images">
+                        <!-- <div class="abstract" v-html="escapeHtml(content.simpleDescription)"></div> -->
+                        <div class="abstract" v-html="content.simpleDescription"></div>
                     </div>
                 </div>
                 <div class="row-footer">
                     <div class="action-list">
                         <div class="item-li">
                             <RouterLink to="/user" class="user-message">
-                                <div class="user-popover">{{ content.author.username }}</div>
+                                <div class="user-popover">{{ content.authorName }}</div>
                             </RouterLink>
                         </div>
                         <div class="item-li view">
                             <el-icon>
                                 <View />
                             </el-icon>
-                            <span> {{ content.browse }}</span>
+                            <span> {{ content.views }}</span>
                         </div>
                         <div class="item-li like">
                             <i class="bi bi-suit-heart"></i>
-                            <span> {{ content.like }}</span>
+                            <span> {{ content.likes }}</span>
                         </div>
                         <div class="dislike-item">
                             <el-icon>
@@ -102,10 +104,10 @@
                             </el-dropdown>
                         </div>
                     </div>
-                    <div class="row-footer-tags">
-                        <a class="footer-tag " :href='tag.url' v-for="tag in content.tags" :key="tag.id">{{ tag.name
-                            }}</a>
-                    </div>
+                    <!-- <div class="row-footer-tags">
+                        <a class="footer-tag " :href='tag.url' v-for="tag in content.tags" :key="tag.id">
+                            {{ tag.name}}</a>
+                    </div> -->
                 </div>
             </div>
         </el-skeleton>

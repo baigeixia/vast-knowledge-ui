@@ -209,6 +209,7 @@ import hljs from 'highlight.js/lib/common';
 import 'highlight.js/styles/github.css';
 import { escapeHtml } from '@/utils/escapeHtml'
 import { defineAsyncComponent } from 'vue';
+
 const PostCommentItemAsync = defineAsyncComponent(() => import('./component/PostCommentItem.vue'));
 const props =defineProps({
     postId: {

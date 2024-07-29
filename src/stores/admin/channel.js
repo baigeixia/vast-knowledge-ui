@@ -11,7 +11,6 @@ export const channelAppStore = defineStore(
     const tabtype = ref(1)
     const navigationtype = ref(0)
     const isLoading = ref(false)
-    const iscontentLoading = ref(true)
 
     const maincontentllist = ref([{
       id: 22,
@@ -223,7 +222,6 @@ export const channelAppStore = defineStore(
       const { name, status, pageSize, pageNum } = data.value
       const res = await getlist({ name, status, pageSize, pageNum })
       channellist.value = res.records
-      iscontentLoading.value = false
 
       // console.log('channellist', channellist.value );
     }
@@ -247,6 +245,6 @@ export const channelAppStore = defineStore(
       page,
       pagesize,
       isLoading,
-      iscontentLoading,
+      
     }
   })

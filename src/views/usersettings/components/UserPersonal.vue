@@ -66,7 +66,8 @@
                     <el-upload class="avatar-uploader" action="#" :show-file-list="false" :on-change="handleAvatarChange"
                         :before-upload="beforeAvatarUpload">
                         <!-- <div :style="{ backgroundImage: `url(${avatarUrl})` }" class="avatar-background"></div> -->
-                        <img class="avatar-background" :src="avatarUrl" alt="">
+                        <!-- <img class="avatar-background" :src="avatarUrl" alt=""> -->
+                        <img class="avatar-background" src="https://pic1.zhimg.com/v2-c352b42456dbe31b3b3bab054e788368_b.jpg" alt="">
                         <div class="avatar-placeholder">
                             <el-icon class="avatar-uploader-icon avatar-icon">
                                 <Plus />

@@ -43,22 +43,23 @@
         <el-container class="home-center">
             <el-container class="center-main">
                 <el-main class="center-main-text">
-                    <h1 class="article-title">为什么idea建议使用“+”拼接字符串 | 京东云技术团队</h1>
+                    <h1 class="article-title">{{ articleS.articleDto.title }}</h1>
                     <div class="author-info-box">
                         <div class="author-name">
-                            <RouterLink to="/user/pins">京东云开发者</RouterLink>
+                            <RouterLink to="/user/pins">{{ articleS.articleDto.authorName }}</RouterLink>
                         </div>
                         <div class="meta-box">
-                            <div class="time">2023-11-01</div>
-                            <div class="read-time"><i class="bi bi-eye"></i><span>34,062</span></div>
-                            <div class="read-time"><i class="bi bi-clock"></i><span>阅读4分钟</span></div>
+                            <div class="time">{{ articleS.articleDto.createdTime }}</div>
+                            <div class="read-time" v-if="articleS.articleDto.views > 1"><i class="bi bi-eye"></i><span>{{ articleS.articleDto.views }}</span></div>
+                            <div class="read-time" v-if="articleS.articleDto.comment > 1"><i class="bi bi-clock"></i><span>{{ articleS.articleDto.comment }}条评论</span></div>
                         </div>
                     </div>
                     <!-- <p class="context-box" v-html="$sanitizeHtml(content)"></p> -->
-                    <p class="context-box" v-html="textLabelsUp(escapeHtml(content))"></p>
+                    <p class="context-box" v-html="textLabelsUp(contentS.content.content)"></p>
+                    <!-- <p class="context-box" v-html="contentS.content.content"></p> -->
                 </el-main>
                 <el-footer class="comment-end">
-                    <div class="title">评论 14</div>
+                    <div class="title">评论 {{ articleS.articleDto.comment }}</div>
                     <div class="comment-editor">
                         <div class="content">
                             <div class="avatar-box">
@@ -198,7 +199,8 @@
     </el-container>
 
     <el-image-viewer v-if="showImageViewer" :preview-teleported="false" :url-list="[imgPreviewUrl]"
-        @close="showImageViewerclose" hide-on-click-modal="true"></el-image-viewer>
+        @close="showImageViewerclose" hide-on-click-modal="true">
+    </el-image-viewer>
 </template>
 <script setup>
 import { ref, onMounted, onBeforeUnmount, reactive, nextTick, toRaw, watchEffect, isProxy, isReactive, isReadonly } from 'vue';
@@ -209,18 +211,22 @@ import hljs from 'highlight.js/lib/common';
 import 'highlight.js/styles/github.css';
 import { escapeHtml } from '@/utils/escapeHtml'
 import { defineAsyncComponent } from 'vue';
+import contentStore from "@/stores/admin/content";
+import articleAppStore from "@/stores/admin/article";
+const contentS = contentStore()
+const articleS = articleAppStore()
 
 const PostCommentItemAsync = defineAsyncComponent(() => import('./component/PostCommentItem.vue'));
-const props =defineProps({
+const props = defineProps({
     postId: {
-      type: String,
-      required: true
+        type: String,
+        default: ''
     },
     notificationId: {
-      type: String,
-      default: ''
+        type: String,
+        default: ''
     }
-}) 
+})
 
 const page = ref(0)
 const load = () => {
@@ -228,11 +234,17 @@ const load = () => {
     console.log(page.value);
     comments.value = [...comments.value, ...upcomments.value]
 }
-onMounted(()=>{
+
+onMounted(async () => {
     let id = props.notificationId
+    let postId = props.postId
+    await contentS.getContent(postId)
+    await articleS.getinfoArticle(postId)
     if (id) {
-        drawer.value=true
+        drawer.value = true
     }
+
+    codeLanguage()
 })
 
 const onDrawerOpen = () => {
@@ -261,9 +273,7 @@ const onDrawerOpen = () => {
     }
 };
 
-
-onMounted(() => {
-
+const codeLanguage=()=>{
     hljs.highlightAll()
 
     const codeBlocks = document.querySelectorAll('pre code[class*="language-"]');
@@ -299,7 +309,46 @@ onMounted(() => {
             }
         }
     });
-})
+}
+
+// onMounted( async () => {
+
+//     hljs.highlightAll()
+
+//     const codeBlocks = document.querySelectorAll('pre code[class*="language-"]');
+
+//     codeBlocks.forEach((block) => {
+
+//         const match = block.className.match(/\blanguage-([a-zA-Z0-9-]+)\b/);
+//         if (match) {
+//             // 获取语言类别
+//             // const language = block.className.split('-')[1];
+//             const language = match[1];
+//             if (language.includes('undefined') || language.includes('nohighlight') || language.includes('plaintext')) {
+//                 return; // 跳出当前循环
+//             }
+
+//             // 创建语言标签元素
+//             const languageLabel = document.createElement('span');
+//             languageLabel.style.position = 'absolute';
+//             languageLabel.style.right = '10px';
+//             languageLabel.style.top = '5px';
+
+//             languageLabel.textContent = language;
+
+//             // 获取代码块的父元素
+//             const parentElement = block.parentNode;
+
+//             // 如果父元素存在，则设置父元素的 position 为 relative，并将语言标签插入到父元素的开头
+//             if (parentElement) {
+//                 parentElement.style.position = 'relative';  // 设置父元素的 position 为 relative
+//                 parentElement.insertBefore(languageLabel, parentElement.firstChild);  // 将语言标签插入到父元素的开头
+//             } else {
+//                 console.error('Unable to find parent element for block');
+//             }
+//         }
+//     });
+// })
 
 const pageTitle = ref('post4 文章');
 onMounted(() => {
@@ -880,15 +929,18 @@ window.previewImg = (url) => {
 }
 
 
-const textLabelsUp = () => {
-    return replaceImgWithTag(content.value)
+const textLabelsUp = (content) => {
+    return replaceImgWithTag(content)
 }
 
 const replaceImgWithTag = (str) => {
+    if (str) {
+        return str.replace(/<img\s+src="([^"]+)"[^>]*>/g, (match, src) => {
+            return `<img class="comment-img" onclick="previewImg('${src}')" src=${src}>`;
+        });
+    }
     // const reg = /^(https?|ftp):\/\/([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*$/
-    return str.replace(/<img\s+src="([^"]+)"[^>]*>/g, (match, src) => {
-        return `<img class="comment-img" onclick="previewImg('${src}')" src=${src}>`;
-    });
+
 }
 
 </script>
@@ -942,16 +994,17 @@ const replaceImgWithTag = (str) => {
         :deep(.el-el-drawer__close) {
             display: none;
         }
-    
 
-        .comment-list-box{
+
+        .comment-list-box {
             height: 800;
+
             .comment-form {
-            display: flex;
-            position: relative;
-            border-radius: 2px;
-            flex-direction: column;
-        }
+                display: flex;
+                position: relative;
+                border-radius: 2px;
+                flex-direction: column;
+            }
         }
 
         .comment-drawer-header {
@@ -976,7 +1029,7 @@ const replaceImgWithTag = (str) => {
             }
         }
 
-       
+
 
     }
 

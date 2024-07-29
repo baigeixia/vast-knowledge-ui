@@ -1,6 +1,6 @@
 <template>
     <div class="content-list">
-        <el-skeleton class="skeleton" animated :loading="channelStore.iscontentLoading">
+        <el-skeleton class="skeleton" animated :loading="articleS.isLoading">
             <template #template>
                 <div class="main-skeleton">
                     <el-skeleton-item variant="h1" />
@@ -138,7 +138,9 @@ import { onMounted, ref, nextTick } from "vue"
 import { escapeHtml } from '@/utils/escapeHtml'
 import { useRouter } from 'vue-router';
 import { channelAppStore } from "@/stores/admin/channel";
+import articleAppStore from "@/stores/admin/article";
 const channelStore = channelAppStore()
+const articleS = articleAppStore()
 
 
 const cities = ['涉政有害', '不友善', '垃圾广告'

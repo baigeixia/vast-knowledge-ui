@@ -11,3 +11,14 @@ export function gethomeList({page,size,tag}) {
       }
     })
 }
+
+
+export function infoArticle(id) {
+  return coreRequest({
+    url: '/article/article/info',
+    method: 'GET',
+    params:{
+      id:id
+    }
+  })
+}

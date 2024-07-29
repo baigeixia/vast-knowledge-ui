@@ -5,7 +5,7 @@
 <script setup>
 import EmojiPicker from 'vue3-emoji-picker'
 import 'vue3-emoji-picker/css'
-import { defineEmits , ref } from 'vue';
+import { ref } from 'vue';
 
 const selectedEmoji = ref(null);
 const emit = defineEmits(['emoji-click'])

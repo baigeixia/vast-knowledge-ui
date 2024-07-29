@@ -1,4 +1,4 @@
-import { gethomeList } from '@/api/admin/article'
+import { gethomeList,infoArticle } from '@/api/admin/article'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
  const articleAppStore = defineStore(
@@ -11,12 +11,29 @@ import { defineStore } from 'pinia'
     const tabtype = ref(1)
     const navigationtype = ref(0)
     const isLoading = ref(false)
-    const iscontentLoading = ref(true)
+    const iscontentLoading = ref(false)
+
+
+
+    const articleDto = ref({
+    })
+
+
+    const getinfoArticle = async (id) => {
+      const resp = await infoArticle(id)
+          articleDto.value = {
+        ... resp.data,
+        labels: resp.data.labels.includes(',') ? resp.data.labels.split(',').map(num => Number(num.trim())) : [Number(resp.data.labels)]
+      }
+    }
 
 
     const getarticleList= async ()=>{
         const resp=await gethomeList({})
-        articleList.value=resp.data
+        articleList.value={
+          ...resp.data,
+          
+        }
     }
 
     const loadMore = async () => {
@@ -33,13 +50,16 @@ import { defineStore } from 'pinia'
           isLoading.value = false;
         }
       }
-  
+
 
     return {
       articleList,
+      articleDto,
+      iscontentLoading,
+      isLoading,
       getarticleList,
+      getinfoArticle,
       loadMore,
-      
     }
   })
 

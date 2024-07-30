@@ -150,7 +150,7 @@ const opuserinfo = (id) => {
 const opcontentinfo = (id) => {
     console.log('contentid', id);
     router.push({
-        path: '/post/22',
+        path: '/post/16',
         query: {
           notificationId: '47'
         }

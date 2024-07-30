@@ -1,6 +1,6 @@
 import { collectionRequest } from '@/utils/request'
 
-export function getlist({name,status,pageSize,pageNum}) {
+export function getlist() {
     return collectionRequest({
       url: 'analyze/channel/page',
       method: 'GET',

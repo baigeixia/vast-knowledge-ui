@@ -2,7 +2,7 @@
   <div class="main-left">
     <div class="side-wrapper" >
       <div class="item-wrap " :class="{'search-top': ishide}" v-if="channelStore.channellist.length > 0">
-        <div class="item-content" :class="{'is-active' : channelStore.tabtype ===  itme.id }" v-for="itme in channelStore.channellist" :key="itme.id"  @click="tabSwit(itme.id)">
+        <div class="item-content" :class="{'is-active' : articleStore.tagType ===  itme.id }" v-for="itme in channelStore.channellist" :key="itme.id"  @click="tabSwit(itme.id)">
           <div class="item">
             <el-icon>
               <HelpFilled />
@@ -22,20 +22,17 @@ import { ref, onMounted } from "vue"
 import { ishide } from '@/components/Publicvariables'
 import { channelAppStore } from "@/stores/admin/channel";
 const channelStore = channelAppStore()
+import articleAppStore from "@/stores/admin/article";
+const articleStore = articleAppStore()
+const page =ref(1)
 
-
-const data = ref({
-  name: undefined,
-  status: undefined,
-  pageNum: 1,
-  pageSize: 10,
-})
-
-onMounted(() => channelStore.getchannellist(data))
+onMounted(() => channelStore.getchannellist())
 
 const tabSwit = (id) => {
-  console.log(id);
-  channelStore.tabtype = id
+  articleStore.tagType = id
+  articleStore.page = 1
+  articleStore.articleList={}
+  articleStore.getarticleList()
 }
 
 

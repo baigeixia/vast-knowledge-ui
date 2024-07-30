@@ -58,7 +58,7 @@
                 <PostComment />
             </div>
             <div class="replies" v-if="comment.childcomments && comment.childcomments.length">
-                <PostCommentItem :id="vice ? reply.id : null" v-for="reply in comment.childcomments" :key="reply.id"
+                <PostCommentItem :id="vice ? reply.id : null" v-for="reply in comment.childcomments" :key="reply.id" :articleid="articleid"
                     :comment="reply" class="reply-item" />
             </div>
             <div v-if="comment?.childcommentcount > 2" class="top-has-more">
@@ -98,8 +98,16 @@ const props = defineProps({
     vice: {
         type: Boolean,
         required: false
+    },
+    articleid: {
+        type: String,
+        required: true
     }
 });
+
+onMounted(()=>{
+    console.log('articleid',props.articleid);
+})
 
 const expanded = ref(false);
 const isanswer = ref(false);
@@ -264,7 +272,7 @@ const renderLinks = (text) => {
 
         .content {
             color: #252933;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 400;
             line-height: 28px;
             overflow: hidden;

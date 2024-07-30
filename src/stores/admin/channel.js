@@ -6,11 +6,9 @@ export const channelAppStore = defineStore(
     const channellist = ref([])
     const headertype = ref(1)
 
+
     const page = ref(0)
     const pagesize = ref(10)
-    const tabtype = ref(1)
-    const navigationtype = ref(0)
-    const isLoading = ref(false)
 
     const maincontentllist = ref([{
       id: 22,
@@ -201,26 +199,8 @@ export const channelAppStore = defineStore(
       },
     ])
 
-
-    const loadMore = async () => {
-      if (isLoading.value) return;
-
-      isLoading.value = true;
-
-      try {
-        maincontentllist.value = [...maincontentllist.value, ...upcontentItems.value]
-        page.value += 1;
-      } catch (error) {
-        console.error('Error loading more data:', error);
-      } finally {
-        isLoading.value = false;
-      }
-    }
-
-
-    const getchannellist = async (data) => {
-      const { name, status, pageSize, pageNum } = data.value
-      const res = await getlist({ name, status, pageSize, pageNum })
+    const getchannellist = async () => {
+      const res = await getlist()
       channellist.value = res.records
 
       // console.log('channellist', channellist.value );
@@ -238,13 +218,9 @@ export const channelAppStore = defineStore(
       getchannellist,
       channellistdata,
       headertype,
-      tabtype,
-      navigationtype,
       maincontentllist,
-      loadMore,
       page,
       pagesize,
-      isLoading,
       
     }
   })

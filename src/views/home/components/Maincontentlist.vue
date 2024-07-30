@@ -60,9 +60,9 @@
                     <!-- <div class="title-row" v-html="escapeHtml(content.title)"></div> -->
                     <div class="title-row" v-html="content.title"></div>
                     <div class="row-text">
-                        <img class="thumb" :src="content.images">
+                        <img v-if="content.images" class="thumb" :src="content.images">
                         <!-- <div class="abstract" v-html="escapeHtml(content.simpleDescription)"></div> -->
-                        <div class="abstract" v-html="content.simpleDescription"></div>
+                        <div class="abstract" >{{content.simpleDescription}}</div>
                     </div>
                 </div>
                 <div class="row-footer">
@@ -88,7 +88,7 @@
                             </el-icon>
                         </div>
                         <div class="item-li">
-                            <el-dropdown class="dropdown-menu" >
+                            <el-dropdown class="dropdown-menu">
                                 <div><i class="bi bi-three-dots dots"></i></div>
                                 <template #dropdown>
                                     <el-dropdown-menu>
@@ -110,9 +110,29 @@
                     </div> -->
                 </div>
             </div>
+            <el-skeleton class="skeleton" animated :loading="articleS.isLoadingEnd">
+                    <template #template>
+                        <div class="main-skeleton">
+                            <el-skeleton-item variant="h1" />
+                            <el-skeleton-item variant="h1" style="margin-bottom: 5px;" />
+                            <div class="skeleton-right">
+                                <el-skeleton-item variant="image" style="width:20%; height: 90px; margin-bottom: 10px;" />
+                                <div class="skeleton-right-p">
+                                    <el-skeleton-item variant="p" />
+                                    <el-skeleton-item variant="p" />
+                                    <el-skeleton-item variant="p" />
+                                    <el-skeleton-item variant="p" />
+                                </div>
+                            </div>
+                            <div class="skeleton-bottom-p">
+                                <el-skeleton-item variant="p" style="width: 40%;" />
+                                <el-skeleton-item variant="p" style="width: 40%;" />
+                            </div>
+                        </div>
+                    </template>
+            </el-skeleton>
         </el-skeleton>
-        <el-dialog class="report-dialog" v-model="reportdialog" title="举报" width="650"
-            :before-close="reportdialogClose">
+        <el-dialog class="report-dialog" v-model="reportdialog" title="举报" width="650" :before-close="reportdialogClose">
             <div class="report-group-title">
                 <div class="title-marl">*</div>
                 请选择举报类型
@@ -139,6 +159,7 @@ import { escapeHtml } from '@/utils/escapeHtml'
 import { useRouter } from 'vue-router';
 import { channelAppStore } from "@/stores/admin/channel";
 import articleAppStore from "@/stores/admin/article";
+import { ElMessage } from 'element-plus'
 const channelStore = channelAppStore()
 const articleS = articleAppStore()
 
@@ -166,103 +187,95 @@ const reportsubmit = () => {
     } else {
         ElMessage.warning('请选择举报理由')
     }
-    console.log('id',reportuserid.value,'举报',reporting.value);
+    console.log('id', reportuserid.value, '举报', reporting.value);
     reportdialog.value = false
     reporting.value = ''
-    reportuserid.value=''
+    reportuserid.value = ''
 }
 
 const reportdialogClose = () => {
     reportdialog.value = false
     reporting.value = null
-    reportuserid.value=''
+    reportuserid.value = ''
 }
 
 const dislike = (id) => {
     console.log('不喜欢', id);
+    ElMessage.success("已减少此类内容出现")
 }
 
 
 const report = (id) => {
     console.log('举报', id);
-    reportdialog.value=true
-    reportuserid.value=id
+    reportdialog.value = true
+    reportuserid.value = id
 }
 
 
 const router = useRouter();
-// const mainLoading = ref(true)
-
-// onMounted(() => {
-//     nextTick(() => {
-//         mainLoading.value = false;
-//     });
-
-// })
 
 
 const props = defineProps({
     contents: {
         type: Array, // 定义接收的数据类型
-        required: true // 是否必须传递
+        required: true,// 是否必须传递
+        default: () => []
     },
 });
 
 </script>
 
 <style lang="scss" scoped>
-
-
 .content-list {
     flex: 1;
     background-color: #fff;
 
     .report-dialog {
 
-.report-group-title {
-    margin-bottom: 20px;
-    display: flex;
-    box-sizing: border-box;
-    // margin: 0px;
-    min-width: 0px;
-    font-weight: 600;
-    font-size: 16px;
-    color: rgb(25, 27, 31);
+        .report-group-title {
+            margin-bottom: 20px;
+            display: flex;
+            box-sizing: border-box;
+            // margin: 0px;
+            min-width: 0px;
+            font-weight: 600;
+            font-size: 16px;
+            color: rgb(25, 27, 31);
 
-    .title-marl {
-        color: rgb(217, 83, 80);
-        margin-left: 10px;
-        margin-right: 5px;
+            .title-marl {
+                color: rgb(217, 83, 80);
+                margin-left: 10px;
+                margin-right: 5px;
 
-    }
-}
-
-.report-group {
-    justify-content: center;
-
-    .el-radio-button {
-        margin: 5px;
-        border: var(--el-border);
-
-        :deep(.el-radio-button__inner) {
-            width: 174px;
-            border: #f2f3f5;
+            }
         }
+
+        .report-group {
+            justify-content: center;
+
+            .el-radio-button {
+                margin: 5px;
+                border: var(--el-border);
+
+                :deep(.el-radio-button__inner) {
+                    width: 174px;
+                    border: #f2f3f5;
+                }
+            }
+        }
+
+        .report-dialog-footer {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            margin-bottom: 10px;
+
+            .el-button {
+                width: 370px;
+            }
+        }
+
     }
-}
-
-.report-dialog-footer {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    margin-bottom: 10px;
-
-    .el-button {
-        width: 370px;
-    }
-}
-
-}
 
     .skeleton {
         .main-skeleton {

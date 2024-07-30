@@ -31,7 +31,7 @@
                 </div>
             </div>
             <div class="search-content">
-                <Maincontentlist :contents="maincontent.maincontentllist" v-infinite-scroll="maincontent.loadMore" :infinite-scroll-disabled="maincontent.isLoading" />
+                <Maincontentlist :contents="articleStore.articleList.records" v-infinite-scroll="maincontent.loadMore" :infinite-scroll-disabled="maincontent.isLoading" />
             </div>
         </div>
     </el-container>
@@ -45,6 +45,9 @@ import Maincontentlist from '@/views/home/components/Maincontentlist.vue'
 
 import { channelAppStore } from "@/stores/admin/channel";
 const maincontent = channelAppStore()
+
+import articleAppStore from "@/stores/admin/article";
+const articleStore = articleAppStore()
 
 const router = useRouter();
 const searchtime = ref('1')

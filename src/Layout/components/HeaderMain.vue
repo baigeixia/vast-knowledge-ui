@@ -8,7 +8,7 @@
             <i>首页</i>
           </div>
         </RouterLink>
-        <RouterLink to="/">
+        <!-- <RouterLink to="/">
           <div class="title-li active" :class="{ 'isactive': header.headertype === 2 }" @click="upheadertype(2)">
             <i>推荐</i>
           </div>
@@ -17,7 +17,7 @@
           <div class="title-li active" :class="{ 'isactive': header.headertype === 3 }" @click="upheadertype(3)">
             <i>热榜</i>
           </div>
-        </RouterLink>
+        </RouterLink> -->
       </div>
     </div>
     <div class="header-right">

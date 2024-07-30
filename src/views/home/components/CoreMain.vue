@@ -3,20 +3,18 @@
     <header class="list-header">
       <div class="list">
         <ul class="list-ul">
-          <li class="list-li" :class="{' is-active' :  maincontent.navigationtype===0 }" @click="navigationtypeSwit(0)">
+          <li class="list-li" :class="{' is-active' :  articleStore.navigationtype === 0 }" @click="navigationtypeSwit(0)">
             <!-- <a href="/"></a> -->
             <RouterLink to="/" > 推荐</RouterLink>
           </li>
-          <li class="list-li" :class="{' is-active' :  maincontent.navigationtype===1 }"  @click="navigationtypeSwit(1)">
+          <li class="list-li" :class="{' is-active' :  articleStore.navigationtype === 1 }"  @click="navigationtypeSwit(1)">
             <!-- <a href="/">最新</a> -->
             <RouterLink to="/"> 最新</RouterLink>
           </li>
         </ul>
       </div>
     </header>
-    <div class="top-content">
-      <!-- <Maincontentlist class="top-content-list" :contents="contentItems" :infinite-scroll-distance="100"  v-infinite-scroll="loadMore" :infinite-scroll-disabled="isLoading" /> -->
-      <!-- <Maincontentlist :contents="maincontent.maincontentllist"  v-infinite-scroll="maincontent.loadMore" :infinite-scroll-disabled="maincontent.isLoading" /> -->
+    <div  v-if="articleStore.articleList" class="top-content">
       <Maincontentlist :contents="articleStore.articleList.records"  v-infinite-scroll="articleStore.loadMore" :infinite-scroll-disabled="articleStore.isLoading" />
     </div>
   </div>
@@ -28,17 +26,23 @@ import Maincontentlist from './Maincontentlist.vue'
 import { channelAppStore } from "@/stores/admin/channel";
 const  maincontent=channelAppStore()
 
-
 import articleAppStore from "@/stores/admin/article";
 const articleStore = articleAppStore()
 
+
 onMounted(()=>{
-    articleStore.getarticleList()
+  articleStore.isLoading=true
+  articleStore.page=1 
+  articleStore.articleList={}
+  articleStore.getarticleList()
+  articleStore.isLoading=false
 })
 
 const navigationtypeSwit = (type) => {
-  console.log(type);
-  maincontent.navigationtype = type
+  articleStore.page=1
+  articleStore.navigationtype = type
+  articleStore.articleList={}
+  articleStore.getarticleList()
 }
 
 </script>

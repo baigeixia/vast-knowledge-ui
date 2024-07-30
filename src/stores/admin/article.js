@@ -5,58 +5,70 @@ import { defineStore } from 'pinia'
   'article', () => {
 
     const articleList=ref({})
-
-    const page = ref(0)
+    const page = ref(1)
     const pagesize = ref(10)
-    const tabtype = ref(1)
     const navigationtype = ref(0)
+    const tagType = ref(0)
     const isLoading = ref(false)
+    const isLoadingEnd = ref(false)
     const iscontentLoading = ref(false)
-
-
-
-    const articleDto = ref({
-    })
-
+    const articleDto = ref({ })
 
     const getinfoArticle = async (id) => {
       const resp = await infoArticle(id)
           articleDto.value = {
         ... resp.data,
-        labels: resp.data.labels.includes(',') ? resp.data.labels.split(',').map(num => Number(num.trim())) : [Number(resp.data.labels)]
+        labels:  resp.data?.labels ? resp.data.labels.includes(',') ? resp.data.labels.split(',').map(num => Number(num.trim())) : [Number(resp.data.labels)] : []
       }
     }
 
-
     const getarticleList= async ()=>{
-        const resp=await gethomeList({})
-        articleList.value={
-          ...resp.data,
-          
-        }
-    }
-
-    const loadMore = async () => {
-        if (isLoading.value) return;
-  
-        isLoading.value = true;
-  
+      if (isLoadingEnd.value) return;
+      isLoadingEnd.value = true;
         try {
-          maincontentllist.value = [...maincontentllist.value, ...upcontentItems.value]
-          page.value += 1;
+        const resp=await gethomeList(page.value,pagesize.value,tagType.value)
+
+        if (!articleList.value) {
+          articleList.value = { records: [] };
+      }
+
+      const newRecords = Array.isArray(resp.data?.records) ? resp.data.records : [];
+
+
+      const existingRecords = Array.isArray(articleList.value.records) ? articleList.value.records : [];
+
+
+      articleList.value = {
+        ...articleList.value, 
+        records: [
+            ...existingRecords,
+            ...newRecords
+        ]
+    };
+    
         } catch (error) {
           console.error('Error loading more data:', error);
         } finally {
-          isLoading.value = false;
+          isLoadingEnd.value = false;
         }
-      }
+        
+    }
+
+    const loadMore = async () => {
+      page.value += 1;
+      getarticleList()
+    }
 
 
     return {
       articleList,
       articleDto,
+      page,
+      tagType,
+      navigationtype,
       iscontentLoading,
       isLoading,
+      isLoadingEnd,
       getarticleList,
       getinfoArticle,
       loadMore,

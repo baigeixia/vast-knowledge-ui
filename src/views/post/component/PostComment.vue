@@ -27,7 +27,7 @@
             </div>
             <div class="text-count-wrapper">
                 <span>{{ commentinput.length }}/1000</span>
-                <el-button>发送</el-button>
+                <el-button :disabled="!commentinput.trim().length >=1" @click="sendmessage">发送</el-button>
             </div>
         </div>
         <el-dialog v-model:visible="dialogVisible" width="50%">
@@ -37,9 +37,21 @@
 </template>
   
 <script setup>
-import { ref} from 'vue';
+import { onMounted, ref} from 'vue';
 import { ElMessage } from 'element-plus'
 import EmojiFileInput from '@/Layout/components/EmojiFileInput.vue';
+
+const props = defineProps({
+    articleid: {
+        type: String,
+        required: true
+    }
+});
+onMounted(()=>{
+    console.log('articleid',props.articleid);
+})
+
+
 const commentinput = ref('')
 const commentinputRef = ref(null)
 const fileInput = ref(null)
@@ -52,6 +64,10 @@ const isFocused = ref(false)
 
 const handleClick = () => {
     fileInput.value.click()
+}
+
+const sendmessage=()=>{
+    console.log('log',commentinput.value);
 }
 
 const commentinputfocus = (emoji) => {

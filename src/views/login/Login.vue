@@ -9,7 +9,7 @@
         <img class="form-left-img" src="@/assets/img/DBF3380.jpg" alt="">
         <!-- <img class="form-left-img" src="https://data.wujiebantu.com/38b78203b3e81031e05dc25af893c7f2d4481de1563f25e55e76d7ff974e4cf4.1536%C3%972112.png" alt=""> -->
       </div>
-      <div class="login-dialog-form-right">
+      <div class="login-dialog-form-right" v-loading="longinloading">
         <div class="login-dialog-title">
           <span class="title-item " :class="{ 'tab--active': codeOrPas === 1 }" @click=" upcodeOrPas(1)">验证码登录</span>
           <span class="title-item" :class="{ 'tab--active': codeOrPas === 2 }" @click=" upcodeOrPas(2)">密码登录</span>
@@ -71,15 +71,14 @@
                   clip-rule="evenodd"></path>
               </svg></div>
             <div title="微信" class="Login-socialButton" @click="loginsocial(3)">
-              <svg width="24" height="24" fill="none"
-                viewBox="0 0 24 24" class="ZDI ZDI--Wechat24">
+              <svg width="24" height="24" fill="none" viewBox="0 0 24 24" class="ZDI ZDI--Wechat24">
                 <path fill="#07C160"
                   d="M20.314 18.59c1.333-.968 2.186-2.397 2.186-3.986 0-2.91-2.833-5.27-6.325-5.27-3.494 0-6.325 2.36-6.325 5.27 0 2.911 2.831 5.271 6.325 5.271.698.001 1.393-.096 2.064-.288l.186-.029c.122 0 .232.038.336.097l1.386.8.12.04a.21.21 0 0 0 .212-.211l-.034-.154-.285-1.063-.023-.135a.42.42 0 0 1 .177-.343ZM9.09 3.513C4.9 3.514 1.5 6.346 1.5 9.84c0 1.905 1.022 3.622 2.622 4.781a.505.505 0 0 1 .213.412l-.026.16-.343 1.276-.04.185c0 .14.113.254.252.254l.146-.047 1.663-.96a.793.793 0 0 1 .403-.116l.222.032c.806.231 1.64.348 2.478.348l.417-.01a4.888 4.888 0 0 1-.255-1.55c0-3.186 3.1-5.77 6.923-5.77l.411.011c-.57-3.02-3.71-5.332-7.494-5.332Zm4.976 10.248a.843.843 0 1 1 0-1.685.843.843 0 0 1 0 1.684v.001Zm4.217 0a.843.843 0 1 1 0-1.685.843.843 0 0 1 0 1.684v.001ZM6.561 8.827a1.012 1.012 0 1 1 0-2.023 1.012 1.012 0 0 1 0 2.023Zm5.061 0a1.012 1.012 0 1 1 0-2.023 1.012 1.012 0 0 1 0 2.023Z"
                   clip-rule="evenodd"></path>
-              </svg></div>
-            <div title="Github" class="Login-socialButton" @click="loginsocial(4)"> 
-              <svg  width="46px"
-                height="46px" viewBox="0 0 46 46" version="1.1" xmlns="http://www.w3.org/2000/svg"
+              </svg>
+            </div>
+            <div title="Github" class="Login-socialButton" @click="loginsocial(4)">
+              <svg width="46px" height="46px" viewBox="0 0 46 46" version="1.1" xmlns="http://www.w3.org/2000/svg"
                 xmlns:xlink="http://www.w3.org/1999/xlink" class="github-icon">
                 <desc data-v-7842a212="">Created with sketchtool.</desc>
                 <defs data-v-7842a212=""></defs>
@@ -108,53 +107,69 @@
 </template>
 
 <script setup>
-import { ref, onMounted ,reactive} from 'vue';
-import {useUserStore} from '@/stores/admin/user'
-const userStore =useUserStore()
+import { ref, onMounted, reactive } from 'vue';
+import { useUserStore } from '@/stores/admin/user'
+const userStore = useUserStore()
 
 const contentFormRef = ref(null);
 const codeOrPas = ref(1);
+const longinloading = ref(false);
 
 const loginsocial = (type) => {
   //第三方登录
-    console.log(type);
+  console.log(type);
 }
 
-const onSubmit = (formEl) => {
-    if (!formEl) return
-    formEl.validate((valid, fields) => {
-        if (valid) {
-            userStore.login({...loginform,codeOrPas:codeOrPas.value})
-            formEl.resetFields()
-        } else {
-            console.log('error submit!', fields)
-        }
-    })
+const onSubmit = async (formEl) => {
+  if (!formEl) return
+  longinloading.value = true;
+
+  try {
+    const valid = await new Promise((resolve) => {
+      formEl.validate((valid, fields) => {
+        resolve({ valid, fields });
+      });
+    });
+
+    if (valid.valid) {
+      await userStore.login({ ...loginform, codeOrPas: codeOrPas.value });
+      // formEl.resetFields();
+    } else {
+      console.log('error submit!', valid.fields);
+    }
+  } catch (error) {
+    console.error('Error login:', error);
+  } finally {
+    longinloading.value = false;
+  }
+
 }
+
+
 const loginform = reactive({
-    email: '',
-    password: '',
-    waitcode: '',
+  email: '',
+  password: '',
+  waitcode: '',
 })
 
 const rules = reactive({
-    email: [
-        { required: true, message: '邮箱不要为空', trigger: ['blur', 'change'] },
-    ],
-    password: [
-        {
-            required: true,
-            message: '密码不要为空',
-            trigger: ['blur', 'change'],
-        },
-    ],
-    waitcode: [
-        {
-            required: true,
-            message: '验证码不要为空',
-            trigger: ['blur', 'change'],
-        },
-    ],
+  email: [
+    { required: true, message: '邮箱不要为空', trigger: ['blur', 'change'] },
+  ],
+  password: [
+    {
+      required: true,
+      message: '密码不要为空',
+      trigger: ['blur', 'change'],
+    },
+  ],
+  waitcode: [
+    {
+      required: true,
+      message: '验证码不要为空',
+      trigger: ['blur', 'change'],
+    },
+  ],
 })
 
 
@@ -162,202 +177,201 @@ const countingDown = ref(false); // 是否在倒计时中
 const countdownSeconds = ref(59); // 倒计时剩余秒数
 
 const startCountdown = () => {
-    countingDown.value = true; // 设置为正在倒计时状态
-    countdownSeconds.value = 59; // 重置倒计时秒数
+  countingDown.value = true; // 设置为正在倒计时状态
+  countdownSeconds.value = 59; // 重置倒计时秒数
 
-    const timer = setInterval(() => {
-        countdownSeconds.value--; // 每秒减少1秒
+  const timer = setInterval(() => {
+    countdownSeconds.value--; // 每秒减少1秒
 
-        if (countdownSeconds.value === 0) {
-            clearInterval(timer); // 倒计时结束，清除定时器
-            countingDown.value = false; // 设置为非倒计时状态
-        }
-    }, 1000); // 每1000毫秒（即1秒）执行一次
+    if (countdownSeconds.value === 0) {
+      clearInterval(timer); // 倒计时结束，清除定时器
+      countingDown.value = false; // 设置为非倒计时状态
+    }
+  }, 1000); // 每1000毫秒（即1秒）执行一次
 };
 
 
 const upcodeOrPas = (type) => {
-    if (type !== codeOrPas.value) {
-        resetLoginForm()
-        codeOrPas.value = type
-    }
+  if (type !== codeOrPas.value) {
+    resetLoginForm()
+    codeOrPas.value = type
+  }
 }
 
 const resetLoginForm = () => {
-    // loginform.email = '';
-    loginform.password = '';
-    loginform.waitcode = '';
+  // loginform.email = '';
+  loginform.password = '';
+  loginform.waitcode = '';
 }
 
 </script>
 
 <style lang="scss" scoped>
-
 .login-dialog-box {
- 
- .login-dialog-form {
-     display: flex;
-     box-sizing: border-box;
 
-     .login-dialog-form-left {
-         flex: 1;
-         box-sizing: border-box;
-         display: flex;
-         align-items: center;
-         width: 280px;
-         padding-right: 20px;
-         height: 500px;
-         border-right: 2px solid #e2e4e8;
+  .login-dialog-form {
+    display: flex;
+    box-sizing: border-box;
 
-         .form-left-img {
-             height: 100%;
-             width: 100%;
-         }
-     }
+    .login-dialog-form-left {
+      flex: 1;
+      box-sizing: border-box;
+      display: flex;
+      align-items: center;
+      width: 280px;
+      padding-right: 20px;
+      height: 500px;
+      border-right: 2px solid #e2e4e8;
 
-     .login-dialog-form-right {
-             flex: 1;
-             box-sizing: border-box;
-             padding-left: 20px;
+      .form-left-img {
+        height: 100%;
+        width: 100%;
+      }
+    }
 
-         .login-dialog-title {
-             font-size: 1.1rem;
-             font-weight: 500;
-             margin: 0 0 1.2rem 1rem;
+    .login-dialog-form-right {
+      flex: 1;
+      box-sizing: border-box;
+      padding-left: 20px;
 
-             .title-item {
-                 height: 49px;
-                 line-height: 46px;
-                 margin-right: 24px;
-                 cursor: pointer;
+      .login-dialog-title {
+        font-size: 1.1rem;
+        font-weight: 500;
+        margin: 0 0 1.2rem 1rem;
 
-             }
+        .title-item {
+          height: 49px;
+          line-height: 46px;
+          margin-right: 24px;
+          cursor: pointer;
 
-             .tab--active {
-                 color: #191b1f;
-                 padding-bottom: 10px;
-                 border-bottom: 3px solid #1772f6;
-                 font-weight: 600;
-                 font-size: 16px;
-             }
-         }
+        }
 
-         .login-dialog-content {
-             position: relative;
-             padding: 0 10px 30px;
+        .tab--active {
+          color: #191b1f;
+          padding-bottom: 10px;
+          border-bottom: 3px solid #1772f6;
+          font-weight: 600;
+          font-size: 16px;
+        }
+      }
 
-             .dialog-content-from {
-                 padding-top: 30px;
-             }
+      .login-dialog-content {
+        position: relative;
+        padding: 0 10px 30px;
 
-
-             .onSubmit-button {
-                 margin-top: 40px;
+        .dialog-content-from {
+          padding-top: 30px;
+        }
 
 
-                 .el-button {
-                     width: 100%;
-                     height: 40px;
-                 }
-             }
+        .onSubmit-button {
+          margin-top: 40px;
 
-             .content-input {
-                 height: 48px;
-             }
 
-             .smsInputButton {
-                 position: absolute;
-                 right: 10px;
-                 color: #1772f6;
-                 cursor: pointer;
-             }
+          .el-button {
+            width: 100%;
+            height: 40px;
+          }
+        }
 
-             .CountingDownButton{
-                 position: absolute;
-                 right: 10px;
-                 color: #8491a5;
-             }
+        .content-input {
+          height: 48px;
+        }
 
-             .smsInputButton:hover {
-                 color: #758195;
-             }
-         }
+        .smsInputButton {
+          position: absolute;
+          right: 10px;
+          color: #1772f6;
+          cursor: pointer;
+        }
 
-         .SignContainer-tip {
-             font-size: 12px;
-             line-height: 19px;
-             padding: 12px 24px 30px;
-             color: #9196a1;
+        .CountingDownButton {
+          position: absolute;
+          right: 10px;
+          color: #8491a5;
+        }
 
-             .tip-a {
-                 color: #9196a1;
-                 text-decoration: underline;
+        .smsInputButton:hover {
+          color: #758195;
+        }
+      }
 
-             }
-         }
+      .SignContainer-tip {
+        font-size: 12px;
+        line-height: 19px;
+        padding: 12px 24px 30px;
+        color: #9196a1;
 
-         .Login-socialLogin {
-             display: flex;
-             align-items: center;
-             justify-content: space-between;
-             height: 60px;
+        .tip-a {
+          color: #9196a1;
+          text-decoration: underline;
 
-             .Login-socialButtonGroup {
-                 width: 204px;
-                 transition: opacity .3s ease;
-                 margin: auto;
-                 display: flex;
-                 justify-content: space-between;
-                 -webkit-box-pack: justify;
+        }
+      }
 
-                 .Login-socialButton {
-                     -webkit-box-align: center;
-                     -webkit-box-pack: center;
-                     align-items: center;
-                     border-radius: 50%;
-                     cursor: pointer;
-                     display: inline-flex;
-                     height: 36px;
-                     justify-content: center;
-                     width: 36px;
-                 }
-             }
+      .Login-socialLogin {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        height: 60px;
 
-         }
+        .Login-socialButtonGroup {
+          width: 204px;
+          transition: opacity .3s ease;
+          margin: auto;
+          display: flex;
+          justify-content: space-between;
+          -webkit-box-pack: justify;
 
-         .login-dialog-segmentation {
-             box-sizing: border-box;
-             display: flex;
-             margin: 0 24px 12px;
-             -webkit-box-align: center;
-             -ms-flex-align: center;
-             align-items: center;
+          .Login-socialButton {
+            -webkit-box-align: center;
+            -webkit-box-pack: center;
+            align-items: center;
+            border-radius: 50%;
+            cursor: pointer;
+            display: inline-flex;
+            height: 36px;
+            justify-content: center;
+            width: 36px;
+          }
+        }
 
-             .segmentation-line {
-                 box-sizing: border-box;
-                 margin: 0;
-                 min-width: 0;
-                 border-top: 1px solid;
-                 border-color: #ebeced;
-                 width: 124px;
-             }
+      }
 
-             .segmentation-text {
-                 box-sizing: border-box;
-                 margin: 0;
-                 min-width: 0;
-                 color: #9196a1;
-                 font-size: 12px;
-                 margin-left: 16px;
-                 margin-right: 16px;
-                 width: 72px;
-                 overflow: hidden;
-                 line-height: 17px;
-                 white-space: nowrap;
-             }
-         }
-     }
+      .login-dialog-segmentation {
+        box-sizing: border-box;
+        display: flex;
+        margin: 0 24px 12px;
+        -webkit-box-align: center;
+        -ms-flex-align: center;
+        align-items: center;
 
- }
+        .segmentation-line {
+          box-sizing: border-box;
+          margin: 0;
+          min-width: 0;
+          border-top: 1px solid;
+          border-color: #ebeced;
+          width: 124px;
+        }
+
+        .segmentation-text {
+          box-sizing: border-box;
+          margin: 0;
+          min-width: 0;
+          color: #9196a1;
+          font-size: 12px;
+          margin-left: 16px;
+          margin-right: 16px;
+          width: 72px;
+          overflow: hidden;
+          line-height: 17px;
+          white-space: nowrap;
+        }
+      }
+    }
+
+  }
 }
 </style>

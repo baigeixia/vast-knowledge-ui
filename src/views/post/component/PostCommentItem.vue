@@ -55,7 +55,7 @@
                     <i class="bi bi-chat-left-text-fill"></i> {{ isOpenreply ? '取消回复' : '回复' }}</span>
             </div>
             <div class="comment-reply-editor" v-if="isOpenreply">
-                <PostComment />
+                <PostComment :articleId="articleid" :replyauthor="comment.author" />
             </div>
             <div class="replies" v-if="comment.childcomments && comment.childcomments.length">
                 <PostCommentItem :id="vice ? reply.id : null" v-for="reply in comment.childcomments" :key="reply.id" :articleid="articleid"

@@ -2,7 +2,7 @@
     <div class="auth-card" :class="{ 'auth-card-hovered': isHovered, 'auth-card-focused': (isFocused || commentinput) }"
         @mouseover="isHovered = true" @mouseleave="isHovered = false">
         <el-input ref="commentinputRef" :autosize="{ minRows: 2, maxRows: 10 }" @keydown.enter.prevent show-word-limi
-            maxlength="1000" type="textarea" v-model="commentinput" placeholder="平等表达，友善交流" clearable
+            maxlength="1000" type="textarea" v-model="commentinput" :placeholder="inputplaceholder" clearable
             @focus="isFocused = true" @blur="isFocused = false" />
         <div v-if="imageUrl" class="small-preview-box">
             <img :src="imageUrl" alt="预览图片" class="small-preview-image" @click="showLargePreview">
@@ -42,16 +42,25 @@ import { ElMessage } from 'element-plus'
 import EmojiFileInput from '@/Layout/components/EmojiFileInput.vue';
 
 const props = defineProps({
-    articleid: {
+    articleId: {
         type: String,
         required: true
+    },
+    replyauthor:{
+        type: Object,
+        required: false,
+        default : () => ({})
     }
 });
 onMounted(()=>{
-    console.log('articleid',props.articleid);
+    console.log('articleid',props.articleId);
+    if(props.replyauthor){
+        inputplaceholder.value= '回复： '+ props.replyauthor.username
+        console.log('replyauthor',props.replyauthor);
+    }
 })
 
-
+const inputplaceholder=ref('平等表达，友善交流')
 const commentinput = ref('')
 const commentinputRef = ref(null)
 const fileInput = ref(null)

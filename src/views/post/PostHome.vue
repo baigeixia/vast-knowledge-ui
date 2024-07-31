@@ -55,7 +55,7 @@
                         </div>
                     </div>
                     <!-- <p class="context-box" v-html="$sanitizeHtml(content)"></p> -->
-                    <p class="context-box" v-html="textLabelsUp(contentS.content.content)"></p>
+                    <p class="context-box" v-html="replaceImgWithTag(contentS.content.content)"></p>
                     <!-- <p class="context-box" v-html="contentS.content.content"></p> -->
                 </el-main>
                 <el-footer class="comment-end">
@@ -70,7 +70,7 @@
                             </div>
                             <div class="form-box">
                                 <div class="comment-input">
-                                    <PostComment />
+                                    <PostComment  :articleId="postId"  />
                                 </div>
                             </div>
                         </div>
@@ -82,7 +82,7 @@
                         </div>
                     </div>
                     <div class="comment-list">
-                        <PostCommentItemAsync v-for="comment in comments" :key="comment.id" :comment="comment" />
+                        <PostCommentItemAsync v-for="comment in comments" :key="comment.id" :comment="comment" :articleid="postId" />
                     </div>
                     <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div>
                 </el-footer>
@@ -181,12 +181,12 @@
             <div class="comment-list-box">
                 <div class="comment-form comment-editor">
                     <div class="comment-input">
-                        <PostComment :articleid="postId" />
+                        <PostComment :articleid="postId"   />
                     </div>
                     <div class="comment-list-wrapper">
                         <div class="comment-list-header">
-                            <div class="item active"><span>最热</span></div>
-                            <div class="item"><span>最新</span></div>
+                            <div class="item" :class="{'active': headerTag === 0 }" @click="upheaderTag(0)"><span>最热</span></div>
+                            <div class="item" :class="{'active': headerTag === 0 }" @click="upheaderTag(1)"><span>最新</span></div>
                         </div>
                     </div>
                     <div class="comment-list" v-infinite-scroll="load">
@@ -220,6 +220,7 @@ const PostCommentItemAsync = defineAsyncComponent(() => import('./component/Post
 const props = defineProps({
     postId: {
         type: String,
+        required: true,
         default: ''
     },
     notificationId: {
@@ -229,21 +230,24 @@ const props = defineProps({
 })
 
 const page = ref(0)
+const headerTag = ref(0)
 const load = () => {
     page.value++
     console.log(page.value);
     comments.value = [...comments.value, ...upcomments.value]
 }
-
+const upheaderTag = (type) => {
+    headerTag.value=type
+    console.log(type);
+}
 onMounted(async () => {
-    let id = props.notificationId
+    let notificationId = props.notificationId
     let postId = props.postId
     await contentS.getContent(postId)
     await articleS.getinfoArticle(postId)
-    if (id) {
+    if (notificationId) {
         drawer.value = true
     }
-
     codeLanguage()
     upTitle()
 })
@@ -778,9 +782,6 @@ window.previewImg = (url) => {
 }
 
 
-const textLabelsUp = (content) => {
-    return replaceImgWithTag(content)
-}
 
 const replaceImgWithTag = (str) => {
     if (str) {

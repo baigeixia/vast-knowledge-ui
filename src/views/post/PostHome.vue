@@ -50,13 +50,13 @@
                         </div>
                         <div class="meta-box">
                             <div class="time">{{ articleS.articleDto.createdTime }}</div>
-                            <div class="read-time" v-if="articleS.articleDto.views > 1"><i class="bi bi-eye"></i><span>{{ articleS.articleDto.views }}</span></div>
-                            <div class="read-time" v-if="articleS.articleDto.comment > 1"><i class="bi bi-clock"></i><span>{{ articleS.articleDto.comment }}条评论</span></div>
+                            <div class="read-time" v-if="articleS.articleDto.views > 1"><i class="bi bi-eye"></i><span>{{
+                                articleS.articleDto.views }}</span></div>
+                            <div class="read-time" v-if="articleS.articleDto.comment > 1"><i
+                                    class="bi bi-clock"></i><span>{{ articleS.articleDto.comment }}条评论</span></div>
                         </div>
                     </div>
-                    <!-- <p class="context-box" v-html="$sanitizeHtml(content)"></p> -->
                     <p class="context-box" v-html="replaceImgWithTag(contentS.content.content)"></p>
-                    <!-- <p class="context-box" v-html="contentS.content.content"></p> -->
                 </el-main>
                 <el-footer class="comment-end">
                     <div class="title">评论 {{ articleS.articleDto.comment }}</div>
@@ -70,7 +70,7 @@
                             </div>
                             <div class="form-box">
                                 <div class="comment-input">
-                                    <PostComment  :articleId="postId"  />
+                                    <PostComment :articleId="postId" />
                                 </div>
                             </div>
                         </div>
@@ -82,7 +82,8 @@
                         </div>
                     </div>
                     <div class="comment-list">
-                        <PostCommentItemAsync v-for="comment in comments" :key="comment.id" :comment="comment" :articleid="postId" />
+                        <PostCommentItemAsync v-for="comment in comments" :key="comment.id" :comment="comment"
+                            :articleid="postId" :commentIdTop="comment.id" />
                     </div>
                     <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div>
                 </el-footer>
@@ -171,7 +172,7 @@
                 </div>
             </el-aside>
         </el-container>
-        <el-drawer class="drawer-right" size="33.5%" v-model="drawer" direction="rtl" :lock-scroll="false"
+        <el-drawer v-if="drawer" class="drawer-right" size="33.5%" v-model="drawer" direction="rtl" :lock-scroll="false"
             @opened="onDrawerOpen">
             <template #header="{ titleId }">
                 <h4 :id="titleId" class="comment-drawer-header">
@@ -181,16 +182,19 @@
             <div class="comment-list-box">
                 <div class="comment-form comment-editor">
                     <div class="comment-input">
-                        <PostComment :articleid="postId"   />
+                        <PostComment :articleId="postId" />
                     </div>
                     <div class="comment-list-wrapper">
                         <div class="comment-list-header">
-                            <div class="item" :class="{'active': headerTag === 0 }" @click="upheaderTag(0)"><span>最热</span></div>
-                            <div class="item" :class="{'active': headerTag === 0 }" @click="upheaderTag(1)"><span>最新</span></div>
+                            <div class="item" :class="{ 'active': headerTag === 0 }" @click="upheaderTag(0)"><span>最热</span>
+                            </div>
+                            <div class="item" :class="{ 'active': headerTag === 0 }" @click="upheaderTag(1)"><span>最新</span>
+                            </div>
                         </div>
                     </div>
                     <div class="comment-list" v-infinite-scroll="load">
-                        <PostCommentItem :vice="true" v-for="comment in comments" :key="comment.id" :comment="comment" :articleid="postId" />
+                        <PostCommentItem :vice="true" v-for="comment in comments" :key="comment.id" :comment="comment"
+                            :articleid="postId" :commentIdTop="comment.id"  />
                     </div>
                     <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div>
                 </div>
@@ -203,7 +207,7 @@
     </el-image-viewer>
 </template>
 <script setup>
-import { ref, onMounted, onBeforeUnmount, reactive, nextTick, toRaw, watchEffect, isProxy, isReactive, isReadonly } from 'vue';
+import { ref, onMounted, onBeforeUnmount, watch, reactive, nextTick, onUnmounted, toRaw, watchEffect, isProxy, isReactive, isReadonly } from 'vue';
 import { useScroll } from '@vueuse/core'
 import PostComment from './component/PostComment.vue';
 import PostCommentItem from './component/PostCommentItem.vue';
@@ -213,8 +217,12 @@ import { escapeHtml } from '@/utils/escapeHtml'
 import { defineAsyncComponent } from 'vue';
 import contentStore from "@/stores/admin/content";
 import articleAppStore from "@/stores/admin/article";
+import commentStore from "@/stores/admin/comment";
+import maincommentAppStore from "@/stores/admin/maincomment";
 const contentS = contentStore()
 const articleS = articleAppStore()
+const commentS = commentStore()
+const maincommentS = maincommentAppStore()
 
 const PostCommentItemAsync = defineAsyncComponent(() => import('./component/PostCommentItem.vue'));
 const props = defineProps({
@@ -229,6 +237,7 @@ const props = defineProps({
     }
 })
 
+const mainloading = ref(true)
 const page = ref(0)
 const headerTag = ref(0)
 const load = () => {
@@ -237,14 +246,20 @@ const load = () => {
     comments.value = [...comments.value, ...upcomments.value]
 }
 const upheaderTag = (type) => {
-    headerTag.value=type
+    headerTag.value = type
     console.log(type);
 }
 onMounted(async () => {
     let notificationId = props.notificationId
     let postId = props.postId
+
     await contentS.getContent(postId)
     await articleS.getinfoArticle(postId)
+    await commentS.commentListGet(postId)
+
+    comments.value=commentS.commentHomeVo.comments
+    console.log(comments.value);
+
     if (notificationId) {
         drawer.value = true
     }
@@ -252,7 +267,15 @@ onMounted(async () => {
     upTitle()
 })
 
-const upTitle=() => {
+onUnmounted(() => {
+    contentS.content = {}
+    articleS.articleDto = {}
+    maincommentS.iscommentId=null
+    maincommentS.iscommentId=null
+    
+})
+
+const upTitle = () => {
     document.title = articleS.articleDto.title;
 }
 
@@ -283,7 +306,7 @@ const onDrawerOpen = () => {
     }
 };
 
-const codeLanguage=()=>{
+const codeLanguage = () => {
     hljs.highlightAll()
 
     const codeBlocks = document.querySelectorAll('pre code[class*="language-"]');
@@ -330,387 +353,214 @@ const isagree = ref(true)
 const ismsg = ref(false)
 const isfollow = ref(false)
 const drawer = ref(false)
-
-const comments = ref([
-    {
-        id: 1,
-        author: {
-            id: 1,
-            avatar: 'https://via.placeholder.com/40',
-            username: '用户1',
-            position: '工程师',
-        },
-        text: '1 https://www.zhihu.com/people/annie-37-28-90 <script>alert("XSS Attack!")<//script>使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现 <img src="invalid-image" onerror="alert(\'XSS Attack!\')" />  https://github.com/vueComponent/ant-design-vue',
-        pics: {
-            url: "https://p9-passport.byteacctimg.com/img/user-avatar/7afb026d59be994d6e7e27c9d28944b5~50x50.awebp",
-            width: 530,
-            height: 523,
-            type: 1
-        },
-        time: '1个月前',
-        likes: 1,
-        childcommentcount: 17,
-        childcomments: [
-            {
-                id: 2,
-                author: {
-                    id: 2,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户2',
-                    position: '前端开发2',
-                },
-                text: '2 这是一个回复使一个 JWT <script>alert("XSS Attack!")<//script>  1111111 <img src="invalid-image" onerror="alert(\'XSS Attack!\')" />  立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
-                pics: {
-                    url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-                    width: 530,
-                    height: 523,
-                    type: 1
-                },
-                time: '2个月前',
-                likes: 2,
-            },
-            {
-                id: 3,
-                author: {
-                    id: 3,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户3',
-                    position: '前端开发3',
-                },
-                text: '<a href="https://example.com">Link</a> 3',
-                pics: {
-                    url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-                    width: 530,
-                    height: 523,
-                    type: 1
-                },
-                time: '3个月前',
-                likes: 3,
-                replytoauthor: {
-                    id: 2,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户2',
-                    position: '前端开发2',
-                },
-            },
-            {
-                id: 4,
-                author: {
-                    id: 3,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户3',
-                    position: '前端开发3',
-                },
-                text: '<script>alert("XSS Attack!")<//script> 4',
-                time: '3个月前',
-                likes: 3,
-                replytoauthor: {
-                    id: 2,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户2',
-                    position: '前端开发2',
-                },
-            },
-            {
-                id: 5,
-                author: {
-                    id: 3,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户3',
-                    position: '前端开发3',
-                },
-                text: '<div style="color:red;">Text</div> 5',
-                pics: {
-                    url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-                    width: 530,
-                    height: 523,
-                    type: 1
-                },
-                time: '3个月前',
-                likes: 3,
-                replytoauthor: {
-                    id: 2,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户2',
-                    position: '前端开发2',
-                },
-            },
-            {
-                id: 6,
-                author: {
-                    id: 3,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户3',
-                    position: '前端开发3',
-                },
-                text: '这是一个回复6',
-                pics: {
-                    url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-                    width: 530,
-                    height: 523,
-                    type: 1
-                },
-                time: '3个月前',
-                likes: 3,
-                replytoauthor: {
-                    id: 2,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户2',
-                    position: '前端开发2',
-                },
-            },
-            {
-                id: 7,
-                author: {
-                    id: 3,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户3',
-                    position: '前端开发3',
-                },
-                text: '这是一个回复7',
-                pics: {
-                    url: "https://pic3.zhimg.com/v2-3ee2856defe7233d211e1180b2ec71a2_xld.jpeg",
-                    width: 530,
-                    height: 523,
-                    type: 1
-                },
-                time: '3个月前',
-                likes: 3,
-                replytoauthor: {
-                    id: 2,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户2',
-                    position: '前端开发2',
-                },
-            }
-        ]
-    },
-    {
-        id: 33,
-        author: {
-            id: 31,
-            avatar: 'https://via.placeholder.com/40',
-            username: '用户C',
-            position: '设计师',
-        },
-        text: '33 使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，',
-        pics: {
-            url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-            width: 530,
-            height: 523,
-            type: 1
-        },
-        time: '6个月前',
-        likes: 5,
-        childcomments: []
-    }, {
-        id: 34,
-        author: {
-            id: 31,
-            avatar: 'https://via.placeholder.com/40',
-            username: '用户C',
-            position: '设计师',
-        },
-        text: '34 使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，',
-        pics: {
-            url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-            width: 530,
-            height: 523,
-            type: 1
-        },
-        time: '6个月前',
-        likes: 5,
-        childcomments: []
-    }, {
-        id: 35,
-        author: {
-            id: 31,
-            avatar: 'https://via.placeholder.com/40',
-            username: '用户C',
-            position: '设计师',
-        },
-        text: '35 使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，',
-        pics: {
-            url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-            width: 530,
-            height: 523,
-            type: 1
-        },
-        time: '6个月前',
-        likes: 5,
-        childcomments: []
-    }, {
-        id: 36,
-        author: {
-            id: 31,
-            avatar: 'https://via.placeholder.com/40',
-            username: '用户C',
-            position: '设计师',
-        },
-        text: '36 使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，',
-        pics: {
-            url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-            width: 530,
-            height: 523,
-            type: 1
-        },
-        time: '6个月前',
-        likes: 5,
-        childcomments: []
-    }, {
-        id: 41,
-        author: {
-            id: 1,
-            avatar: 'https://via.placeholder.com/40',
-            username: '用户1',
-            position: '工程师',
-        },
-        text: '41 https://www.zhihu.com/people/annie-37-28-90 <script>alert("XSS Attack!")<//script>使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现 <img src="invalid-image" onerror="alert(\'XSS Attack!\')" />  https://github.com/vueComponent/ant-design-vue',
-        pics: {
-            url: "https://p9-passport.byteacctimg.com/img/user-avatar/7afb026d59be994d6e7e27c9d28944b5~50x50.awebp",
-            width: 530,
-            height: 523,
-            type: 1
-        },
-        time: '1个月前',
-        likes: 1,
-        childcommentcount: 17,
-        childcomments: [
-            {
-                id: 42,
-                author: {
-                    id: 2,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户2',
-                    position: '前端开发2',
-                },
-                text: '42 这是一个回复使一个 JWT <script>alert("XSS Attack!")<//script>  1111111 <img src="invalid-image" onerror="alert(\'XSS Attack!\')" />  立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
-                pics: {
-                    url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-                    width: 530,
-                    height: 523,
-                    type: 1
-                },
-                time: '2个月前',
-                likes: 2,
-            },
-            {
-                id: 43,
-                author: {
-                    id: 3,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户3',
-                    position: '前端开发3',
-                },
-                text: '<a href="https://example.com">Link</a> 43',
-                pics: {
-                    url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-                    width: 530,
-                    height: 523,
-                    type: 1
-                },
-                time: '3个月前',
-                likes: 3,
-                replytoauthor: {
-                    id: 2,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户2',
-                    position: '前端开发2',
-                },
-            },
-            {
-                id: 44,
-                author: {
-                    id: 3,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户3',
-                    position: '前端开发3',
-                },
-                text: '<script>alert("XSS Attack!")<//script> 44',
-                time: '3个月前',
-                likes: 3,
-                replytoauthor: {
-                    id: 2,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户2',
-                    position: '前端开发2',
-                },
-            },
-            {
-                id: 45,
-                author: {
-                    id: 3,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户3',
-                    position: '前端开发3',
-                },
-                text: '<div style="color:red;">Text</div> 45',
-                pics: {
-                    url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-                    width: 530,
-                    height: 523,
-                    type: 1
-                },
-                time: '3个月前',
-                likes: 3,
-                replytoauthor: {
-                    id: 2,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户2',
-                    position: '前端开发2',
-                },
-            },
-            {
-                id: 46,
-                author: {
-                    id: 3,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户3',
-                    position: '前端开发3',
-                },
-                text: '这是一个回复46',
-                pics: {
-                    url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-                    width: 530,
-                    height: 523,
-                    type: 1
-                },
-                time: '3个月前',
-                likes: 3,
-                replytoauthor: {
-                    id: 2,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户2',
-                    position: '前端开发2',
-                },
-            },
-            {
-                id: 47,
-                author: {
-                    id: 3,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户3',
-                    position: '前端开发3',
-                },
-                text: '这是一个回复47',
-                pics: {
-                    url: "https://pic3.zhimg.com/v2-3ee2856defe7233d211e1180b2ec71a2_xld.jpeg",
-                    width: 530,
-                    height: 523,
-                    type: 1
-                },
-                time: '3个月前',
-                likes: 3,
-                replytoauthor: {
-                    id: 2,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户2',
-                    position: '前端开发2',
-                },
-            }
-        ]
-    },
-]);
+const comments = ref([])
+// const comments = ref([
+//     {
+//         id: 1,
+//         author: {
+//             id: 1,
+//             avatar: 'https://via.placeholder.com/40',
+//             username: '用户1',
+//             position: '工程师',
+//         },
+//         text: '1 https://www.zhihu.com/people/annie-37-28-90 <script>alert("XSS Attack!")<//script>使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现 <img src="invalid-image" onerror="alert(\'XSS Attack!\')" />  https://github.com/vueComponent/ant-design-vue',
+//         image: "https://p9-passport.byteacctimg.com/img/user-avatar/7afb026d59be994d6e7e27c9d28944b5~50x50.awebp",
+//         time: '1个月前',
+//         likes: 1,
+//         childcommentcount: 17,
+//         childcomments: [
+//             {
+//                 id: 2,
+//                 author: {
+//                     id: 2,
+//                     avatar: 'https://via.placeholder.com/40',
+//                     username: '用户2',
+//                     position: '前端开发2',
+//                 },
+//                 text: '2 这是一个回复使一个 JWT <script>alert("XSS Attack!")<//script>  1111111 <img src="invalid-image" onerror="alert(\'XSS Attack!\')" />  立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
+//                 image: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
+//                 time: '2个月前',
+//                 likes: 2,
+//             },
+//             {
+//                 id: 3,
+//                 author: {
+//                     id: 3,
+//                     avatar: 'https://via.placeholder.com/40',
+//                     username: '用户3',
+//                     position: '前端开发3',
+//                 },
+//                 text: '<a href="https://example.com">Link</a> 3',
+//                 image: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
+//                 time: '3个月前',
+//                 likes: 3,
+//                 reply_comment_id:"10",
+//                 replytoauthor: {
+//                     id: 2,
+//                     avatar: 'https://via.placeholder.com/40',
+//                     username: '用户2',
+//                     position: '前端开发2',
+//                 },
+//             },
+//             {
+//                 id: 4,
+//                 author: {
+//                     id: 3,
+//                     avatar: 'https://via.placeholder.com/40',
+//                     username: '用户3',
+//                     position: '前端开发3',
+//                 },
+//                 text: '<script>alert("XSS Attack!")<//script> 4',
+//                 time: '3个月前',
+//                 likes: 3,
+//                 replytoauthor: {
+//                     id: 2,
+//                     avatar: 'https://via.placeholder.com/40',
+//                     username: '用户2',
+//                     position: '前端开发2',
+//                 },
+//             },
+//             {
+//                 id: 5,
+//                 author: {
+//                     id: 3,
+//                     avatar: 'https://via.placeholder.com/40',
+//                     username: '用户3',
+//                     position: '前端开发3',
+//                 },
+//                 text: '<div style="color:red;">Text</div> 5',
+//                 image: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
+//                 time: '3个月前',
+//                 likes: 3,
+//                 replytoauthor: {
+//                     id: 2,
+//                     avatar: 'https://via.placeholder.com/40',
+//                     username: '用户2',
+//                     position: '前端开发2',
+//                 },
+//             },
+//             {
+//                 id: 6,
+//                 author: {
+//                     id: 3,
+//                     avatar: 'https://via.placeholder.com/40',
+//                     username: '用户3',
+//                     position: '前端开发3',
+//                 },
+//                 text: '这是一个回复6',
+//                 image: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
+//                 time: '3个月前',
+//                 likes: 3,
+//                 replytoauthor: {
+//                     id: 2,
+//                     avatar: 'https://via.placeholder.com/40',
+//                     username: '用户2',
+//                     position: '前端开发2',
+//                 },
+//             },
+//             {
+//                 id: 7,
+//                 author: {
+//                     id: 3,
+//                     avatar: 'https://via.placeholder.com/40',
+//                     username: '用户3',
+//                     position: '前端开发3',
+//                 },
+//                 text: '这是一个回复7',
+//                 image: "https://pic3.zhimg.com/v2-3ee2856defe7233d211e1180b2ec71a2_xld.jpeg",
+//                 time: '3个月前',
+//                 likes: 3,
+//                 replytoauthor: {
+//                     id: 2,
+//                     avatar: 'https://via.placeholder.com/40',
+//                     username: '用户2',
+//                     position: '前端开发2',
+//                 },
+//             }
+//         ]
+//     },
+//     {
+//         id: 33,
+//         author: {
+//             id: 31,
+//             avatar: 'https://via.placeholder.com/40',
+//             username: '用户C',
+//             position: '设计师',
+//         },
+//         text: '33 使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，',
+//         image: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
+//         time: '6个月前',
+//         likes: 5,
+//         childcomments: []
+//     }, {
+//         id: 34,
+//         author: {
+//             id: 31,
+//             avatar: 'https://via.placeholder.com/40',
+//             username: '用户C',
+//             position: '设计师',
+//         },
+//         text: '34 使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，',
+//         image: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
+//         time: '6个月前',
+//         likes: 5,
+//         childcomments: []
+//     }, {
+//         id: 35,
+//         author: {
+//             id: 31,
+//             avatar: 'https://via.placeholder.com/40',
+//             username: '用户C',
+//             position: '设计师',
+//         },
+//         text: '35 使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，',
+//         image: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
+//         time: '6个月前',
+//         likes: 5,
+//         childcomments: []
+//     }, {
+//         id: 36,
+//         author: {
+//             id: 31,
+//             avatar: 'https://via.placeholder.com/40',
+//             username: '用户C',
+//             position: '设计师',
+//         },
+//         text: '36 使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，',
+//         image: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
+//         time: '6个月前',
+//         likes: 5,
+//         childcomments: []
+//     }, {
+//         id: 41,
+//         author: {
+//             id: 1,
+//             avatar: 'https://via.placeholder.com/40',
+//             username: '用户1',
+//             position: '工程师',
+//         },
+//         text: '41 https://www.zhihu.com/people/annie-37-28-90 <script>alert("XSS Attack!")<//script>使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现 <img src="invalid-image" onerror="alert(\'XSS Attack!\')" />  https://github.com/vueComponent/ant-design-vue',
+//         image: "https://p9-passport.byteacctimg.com/img/user-avatar/7afb026d59be994d6e7e27c9d28944b5~50x50.awebp",
+//         time: '1个月前',
+//         likes: 1,
+//         childcommentcount: 17,
+//         childcomments: [
+//             {
+//                 id: 42,
+//                 author: {
+//                     id: 2,
+//                     avatar: 'https://via.placeholder.com/40',
+//                     username: '用户2',
+//                     position: '前端开发2',
+//                 },
+//                 text: '42 这是一个回复使一个 JWT <script>alert("XSS Attack!")<//script>  1111111 <img src="invalid-image" onerror="alert(\'XSS Attack!\')" />  立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
+//                 image: "https://p9-passport.byteacctimg.com/img/user-avatar/7afb026d59be994d6e7e27c9d28944b5~50x50.awebp",
+//                 time: '2个月前',
+//                 likes: 2,
+//             }
+//         ]
+//     },
+// ]);
 
 const upcomments = ref([
     {
@@ -1016,7 +866,8 @@ const replaceImgWithTag = (str) => {
 
 
                 .context-box {
-                    font-size:1rem;
+                    min-height: 50px;
+                    font-size: 1rem;
 
                     >*+* {
                         margin-top: 0.8em;

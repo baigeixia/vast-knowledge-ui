@@ -29,7 +29,7 @@ export const useUserStore = defineStore(
                     userToken.value = resp.data.access_token;
                     console.log('resp', resp);
                     isnotlogin.value = false;
-                    location.href='/'
+                    // location.href='/'
                     resolve(resp); // 成功时将结果传递给 Promise 的 resolve
                 })
                 .catch((error) => {

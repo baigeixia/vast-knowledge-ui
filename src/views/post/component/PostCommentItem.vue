@@ -19,16 +19,16 @@
                     </user-info-popover>
                     <span class="position">{{ comment.author.position }}</span>
                 </div>
-                <div v-if="comment.replytoauthor" class="comment-name">
+                <div v-if="comment.reply" class="comment-name">
                     <i class="bi bi-caret-right-fill"></i>
-                    <user-info-popover :author="comment.replytoauthor">
+                    <user-info-popover :author="comment.reply">
                         <template v-slot:reference>
                             <span class="username">
-                                {{ comment.replytoauthor.username }}
+                                {{ comment.reply.username }}
                             </span>
                         </template>
                     </user-info-popover>
-                    <span class="position">{{ comment.replytoauthor.position }}</span>
+                    <span class="position">{{ comment.reply.position }}</span>
                 </div>
             </div>
             <div class="comment-text">
@@ -39,26 +39,25 @@
                 <div ref="expandRef" class="expand-action-wrap">
                     <span @click="expanded = !expanded" class="expand-action">{{ expanded ? '收起' : '展开' }}</span>
                 </div>
-                <div class="comment-img-box" v-if="comment.pics">
-                    <el-image class="comment-img" :src="comment.pics.url" :zoom-rate="1.2" :max-scale="7"
-                        :min-scale="0.2" :preview-src-list="[comment.pics.url]" fit="cover" :hide-on-click-modal="true"
+                <div class="comment-img-box" v-if="comment.image">
+                    <el-image class="comment-img" :src="comment.image" :zoom-rate="1.2" :max-scale="7"
+                        :min-scale="0.2" :preview-src-list="[comment.image]" fit="cover" :hide-on-click-modal="true"
                         lazy />
                 </div>
             </div>
             <div class="comment-meta">
                 <span>{{ comment.time }}</span>
-                <span class="action-itme" :class="{ 'action': true }">
+                <span class="action-itme" :class="{ 'action': false }">
                     <i class="bi bi-suit-heart-fill"></i> 点赞 {{ comment.likes }}
                 </span>
-                <span class="action-itme" :class="{ 'action': isOpenreply }"
-                    @click="toggleAnswer(commentId)">
-                    <i class="bi bi-chat-left-text-fill"></i> {{ isOpenreply ? '取消回复' : '回复' }}</span>
+                <span class="action-itme" :class="{ 'action': (vice ? 'vice-'+ comment.id : comment.id) === maincommentS.iscommentId }" @click="maincommentS.toggleAnswer(vice ? 'vice-'+comment.id : comment.id)">
+                    <i class="bi bi-chat-left-text-fill"></i> {{ (vice ? 'vice-'+comment.id : comment.id) === maincommentS.iscommentId ? '取消回复' : '回复' }}</span>
             </div>
-            <div class="comment-reply-editor" v-if="isOpenreply">
-                <PostComment :articleId="articleid" :replyauthor="comment.author" />
+            <div class="comment-reply-editor" v-if="(vice ? 'vice-'+ comment.id : comment.id) === maincommentS.iscommentId">
+                <PostComment :articleId="articleid" :replyauthor="comment.author" :replyauthorId="comment.id" :commentIdTop="commentIdTop" />
             </div>
-            <div class="replies" v-if="comment.childcomments && comment.childcomments.length">
-                <PostCommentItem :id="vice ? reply.id : null" v-for="reply in comment.childcomments" :key="reply.id" :articleid="articleid"
+            <div class="replies" v-if="comment.childComments && comment.childComments.length">
+                <PostCommentItem :id="vice ? reply.id : null" v-for="reply in comment.childComments" :key="reply.id" :articleid="articleid" :commentIdTop="commentIdTop"
                     :comment="reply" class="reply-item" />
             </div>
             <div v-if="comment?.childcommentcount > 2" class="top-has-more">
@@ -78,17 +77,8 @@ import { ref, onMounted, computed, nextTick } from 'vue';
 import UserInfoPopover from '@/components/UserInfoPopover.vue'
 import PostComment from './PostComment.vue';
 import { escapeHtml } from '@/utils/escapeHtml'
-import { maincommentAppStore } from '@/stores/admin/maincomment'
-import { storeToRefs } from 'pinia'
-const maincomments = maincommentAppStore()
-const { isAnswerOpen } = storeToRefs(maincomments)
-
-const toggleAnswer = maincomments.toggleAnswer;
-
-const isOpenreply = computed(() =>
-   isAnswerOpen.value === commentId.value
-)
-const commentId = computed(() =>props.vice ? `vice-${props.comment.id}` : props.comment.id );
+import maincommentAppStore  from '@/stores/admin/maincomment'
+const maincommentS = maincommentAppStore()
 
 const props = defineProps({
     comment: {
@@ -102,11 +92,15 @@ const props = defineProps({
     articleid: {
         type: String,
         required: true
+    },
+    commentIdTop: {
+        type: Number,
+        required: false
     }
 });
 
 onMounted(()=>{
-    console.log('articleid',props.articleid);
+    // console.log('articleid',props.articleid);
 })
 
 const expanded = ref(false);

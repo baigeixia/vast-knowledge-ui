@@ -10,13 +10,14 @@
         </div>
         <div class="action-box">
             <div class="emoji-container">
-                <el-popover  width="280px" popper-style="padding: 0; border-radius: 10px;" :show-arrow='false' placement="bottom" trigger="click">
+                <el-popover width="280px" popper-style="padding: 0; border-radius: 10px;" :show-arrow='false'
+                    placement="bottom" trigger="click">
                     <template #reference>
-                        <div class="emoji-box"   >
+                        <div class="emoji-box">
                             <i class="bi bi-emoji-laughing"></i>
                         </div>
                     </template>
-                    <EmojiFileInput ref="EmojiFileInputRef" class="emoji-input" @emoji-click="commentinputfocus"/>
+                    <EmojiFileInput ref="EmojiFileInputRef" class="emoji-input" @emoji-click="commentinputfocus" />
                 </el-popover>
                 <div class="emoji-box" @click="handleClick">
                     <el-tooltip content="上传图片最大 10mb" placement="bottom">
@@ -27,7 +28,7 @@
             </div>
             <div class="text-count-wrapper">
                 <span>{{ commentinput.length }}/1000</span>
-                <el-button :disabled="!commentinput.trim().length >=1" @click="sendmessage">发送</el-button>
+                <el-button :disabled="!commentinput.trim().length >= 1" @click="sendmessage">发送</el-button>
             </div>
         </div>
         <el-dialog v-model:visible="dialogVisible" width="50%">
@@ -37,30 +38,38 @@
 </template>
   
 <script setup>
-import { onMounted, ref} from 'vue';
+import { onMounted, ref } from 'vue';
 import { ElMessage } from 'element-plus'
 import EmojiFileInput from '@/Layout/components/EmojiFileInput.vue';
-
+import commentStore from "@/stores/admin/comment";
+const commentS = commentStore()
 const props = defineProps({
     articleId: {
         type: String,
         required: true
     },
-    replyauthor:{
-        type: Object,
+    replyauthor: {
+        type: [String, Number,Object],
+        // type: Object,
         required: false,
-        default : () => ({})
-    }
+        default: () => ({})
+    },
+    commentIdTop: {
+        type: Number,
+        required: false,
+    },
+    replyauthorId: {
+        type: Number,
+        required: false,
+    },
 });
-onMounted(()=>{
-    console.log('articleid',props.articleId);
-    if(props.replyauthor){
-        inputplaceholder.value= '回复： '+ props.replyauthor.username
-        console.log('replyauthor',props.replyauthor);
+onMounted(() => {
+    if (props.replyauthor?.username) {
+        inputplaceholder.value = '回复： ' + props.replyauthor.username
     }
 })
 
-const inputplaceholder=ref('平等表达，友善交流')
+const inputplaceholder = ref('平等表达，友善交流')
 const commentinput = ref('')
 const commentinputRef = ref(null)
 const fileInput = ref(null)
@@ -75,8 +84,41 @@ const handleClick = () => {
     fileInput.value.click()
 }
 
-const sendmessage=()=>{
-    console.log('log',commentinput.value);
+const sendmessage = () => {
+    let timeoutId;
+
+    if (timeoutId) {
+        clearTimeout(timeoutId);
+    }
+
+    timeoutId = setTimeout(async () => {
+        console.log('log', commentinput.value);
+        console.log('logreplyauthor', props?.replyauthor);
+
+        if (props.replyauthorId) {
+            console.log('props',props.replyauthor);
+            commentS.commentReDto.content = commentinput.value
+            commentS.commentReDto.entryId = props.articleId
+            commentS.commentReDto.image = imageUrl.value
+            commentS.commentReDto.commentRepayId = props.replyauthorId
+            commentS.commentReDto.commentId = props.commentIdTop
+
+            await commentS.saveCommentReContent()
+            await commentS.commentListGet( props.articleId)
+
+            commentS.resetCommentRe()
+        } else {
+            commentS.commentDto.content = commentinput.value
+            commentS.commentDto.entryId = props.articleId
+            commentS.commentDto.image = imageUrl.value
+            await commentS.saveCommentContent()
+            commentS.resetComment()
+        }
+
+        imageUrl.value = ''
+        commentinput.value = ''
+    }, 300);
+
 }
 
 const commentinputfocus = (emoji) => {
@@ -200,7 +242,7 @@ const showLargePreview = () => {
     }
 
 
-  
+
     .action-box {
         height: 40px;
         padding: 0 10px;

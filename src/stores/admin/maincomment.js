@@ -1,19 +1,27 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-export const maincommentAppStore = defineStore(
+ const maincommentAppStore = defineStore(
     'maincomment', () => {
-        const commentitemRefidMap=ref({})
+        const commentitemRefidMap = ref({})
 
-        const isAnswerOpen=ref(0)
+        const iscommentId = ref(null)
+        const commentId = ref(0)
 
-       const toggleAnswer=(commentId)=> {
-        isAnswerOpen.value = isAnswerOpen.value == commentId ? 0 : commentId
-          }
+        const toggleAnswer = (commentId) => {
+            console.log("commentId",commentId);
+            iscommentId.value = commentId === iscommentId.value ? null : commentId
+        }
+
+   
 
 
-    return {
-        commentitemRefidMap,
-        toggleAnswer,
-        isAnswerOpen,
-    }
-})
+        return {
+            commentitemRefidMap,
+            toggleAnswer,
+            iscommentId,
+            commentId,
+        }
+    })
+
+
+    export default maincommentAppStore

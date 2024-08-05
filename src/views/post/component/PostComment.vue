@@ -1,7 +1,7 @@
 <template>
     <div class="auth-card" :class="{ 'auth-card-hovered': isHovered, 'auth-card-focused': (isFocused || commentinput) }"
         @mouseover="isHovered = true" @mouseleave="isHovered = false">
-        <el-input ref="commentinputRef" :autosize="{ minRows: 2, maxRows: 10 }" @keydown.enter.prevent show-word-limi
+        <el-input ref="commentinputRef" :autosize="{ minRows: 2, maxRows: 10 }"  show-word-limi
             maxlength="1000" type="textarea" v-model="commentinput" :placeholder="inputplaceholder" clearable
             @focus="isFocused = true" @blur="isFocused = false" />
         <div v-if="imageUrl" class="small-preview-box">
@@ -95,19 +95,14 @@ const sendmessage = () => {
     }
 
     timeoutId = setTimeout(async () => {
-        console.log('log', commentinput.value);
-        console.log('logreplyauthor', props?.replyauthor);
         commentS.commentReDto.entryId = props.articleId
 
         if (props.replyauthorId) {
-            console.log('props',props.replyauthor);
             commentS.commentReDto.content = commentinput.value
             commentS.commentReDto.image = imageUrl.value
             commentS.commentReDto.commentRepayId = props.replyauthorId
             commentS.commentReDto.commentId = props.commentIdTop
-
             await commentS.saveCommentReContent()
-
             commentS.resetCommentRe()
         } else {
             commentS.commentDto.content = commentinput.value
@@ -116,10 +111,9 @@ const sendmessage = () => {
             await commentS.saveCommentContent()
             commentS.resetComment()
         }
-
         imageUrl.value = ''
         commentinput.value = ''
-        // commentS.commentHomeDto.type = 1
+        commentS.commentHomeVo = {}
         await commentS.commentListGet()
         maincommentS.iscommentId=false
     }, 300);

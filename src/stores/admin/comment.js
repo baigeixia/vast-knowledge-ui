@@ -68,8 +68,6 @@ const commentStore = defineStore(
             if(Array.isArray(resp.data?.comments) && resp.data?.comments.length === 0){
                 noMore.value=true
             }
-
-
     
             if (!commentHomeVo.value) {
                 commentHomeVo.value = { comments: [] };

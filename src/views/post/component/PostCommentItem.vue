@@ -33,7 +33,7 @@
             </div>
             <div class="comment-text">
                 <div ref="contentRef" class="content" :class="{ 'expand': expanded }">
-                    <p v-html="sanitizeString(comment.text)"></p>
+                    <div v-html="sanitizeString(comment.text)"></div>
                     <!-- <p v-html="comment.text"></p> -->
                 </div>
                 <div ref="expandRef" class="expand-action-wrap">
@@ -134,6 +134,8 @@ const contentRefOP = () => {
 }
 
 const sanitizeString = (str) => {
+    // let str= string.replace(/\n/g, '<br> ')
+    console.log(str);
     const urlRegex = /(https?:\/\/[\w-]+\.[\w-]+(\/[\w- .\/?%&=]*)?)/g;
     const escapedString = escapeHtml(str);
     const sanitizedString = escapedString.replace(urlRegex, (match) => {
@@ -272,6 +274,7 @@ const renderLinks = (text) => {
             -webkit-line-clamp: 6;
             -webkit-box-orient: vertical;
             transition: -webkit-line-clamp 0.3s ease-out;
+            white-space: pre-line
 
         }
 

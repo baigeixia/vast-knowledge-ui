@@ -50,8 +50,9 @@
                         </div>
                         <div class="meta-box">
                             <div class="time">{{ articleS.articleDto.createdTime }}</div>
-                            <div class="read-time" v-if="articleS.articleDto.views > 1"><i class="bi bi-eye"></i><span>{{
-                                articleS.articleDto.views }}</span></div>
+                            <div class="read-time" v-if="articleS.articleDto.views > 1"><i
+                                    class="bi bi-eye"></i><span>{{
+                articleS.articleDto.views }}</span></div>
                             <div class="read-time" v-if="articleS.articleDto.comment > 1"><i
                                     class="bi bi-clock"></i><span>{{ articleS.articleDto.comment }}条评论</span></div>
                         </div>
@@ -77,26 +78,31 @@
                     </div>
                     <div class="comment-list-wrapper">
                         <div class="comment-list-header">
-                            <div class="item" :class="{ 'active': commentS.commentHomeDto.type === 0 }" @click="upheaderTag(0)"><span>最热</span>
+                            <div class="item" :class="{ 'active': commentS.commentHomeDto.type === 0 }"
+                                @click="upheaderTag(0)"><span>最热</span>
                             </div>
-                            <div class="item" :class="{ 'active': commentS.commentHomeDto.type === 1 }" @click="upheaderTag(1)"><span>最新</span>
+                            <div class="item" :class="{ 'active': commentS.commentHomeDto.type === 1 }"
+                                @click="upheaderTag(1)"><span>最新</span>
                             </div>
                         </div>
                     </div>
-                    <div class="comment-list" v-infinite-scroll="commentS.loadMore"  :infinite-scroll-disabled="commentS.Loadingdisabled">
-                        <PostCommentItemAsync v-for="comment in commentS.commentHomeVo.comments" :key="comment.id" :comment="comment"
-                            :articleid="postId" :commentIdTop="comment.id" />
+                    <div class="comment-list" v-infinite-scroll="commentS.loadMore"
+                        :infinite-scroll-disabled="commentS.Loadingdisabled">
+                        <PostCommentItemAsync v-for="comment in commentS.commentHomeVo.comments" :key="comment.id"
+                            :comment="comment" :articleid="postId" :commentIdTop="comment.id" />
                     </div>
                     <div v-if="commentS.isLoadingEnd" class="dot-container">
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-    </div>
-    <div v-if="commentS.noMore" class="end-of-data">
-     已经到最底部了
-    </div>
-
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                    <div v-if="commentS.noMore" class="end-of-data">
+                        <!-- 已经到最底部了 -->
+                        <div v-if="commentS.commentHomeVo.comments.length >1">已经到最底部了</div>
+                    <div v-else>暂无评论数据</div>
+                    </div>
+                    
 
                     <!-- <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div> -->
                 </el-footer>
@@ -185,7 +191,7 @@
                 </div>
             </el-aside>
         </el-container>
-        <el-drawer  class="drawer-right" size="33.5%" v-model="drawer" direction="rtl" :lock-scroll="false"
+        <el-drawer class="drawer-right" size="33.5%" v-model="drawer" direction="rtl" :lock-scroll="false"
             @opened="onDrawerOpen">
             <template #header="{ titleId }">
                 <h4 :id="titleId" class="comment-drawer-header">
@@ -199,25 +205,29 @@
                     </div>
                     <div class="comment-list-wrapper">
                         <div class="comment-list-header">
-                            <div class="item" :class="{ 'active': maincommentS.commentHomedrawerDto.type === 0 }" @click="upheaderTagdrawer(0)"><span>最热</span>
+                            <div class="item" :class="{ 'active': maincommentS.commentHomedrawerDto.type === 0 }"
+                                @click="upheaderTagdrawer(0)"><span>最热</span>
                             </div>
-                            <div class="item" :class="{ 'active': maincommentS.commentHomedrawerDto.type === 1 }" @click="upheaderTagdrawer(1)"><span>最新</span>
+                            <div class="item" :class="{ 'active': maincommentS.commentHomedrawerDto.type === 1 }"
+                                @click="upheaderTagdrawer(1)"><span>最新</span>
                             </div>
                         </div>
                     </div>
-                    <div class="comment-list" v-infinite-scroll="maincommentS.loadMore"  :infinite-scroll-disabled="maincommentS.Loadingdisabled">
-                        <PostCommentItem :vice="true" v-for="comment in maincommentS.commentHomedrawerVo.comments" :key="comment.id" :comment="comment"
-                            :articleid="postId" :commentIdTop="comment.id"  />
+                    <div class="comment-list" v-infinite-scroll="maincommentS.loadMore"
+                        :infinite-scroll-disabled="maincommentS.Loadingdisabled">
+                        <PostCommentItem :vice="true" v-for="comment in maincommentS.commentHomedrawerVo.comments"
+                            :key="comment.id" :comment="comment" :articleid="postId" :commentIdTop="comment.id" />
                     </div>
                     <div v-if="maincommentS.isLoadingEnd" class="dot-container">
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-        <div class="dot"></div>
-    </div>
-    <div v-if="maincommentS.noMore" class="end-of-data">
-     已经到最底部了
-    </div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                    <div v-if="maincommentS.noMore" class="end-of-data">
+                        <div v-if="maincommentS.commentHomedrawerVo.comments.length >1">已经到最底部了</div>
+                        <div v-else>暂无评论数据</div>
+                    </div>
                     <!-- <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div> -->
                 </div>
             </div>
@@ -259,19 +269,19 @@ const props = defineProps({
     }
 })
 
-const upheaderTag =  (type) => {
+const upheaderTag = (type) => {
     commentS.commentHomeVo = {}
     commentS.commentHomeDto.type = type
-    commentS.commentHomeDto.page=1
-    commentS.noMore =false
+    commentS.commentHomeDto.page = 1
+    commentS.noMore = false
     commentS.commentListGet()
 }
 
-const upheaderTagdrawer =  (type) => {
+const upheaderTagdrawer = (type) => {
     maincommentS.commentHomedrawerVo = {}
     maincommentS.commentHomedrawerDto.type = type
-    maincommentS.commentHomedrawerDto.page=1
-    maincommentS.noMore =false
+    maincommentS.commentHomedrawerDto.page = 1
+    maincommentS.noMore = false
     maincommentS.commentListGet()
 }
 
@@ -297,9 +307,8 @@ onMounted(async () => {
 onUnmounted(() => {
     contentS.content = {}
     articleS.articleDto = {}
-    maincommentS.iscommentId=null
-    maincommentS.iscommentId=null
-    
+    maincommentS.iscommentId = null
+
 })
 
 const upTitle = () => {
@@ -644,64 +653,73 @@ const replaceImgWithTag = (str) => {
         box-sizing: border-box;
     }
 
-    .dot-container{
+    .dot-container {
         display: flex;
         justify-content: center;
         align-items: center;
-    gap: 15px; /* Adjust gap between dots if needed */
-    .dot {
-    width: 10px;
-    height: 10px;
-    background-color: #409eff;
-    border-radius: 50%;
-    animation: bounce 1.2s infinite;
-}
+        gap: 15px;
 
-.dot:nth-child(1) {
-    animation-delay: 0s;
-}
+        /* Adjust gap between dots if needed */
+        .dot {
+            width: 10px;
+            height: 10px;
+            background-color: #409eff;
+            border-radius: 50%;
+            animation: bounce 1.2s infinite;
+        }
 
-.dot:nth-child(2) {
-    animation-delay: 0.3s;
-}
+        .dot:nth-child(1) {
+            animation-delay: 0s;
+        }
 
-.dot:nth-child(3) {
-    animation-delay: 0.6s;
-}
+        .dot:nth-child(2) {
+            animation-delay: 0.3s;
+        }
 
-.dot:nth-child(4) {
-    animation-delay: 0.9s;
-}
+        .dot:nth-child(3) {
+            animation-delay: 0.6s;
+        }
 
-@keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
-        transform: translateY(0);
+        .dot:nth-child(4) {
+            animation-delay: 0.9s;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-20px);
+            }
+
+            60% {
+                transform: translateY(-10px);
+            }
+        }
+
     }
-    40% {
-        transform: translateY(-20px);
-    }
-    60% {
-        transform: translateY(-10px);
-    }
-}
 
-    }
-
-    .end-of-data{
+    .end-of-data {
         display: flex;
         justify-content: center;
         // display: none;
-    text-align: center;
-    padding: 10px;
-    // background-color: #f8d7da;
-    color: #8a919f;
-    // border: 1px solid #f5c6cb;
-    // border-radius: 5px;
-    // position: fixed;
-    bottom: 20px;
-    // left: 50%;
-    // transform: translateX(-50%);
-    z-index: 1000;
+        text-align: center;
+        padding: 10px;
+        // background-color: #f8d7da;
+        color: #8a919f;
+        // border: 1px solid #f5c6cb;
+        // border-radius: 5px;
+        // position: fixed;
+        bottom: 20px;
+        // left: 50%;
+        // transform: translateX(-50%);
+        z-index: 1000;
     }
 
     .fetch-more-comment {
@@ -1003,6 +1021,7 @@ const replaceImgWithTag = (str) => {
                     display: flex;
                     align-items: flex-start;
 
+             
                     .avatar-box {
                         flex: 0 0 auto;
 

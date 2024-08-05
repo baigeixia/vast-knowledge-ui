@@ -77,15 +77,28 @@
                     </div>
                     <div class="comment-list-wrapper">
                         <div class="comment-list-header">
-                            <div class="item active"><span>最热</span></div>
-                            <div class="item"><span>最新</span></div>
+                            <div class="item" :class="{ 'active': commentS.commentHomeDto.type === 0 }" @click="upheaderTag(0)"><span>最热</span>
+                            </div>
+                            <div class="item" :class="{ 'active': commentS.commentHomeDto.type === 1 }" @click="upheaderTag(1)"><span>最新</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="comment-list">
-                        <PostCommentItemAsync v-for="comment in comments" :key="comment.id" :comment="comment"
+                    <div class="comment-list" v-infinite-scroll="commentS.loadMore"  :infinite-scroll-disabled="commentS.Loadingdisabled">
+                        <PostCommentItemAsync v-for="comment in commentS.commentHomeVo.comments" :key="comment.id" :comment="comment"
                             :articleid="postId" :commentIdTop="comment.id" />
                     </div>
-                    <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div>
+                    <div v-if="commentS.isLoadingEnd" class="dot-container">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+    <div v-if="commentS.noMore" class="end-of-data">
+     已经到最底部了
+    </div>
+
+
+                    <!-- <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div> -->
                 </el-footer>
             </el-container>
             <el-aside class="home-right">
@@ -172,7 +185,7 @@
                 </div>
             </el-aside>
         </el-container>
-        <el-drawer v-if="drawer" class="drawer-right" size="33.5%" v-model="drawer" direction="rtl" :lock-scroll="false"
+        <el-drawer  class="drawer-right" size="33.5%" v-model="drawer" direction="rtl" :lock-scroll="false"
             @opened="onDrawerOpen">
             <template #header="{ titleId }">
                 <h4 :id="titleId" class="comment-drawer-header">
@@ -186,17 +199,26 @@
                     </div>
                     <div class="comment-list-wrapper">
                         <div class="comment-list-header">
-                            <div class="item" :class="{ 'active': headerTag === 0 }" @click="upheaderTag(0)"><span>最热</span>
+                            <div class="item" :class="{ 'active': maincommentS.commentHomedrawerDto.type === 0 }" @click="upheaderTagdrawer(0)"><span>最热</span>
                             </div>
-                            <div class="item" :class="{ 'active': headerTag === 0 }" @click="upheaderTag(1)"><span>最新</span>
+                            <div class="item" :class="{ 'active': maincommentS.commentHomedrawerDto.type === 1 }" @click="upheaderTagdrawer(1)"><span>最新</span>
                             </div>
                         </div>
                     </div>
-                    <div class="comment-list" v-infinite-scroll="load">
-                        <PostCommentItem :vice="true" v-for="comment in comments" :key="comment.id" :comment="comment"
+                    <div class="comment-list" v-infinite-scroll="maincommentS.loadMore"  :infinite-scroll-disabled="maincommentS.Loadingdisabled">
+                        <PostCommentItem :vice="true" v-for="comment in maincommentS.commentHomedrawerVo.comments" :key="comment.id" :comment="comment"
                             :articleid="postId" :commentIdTop="comment.id"  />
                     </div>
-                    <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div>
+                    <div v-if="maincommentS.isLoadingEnd" class="dot-container">
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+        <div class="dot"></div>
+    </div>
+    <div v-if="maincommentS.noMore" class="end-of-data">
+     已经到最底部了
+    </div>
+                    <!-- <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div> -->
                 </div>
             </div>
         </el-drawer>
@@ -237,28 +259,33 @@ const props = defineProps({
     }
 })
 
-const mainloading = ref(true)
-const page = ref(0)
-const headerTag = ref(0)
-const load = () => {
-    page.value++
-    console.log(page.value);
-    comments.value = [...comments.value, ...upcomments.value]
+const upheaderTag =  (type) => {
+    commentS.commentHomeVo = {}
+    commentS.commentHomeDto.type = type
+    commentS.commentHomeDto.page=1
+    commentS.noMore =false
+    commentS.commentListGet()
 }
-const upheaderTag = (type) => {
-    headerTag.value = type
-    console.log(type);
+
+const upheaderTagdrawer =  (type) => {
+    maincommentS.commentHomedrawerVo = {}
+    maincommentS.commentHomedrawerDto.type = type
+    maincommentS.commentHomedrawerDto.page=1
+    maincommentS.noMore =false
+    maincommentS.commentListGet()
 }
+
 onMounted(async () => {
     let notificationId = props.notificationId
     let postId = props.postId
 
+    commentS.commentHomeDto.entryId = postId
+    maincommentS.commentHomedrawerDto.entryId = postId
+
     await contentS.getContent(postId)
     await articleS.getinfoArticle(postId)
-    await commentS.commentListGet(postId)
-
-    comments.value=commentS.commentHomeVo.comments
-    console.log(comments.value);
+    await commentS.commentListGet()
+    maincommentS.commentListGet()
 
     if (notificationId) {
         drawer.value = true
@@ -354,213 +381,6 @@ const ismsg = ref(false)
 const isfollow = ref(false)
 const drawer = ref(false)
 const comments = ref([])
-// const comments = ref([
-//     {
-//         id: 1,
-//         author: {
-//             id: 1,
-//             avatar: 'https://via.placeholder.com/40',
-//             username: '用户1',
-//             position: '工程师',
-//         },
-//         text: '1 https://www.zhihu.com/people/annie-37-28-90 <script>alert("XSS Attack!")<//script>使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现 <img src="invalid-image" onerror="alert(\'XSS Attack!\')" />  https://github.com/vueComponent/ant-design-vue',
-//         image: "https://p9-passport.byteacctimg.com/img/user-avatar/7afb026d59be994d6e7e27c9d28944b5~50x50.awebp",
-//         time: '1个月前',
-//         likes: 1,
-//         childcommentcount: 17,
-//         childcomments: [
-//             {
-//                 id: 2,
-//                 author: {
-//                     id: 2,
-//                     avatar: 'https://via.placeholder.com/40',
-//                     username: '用户2',
-//                     position: '前端开发2',
-//                 },
-//                 text: '2 这是一个回复使一个 JWT <script>alert("XSS Attack!")<//script>  1111111 <img src="invalid-image" onerror="alert(\'XSS Attack!\')" />  立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
-//                 image: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-//                 time: '2个月前',
-//                 likes: 2,
-//             },
-//             {
-//                 id: 3,
-//                 author: {
-//                     id: 3,
-//                     avatar: 'https://via.placeholder.com/40',
-//                     username: '用户3',
-//                     position: '前端开发3',
-//                 },
-//                 text: '<a href="https://example.com">Link</a> 3',
-//                 image: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-//                 time: '3个月前',
-//                 likes: 3,
-//                 reply_comment_id:"10",
-//                 replytoauthor: {
-//                     id: 2,
-//                     avatar: 'https://via.placeholder.com/40',
-//                     username: '用户2',
-//                     position: '前端开发2',
-//                 },
-//             },
-//             {
-//                 id: 4,
-//                 author: {
-//                     id: 3,
-//                     avatar: 'https://via.placeholder.com/40',
-//                     username: '用户3',
-//                     position: '前端开发3',
-//                 },
-//                 text: '<script>alert("XSS Attack!")<//script> 4',
-//                 time: '3个月前',
-//                 likes: 3,
-//                 replytoauthor: {
-//                     id: 2,
-//                     avatar: 'https://via.placeholder.com/40',
-//                     username: '用户2',
-//                     position: '前端开发2',
-//                 },
-//             },
-//             {
-//                 id: 5,
-//                 author: {
-//                     id: 3,
-//                     avatar: 'https://via.placeholder.com/40',
-//                     username: '用户3',
-//                     position: '前端开发3',
-//                 },
-//                 text: '<div style="color:red;">Text</div> 5',
-//                 image: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-//                 time: '3个月前',
-//                 likes: 3,
-//                 replytoauthor: {
-//                     id: 2,
-//                     avatar: 'https://via.placeholder.com/40',
-//                     username: '用户2',
-//                     position: '前端开发2',
-//                 },
-//             },
-//             {
-//                 id: 6,
-//                 author: {
-//                     id: 3,
-//                     avatar: 'https://via.placeholder.com/40',
-//                     username: '用户3',
-//                     position: '前端开发3',
-//                 },
-//                 text: '这是一个回复6',
-//                 image: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-//                 time: '3个月前',
-//                 likes: 3,
-//                 replytoauthor: {
-//                     id: 2,
-//                     avatar: 'https://via.placeholder.com/40',
-//                     username: '用户2',
-//                     position: '前端开发2',
-//                 },
-//             },
-//             {
-//                 id: 7,
-//                 author: {
-//                     id: 3,
-//                     avatar: 'https://via.placeholder.com/40',
-//                     username: '用户3',
-//                     position: '前端开发3',
-//                 },
-//                 text: '这是一个回复7',
-//                 image: "https://pic3.zhimg.com/v2-3ee2856defe7233d211e1180b2ec71a2_xld.jpeg",
-//                 time: '3个月前',
-//                 likes: 3,
-//                 replytoauthor: {
-//                     id: 2,
-//                     avatar: 'https://via.placeholder.com/40',
-//                     username: '用户2',
-//                     position: '前端开发2',
-//                 },
-//             }
-//         ]
-//     },
-//     {
-//         id: 33,
-//         author: {
-//             id: 31,
-//             avatar: 'https://via.placeholder.com/40',
-//             username: '用户C',
-//             position: '设计师',
-//         },
-//         text: '33 使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，',
-//         image: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-//         time: '6个月前',
-//         likes: 5,
-//         childcomments: []
-//     }, {
-//         id: 34,
-//         author: {
-//             id: 31,
-//             avatar: 'https://via.placeholder.com/40',
-//             username: '用户C',
-//             position: '设计师',
-//         },
-//         text: '34 使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，',
-//         image: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-//         time: '6个月前',
-//         likes: 5,
-//         childcomments: []
-//     }, {
-//         id: 35,
-//         author: {
-//             id: 31,
-//             avatar: 'https://via.placeholder.com/40',
-//             username: '用户C',
-//             position: '设计师',
-//         },
-//         text: '35 使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，',
-//         image: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-//         time: '6个月前',
-//         likes: 5,
-//         childcomments: []
-//     }, {
-//         id: 36,
-//         author: {
-//             id: 31,
-//             avatar: 'https://via.placeholder.com/40',
-//             username: '用户C',
-//             position: '设计师',
-//         },
-//         text: '36 使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，',
-//         image: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-//         time: '6个月前',
-//         likes: 5,
-//         childcomments: []
-//     }, {
-//         id: 41,
-//         author: {
-//             id: 1,
-//             avatar: 'https://via.placeholder.com/40',
-//             username: '用户1',
-//             position: '工程师',
-//         },
-//         text: '41 https://www.zhihu.com/people/annie-37-28-90 <script>alert("XSS Attack!")<//script>使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现 <img src="invalid-image" onerror="alert(\'XSS Attack!\')" />  https://github.com/vueComponent/ant-design-vue',
-//         image: "https://p9-passport.byteacctimg.com/img/user-avatar/7afb026d59be994d6e7e27c9d28944b5~50x50.awebp",
-//         time: '1个月前',
-//         likes: 1,
-//         childcommentcount: 17,
-//         childcomments: [
-//             {
-//                 id: 42,
-//                 author: {
-//                     id: 2,
-//                     avatar: 'https://via.placeholder.com/40',
-//                     username: '用户2',
-//                     position: '前端开发2',
-//                 },
-//                 text: '42 这是一个回复使一个 JWT <script>alert("XSS Attack!")<//script>  1111111 <img src="invalid-image" onerror="alert(\'XSS Attack!\')" />  立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
-//                 image: "https://p9-passport.byteacctimg.com/img/user-avatar/7afb026d59be994d6e7e27c9d28944b5~50x50.awebp",
-//                 time: '2个月前',
-//                 likes: 2,
-//             }
-//         ]
-//     },
-// ]);
 
 const upcomments = ref([
     {
@@ -605,7 +425,6 @@ const upcomments = ref([
 ]);
 
 const imgPreviewUrl = ref('');
-
 
 const showImageViewerclose = () => {
     document.body.style.overflow = 'auto';
@@ -823,6 +642,66 @@ const replaceImgWithTag = (str) => {
     .comment-input {
         margin-top: 5px;
         box-sizing: border-box;
+    }
+
+    .dot-container{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    gap: 15px; /* Adjust gap between dots if needed */
+    .dot {
+    width: 10px;
+    height: 10px;
+    background-color: #409eff;
+    border-radius: 50%;
+    animation: bounce 1.2s infinite;
+}
+
+.dot:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.dot:nth-child(2) {
+    animation-delay: 0.3s;
+}
+
+.dot:nth-child(3) {
+    animation-delay: 0.6s;
+}
+
+.dot:nth-child(4) {
+    animation-delay: 0.9s;
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-20px);
+    }
+    60% {
+        transform: translateY(-10px);
+    }
+}
+
+    }
+
+    .end-of-data{
+        display: flex;
+        justify-content: center;
+        // display: none;
+    text-align: center;
+    padding: 10px;
+    // background-color: #f8d7da;
+    color: #8a919f;
+    // border: 1px solid #f5c6cb;
+    // border-radius: 5px;
+    // position: fixed;
+    bottom: 20px;
+    // left: 50%;
+    // transform: translateX(-50%);
+    z-index: 1000;
     }
 
     .fetch-more-comment {

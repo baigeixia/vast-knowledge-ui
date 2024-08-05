@@ -1,9 +1,10 @@
 <template>
     <div class="listcontent-box" v-for=" list in  notificationList" :key="list.statisticsTime">
         <div class="notificationList-Item">
-            <time class="dateSplit" :datetime="list.statisticsTime" :title="list.statisticsTime">
+            <div class="dateSplit">
+                <time  :datetime="list.statisticsTime" :title="list.statisticsTime">
                 {{ list.statisticsTime }}
-            </time>
+            </time> </div>
             <div class="notificationList-Item-box" v-for=" info in list.notificationinfo" :key="info.id">
                 <img class="notificationList-Item-icon" :src="extendicon">
                 <div class="list-itme-box">

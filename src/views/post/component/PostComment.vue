@@ -43,6 +43,9 @@ import { ElMessage } from 'element-plus'
 import EmojiFileInput from '@/Layout/components/EmojiFileInput.vue';
 import commentStore from "@/stores/admin/comment";
 const commentS = commentStore()
+import maincommentAppStore from "@/stores/admin/maincomment";
+const maincommentS = maincommentAppStore()
+
 const props = defineProps({
     articleId: {
         type: String,
@@ -94,17 +97,16 @@ const sendmessage = () => {
     timeoutId = setTimeout(async () => {
         console.log('log', commentinput.value);
         console.log('logreplyauthor', props?.replyauthor);
+        commentS.commentReDto.entryId = props.articleId
 
         if (props.replyauthorId) {
             console.log('props',props.replyauthor);
             commentS.commentReDto.content = commentinput.value
-            commentS.commentReDto.entryId = props.articleId
             commentS.commentReDto.image = imageUrl.value
             commentS.commentReDto.commentRepayId = props.replyauthorId
             commentS.commentReDto.commentId = props.commentIdTop
 
             await commentS.saveCommentReContent()
-            await commentS.commentListGet( props.articleId)
 
             commentS.resetCommentRe()
         } else {
@@ -117,6 +119,9 @@ const sendmessage = () => {
 
         imageUrl.value = ''
         commentinput.value = ''
+        // commentS.commentHomeDto.type = 1
+        await commentS.commentListGet()
+        maincommentS.iscommentId=false
     }, 300);
 
 }

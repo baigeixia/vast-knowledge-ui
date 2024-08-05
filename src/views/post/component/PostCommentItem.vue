@@ -60,9 +60,9 @@
                 <PostCommentItem :id="vice ? reply.id : null" v-for="reply in comment.childComments" :key="reply.id" :articleid="articleid" :commentIdTop="commentIdTop"
                     :comment="reply" class="reply-item" />
             </div>
-            <div v-if="comment?.childcommentcount > 2" class="top-has-more">
+            <div v-if="comment?.childCommentCount > 5" class="top-has-more">
                 <span @click="selectcomment" :class="{ 'loading': isLoading }">
-                    {{ buttonText }}
+                    {{isLoading ? '加载中...' : `查看全部 ${props.comment.childCommentCount} 条回复` }}
                     <i v-if="isLoading" class="bi bi-arrow-repeat rotate"></i>
                     <i v-else class="bi bi-caret-right"></i>
                 </span>
@@ -94,7 +94,7 @@ const props = defineProps({
         required: true
     },
     commentIdTop: {
-        type: Number,
+        type: [String, Number,Object],
         required: false
     }
 });
@@ -108,17 +108,11 @@ const isanswer = ref(false);
 const isLoading = ref(false)
 const contentRef = ref(null)
 const expandRef = ref(null)
-const buttonText = ref(`查看全部 ${props.comment.childcommentcount} 条回复 `);
-
 const selectcomment = () => {
-    // 将按钮文本修改为 "加载中..."
-    buttonText.value = '加载中...';
-    isLoading.value = true;
+ isLoading.value = true;
 
-    // 这里可以添加加载数据的逻辑，比如异步请求或者模拟延时
     // 模拟延时效果，假设延时2秒后恢复按钮文本
     setTimeout(() => {
-        buttonText.value = `查看全部 ${props.comment.childcommentcount} 条回复`;
         isLoading.value = false;
     }, 2000); // 2000毫秒即2秒
 };
@@ -200,6 +194,9 @@ const renderLinks = (text) => {
 
         .avatar {
             border-radius: 50%;
+            width: 100%;
+  height: 100%;
+  object-fit: cover;
         }
 
 

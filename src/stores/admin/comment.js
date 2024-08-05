@@ -5,8 +5,10 @@ import { defineStore } from 'pinia'
 const commentStore = defineStore(
     'comment', () => {
 
+        const headerTag = ref(0)
+
     const commentDto = ref({
-        type: 1,
+        type: 0,
         channelId: undefined,
         entryId: undefined,
         content: undefined,
@@ -22,12 +24,16 @@ const commentStore = defineStore(
     
     const commentHomeDto = ref({
         entryId: undefined,
-        type: undefined,
+        type: 0,
         page: 1,
-        size: 10,
+        size: 5,
     })
 
     const commentHomeVo = ref({})
+    // const isLoading = ref(false)
+    const isLoadingEnd = ref(false)
+    const noMore  = ref(false)
+    const Loadingdisabled  = computed(() => isLoadingEnd.value || noMore.value)
     
     const saveCommentReContent = async () => {
         const {commentId,commentRepayId,content,image}=commentReDto.value
@@ -50,16 +56,55 @@ const commentStore = defineStore(
     }
 
 
-    const commentListGet = async (postid) => {
-    console.log('postid',postid);
+    const commentListGet = async () => {
+        if (isLoadingEnd.value) return;
+        isLoadingEnd.value = true;
+
         const {entryId,type,page,size}=commentHomeDto.value
+
         try {
-            const response = await getCommentList(postid,type,page,size);
-            commentHomeVo.value= response.data
-        } catch (error) {
-            console.error('Failed to save comment:', error);
-        }
+            const resp = await getCommentList(entryId,type,page,size);
+
+            if(Array.isArray(resp.data?.comments) && resp.data?.comments.length === 0){
+                noMore.value=true
+            }
+
+
+    
+            if (!commentHomeVo.value) {
+                commentHomeVo.value = { comments: [] };
+          }
+    
+          const newComments = Array.isArray(resp.data?.comments) ? resp.data.comments : [];
+    
+    
+          const existingComments = Array.isArray(commentHomeVo.value.comments) ? commentHomeVo.value.comments : [];
+    
+    
+          commentHomeVo.value = {
+            ...commentHomeVo.value, 
+            comments: [
+                ...existingComments,
+                ...newComments
+            ]
+        };
+        
+        isLoadingEnd.value = false;
+
+            } catch (error) {
+              console.error('Error loading more data:', error);
+            } finally {
+              isLoadingEnd.value = false;
+            }
     }
+
+    const loadMore = () => {
+        if(!noMore.value){
+            commentHomeDto.value.page ++;
+            commentListGet()
+        }
+      }
+
 
     const resetComment =()=>{
         commentDto.value={
@@ -85,11 +130,16 @@ const commentStore = defineStore(
         commentReDto,
         commentHomeDto,
         commentHomeVo,
+        headerTag,
+        loadMore,
+        isLoadingEnd,
+        noMore,
         saveCommentContent,
         saveCommentReContent,
         resetComment,
         resetCommentRe,
         commentListGet,
+        Loadingdisabled,
     }
 })
 

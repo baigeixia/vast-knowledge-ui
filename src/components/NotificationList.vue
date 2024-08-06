@@ -36,7 +36,7 @@
                         <div class="itme-content-box">
                             <div class="content-box-start">
                                 <div v-for="(actor, index) in info.actors.slice(0, 10)" :key="actor.id">
-                                    <user-info-popover :author="actor">
+                                    <user-info-popover :authorid="actor.id">
                                         <template v-slot:reference>
                                             <span class="username" @click="opuserinfo(actor.id)">
                                                 {{ actor.username }}

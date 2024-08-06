@@ -1,13 +1,16 @@
 import { securityLogin } from '@/api/admin/login'
+import { getUserInfo } from '@/api/admin/user'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 
-export const useUserStore = defineStore(
+ const useUserStore = defineStore(
     'user', () => {
         const userToken = ref(getToken())
         const userinfo = ref({})
+        const userInfoPo = ref({})
+        const userInfoPoLoading = ref(false)
         const isnotlogin = ref(false)
 
         const login = (userInfo) => {
@@ -38,12 +41,31 @@ export const useUserStore = defineStore(
             });
         };
 
+        const getUserInfoPo= async (id)=>{
+            if(userInfoPoLoading.value)return
+            try {
+              const resp=  await getUserInfo(id)
+              userInfoPo.value=resp.data
+              userInfoPoLoading.value=false
+            } catch (error) {
+                console.error('Error loading more data:', error);
+            }finally{
+                userInfoPoLoading.value=false
+            }
+
+        }
+
 
         return {
             isnotlogin,
             userToken,
             userinfo,
             login,
+            getUserInfoPo,
+            userInfoPo,
 
         }
     })
+
+
+    export default useUserStore

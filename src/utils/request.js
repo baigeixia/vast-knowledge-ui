@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { getToken } from '@/utils/auth'
 import { ElNotification, ElMessageBox, ElMessage, ElLoading } from 'element-plus'
-import { useUserStore } from '@/stores/admin/user'
+import useUserStore from '@/stores/admin/user'
 import errorCode from '@/utils/errorCode'
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'

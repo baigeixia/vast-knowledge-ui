@@ -3,7 +3,7 @@ import Home from '../views/home/index.vue'
 import Layout from '../Layout/index.vue'
 import NProgress from 'nprogress'
 import { getToken } from '@/utils/auth'
-import { useUserStore } from '@/stores/admin/user'
+import useUserStore from '@/stores/admin/user'
 
 
 const router = createRouter({

@@ -1,7 +1,7 @@
 <template>
     <div class="comment-item" :id="vice ? comment.id : null">
         <div class="comment-avatar">
-            <user-info-popover :author="comment.author">
+            <user-info-popover :authorid="comment.author.id">
                 <template v-slot:reference>
                     <img class="avatar" :src="comment.author.avatar" alt="avatar" />
                 </template>
@@ -73,7 +73,6 @@
 
 <script setup>
 import { ref, onMounted, computed, nextTick } from 'vue';
-// import UserInfoPopover from '@/ ./UserInfoPopover.vue'
 import UserInfoPopover from '@/components/UserInfoPopover.vue'
 import PostComment from './PostComment.vue';
 import { escapeHtml } from '@/utils/escapeHtml'
@@ -135,7 +134,6 @@ const contentRefOP = () => {
 
 const sanitizeString = (str) => {
     // let str= string.replace(/\n/g, '<br> ')
-    console.log(str);
     const urlRegex = /(https?:\/\/[\w-]+\.[\w-]+(\/[\w- .\/?%&=]*)?)/g;
     const escapedString = escapeHtml(str);
     const sanitizedString = escapedString.replace(urlRegex, (match) => {

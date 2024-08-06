@@ -1,20 +1,21 @@
 <template>
-    <el-popover placement="bottom" :show-after="300" :show-arrow="false" popper-class="user-info-popup" :width="isLoading ? 120 : 360" :offset="35">
+    <el-popover placement="bottom" :show-after="300" :show-arrow="false" popper-class="user-info-popup"
+        :width="isLoading ? 120 : 360" :offset="35">
         <!-- 插槽名为 reference 的具名插槽 -->
         <template v-slot:reference>
             <slot name="reference"></slot>
         </template>
-        <div class="loading-dots" v-if="isLoading">
-            <div class="dot"></div> 
+        <div class="loading-dots" v-if="userS.userInfoPoLoading">
+            <div class="dot"></div>
             <div class="dot"></div>
             <div class="dot"></div>
         </div>
         <div class="popover-content" v-else>
             <div class="info-row">
                 <div class="info-avatar">
-                    <img :src="author.avatar" alt="avatar" class="avatar" />
+                    <img :src="userS.userInfoPo.avatar" alt="avatar" class="avatar" />
                 </div>
-                <div class="info-name">{{ author.username }}</div>
+                <div class="info-name">{{ userS.userInfoPo.username }}</div>
             </div>
             <div class="meta-row">
                 <div class="item">
@@ -39,18 +40,26 @@
 </template>
   
 <script setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
+import useUserStore from "@/stores/admin/user";
+const userS = useUserStore()
 
 const props = defineProps({
-    author: {
-        type: Object,
+    authorid: {
+        type: String,
         required: true
     }
 });
 const isLoading = ref(false)
 
-const isLoadingop=()=>{
-    isLoading.value =false
+// onMounted(() => {
+//     let id = props.authorid
+//     if (id) {
+//         userS.getUserInfoPo(id)
+//     }
+// })
+
+const isLoadingop = () => {
 }
 
 </script>
@@ -58,6 +67,7 @@ const isLoadingop=()=>{
 <style  lang="scss" scoped>
 .user-info-popup {
     margin-top: 20px;
+
     .loading-dots {
         display: flex;
         align-items: center;
@@ -137,7 +147,8 @@ const isLoadingop=()=>{
                 height: 68px;
                 position: absolute;
                 top: -40px;
-                .avatar{
+
+                .avatar {
                     width: 100%;
                 }
             }

@@ -2,7 +2,7 @@ import router from './router'
 import { ElMessage } from 'element-plus'
 import NProgress from 'nprogress'
 import { getToken } from '@/utils/auth'
-import { useUserStore } from '@/stores/admin/user'
+import useUserStore from '@/stores/admin/user'
 
 router.beforeEach((to, from, next) => {
     NProgress.start();

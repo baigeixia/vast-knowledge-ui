@@ -108,7 +108,7 @@
 
 <script setup>
 import { ref, onMounted, reactive } from 'vue';
-import { useUserStore } from '@/stores/admin/user'
+import useUserStore from '@/stores/admin/user'
 const userStore = useUserStore()
 
 const contentFormRef = ref(null);

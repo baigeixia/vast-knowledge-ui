@@ -102,7 +102,6 @@
                         <div v-if="commentS.commentHomeVo.comments.length >1">已经到最底部了</div>
                     <div v-else>暂无评论数据</div>
                     </div>
-                    
 
                     <!-- <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div> -->
                 </el-footer>
@@ -286,6 +285,8 @@ const upheaderTagdrawer = (type) => {
 }
 
 onMounted(async () => {
+    console.log('onMounted ? ');
+
     let notificationId = props.notificationId
     let postId = props.postId
 
@@ -294,9 +295,8 @@ onMounted(async () => {
 
     await contentS.getContent(postId)
     await articleS.getinfoArticle(postId)
-    await commentS.commentListGet()
-    maincommentS.commentListGet()
-
+    // await commentS.commentListGet()
+    console.log(commentS.commentHomeDto);
     if (notificationId) {
         drawer.value = true
     }
@@ -305,16 +305,19 @@ onMounted(async () => {
 })
 
 onUnmounted(() => {
+    console.log("onUnmounted");
     contentS.content = {}
     articleS.articleDto = {}
     maincommentS.iscommentId = null
-
+    commentS.commentHomeVo = {}
+    maincommentS.commentHomedrawerVo = {}
+    commentS.commentHomeDto.page = 1
+    maincommentS.commentHomedrawerDto.page = 1
 })
 
 const upTitle = () => {
     document.title = articleS.articleDto.title;
 }
-
 
 const onDrawerOpen = () => {
     let id = props.notificationId
@@ -389,50 +392,6 @@ const isagree = ref(true)
 const ismsg = ref(false)
 const isfollow = ref(false)
 const drawer = ref(false)
-const comments = ref([])
-
-const upcomments = ref([
-    {
-        id: 1,
-        author: {
-            id: 1,
-            avatar: 'https://via.placeholder.com/40',
-            username: '用户1',
-            position: '工程师',
-        },
-        text: '1 https://www.zhihu.com/people/annie-37-28-90 <script>alert("XSS Attack!")<//script>使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现 <img src="invalid-image" onerror="alert(\'XSS Attack!\')" />  https://github.com/vueComponent/ant-design-vue',
-        pics: {
-            url: "https://p9-passport.byteacctimg.com/img/user-avatar/7afb026d59be994d6e7e27c9d28944b5~50x50.awebp",
-            width: 530,
-            height: 523,
-            type: 1
-        },
-        time: '1个月前',
-        likes: 1,
-        childcommentcount: 17,
-        childcomments: [
-            {
-                id: 2,
-                author: {
-                    id: 2,
-                    avatar: 'https://via.placeholder.com/40',
-                    username: '用户2',
-                    position: '前端开发2',
-                },
-                text: '2 这是一个回复使一个 JWT <script>alert("XSS Attack!")<//script>  1111111 <img src="invalid-image" onerror="alert(\'XSS Attack!\')" />  立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：使一个 JWT (JSON Web Token) 立即失效可以通过多种方式实现，取决于具体的实现和系统需求。以下是几种常见的方法：',
-                pics: {
-                    url: "https://pic2.zhimg.com/v2-79615c6b45858db5b2ee2eb07037fe4f_b.jpg",
-                    width: 530,
-                    height: 523,
-                    type: 1
-                },
-                time: '2个月前',
-                likes: 2,
-            }
-        ]
-    }
-]);
-
 const imgPreviewUrl = ref('');
 
 const showImageViewerclose = () => {
@@ -458,7 +417,6 @@ window.previewImg = (url) => {
     showImageViewer.value = true
     document.body.style.overflow = 'hidden';
 }
-
 
 
 const replaceImgWithTag = (str) => {

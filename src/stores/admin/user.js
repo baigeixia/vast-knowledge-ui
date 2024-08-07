@@ -33,6 +33,7 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
                     console.log('resp', resp);
                     isnotlogin.value = false;
                     // location.href='/'
+                    window.location.reload();
                     resolve(resp); // 成功时将结果传递给 Promise 的 resolve
                 })
                 .catch((error) => {
@@ -41,18 +42,13 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
             });
         };
 
-        const getUserInfoPo= async (id)=>{
-            if(userInfoPoLoading.value)return
+        const getUserInfoPo = async (id)=>{
             try {
-              const resp=  await getUserInfo(id)
-              userInfoPo.value=resp.data
-              userInfoPoLoading.value=false
+              const resp =  await getUserInfo(id)
+              return resp
             } catch (error) {
                 console.error('Error loading more data:', error);
-            }finally{
-                userInfoPoLoading.value=false
             }
-
         }
 
 

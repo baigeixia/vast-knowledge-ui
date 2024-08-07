@@ -1,17 +1,19 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { getCommentList } from '@/api/admin/comment'
+import { getCommentList ,getCommentReList} from '@/api/admin/comment'
 
 const maincommentAppStore = defineStore(
     'maincomment', () => {
         const commentitemRefidMap = ref({})
 
-        const iscommentId = ref(null)
-        const commentId = ref(0)
+        const istime = ref(null)
+        const time = ref(0)
 
-        const toggleAnswer = (commentId) => {
-            console.log("commentId", commentId);
-            iscommentId.value = commentId === iscommentId.value ? null : commentId
+        const toggleAnswer = (time) => {
+            console.log(time);
+            istime.value = time === istime.value ? null : time
+            console.log( istime.value);
+            // istime.value = time === istime.value ? istime.value : time
         }
 
         const commentHomedrawerVo = ref({})
@@ -73,13 +75,20 @@ const maincommentAppStore = defineStore(
             }
         }
 
+
+        const getCommentReListS= async (id,page,size)=>{
+           const resp = await getCommentReList(id,page,size)
+            return resp.data
+        }
+
         return {
             commentitemRefidMap,
             toggleAnswer,
-            iscommentId,
-            commentId,
+            istime,
+            time,
             commentHomedrawerDto,
             commentListGet,
+            getCommentReListS,
             loadMore,
             isLoadingEnd,
             noMore,

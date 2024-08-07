@@ -58,11 +58,11 @@ const props = defineProps({
         default: () => ({})
     },
     commentIdTop: {
-        type: Number,
+        type: [String, Number,Object],
         required: false,
     },
     replyauthorId: {
-        type: Number,
+        type: [String, Number,Object],
         required: false,
     },
 });
@@ -113,8 +113,8 @@ const sendmessage = () => {
         }
         imageUrl.value = ''
         commentinput.value = ''
-        commentS.commentHomeVo = {}
-        await commentS.commentListGet()
+        // commentS.commentHomeVo = {}
+        // await commentS.commentListGet()
         maincommentS.iscommentId=false
     }, 300);
 

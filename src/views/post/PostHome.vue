@@ -88,7 +88,7 @@
                     </div>
                     <div class="comment-list" v-infinite-scroll="commentS.loadMore"
                         :infinite-scroll-disabled="commentS.Loadingdisabled">
-                        <PostCommentItemAsync v-for="comment in commentS.commentHomeVo.comments" :key="comment.id"
+                        <PostCommentItemAsync :isSubComments="true" v-for="comment in commentS.commentHomeVo.comments" :key="comment.id"
                             :comment="comment" :articleid="postId" :commentIdTop="comment.id" />
                     </div>
                     <div v-if="commentS.isLoadingEnd" class="dot-container">
@@ -102,7 +102,6 @@
                         <div v-if="commentS.commentHomeVo.comments.length >1">已经到最底部了</div>
                     <div v-else>暂无评论数据</div>
                     </div>
-
                     <!-- <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div> -->
                 </el-footer>
             </el-container>
@@ -214,8 +213,8 @@
                     </div>
                     <div class="comment-list" v-infinite-scroll="maincommentS.loadMore"
                         :infinite-scroll-disabled="maincommentS.Loadingdisabled">
-                        <PostCommentItem :vice="true" v-for="comment in maincommentS.commentHomedrawerVo.comments"
-                            :key="comment.id" :comment="comment" :articleid="postId" :commentIdTop="comment.id" />
+                        <PostCommentItem :isSubComments="true" :vice="true" v-for="comment in maincommentS.commentHomedrawerVo.comments"
+                            :key="comment.id" :comment="comment" :articleid="postId" :commentIdTop="comment.id"  />
                     </div>
                     <div v-if="maincommentS.isLoadingEnd" class="dot-container">
                         <div class="dot"></div>
@@ -231,6 +230,8 @@
                 </div>
             </div>
         </el-drawer>
+
+
     </el-container>
 
     <el-image-viewer v-if="showImageViewer" :preview-teleported="false" :url-list="[imgPreviewUrl]"
@@ -322,8 +323,10 @@ const upTitle = () => {
 const onDrawerOpen = () => {
     let id = props.notificationId
     if (id) {
+        console.log(id);
         nextTick(() => {
             const element = document.getElementById(id);
+            console.log(element);
             if (element) {
                 element.scrollIntoView({ behavior: "smooth", block: "start", inline: "start" })
                 const observer = new IntersectionObserver(entries => {
@@ -382,6 +385,8 @@ const codeLanguage = () => {
         }
     });
 }
+
+
 
 
 const { y } = useScroll(window)
@@ -476,10 +481,14 @@ const replaceImgWithTag = (str) => {
 .post-home-main {
     flex: 1;
 
+   
     .drawer-right {
         :deep(.el-el-drawer__close) {
             display: none;
         }
+
+ 
+
 
 
         .comment-list-box {

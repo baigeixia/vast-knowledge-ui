@@ -1,7 +1,8 @@
 <template>
+    <!-- <div class="comment-item" :id="vice ? comment.id : null"> -->
     <div class="comment-item" :id="vice ? comment.id : null">
         <div class="comment-avatar">
-            <user-info-popover :authorid="comment.author.id">
+            <user-info-popover :author="comment.author">
                 <template v-slot:reference>
                     <img class="avatar" :src="comment.author.avatar" alt="avatar" />
                 </template>
@@ -40,43 +41,50 @@
                     <span @click="expanded = !expanded" class="expand-action">{{ expanded ? '收起' : '展开' }}</span>
                 </div>
                 <div class="comment-img-box" v-if="comment.image">
-                    <el-image class="comment-img" :src="comment.image" :zoom-rate="1.2" :max-scale="7"
-                        :min-scale="0.2" :preview-src-list="[comment.image]" fit="cover" :hide-on-click-modal="true"
-                        lazy />
+                    <el-image class="comment-img" :src="comment.image" :zoom-rate="1.2" :max-scale="7" :min-scale="0.2"
+                        :preview-src-list="[comment.image]" fit="cover" :hide-on-click-modal="true" lazy />
                 </div>
             </div>
             <div class="comment-meta">
                 <span>{{ comment.time }}</span>
-                <span class="action-itme" :class="{ 'action': false }">
-                    <i class="bi bi-suit-heart-fill"></i> 点赞 {{ comment.likes }}
+                <span class="action-itme" :class="{ 'action': false }" @click="likesCilck">
+                    <i class="bi bi-suit-heart-fill"></i> {{ !comment.likes || comment.likes == 0 ? "喜欢" : comment.likes }}
                 </span>
-                <span class="action-itme" :class="{ 'action': (vice ? 'vice-'+ comment.id : comment.id) === maincommentS.iscommentId }" @click="maincommentS.toggleAnswer(vice ? 'vice-'+comment.id : comment.id)">
-                    <i class="bi bi-chat-left-text-fill"></i> {{ (vice ? 'vice-'+comment.id : comment.id) === maincommentS.iscommentId ? '取消回复' : '回复' }}</span>
+                <span class="action-itme" :class="{ 'action': opencommenttime === maincommentS.istime }" @click="opencommentclick">
+                    <i class="bi bi-chat-left-text-fill"></i> {{ opencommenttime === maincommentS.istime ? '取消回复' : '回复' }}
+                </span>
             </div>
-            <div class="comment-reply-editor" v-if="(vice ? 'vice-'+ comment.id : comment.id) === maincommentS.iscommentId">
-                <PostComment :articleId="articleid" :replyauthor="comment.author" :replyauthorId="comment.id" :commentIdTop="commentIdTop" />
+            <div class="comment-reply-editor" v-if="opencommenttime === maincommentS.istime">
+                <PostComment :articleId="articleid" :replyauthor="comment.author" :replyauthorId="comment.id"
+                    :commentIdTop="commentIdTop" />
             </div>
             <div class="replies" v-if="comment.childComments && comment.childComments.length">
-                <PostCommentItem :id="vice ? reply.id : null" v-for="reply in comment.childComments" :key="reply.id" :articleid="articleid" :commentIdTop="commentIdTop"
-                    :comment="reply" class="reply-item" />
+                <PostCommentItem :vice="vice" v-for="reply in comment.childComments" :key="reply.id" :articleid="articleid"
+                    :commentIdTop="commentIdTop" :comment="reply" class="reply-item" />
             </div>
             <div v-if="comment?.childCommentCount > 5" class="top-has-more">
-                <span @click="selectcomment" :class="{ 'loading': isLoading }">
-                    {{isLoading ? '加载中...' : `查看全部 ${props.comment.childCommentCount} 条回复` }}
-                    <i v-if="isLoading" class="bi bi-arrow-repeat rotate"></i>
-                    <i v-else class="bi bi-caret-right"></i>
+                <span v-if="isSubComments" @click="opChildComments">
+                    {{ `查看全部 ${comment.childCommentCount} 条回复` }}
                 </span>
             </div>
+
+            <el-dialog class="dialog-child-Comments" v-model="dialogFormVisible" width="700" top="2vh" @close="dialogchildclose">
+                <template #header="{ titleId, titleClass }">
+                    <h4 :id="titleId" :class="titleClass" class="dialog-title-Class">评论回复</h4>
+                </template>
+                <div class="child-Comments" v-infinite-scroll="loadchildComments" >
+                    <PostCommentItem :vice="false" :comment="commentdialog" :articleid="articleid" :commentIdTop="comment.id" />
+                </div>
+            </el-dialog>
         </div>
     </div>
 </template>
-
 <script setup>
-import { ref, onMounted, computed, nextTick } from 'vue';
+import { ref, onMounted, computed, nextTick ,toRaw } from 'vue';
 import UserInfoPopover from '@/components/UserInfoPopover.vue'
 import PostComment from './PostComment.vue';
 import { escapeHtml } from '@/utils/escapeHtml'
-import maincommentAppStore  from '@/stores/admin/maincomment'
+import maincommentAppStore from '@/stores/admin/maincomment'
 const maincommentS = maincommentAppStore()
 
 const props = defineProps({
@@ -86,43 +94,66 @@ const props = defineProps({
     },
     vice: {
         type: Boolean,
-        required: false
+        required: false,
+        default: ()=>(false)
     },
     articleid: {
         type: String,
         required: true
     },
     commentIdTop: {
-        type: [String, Number,Object],
+        type: [String, Number, Object],
         required: false
+    },
+    isSubComments: {
+        type: Boolean,
+        required: false,
     }
 });
 
-onMounted(()=>{
-    // console.log('articleid',props.articleid);
-})
+const loadPage = ref(2);
 
+
+const dialogchildclose = () => {
+    dialogFormVisible.value = false
+    commentdialog.value={}
+}
+
+
+const loadchildComments = async() => {
+    const commentReList= await maincommentS.getCommentReListS(props.comment.id,loadPage.value,5)
+    commentdialog.value.childComments=[...commentdialog.value.childComments,...commentReList]
+    loadPage.value++
+}
+
+const likesCilck = () => {
+    console.log(props.comment.id + '点击了喜欢');
+}
+
+const opencommentclick=()=>{
+    if(opencommenttime.value==0){
+        opencommenttime.value = Date.now()
+    }
+    maincommentS.toggleAnswer(opencommenttime.value)
+}
+const opChildComments = () => {
+    dialogFormVisible.value = true
+    commentdialog.value = props.comment
+}
+
+const opencommenttime = ref(0);
+const commentdialog = ref({});
+
+const dialogFormVisible = ref(false);
 const expanded = ref(false);
-const isanswer = ref(false);
-const isLoading = ref(false)
 const contentRef = ref(null)
 const expandRef = ref(null)
-const selectcomment = () => {
- isLoading.value = true;
-
-    // 模拟延时效果，假设延时2秒后恢复按钮文本
-    setTimeout(() => {
-        isLoading.value = false;
-    }, 2000); // 2000毫秒即2秒
-};
 
 onMounted(() =>
-    contentRefOP(),
+   {
+    contentRefOP()
+   }
 )
-
-const opisanswer = () => {
-    isanswer.value = !isanswer.value
-}
 
 const contentRefOP = () => {
     if (contentRef.value.scrollHeight > contentRef.value.clientHeight) {
@@ -195,8 +226,8 @@ const renderLinks = (text) => {
         .avatar {
             border-radius: 50%;
             width: 100%;
-  height: 100%;
-  object-fit: cover;
+            height: 100%;
+            object-fit: cover;
         }
 
 
@@ -207,6 +238,34 @@ const renderLinks = (text) => {
 
 .comment-content {
     flex: 1;
+
+    .dialog-child-Comments{
+
+        .dialog-title-Class {
+            
+        display: flex;
+        height: 54px;
+        align-items: center;
+        font-size: 15px;
+        color: rgb(55, 58, 64);
+        font-weight: 600;
+        border-bottom: 1px solid rgb(235, 236, 237);
+    }
+    .child-Comments {
+        max-height: 750px;
+        padding-top: 20px;
+        overflow-y: auto;
+    }
+
+    }
+    :deep(.el-overlay) {
+        background-color: rgba(0, 0, 0, 0.65);
+        overflow-y: hidden;
+    }
+
+
+    
+
 
     .top-has-more {
         color: #8a919f;
@@ -273,7 +332,6 @@ const renderLinks = (text) => {
             -webkit-box-orient: vertical;
             transition: -webkit-line-clamp 0.3s ease-out;
             white-space: pre-line
-
         }
 
         .expand {

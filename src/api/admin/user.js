@@ -3,7 +3,7 @@ import { systemRequest } from '@/utils/request'
 
 export function getUserInfo(id) {
     return systemRequest({
-      url: `/user/User/getInfo/${id}`,
+      url: `/user/UserInfo/getInfo/${id}`,
       method: 'GET',
     })
 }

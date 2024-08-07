@@ -42,3 +42,17 @@ export function getCommentList(entryId,type,page,size) {
 }
 
 
+export function getCommentReList(commentId,page,size) {
+  return coreRequest({
+    url: '/comment/CommentRepay/getCommentReList',
+    method: 'GET',
+    params:{
+      commentId: commentId,
+      page: page,
+      size: size,
+    }
+  })
+}
+
+
+

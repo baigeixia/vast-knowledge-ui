@@ -1,39 +1,42 @@
 <template>
     <el-popover placement="bottom" :show-after="300" :show-arrow="false" popper-class="user-info-popup"
-        :width="isLoading ? 120 : 360" :offset="35">
+        @show="userpopovershow" width="360" :offset="35">
         <!-- 插槽名为 reference 的具名插槽 -->
         <template v-slot:reference>
             <slot name="reference"></slot>
         </template>
-        <div class="loading-dots" v-if="userS.userInfoPoLoading">
-            <div class="dot"></div>
-            <div class="dot"></div>
-            <div class="dot"></div>
-        </div>
-        <div class="popover-content" v-else>
+
+        <div class="popover-content">
             <div class="info-row">
                 <div class="info-avatar">
-                    <img :src="userS.userInfoPo.avatar" alt="avatar" class="avatar" />
+                    <img :src="author.avatar" alt="avatar" class="avatar" />
                 </div>
-                <div class="info-name">{{ userS.userInfoPo.username }}</div>
+                <div class="info-name" :title="author.username">{{ author.username }}</div>
+                <div class="info-position" :title="author.position">{{ author.position }}</div>
             </div>
-            <div class="meta-row">
+            <div class="item loading-dots" v-if="isLoading">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <div class="meta-row" v-else>
                 <div class="item">
-                    <div class="item-count">111</div>
-                    <div class="item-name">回答</div>
+                    <div class="item-name">粉丝</div>
+                    <div class="item-count">{{authorInfor.fans}}</div>
                 </div>
-                <div class="item">
-                    <div class="item-count">0</div>
+                <!-- <div class="item">
+                    <div class="item-count">{{authorInfor.follows}}</div>
                     <div class="item-name">文章</div>
-                </div>
+                </div> -->
                 <div class="item">
-                    <div class="item-count">371</div>
                     <div class="item-name">关注者</div>
+                    <div class="item-count">{{authorInfor.follows}}</div>
                 </div>
+
             </div>
             <div class="operate-btn">
-                <el-button class="button-ui" type="primary">关注</el-button>
-                <el-button class="button-ui">私信</el-button>
+                <el-button class="button-ui" type="primary" @click="focusonclick">关注</el-button>
+                <el-button class="button-ui" @click="privateletterclick">私信</el-button>
             </div>
         </div>
     </el-popover>
@@ -45,22 +48,46 @@ import useUserStore from "@/stores/admin/user";
 const userS = useUserStore()
 
 const props = defineProps({
-    authorid: {
-        type: String,
+    author: {
+        type: Object,
         required: true
     }
 });
 const isLoading = ref(false)
+const authorid = ref('')
+const authorInfor = ref({})
+onMounted(()=>{
+    if(props.author.id){
+        authorid.value= props.author.id
+    }
+})
+const userpopovershow = async  () => {
+    if (authorid.value) {
+        if (isLoading.value) return
+        try {
+            isLoading.value=true
+            const authordata = await  userS.getUserInfoPo(authorid.value)
+            if (authordata) {
+                authorInfor.value = authordata
+            }
+            isLoading.value=false
+        } catch (error) {
+            console.error('Error loading more data:', error);
+        }finally{
+            isLoading.value=false
+        }
 
-// onMounted(() => {
-//     let id = props.authorid
-//     if (id) {
-//         userS.getUserInfoPo(id)
-//     }
-// })
-
-const isLoadingop = () => {
+    }
 }
+
+const privateletterclick=()=>{
+    console.log("私信",authorid.value);
+}
+
+const focusonclick=()=>{
+    console.log("关注",authorid.value);
+}
+
 
 </script>
   
@@ -122,6 +149,10 @@ const isLoadingop = () => {
             justify-content: space-between;
             text-align: center;
 
+            .meta-row-itmes {
+                display: flex;
+            }
+
             .item {
                 flex: 1;
                 line-height: 1.6;
@@ -154,10 +185,20 @@ const isLoadingop = () => {
             }
 
             .info-name {
+                min-width: 100px;
                 font-size: 17px;
                 max-width: 200px;
                 box-sizing: border-box;
                 margin-left: 85px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+
+            .info-position {
+                color: gray;
+                margin-left: 25px;
+                font-size: 13px;
                 overflow: hidden;
                 text-overflow: ellipsis;
                 white-space: nowrap;

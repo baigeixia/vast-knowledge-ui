@@ -5,6 +5,8 @@ import { defineStore } from 'pinia'
 const commentStore = defineStore(
     'comment', () => {
 
+        const TemporaryComments =ref({})
+
         const headerTag = ref(0)
 
         const commentDto = ref({
@@ -26,7 +28,7 @@ const commentStore = defineStore(
             entryId: undefined,
             type: 0,
             page: 1,
-            size: 5,
+            size: 10,
         })
 
         const commentHomeVo = ref({})
@@ -39,7 +41,7 @@ const commentStore = defineStore(
             const { commentId, commentRepayId, content, image } = commentReDto.value
             try {
                 const response = await saveCommentRe(commentId, commentRepayId, content, image);
-                console.log(response.data);
+                TemporaryComments.value=response.data
             } catch (error) {
                 console.error('Failed to save comment:', error);
             }
@@ -49,7 +51,7 @@ const commentStore = defineStore(
             const { type, channelId, entryId, content, image } = commentDto.value
             try {
                 const response = await saveComment(type, channelId, entryId, content, image);
-                console.log(response.data);
+                TemporaryComments.value=response.data
             } catch (error) {
                 console.error('Failed to save comment:', error);
             }
@@ -59,7 +61,6 @@ const commentStore = defineStore(
         const commentListGet = async () => {
             if (isLoadingEnd.value) return;
             isLoadingEnd.value = true;
-
 
             const { entryId, type, page, size } = commentHomeDto.value
 
@@ -129,6 +130,7 @@ const commentStore = defineStore(
             commentReDto,
             commentHomeDto,
             commentHomeVo,
+            TemporaryComments,
             headerTag,
             loadMore,
             isLoadingEnd,

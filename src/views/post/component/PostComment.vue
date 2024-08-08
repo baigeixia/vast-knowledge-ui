@@ -1,9 +1,9 @@
 <template>
     <div class="auth-card" :class="{ 'auth-card-hovered': isHovered, 'auth-card-focused': (isFocused || commentinput) }"
         @mouseover="isHovered = true" @mouseleave="isHovered = false">
-        <el-input ref="commentinputRef" :autosize="{ minRows: 2, maxRows: 10 }"  show-word-limi
-            maxlength="1000" type="textarea" v-model="commentinput" :placeholder="inputplaceholder" clearable
-            @focus="isFocused = true" @blur="isFocused = false" />
+        <el-input ref="commentinputRef" :autosize="{ minRows: 2, maxRows: 10 }" show-word-limi maxlength="1000"
+            type="textarea" v-model="commentinput" :placeholder="inputplaceholder" clearable @focus="isFocused = true"
+            @blur="isFocused = false" />
         <div v-if="imageUrl" class="small-preview-box">
             <img :src="imageUrl" alt="预览图片" class="small-preview-image" @click="showLargePreview">
             <i class="remove-icon bi bi-x-circle" @click="removeImage"></i>
@@ -52,20 +52,20 @@ const props = defineProps({
         required: true
     },
     replyauthor: {
-        type: [String, Number,Object],
-        // type: Object,
+        type: [String, Number, Object],
         required: false,
         default: () => ({})
     },
     commentIdTop: {
-        type: [String, Number,Object],
+        type: [String, Number, Object],
         required: false,
     },
     replyauthorId: {
-        type: [String, Number,Object],
+        type: [String, Number, Object],
         required: false,
-    },
+    }
 });
+
 onMounted(() => {
     if (props.replyauthor?.username) {
         inputplaceholder.value = '回复： ' + props.replyauthor.username
@@ -104,20 +104,68 @@ const sendmessage = () => {
             commentS.commentReDto.commentId = props.commentIdTop
             await commentS.saveCommentReContent()
             commentS.resetCommentRe()
+            sendmessageAddVodataRe()
         } else {
             commentS.commentDto.content = commentinput.value
             commentS.commentDto.entryId = props.articleId
             commentS.commentDto.image = imageUrl.value
             await commentS.saveCommentContent()
+            sendmessageAddVodata()
             commentS.resetComment()
         }
         imageUrl.value = ''
         commentinput.value = ''
         // commentS.commentHomeVo = {}
         // await commentS.commentListGet()
-        maincommentS.iscommentId=false
+        maincommentS.istime = null
     }, 300);
 
+}
+
+const sendmessageAddVodata = () => {
+    let newChildComment = commentS.TemporaryComments
+    if (newChildComment) {
+        if (commentS.commentHomeVo && Array.isArray(commentS.commentHomeVo.comments)) {
+            commentS.commentHomeVo.comments.unshift(newChildComment);
+        }
+
+        if (maincommentS.commentHomedrawerVo && Array.isArray(maincommentS.commentHomedrawerVo.comments)) {
+            commentS.commentHomeVo.comments.unshift(newChildComment);
+        }
+    }
+}
+
+const sendmessageAddVodataRe = () => {
+    let newChildComment = commentS.TemporaryComments
+    if (newChildComment) {
+        let commentId = newChildComment.commentId
+        if (commentS.commentHomeVo && Array.isArray(commentS.commentHomeVo.comments)) {
+            commentS.commentHomeVo?.comments.forEach(comment => {
+                if (comment.id === commentId) {
+                    comment.childComments.unshift(newChildComment);
+                    // 更新子评论数量
+                    comment.childCommentCount = (parseInt(comment.childCommentCount, 10) + 1).toString();
+                }
+            });
+        }
+        if (maincommentS.commentHomedrawerVo && Array.isArray(maincommentS.commentHomedrawerVo.comments)) {
+            maincommentS.commentHomedrawerVo?.comments.forEach(comment => {
+                if (comment.id === commentId) {
+                    comment.childComments.unshift(newChildComment);
+                    // 更新子评论数量
+                    comment.childCommentCount = (parseInt(comment.childCommentCount, 10) + 1).toString();
+                }
+            });
+        }
+
+        if (maincommentS.commentdialog) {
+            if (maincommentS.commentdialog.id === commentId) {
+                maincommentS.commentdialog.childComments.unshift(newChildComment);
+                // 更新子评论数量
+                maincommentS.commentdialog.childCommentCount = (parseInt(maincommentS.commentdialog.childCommentCount, 10) + 1).toString();
+            }
+        }
+    }
 }
 
 const commentinputfocus = (emoji) => {

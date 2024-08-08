@@ -31,7 +31,7 @@
           </el-input>
         </div>
         <div class="right-li">
-          <el-button style="border-radius:15px;" type="primary">发布</el-button>
+          <el-button style="border-radius:15px;" type="primary" @click=" navigateToPublish">发布</el-button>
         </div>
         <el-dropdown style=" cursor: pointer;">
           <div class="right-li">
@@ -130,6 +130,14 @@ const upheadertype = (type) => {
   header.headertype = type
 }
 
+const navigateToPublish=() =>{
+      // 使用 Vue Router 进行跳转
+      // this.$router.push('/publish');
+      
+      // 或者使用 window.location.href 进行跳转
+      // window.location.href = 'http://localhost:8081/publish';
+      window.open('http://localhost:8081/publish', '_blank');
+    }
 const headersearch = () => {
   // console.log(headerinput.value);
   const query = encodeURIComponent('先活着再生活');
@@ -148,15 +156,20 @@ const headersearch = () => {
 
 const item_TO_WE = (type) => {
   if (type === 1) {
-    window.location.href = 'http://localhost:8081/';
+    // window.location.href = 'http://localhost:8081/';
+    window.open('http://localhost:8081/', '_blank');
   } else if (type === 2) {
-    window.location.href = 'http://localhost:8081/publish';
+    // window.location.href = 'http://localhost:8081/publish';
+    window.open('http://localhost:8081/publish', '_blank');
   } else if (type === 3) {
-    window.location.href = 'http://localhost:8081/news';
+    // window.location.href = 'http://localhost:8081/news';
+    window.open('http://localhost:8081/news', '_blank');
   } else if (type === 4) {
-    window.location.href = 'http://localhost:8081/material';
+    // window.location.href = 'http://localhost:8081/material';
+    window.open('http://localhost:8081/material', '_blank');
   } else if (type === 5) {
-    window.location.href = 'http://localhost:8081/fans';
+    // window.location.href = 'http://localhost:8081/fans';
+    window.open('http://localhost:8081/fans', '_blank');
   }
 
 }

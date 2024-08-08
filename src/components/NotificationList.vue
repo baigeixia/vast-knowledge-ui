@@ -36,7 +36,7 @@
                         <div class="itme-content-box">
                             <div class="content-box-start">
                                 <div v-for="(actor, index) in info.actors.slice(0, 10)" :key="actor.id">
-                                    <user-info-popover :authorid="actor.id">
+                                    <user-info-popover :author="actor">
                                         <template v-slot:reference>
                                             <span class="username" @click="opuserinfo(actor.id)">
                                                 {{ actor.username }}
@@ -101,7 +101,10 @@
             </div>
         </div>
     </div>
-    <el-dialog v-model="dialogTableVisible" width="700" :lock-scroll="true">
+    <el-dialog v-if="dialogTableVisible" v-model="dialogTableVisible" width="700" :lock-scroll="true" top="2vh">
+        <template #header="{ titleId, titleClass }">
+                    <h4 :id="titleId" :class="titleClass"><div style="height: 20px;"></div></h4>
+        </template>
         <div class="dialog-list-box" v-if="dialoguserlist">
             <div class="list-item-box" v-for=" actor in dialoguserlist" :key="actor.id">
                 <div class="ContentItem">
@@ -112,7 +115,6 @@
                             </template>
                         </user-info-popover>
                         <!-- <img class="image-box" :src="actor.avatar" alt="avatar" /> -->
-
                     </div>
                     <div class="ContentItem-head">
                         <div class="UserItem-title">
@@ -197,7 +199,13 @@ const formattedTime = (time) => {
 </script>
 
 <style lang="scss" scoped>
+
+
+
 .dialog-list-box {
+    max-height: 750px;
+    padding-top: 20px;
+    overflow-y: auto;
     .list-item-box {
         padding: 16px 20px;
         border-top: 1px solid #e6e6e7;

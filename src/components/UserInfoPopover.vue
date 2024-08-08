@@ -9,10 +9,10 @@
         <div class="popover-content">
             <div class="info-row">
                 <div class="info-avatar">
-                    <img :src="author.avatar" alt="avatar" class="avatar" />
+                    <img :src="author?.avatar" alt="avatar" class="avatar" />
                 </div>
-                <div class="info-name" :title="author.username">{{ author.username }}</div>
-                <div class="info-position" :title="author.position">{{ author.position }}</div>
+                <div class="info-name" :title="author?.username">{{ author?.username }}</div>
+                <div class="info-position" :title="author?.position">{{ author?.position }}</div>
             </div>
             <div class="item loading-dots" v-if="isLoading">
                 <div class="dot"></div>
@@ -22,7 +22,7 @@
             <div class="meta-row" v-else>
                 <div class="item">
                     <div class="item-name">粉丝</div>
-                    <div class="item-count">{{authorInfor.fans}}</div>
+                    <div class="item-count">{{authorInfor?.fans}}</div>
                 </div>
                 <!-- <div class="item">
                     <div class="item-count">{{authorInfor.follows}}</div>
@@ -30,7 +30,7 @@
                 </div> -->
                 <div class="item">
                     <div class="item-name">关注者</div>
-                    <div class="item-count">{{authorInfor.follows}}</div>
+                    <div class="item-count">{{authorInfor?.follows}}</div>
                 </div>
 
             </div>

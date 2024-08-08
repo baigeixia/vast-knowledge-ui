@@ -46,7 +46,7 @@
                 </div>
             </div>
             <div class="comment-meta">
-                <span>{{ comment.time }}</span>
+                <span>{{ $formatTime(comment.time)}}</span>
                 <span class="action-itme" :class="{ 'action': false }" @click="likesCilck">
                     <i class="bi bi-suit-heart-fill"></i> {{ !comment.likes || comment.likes == 0 ? "喜欢" : comment.likes }}
                 </span>
@@ -55,7 +55,7 @@
                 </span>
             </div>
             <div class="comment-reply-editor" v-if="opencommenttime === maincommentS.istime">
-                <PostComment :articleId="articleid" :replyauthor="comment.author" :replyauthorId="comment.id"
+                <PostComment    :articleId="articleid" :replyauthor="comment.author" :replyauthorId="comment.id"
                     :commentIdTop="commentIdTop" />
             </div>
             <div class="replies" v-if="comment.childComments && comment.childComments.length">
@@ -68,12 +68,12 @@
                 </span>
             </div>
 
-            <el-dialog class="dialog-child-Comments" v-model="dialogFormVisible" width="700" top="2vh" @close="dialogchildclose">
+            <el-dialog class="dialog-child-Comments" v-if="dialogFormVisible" v-model="dialogFormVisible"  width="700" top="2vh" @close="dialogchildclose">
                 <template #header="{ titleId, titleClass }">
                     <h4 :id="titleId" :class="titleClass" class="dialog-title-Class">评论回复</h4>
                 </template>
-                <div class="child-Comments" v-infinite-scroll="loadchildComments" >
-                    <PostCommentItem :vice="false" :comment="commentdialog" :articleid="articleid" :commentIdTop="comment.id" />
+                <div   class="child-Comments" v-infinite-scroll="loadchildComments" :infinite-scroll-immediate="false"  v-loading="dialogloading">
+                    <PostCommentItem :vice="false" :comment="maincommentS.commentdialog" :articleid="articleid" :commentIdTop="comment.id" />
                 </div>
             </el-dialog>
         </div>
@@ -86,6 +86,8 @@ import PostComment from './PostComment.vue';
 import { escapeHtml } from '@/utils/escapeHtml'
 import maincommentAppStore from '@/stores/admin/maincomment'
 const maincommentS = maincommentAppStore()
+import commentStore from "@/stores/admin/comment";
+const commentS = commentStore()
 
 const props = defineProps({
     comment: {
@@ -111,19 +113,33 @@ const props = defineProps({
     }
 });
 
-const loadPage = ref(2);
+
+const loadPage = ref(1);
+const dialogloading = ref(false);
 
 
 const dialogchildclose = () => {
     dialogFormVisible.value = false
-    commentdialog.value={}
+    maincommentS.commentdialog={}
+    loadPage.value=1
 }
 
-
-const loadchildComments = async() => {
-    const commentReList= await maincommentS.getCommentReListS(props.comment.id,loadPage.value,5)
-    commentdialog.value.childComments=[...commentdialog.value.childComments,...commentReList]
+const getCommentReList = async()=>{
+    try {
+        dialogloading.value=true
+        const commentReList= await maincommentS.getCommentReListS(props.vice? maincommentS.commentHomedrawerDto.type : commentS.commentHomeDto.type ,props.comment.id,loadPage.value,10)
+     maincommentS.commentdialog.childComments=[... maincommentS.commentdialog.childComments,...commentReList]
+     dialogloading.value=false
+    } catch (error) {
+        
+    }finally{
+        dialogloading.value=false
+    }
+   
     loadPage.value++
+}
+const loadchildComments = () => {
+    getCommentReList()
 }
 
 const likesCilck = () => {
@@ -138,11 +154,16 @@ const opencommentclick=()=>{
 }
 const opChildComments = () => {
     dialogFormVisible.value = true
-    commentdialog.value = props.comment
+    maincommentS.commentdialog = JSON.parse(JSON.stringify(props.comment))
+    if (maincommentS.commentdialog) {
+  maincommentS.commentdialog.childComments = [];
+}
+getCommentReList()
+
+    // console.log( maincommentS.commentdialog );
 }
 
 const opencommenttime = ref(0);
-const commentdialog = ref({});
 
 const dialogFormVisible = ref(false);
 const expanded = ref(false);
@@ -252,6 +273,7 @@ const renderLinks = (text) => {
         border-bottom: 1px solid rgb(235, 236, 237);
     }
     .child-Comments {
+        height:750px;
         max-height: 750px;
         padding-top: 20px;
         overflow-y: auto;

@@ -8,6 +8,7 @@ const maincommentAppStore = defineStore(
 
         const istime = ref(null)
         const time = ref(0)
+const commentdialog=ref({})
 
         const toggleAnswer = (time) => {
             console.log(time);
@@ -24,7 +25,7 @@ const maincommentAppStore = defineStore(
             entryId: undefined,
             type: 0,
             page: 1,
-            size: 5,
+            size: 10,
         })
 
         const commentListGet = async () => {
@@ -76,8 +77,8 @@ const maincommentAppStore = defineStore(
         }
 
 
-        const getCommentReListS= async (id,page,size)=>{
-           const resp = await getCommentReList(id,page,size)
+        const getCommentReListS= async (type,id,page,size)=>{
+           const resp = await getCommentReList(type,id,page,size)
             return resp.data
         }
 
@@ -91,6 +92,7 @@ const maincommentAppStore = defineStore(
             getCommentReListS,
             loadMore,
             isLoadingEnd,
+            commentdialog,
             noMore,
             Loadingdisabled,
             commentHomedrawerVo,

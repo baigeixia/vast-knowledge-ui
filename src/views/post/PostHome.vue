@@ -2,15 +2,14 @@
     <el-container class="post-home-main">
         <div class="suspended-panel">
             <div class="panel-btn" v-if="y > 180">
-                <img
-                    src="https://p6-passport.byteacctimg.com/img/user-avatar/507312f17bf5e7cefebbf297105f1742~100x100.awebp">
+                <img src="https://p6-passport.byteacctimg.com/img/user-avatar/507312f17bf5e7cefebbf297105f1742~100x100.awebp">
                 <div class="follow-area" v-if="isfollow">
-                    <div class="follow-text">关注</div>
+                    <div class="follow-text" @click="isfollow=false">关注</div>
                 </div>
             </div>
             <el-tooltip content="点赞" placement="left" effect="light">
                 <div class="panel-btn" :class="{ 'active': isagree }">
-                    <el-badge :color="isagree ? '#1e80ff' : '#b2b2b2'" :show-zero='false' :value="bellvalue"
+                    <el-badge :color="isagree ? '#1e80ff' : '#b2b2b2'" :show-zero='false' :value="Number(articleS.articleDto.likes)"
                         :offset="[10, 3]">
                         <i class="bi bi-suit-heart-fill"></i>
                     </el-badge>
@@ -18,7 +17,7 @@
             </el-tooltip>
             <el-tooltip content="评论" placement="left" effect="light">
                 <div class="panel-btn" :class="{ 'active': ismsg }" @click="drawer = true">
-                    <el-badge :color="ismsg ? '#1e80ff' : '#b2b2b2'" :show-zero='false' :value="bellvalue"
+                    <el-badge :color="ismsg ? '#1e80ff' : '#b2b2b2'" :show-zero='false' :value="Number(articleS.articleDto.comment)"
                         :offset="[10, 3]">
                         <i class="bi bi-chat-left-text-fill"></i>
                     </el-badge>
@@ -49,10 +48,10 @@
                             <RouterLink to="/user/pins">{{ articleS.articleDto.authorName }}</RouterLink>
                         </div>
                         <div class="meta-box">
-                            <div class="time">{{ articleS.articleDto.createdTime }}</div>
-                            <div class="read-time" v-if="articleS.articleDto.views > 1"><i
-                                    class="bi bi-eye"></i><span>{{
-                articleS.articleDto.views }}</span></div>
+                            <div class="time">{{ $formatDateTime( articleS.articleDto.createdTime) }}</div>
+                            <div class="read-time" v-if="articleS.articleDto.views > 1">
+                                <i class="bi bi-eye"></i>
+                                    <span>{{articleS.articleDto.views }}</span></div>
                             <div class="read-time" v-if="articleS.articleDto.comment > 1"><i
                                     class="bi bi-clock"></i><span>{{ articleS.articleDto.comment }}条评论</span></div>
                         </div>
@@ -71,7 +70,7 @@
                             </div>
                             <div class="form-box">
                                 <div class="comment-input">
-                                    <PostComment :articleId="postId" />
+                                    <PostComment  :articleId="postId" />
                                 </div>
                             </div>
                         </div>
@@ -86,7 +85,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="comment-list" v-infinite-scroll="commentS.loadMore"
+                    <div  class="comment-list" v-infinite-scroll="commentS.loadMore"
+                    :infinite-scroll-immediate="false"
                         :infinite-scroll-disabled="commentS.Loadingdisabled">
                         <PostCommentItemAsync :isSubComments="true" v-for="comment in commentS.commentHomeVo.comments" :key="comment.id"
                             :comment="comment" :articleid="postId" :commentIdTop="comment.id" />
@@ -99,7 +99,7 @@
                     </div>
                     <div v-if="commentS.noMore" class="end-of-data">
                         <!-- 已经到最底部了 -->
-                        <div v-if="commentS.commentHomeVo.comments.length >1">已经到最底部了</div>
+                        <div v-if="commentS.commentHomeVo.comments?.length >1">已经到最底部了</div>
                     <div v-else>暂无评论数据</div>
                     </div>
                     <!-- <div class="fetch-more-comment"><span>查看所有评论</span><i class="bi bi-arrow-down-short"></i></div> -->
@@ -110,8 +110,7 @@
                     <div class="block-body author-block">
                         <RouterLink class="user-item" to="/user">
                             <div class="item-left">
-                                <img class="avatar-img"
-                                    src="https://p6-passport.byteacctimg.com/img/user-avatar/507312f17bf5e7cefebbf297105f1742~100x100.awebp">
+                                <img class="avatar-img" src="https://p6-passport.byteacctimg.com/img/user-avatar/507312f17bf5e7cefebbf297105f1742~100x100.awebp">
                             </div>
                             <div class="item-right">
                                 <span class="username">程序员111</span>
@@ -212,6 +211,7 @@
                         </div>
                     </div>
                     <div class="comment-list" v-infinite-scroll="maincommentS.loadMore"
+                    :infinite-scroll-immediate="false"
                         :infinite-scroll-disabled="maincommentS.Loadingdisabled">
                         <PostCommentItem :isSubComments="true" :vice="true" v-for="comment in maincommentS.commentHomedrawerVo.comments"
                             :key="comment.id" :comment="comment" :articleid="postId" :commentIdTop="comment.id"  />
@@ -296,8 +296,9 @@ onMounted(async () => {
 
     await contentS.getContent(postId)
     await articleS.getinfoArticle(postId)
-    // await commentS.commentListGet()
-    console.log(commentS.commentHomeDto);
+    await commentS.commentListGet()
+    // await maincommentS.commentListGet()
+    // console.log(commentS.commentHomeDto);
     if (notificationId) {
         drawer.value = true
     }
@@ -320,8 +321,9 @@ const upTitle = () => {
     document.title = articleS.articleDto.title;
 }
 
-const onDrawerOpen = () => {
+const onDrawerOpen = async () => {
     let id = props.notificationId
+    await maincommentS.commentListGet()
     if (id) {
         console.log(id);
         nextTick(() => {
@@ -387,15 +389,13 @@ const codeLanguage = () => {
 }
 
 
-
-
 const { y } = useScroll(window)
 
 const bellvalue = ref(1200)
 const showImageViewer = ref(false)
 const isagree = ref(true)
 const ismsg = ref(false)
-const isfollow = ref(false)
+const isfollow = ref(true)
 const drawer = ref(false)
 const imgPreviewUrl = ref('');
 

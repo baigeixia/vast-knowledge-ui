@@ -14,6 +14,7 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import "bootstrap-icons/font/bootstrap-icons.css";
 import 'nprogress/nprogress.css';
 import { sanitizeHtml } from './utils/helpers/sanitizeHtml';
+import { formatTime,formatDateTime } from './utils/formDate';
 import './loginblocking' 
 
 const app = createApp(App)
@@ -24,6 +25,8 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 
 app.config.globalProperties.$sanitizeHtml = sanitizeHtml;
+app.config.globalProperties.$formatTime = formatTime;
+app.config.globalProperties.$formatDateTime = formatDateTime;
 
 app.use(router)
 app.use(ElementPlus, {

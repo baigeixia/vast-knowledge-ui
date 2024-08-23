@@ -15,7 +15,7 @@
       </div>
     </header>
     <div  v-if="articleStore.articleList" class="top-content">
-      <Maincontentlist :contents="articleStore.articleList.records"  v-infinite-scroll="articleStore.loadMore" :infinite-scroll-disabled="articleStore.isLoading" />
+      <Maincontentlist :contents="articleStore.articleList.records"  :infinite-scroll-immediate="false"  v-infinite-scroll="articleStore.loadMore" :infinite-scroll-disabled="articleStore.loadingdisabled" />
     </div>
   </div>
 </template>
@@ -31,18 +31,23 @@ const articleStore = articleAppStore()
 
 
 onMounted(()=>{
-  articleStore.isLoading=true
+  articleStore.isLoadingEnd=false
   articleStore.page=1 
   articleStore.articleList={}
   articleStore.getarticleList()
-  articleStore.isLoading=false
+  articleStore.noMore=false
+
+  document.documentElement.style.overflowY = 'scroll';
 })
 
 const navigationtypeSwit = (type) => {
+  articleStore.isLoadingEnd=false
   articleStore.page=1
   articleStore.navigationtype = type
   articleStore.articleList={}
   articleStore.getarticleList()
+  articleStore.noMore=false
+
 }
 
 </script>
@@ -56,7 +61,6 @@ const navigationtypeSwit = (type) => {
   margin-right: 20px;
   border-radius: 4px;
   min-height: 800px;
-
 
 
   .top-content {

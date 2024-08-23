@@ -1,6 +1,6 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { getCommentList ,getCommentReList} from '@/api/admin/comment'
+import { getCommentList, getCommentReList } from '@/api/admin/comment'
 
 const maincommentAppStore = defineStore(
     'maincomment', () => {
@@ -8,12 +8,12 @@ const maincommentAppStore = defineStore(
 
         const istime = ref(null)
         const time = ref(0)
-const commentdialog=ref({})
+        const commentdialog = ref({})
 
         const toggleAnswer = (time) => {
             console.log(time);
             istime.value = time === istime.value ? null : time
-            console.log( istime.value);
+            console.log(istime.value);
             // istime.value = time === istime.value ? istime.value : time
         }
 
@@ -29,7 +29,6 @@ const commentdialog=ref({})
         })
 
         const commentListGet = async () => {
-            console.log('commentListGet');
             if (isLoadingEnd.value) return;
             isLoadingEnd.value = true;
 
@@ -43,7 +42,7 @@ const commentdialog=ref({})
                 }
 
 
-                if (!commentHomedrawerVo.value ) {
+                if (!commentHomedrawerVo.value) {
                     commentHomedrawerVo.value = { comments: [] };
                 }
 
@@ -59,7 +58,7 @@ const commentdialog=ref({})
                         ...newComments
                     ]
                 };
-                
+
                 commentHomedrawerDto.value.page++;
                 isLoadingEnd.value = false;
             } catch (error) {
@@ -71,14 +70,15 @@ const commentdialog=ref({})
 
 
         const loadMore = () => {
+            console.log('loadMore noMore main');
             if (!noMore.value) {
                 commentListGet()
             }
         }
 
 
-        const getCommentReListS= async (type,id,page,size)=>{
-           const resp = await getCommentReList(type,id,page,size)
+        const getCommentReListS = async (type, id, page, size) => {
+            const resp = await getCommentReList(type, id, page, size)
             return resp.data
         }
 

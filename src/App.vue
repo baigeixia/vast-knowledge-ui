@@ -1,17 +1,26 @@
 <script setup>
+import { getToken, setToken, removeToken } from '@/utils/auth'
 import { onBeforeMount } from "vue";
-import { socket } from '@/utils/socketclient'
-onBeforeMount(()=>{
-  socket.connect();
+import {socket ,socketAdmin ,useSockets} from '@/utils/socketclient'
+
+onBeforeMount(() => {
+  if (getToken) {
+    socket.connect();
+    socketAdmin.connect();
+    useSockets()
+    
+
+    socketAdmin.emit("hello", "worldadmin");
+    socketAdmin.on("receiveMsg", (data) => {
+      console.log('sendMsgdata:', data+'admin');
+    })
+    socket.emit("hello", "world");
+    socket.on("receiveMsg", (data) => {
+      console.log('sendMsgdata:', data);
+    })
+  }
 })
 
-socket.emit("hello", "world", (response) => {
-  console.log(response); // "got it"
-});
-
-socket.on("receiveMsg",(data)=>{
-  console.log('sendMsgdata:',data);
-})
 
 </script>
 

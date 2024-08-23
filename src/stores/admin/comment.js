@@ -100,6 +100,7 @@ const commentStore = defineStore(
         }
 
         const loadMore = () => {
+            console.log('loadMore noMore');
             if (!noMore.value) {
                 commentListGet()
             }

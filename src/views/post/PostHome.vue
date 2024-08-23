@@ -2,8 +2,7 @@
     <el-container class="post-home-main">
         <div class="suspended-panel">
             <div class="panel-btn" v-if="y > 180">
-                <img
-                    src="https://p6-passport.byteacctimg.com/img/user-avatar/507312f17bf5e7cefebbf297105f1742~100x100.awebp">
+                <img src="https://p6-passport.byteacctimg.com/img/user-avatar/507312f17bf5e7cefebbf297105f1742~100x100.awebp">
                 <div class="follow-area" v-if="isfollow">
                     <div class="follow-text" @click="isfollow = false">关注</div>
                 </div>

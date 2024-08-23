@@ -80,7 +80,6 @@
 
 <script setup>
 import { ref, watch, onMounted } from "vue"
-
 import { useRoute } from 'vue-router';
 
 const titleType = ref('1')
@@ -90,6 +89,13 @@ const comment = ref(2)
 const digg = ref(3)
 const follow = ref(4)
 const im = ref(150)
+
+import {socket } from '@/utils/socketclient'
+
+socket.on("newsLike", () => {
+    comment.value++
+})
+
 
 const totitleType = (tab, event) => {
     titleType.value = tab.paneName

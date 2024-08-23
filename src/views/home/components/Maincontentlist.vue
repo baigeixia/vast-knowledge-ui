@@ -1,6 +1,6 @@
 <template>
     <div class="content-list">
-        <el-skeleton class="skeleton" animated :loading="articleS.isLoading">
+        <el-skeleton class="skeleton" animated :loading="articleS.isLoadingEnd && !contents.length  ">
             <template #template>
                 <div class="main-skeleton">
                     <el-skeleton-item variant="h1" />
@@ -55,20 +55,20 @@
                 </div>
             </template>
             <div class="content-skeleton-item" v-for="content in  contents" :key="content.id">
-                <div class="content-skeleton-main" @click="router.push(`/post/${content.id}`)">
+                <div class="content-skeleton-main" @click="openInNewTab(content.id)">
                     <!-- <div class="title-row" v-html=" content.title">{{ content.title }}</div> -->
                     <!-- <div class="title-row" v-html="escapeHtml(content.title)"></div> -->
                     <div class="title-row" v-html="content.title"></div>
                     <div class="row-text">
                         <img v-if="content.images" class="thumb" :src="content.images">
                         <!-- <div class="abstract" v-html="escapeHtml(content.simpleDescription)"></div> -->
-                        <div class="abstract" >{{content.simpleDescription}}</div>
+                        <div class="abstract">{{ content.simpleDescription }}</div>
                     </div>
                 </div>
                 <div class="row-footer">
                     <div class="action-list">
                         <div class="item-li">
-                            <RouterLink to="/user" class="user-message">
+                            <RouterLink to="/user"  class="user-message">
                                 <div class="user-popover">{{ content.authorName }}</div>
                             </RouterLink>
                         </div>
@@ -110,26 +110,26 @@
                     </div> -->
                 </div>
             </div>
-            <el-skeleton class="skeleton" animated :loading="articleS.isLoadingEnd">
-                    <template #template>
-                        <div class="main-skeleton">
-                            <el-skeleton-item variant="h1" />
-                            <el-skeleton-item variant="h1" style="margin-bottom: 5px;" />
-                            <div class="skeleton-right">
-                                <el-skeleton-item variant="image" style="width:20%; height: 90px; margin-bottom: 10px;" />
-                                <div class="skeleton-right-p">
-                                    <el-skeleton-item variant="p" />
-                                    <el-skeleton-item variant="p" />
-                                    <el-skeleton-item variant="p" />
-                                    <el-skeleton-item variant="p" />
-                                </div>
-                            </div>
-                            <div class="skeleton-bottom-p">
-                                <el-skeleton-item variant="p" style="width: 40%;" />
-                                <el-skeleton-item variant="p" style="width: 40%;" />
+            <el-skeleton class="skeleton" animated :loading="articleS.isLoadingEnd && contents.length">
+                <template #template>
+                    <div class="main-skeleton">
+                        <el-skeleton-item variant="h1" />
+                        <el-skeleton-item variant="h1" style="margin-bottom: 5px;" />
+                        <div class="skeleton-right">
+                            <el-skeleton-item variant="image" style="width:20%; height: 90px; margin-bottom: 10px;" />
+                            <div class="skeleton-right-p">
+                                <el-skeleton-item variant="p" />
+                                <el-skeleton-item variant="p" />
+                                <el-skeleton-item variant="p" />
+                                <el-skeleton-item variant="p" />
                             </div>
                         </div>
-                    </template>
+                        <div class="skeleton-bottom-p">
+                            <el-skeleton-item variant="p" style="width: 40%;" />
+                            <el-skeleton-item variant="p" style="width: 40%;" />
+                        </div>
+                    </div>
+                </template>
             </el-skeleton>
         </el-skeleton>
         <el-dialog class="report-dialog" v-model="reportdialog" title="举报" width="650" :before-close="reportdialogClose">
@@ -175,6 +175,13 @@ const cities = ['涉政有害', '不友善', '垃圾广告'
     , '涉嫌诈骗'
     , '冒充'
 ]
+
+const openInNewTab = (contentid) => {
+    console.log(contentid);
+    const path = `/post/${contentid}`;
+    const url = router.resolve(path).href;
+    window.open(url, '_blank');
+}
 
 const reporting = ref(null)
 const reportdialog = ref(false);

@@ -1,94 +1,115 @@
 import { io } from "socket.io-client";
+import { onMounted ,onUnmounted} from 'vue';
 
-
-export const socket = io('localhost:9090', 
-{
+const config = {
   reconnectionDelayMax: 10000,
   autoConnect: false,
-  query: {
-    "userName": "zs"
+  forceNew: true,
+}
+
+export const socket = io('localhost:9090/collect',
+{
+  ...config,
+});
+
+export const socketAdmin = io('localhost:9090/admin',
+  {
+    ...config,
   }
-});
+);
 
+export function useSockets() {
+  // 在组件挂载时设置重连尝试逻辑
+  onMounted(() => {
+    reconnectAttempt(socket);
+    reconnectAttempt(socketAdmin);
+  });
 
+  // 在组件卸载时断开连接
+  onUnmounted(() => {
+    socket.disconnect();
+    socketAdmin.disconnect();
+  });
 
-// socket.on("connection", (socket) => {
-//   console.log('connection id',socket.id);
-// });
-
-// client-side
+  function reconnectAttempt(socket) {
+    socket.on("reconnect_attempt", (attempt) => {
+      console.log('重新连接尝试 attempt:', attempt);
+      if (attempt > 10) {
+        console.log('重新连接尝试次数超过最大限制，断开连接。');
+        socket.disconnect();
+      }
+    });
+  }
+}
 // socket.on("connect", () => {
-//   console.log(socket.id); // x8WIv7-mJelg7on_ALbx
-// })
+//   console.log("此事件由 Socket 实例在连接和重新连接时触发。");
+// });
+
+
+
+
+// socket.io.on("reconnect_attempt", (attempt) => {
+//   // console.log('重新连接尝试 attempt:', attempt);
+//   // 如果尝试次数超过最大限制，则断开连接
+//   if (attempt > 10) {
+//     // console.log('重新连接尝试次数超过最大限制，断开连接。');
+//     socket.disconnect();
+//   }
+// });
 
 // socket.on("connect", () => {
-//   console.log(socket.connected); // true
+//   const engine = socket.io.engine;
+//   // console.log(engine.transport.name); // in most cases, prints "polling"
+
+//   // engine.once("upgrade", () => {
+//   //   // called when the transport is upgraded (i.e. from HTTP long-polling to WebSocket)
+//   //   console.log(engine.transport.name); // in most cases, prints "websocket"
+//   // });
+
+//   engine.on("packet", ({ type, data }) => {
+//     // called for each packet received
+//     console.log("接收数据时 data: ", data);
+//   });
+
+//   engine.on("packetCreate", ({ type, data }) => {
+//     // called for each packet sent
+//     console.log("发送数据时 data: type:", type, data);
+//   });
+
+//   engine.on("drain", () => {
+//     // called when the write buffer is drained
+//     console.log("缓冲区读取完成了");
+//   });
+
+//   engine.on("close", (reason) => {
+//     // called when the underlying connection is closed
+//     console.log("关闭了");
+//   });
 // });
-// socket.on("disconnect", () => {
-//   console.log(socket.connected); // false
-// });
-
-// socket.emit("hello", "world");
-socket.on("connect", () => {
-  const engine = socket.io.engine;
-  // console.log(engine.transport.name); // in most cases, prints "polling"
-
-  // engine.once("upgrade", () => {
-  //   // called when the transport is upgraded (i.e. from HTTP long-polling to WebSocket)
-  //   console.log(engine.transport.name); // in most cases, prints "websocket"
-  // });
-
-  engine.on("packet", ({ type, data }) => {
-    // called for each packet received
-    console.log(data);
-    console.log("接收数据时 data: ",data);
-  });
-
-  engine.on("packetCreate", ({ type, data }) => {
-    // called for each packet sent
-    console.log("发送数据时 data: type:",type,data);
-  });
-
-  engine.on("drain", () => {
-    // called when the write buffer is drained
-    console.log("缓冲区耗尽了");
-  });
-
-  engine.on("close", (reason) => {
-    // called when the underlying connection is closed
-    console.log("关闭了");
-  });
-});
 
 // attempt 尝试链接次数
-socket.io.on("reconnect_attempt", (attempt) => {
-  console.log("重新连接尝试 attempt:",attempt);
-});
 
-socket.io.on("reconnect", () => {
-  console.log("重新连接");
-});
 
-socket.on("connect", () => {
-  console.log("此事件由 Socket 实例在连接和重新连接时触发。");
-});
+// socket.io.on("reconnect", () => {
+//   console.log("重新连接");
+// });
 
-socket.on("connect_error", () => {
-  console.log('低级连接无法建立 或者 服务器在中间件功能中拒绝连接');
-});
 
-socket.on("disconnect", (reason) => {
-  console.log("此事件在断开连接时触发 reason:",reason);
-  //在所有其他情况下，客户端将等待一个小的随机延迟，然后尝试重新连接：
-  if (reason === "io server disconnect") {
-    //服务器已使用socket.disconnect()强制断开socket
-    console.log('服务器已使用socket.disconnect()强制断开socket');
-    socket.connect();
-  }
-    // io client disconnect 使用socket.disconnect()手动断开socket
-    // socket.connect();
+// socket.on("connect_error", () => {
+//   console.log('低级连接无法建立 或者 服务器在中间件功能中拒绝连接');
+// });
 
-});
+// socket.on("disconnect", (reason) => {
+//   console.log("此事件在断开连接时触发 reason:", reason);
+//   //在所有其他情况下，客户端将等待一个小的随机延迟，然后尝试重新连接：
+//   if (reason === "io server disconnect") {
+//     //服务器已使用socket.disconnect()强制断开socket
+//     console.log('服务器已使用socket.disconnect()强制断开socket');
+//     socket.connect();
+//   }
+//   // io client disconnect 使用socket.disconnect()手动断开socket
+//   // socket.connect();
+// });
 
 //默认情况下，在 Socket 未连接时发出的任何事件都将被缓冲，直到重新连接。 但它可能会在连接恢复时导致大量事件。
 // 有几种解决方案可以防止这种行为，具体取决于您的用例：
@@ -99,7 +120,7 @@ socket.on("disconnect", (reason) => {
 // } else {
 //   // ...
 // }
-// 2、 使用 volatile 事件
+// 2、 使用 volatile 事件 Volatile 如果底层连接没有准备好就不会发送的事件 在可靠性方面有点像UDP
 // socket.volatile.emit( /* ... */ );
 
 
@@ -133,7 +154,7 @@ socket.on("disconnect", (reason) => {
 // }
 // socket.on("details", listener);
 
-// 移除 
+// 移除
 // socket.off("details", listener);
 
 // Catch-all 侦听器
@@ -154,7 +175,6 @@ socket.on("disconnect", (reason) => {
 // socket.offAny(listener);
 // 移除所有
 // socket.offAny();
-
 
 // 错误处理
 // Socket.IO 库中目前没有内置的错误处理，这意味着您必须捕获任何可能在侦听器中引发的错误。

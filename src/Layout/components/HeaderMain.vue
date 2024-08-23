@@ -117,14 +117,21 @@ import { useRouter,useRoute } from 'vue-router';
 import { channelAppStore } from "@/stores/admin/channel";
 const header = channelAppStore()
 
-const route = useRoute();
+import {socket } from '@/utils/socketclient'
 
+
+const route = useRoute();
 const router = useRouter();
 
 const headerinput = ref('')
 const Bellvalue = ref(12)
 const Roundvalue = ref(99)
 const Cpuvalue = ref(true)
+
+socket.on("newsLike", () => {
+  Bellvalue.value++
+})
+
 
 const upheadertype = (type) => {
   header.headertype = type
@@ -184,6 +191,7 @@ const item_TO_WE = (type) => {
   // width: 100%;
 
   .logo {
+    min-width: 50px;
     margin-right: 1rem;
     margin-left: 24px;
     color: #000;
@@ -199,6 +207,7 @@ const item_TO_WE = (type) => {
       justify-content: space-between;
 
       .title-li {
+        min-width: 32px;
         padding: 0 1rem;
         color: #9fa2ab;
         font-size: 16px;

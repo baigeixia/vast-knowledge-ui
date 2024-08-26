@@ -35,7 +35,7 @@
         </div>
         <el-dropdown style=" cursor: pointer;">
           <div class="right-li">
-            <el-badge :show-zero='false' :value="Bellvalue" :offset="[5, 3]">
+            <el-badge :show-zero='false'  :value="Bellvalue" :offset="[5, 3]">
               <div class="right-li-datails">
                 <el-icon>
                   <Bell />

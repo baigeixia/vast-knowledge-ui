@@ -2,9 +2,10 @@
     <div class="listcontent-box" v-for=" list in  notificationList" :key="list.statisticsTime">
         <div class="notificationList-Item">
             <div class="dateSplit">
-                <time  :datetime="list.statisticsTime" :title="list.statisticsTime">
-                {{ list.statisticsTime }}
-            </time> </div>
+                <time :datetime="list.statisticsTime" :title="list.statisticsTime">
+                    {{ list.statisticsTime }}
+                </time>
+            </div>
             <div class="notificationList-Item-box" v-for=" info in list.notificationinfo" :key="info.id">
                 <img class="notificationList-Item-icon" :src="extendicon">
                 <div class="list-itme-box">
@@ -21,7 +22,7 @@
                                         </span>
                                     </template>
                                 </user-info-popover>
-                                <div>&nbsp;{{ verb }} &middot;&nbsp; </div>
+                                <div>&nbsp;{{ info.verb }} &middot;&nbsp; </div>
                                 <time>{{ actor.replycontenttime }}</time>
                             </div>
                             <div class="item-extendText">
@@ -49,7 +50,7 @@
                                     v-if="info.actors.length > 10">
                                     &nbsp;等{{ info.actors.length }}人&nbsp;
                                 </span>
-                                <div>&nbsp;{{ verb }} &middot;&nbsp; </div>
+                                <div>&nbsp;{{ info.verb }} &middot;&nbsp; </div>
                                 <time :datetime="info.commentEndTime" :title="info.commentEndTime">{{
                                     info.commentEndTime.slice(11, 16) }}</time>
                             </div>
@@ -84,7 +85,7 @@
                     <div class="list-itme-header" v-if="notificationType === 'system'">
                         <div class="itme-content-box">
                             <div class="list-itme-content">
-                                {{list.verbType}} &middot;
+                                {{ list.verbType }} &middot;
                                 <time>{{ info.commentEndTime }}</time>
                             </div>
                             <div class="list-itme-content">
@@ -103,7 +104,9 @@
     </div>
     <el-dialog v-if="dialogTableVisible" v-model="dialogTableVisible" width="700" :lock-scroll="true" top="2vh">
         <template #header="{ titleId, titleClass }">
-                    <h4 :id="titleId" :class="titleClass"><div style="height: 20px;"></div></h4>
+            <h4 :id="titleId" :class="titleClass">
+                <div style="height: 20px;"></div>
+            </h4>
         </template>
         <div class="dialog-list-box" v-if="dialoguserlist">
             <div class="list-item-box" v-for=" actor in dialoguserlist" :key="actor.id">
@@ -152,12 +155,14 @@ const opuserinfo = (id) => {
 
 const opcontentinfo = (id) => {
     console.log('contentid', id);
-    router.push({
+    let routedata = router.resolve({
         path: '/post/16',
         query: {
-          notificationId: '47'
+            notificationId: '7'
         }
     })
+
+    window.open(routedata.href, '_blank')
 }
 
 const opreportinfo = (id) => {
@@ -199,13 +204,11 @@ const formattedTime = (time) => {
 </script>
 
 <style lang="scss" scoped>
-
-
-
 .dialog-list-box {
     max-height: 750px;
     padding-top: 20px;
     overflow-y: auto;
+
     .list-item-box {
         padding: 16px 20px;
         border-top: 1px solid #e6e6e7;
@@ -250,7 +253,8 @@ const formattedTime = (time) => {
                     font-weight: 600;
                     line-height: 1.6;
                     word-break: break-word;
-                    .UserItem-title-username{
+
+                    .UserItem-title-username {
                         cursor: pointer;
                     }
                 }
@@ -267,7 +271,7 @@ const formattedTime = (time) => {
 .listcontent-box {
     box-sizing: border-box;
     margin-bottom: 5px;
-        border-bottom: 1px solid #9196a1;
+    border-bottom: 1px solid #9196a1;
     /* 确保内外边距不会影响宽度计算 */
 
 
@@ -305,7 +309,7 @@ const formattedTime = (time) => {
 
                     .list-feedback {
                         cursor: pointer;
-                        display: inline-block; 
+                        display: inline-block;
 
                     }
 

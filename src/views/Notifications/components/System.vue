@@ -133,7 +133,7 @@ const emit = defineEmits(['data-loaded']);
 onMounted(() => {
   setTimeout(() => {
     // 数据加载完成后触发事件通知父组件
-    console.log('data-loaded');
+    // console.log('data-loaded');
     emit('data-loaded');
   }, 2000);
 });

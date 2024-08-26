@@ -1,6 +1,6 @@
 <template>
     <el-container class="post-home-main">
-        <div class="suspended-panel">
+        <div class="suspended-panel" v-if="!centermainloading">
             <div class="panel-btn" v-if="y > 180">
                 <img src="https://p6-passport.byteacctimg.com/img/user-avatar/507312f17bf5e7cefebbf297105f1742~100x100.awebp">
                 <div class="follow-area" v-if="isfollow">
@@ -16,7 +16,7 @@
                 </div>
             </el-tooltip>
             <el-tooltip content="评论" placement="left" effect="light">
-                <div class="panel-btn" :class="{ 'active': ismsg }" @click="drawer = true">
+                <div class="panel-btn" :class="{ 'active': drawer }" @click="drawer = true">
                     <el-badge :color="ismsg ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
                         :value="Number(articleS.articleDto.comment)" :offset="[10, 3]">
                         <i class="bi bi-chat-left-text-fill"></i>
@@ -271,6 +271,7 @@ const props = defineProps({
         default: ''
     }
 })
+
 
 const upheaderTag = (type) => {
     commentS.commentHomeVo = {}

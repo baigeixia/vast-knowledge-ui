@@ -12,7 +12,7 @@ router.beforeEach((to, from, next) => {
     }else{
         const userStore = useUserStore();
         const token = getToken();
-        console.log('token',token);
+        // console.log('token',token);
         if (token) {
             userStore.isnotlogin=false;
             next();

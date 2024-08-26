@@ -10,7 +10,7 @@ import NotificationList from '@/components/NotificationList.vue'
 
 
 const extendicon=ref('https://picx.zhimg.com/v2-40cc57d7a7f9fc24711c601615c9fb57_200x0.png?source=582e62d4')
-const verb=ref('回复了你的评论')
+const verb=ref('回复了您的评论')
 
 const notificationList = ref(
     [
@@ -20,6 +20,7 @@ const notificationList = ref(
                 {
                     commentid: '16',
                     commentEndTime: '2024-07-09 22:05',
+                    verb: '回复了您的评论',
                     attach_info: {
                         id: 33,
                         title: '哪个瞬间你觉得你的宠物爱上了你？',
@@ -51,6 +52,7 @@ const notificationList = ref(
                 {
                     commentid: '1111',
                     commentEndTime: '2024-07-09 22:05',
+                    verb: '回复了您的评论',
                     attach_info: {
                         id: 11,
                         title: '为什么电竞需要天赋极高？',
@@ -92,6 +94,7 @@ const upnotificationList = ref(
                 {
                     commentid: '1111',
                     commentEndTime: '2024-07-09 22:05',
+                    verb: '评论了您的文章',
                     attach_info: {
                         id: 33,
                         title: '哪个瞬间你觉得你的宠物爱上了你？',
@@ -99,21 +102,21 @@ const upnotificationList = ref(
                     actors: [
                         {
                             id: '1',
-                            name: '柴柴啊柴',
+                            username: '柴柴啊柴',
                             avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
                             replycontent: '第二次就是修改了，防止第一次添加的不正确[撇嘴]',
                             replycontenttime: '21:05',
                         },
                         {
                             id: '2',
-                            name: '柴柴啊柴',
+                            username: '柴柴啊柴',
                             avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
                             replycontent: '第二次就是修改了，防止第一次添加的不正确[撇嘴]',
                             replycontenttime: '21:05',
                         },
                         {
                             id: '3',
-                            name: '柴柴啊柴',
+                            username: '柴柴啊柴',
                             avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
                             replycontent: '第二次就是修改了，防止第一次添加的不正确[撇嘴]',
                             replycontenttime: '21:05',
@@ -123,6 +126,7 @@ const upnotificationList = ref(
                 {
                     commentid: '1111',
                     commentEndTime: '2024-07-09 22:05',
+                    verb: '评论了您的文章',
                     attach_info: {
                         id: 11,
                         title: '为什么电竞需要天赋极高？',
@@ -130,21 +134,21 @@ const upnotificationList = ref(
                     actors: [
                         {
                             id: '1',
-                            name: '柴柴啊柴',
+                            username: '柴柴啊柴',
                             avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
                             replycontent: '第二次就是修改了，防止第一次添加的不正确[撇嘴]',
                             replycontenttime: '21:05',
                         },
                         {
                             id: '2',
-                            name: '柴柴啊柴',
+                            username: '柴柴啊柴',
                             avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
                             replycontent: '第二次就是修改了，防止第一次添加的不正确[撇嘴]第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确',
                             replycontenttime: '21:05',
                         },
                         {
                             id: '3',
-                            name: '柴柴啊柴',
+                            username: '柴柴啊柴',
                             avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
                             replycontent: '第二次就是修改了，防止第一次添加的不正确[撇嘴]',
                             replycontenttime: '21:05',
@@ -174,7 +178,7 @@ const emit = defineEmits(['data-loaded']);
 onMounted(() => {
     setTimeout(() => {
         // 数据加载完成后触发事件通知父组件
-        console.log('data-loaded');
+        // console.log('data-loaded');
         emit('data-loaded');
     }, 2000);
 });

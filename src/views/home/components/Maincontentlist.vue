@@ -110,7 +110,7 @@
                     </div> -->
                 </div>
             </div>
-            <el-skeleton class="skeleton" animated :loading="articleS.isLoadingEnd && contents.length">
+            <el-skeleton class="skeleton" animated :loading="articleS.isLoadingEnd && contents.length > 0">
                 <template #template>
                     <div class="main-skeleton">
                         <el-skeleton-item variant="h1" />

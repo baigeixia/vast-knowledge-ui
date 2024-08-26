@@ -9,7 +9,7 @@ import { ref,onMounted } from 'vue';
 import NotificationList from '@/components/NotificationList.vue'
 
 const extendicon=ref('https://pica.zhimg.com/v2-bbe4688083199733e8e64d0fc447791d_200x0.png?source=582e62d4')
-const verb=ref('关注了你')
+const verb=ref('关注了您')
 
 const notificationList = ref(
     [
@@ -178,7 +178,7 @@ const upnotificationList = ref(
 const count = ref(0)
 const load = () => {
     count.value += 1
-    console.log(count.value);
+    // console.log(count.value);
     notificationList.value=[...notificationList.value,...upnotificationList.value]
 }
 
@@ -193,7 +193,7 @@ const emit = defineEmits(['data-loaded']);
 onMounted(() => {
   setTimeout(() => {
     // 数据加载完成后触发事件通知父组件
-    console.log('data-loaded');
+    // console.log('data-loaded');
     emit('data-loaded');
   }, 2000);
 });

@@ -9,7 +9,7 @@ import { ref,onMounted } from 'vue';
 import NotificationList from '@/components/NotificationList.vue'
 
 const extendicon=ref('https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4')
-const verb=ref('喜欢了你的评论')
+const verb=ref('喜欢了您的评论')
 
 const notificationList = ref(
     [
@@ -19,11 +19,11 @@ const notificationList = ref(
                 {
                     commentid: '1111',
                     extendicon: 'https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4',
-                    verb: '喜欢了你的评论',
+                    verb: '喜欢了您的评论',
                     commentEndTime: '2024-07-09 22:05',
                     attach_info: {
                         id: 33,
-                        title: '哪个瞬间你觉得你的宠物爱上了你？',
+                        title: '哪个瞬间您觉得您的宠物爱上了您？',
                     },
                     actors: [
                         {
@@ -86,11 +86,11 @@ const notificationList = ref(
                 {
                     commentid: '1111',
                     extendicon: 'https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4',
-                    verb: '喜欢了你的评论',
+                    verb: '喜欢了您的评论',
                     commentEndTime: '2024-07-09 22:05',
                     attach_info: {
                         id: 33,
-                        title: '哪个瞬间你觉得你的宠物爱上了你？',
+                        title: '哪个瞬间您觉得您的宠物爱上了您？',
                     },
                     actors: [
                         {
@@ -153,11 +153,11 @@ const notificationList = ref(
                 {
                     commentid: '1111',
                     extendicon: 'https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4',
-                    verb: '喜欢了你的评论',
+                    verb: '喜欢了您的评论',
                     commentEndTime: '2024-07-09 22:05',
                     attach_info: {
                         id: 33,
-                        title: '哪个瞬间你觉得你的宠物爱上了你？',
+                        title: '哪个瞬间您觉得您的宠物爱上了您？',
                     },
                     actors: [
                         {
@@ -170,11 +170,11 @@ const notificationList = ref(
                 {
                     commentid: '1111',
                     extendicon: 'https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4',
-                    verb: '喜欢了你的评论',
+                    verb: '喜欢了您的评论',
                     commentEndTime: '2024-07-09 22:05',
                     attach_info: {
                         id: 33,
-                        title: '哪个瞬间你觉得你的宠物爱上了你？',
+                        title: '哪个瞬间您觉得您的宠物爱上了您？',
                     },
                     actors: [
                         {
@@ -198,11 +198,11 @@ const upnotificationList = ref(
                 {
                     commentid: '1111',
                     extendicon: 'https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4',
-                    verb: '喜欢了你的评论',
+                    verb: '收藏了您的评论',
                     commentEndTime: '2024-07-09 22:05',
                     attach_info: {
                         id: 33,
-                        title: '哪个瞬间你觉得你的宠物爱上了你？',
+                        title: '哪个瞬间您觉得您的宠物爱上了您？',
                     },
                     actors: [
                         {
@@ -265,11 +265,11 @@ const upnotificationList = ref(
                 {
                     commentid: '1111',
                     extendicon: 'https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4',
-                    verb: '喜欢了你的评论',
+                    verb: '喜欢了您的文章',
                     commentEndTime: '2024-07-09 22:05',
                     attach_info: {
                         id: 33,
-                        title: '哪个瞬间你觉得你的宠物爱上了你？',
+                        title: '哪个瞬间您觉得您的宠物爱上了您？',
                     },
                     actors: [
                         {
@@ -332,11 +332,11 @@ const upnotificationList = ref(
                 {
                     commentid: '1111',
                     extendicon: 'https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4',
-                    verb: '喜欢了你的评论',
+                    verb: '喜欢了您的评论',
                     commentEndTime: '2024-07-09 22:05',
                     attach_info: {
                         id: 33,
-                        title: '哪个瞬间你觉得你的宠物爱上了你？',
+                        title: '哪个瞬间您觉得您的宠物爱上了您？',
                     },
                     actors: [
                         {
@@ -349,11 +349,11 @@ const upnotificationList = ref(
                 {
                     commentid: '1111',
                     extendicon: 'https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4',
-                    verb: '喜欢了你的评论',
+                    verb: '喜欢了您的评论',
                     commentEndTime: '2024-07-09 22:05',
                     attach_info: {
                         id: 33,
-                        title: '哪个瞬间你觉得你的宠物爱上了你？',
+                        title: '哪个瞬间您觉得您的宠物爱上了您？',
                     },
                     actors: [
                         {
@@ -370,7 +370,7 @@ const upnotificationList = ref(
 const count = ref(0)
 const load = () => {
     count.value += 1
-    console.log(count.value);
+    // console.log(count.value);
     notificationList.value=[...notificationList.value,...upnotificationList.value]
 }
 
@@ -386,7 +386,7 @@ const emit = defineEmits(['data-loaded']);
 onMounted(() => {
   setTimeout(() => {
     // 数据加载完成后触发事件通知父组件
-    console.log('data-loaded');
+    // console.log('data-loaded');
     emit('data-loaded');
   }, 2000);
 });

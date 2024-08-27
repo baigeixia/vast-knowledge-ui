@@ -1,6 +1,6 @@
 import { coreRequest } from '@/utils/request'
 
-export function saveComment(type,channelId,entryId,content,image) {
+export function saveComment(type,channelId,entryId,content,image,arAuthorId) {
     return coreRequest({
       url: '/comment/Comment/saveComment',
       method: 'POST',
@@ -10,6 +10,7 @@ export function saveComment(type,channelId,entryId,content,image) {
         entryId: entryId,
         content: content,
         image: image,
+        arAuthorId: arAuthorId,
       }
     })
 }

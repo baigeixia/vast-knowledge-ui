@@ -45,6 +45,8 @@ import commentStore from "@/stores/admin/comment";
 const commentS = commentStore()
 import maincommentAppStore from "@/stores/admin/maincomment";
 const maincommentS = maincommentAppStore()
+import articleAppStore from "@/stores/admin/article";
+const articleS = articleAppStore()
 
 const props = defineProps({
     articleId: {
@@ -107,8 +109,10 @@ const sendmessage = () => {
             sendmessageAddVodataRe()
         } else {
             commentS.commentDto.content = commentinput.value
+            commentS.commentDto.arAuthorId = articleS.articleDto.authorId
             commentS.commentDto.entryId = props.articleId
             commentS.commentDto.image = imageUrl.value
+            console.log(commentS.commentDto);
             await commentS.saveCommentContent()
             sendmessageAddVodata()
             commentS.resetComment()

@@ -215,7 +215,7 @@
                     </div>
                     <div class="comment-list" v-infinite-scroll="maincommentS.loadMore" :infinite-scroll-immediate="false"
                         :infinite-scroll-disabled="maincommentS.Loadingdisabled">
-                        <PostCommentItem :isSubComments="true" :vice="true"
+                        <PostCommentItem :isSubComments="true" :vice="true"  
                             v-for="comment in maincommentS.commentHomedrawerVo.comments" :key="comment.id"
                             :comment="comment" :articleid="postId" :commentIdTop="comment.id" />
                     </div>

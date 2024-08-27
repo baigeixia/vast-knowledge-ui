@@ -48,9 +48,9 @@ const commentStore = defineStore(
         }
 
         const saveCommentContent = async () => {
-            const { type, channelId, entryId, content, image } = commentDto.value
+            const { type, channelId, entryId, content, image,arAuthorId } = commentDto.value
             try {
-                const response = await saveComment(type, channelId, entryId, content, image);
+                const response = await saveComment(type, channelId, entryId, content, image,arAuthorId);
                 TemporaryComments.value=response.data
             } catch (error) {
                 console.error('Failed to save comment:', error);

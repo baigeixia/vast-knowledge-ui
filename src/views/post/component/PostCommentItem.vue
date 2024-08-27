@@ -55,11 +55,11 @@
                 </span>
             </div>
             <div class="comment-reply-editor" v-if="opencommenttime === maincommentS.istime">
-                <PostComment    :articleId="articleid" :replyauthor="comment.author" :replyauthorId="comment.id"
+                <PostComment :articleId="articleid" :replyauthor="comment.author" :replyauthorId="comment.id"  
                     :commentIdTop="commentIdTop" />
             </div>
             <div class="replies" v-if="comment.childComments && comment.childComments.length">
-                <PostCommentItem :vice="vice" v-for="reply in comment.childComments" :key="reply.id" :articleid="articleid"
+                <PostCommentItem :vice="vice" v-for="reply in comment.childComments" :key="reply.id" :articleid="articleid" 
                     :commentIdTop="commentIdTop" :comment="reply" class="reply-item" />
             </div>
             <div v-if="comment?.childCommentCount > 5" class="top-has-more">
@@ -72,8 +72,8 @@
                 <template #header="{ titleId, titleClass }">
                     <h4 :id="titleId" :class="titleClass" class="dialog-title-Class">评论回复</h4>
                 </template>
-                <div   class="child-Comments" v-infinite-scroll="loadchildComments" :infinite-scroll-immediate="false"  v-loading="dialogloading">
-                    <PostCommentItem :vice="false" :comment="maincommentS.commentdialog" :articleid="articleid" :commentIdTop="comment.id" />
+                <div   class="child-Comments" v-infinite-scroll="loadchildComments" :infinite-scroll-immediate="false"   v-loading="dialogloading">
+                    <PostCommentItem :vice="false" :comment="maincommentS.commentdialog" :articleid="articleid" :commentIdTop="comment.id"  :articleUserId="articleUserId" />
                 </div>
             </el-dialog>
         </div>
@@ -88,6 +88,7 @@ import maincommentAppStore from '@/stores/admin/maincomment'
 const maincommentS = maincommentAppStore()
 import commentStore from "@/stores/admin/comment";
 const commentS = commentStore()
+
 
 const props = defineProps({
     comment: {

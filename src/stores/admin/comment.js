@@ -38,9 +38,9 @@ const commentStore = defineStore(
         const Loadingdisabled = computed(() => isLoadingEnd.value || noMore.value)
 
         const saveCommentReContent = async () => {
-            const { commentId, commentRepayId, content, image } = commentReDto.value
+            const { commentId, commentRepayId, content, image,repayAuthorId } = commentReDto.value
             try {
-                const response = await saveCommentRe(commentId, commentRepayId, content, image);
+                const response = await saveCommentRe(commentId, commentRepayId, content, image,repayAuthorId);
                 TemporaryComments.value=response.data
             } catch (error) {
                 console.error('Failed to save comment:', error);

@@ -156,9 +156,9 @@ const opuserinfo = (id) => {
 const opcontentinfo = (id) => {
     console.log('contentid', id);
     let routedata = router.resolve({
-        path: '/post/16',
+        path: '/post/24',
         query: {
-            notificationId: '7'
+            notificationId: '44424614237000152'
         }
     })
 

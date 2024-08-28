@@ -104,6 +104,7 @@ const sendmessage = () => {
             commentS.commentReDto.image = imageUrl.value
             commentS.commentReDto.commentRepayId = props.replyauthorId
             commentS.commentReDto.commentId = props.commentIdTop
+            commentS.commentReDto.repayAuthorId = props.replyauthor.id
             await commentS.saveCommentReContent()
             commentS.resetCommentRe()
             sendmessageAddVodataRe()

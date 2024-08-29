@@ -73,7 +73,7 @@
                     <h4 :id="titleId" :class="titleClass" class="dialog-title-Class">评论回复</h4>
                 </template>
                 <div   class="child-Comments" v-infinite-scroll="loadchildComments" :infinite-scroll-immediate="false"   v-loading="dialogloading">
-                    <PostCommentItem :vice="false" :comment="maincommentS.commentdialog" :articleid="articleid" :commentIdTop="comment.id"  :articleUserId="articleUserId" />
+                    <PostCommentItem :vice="false" :comment="maincommentS.commentdialog" :articleid="articleid" :commentIdTop="comment.id"  />
                 </div>
             </el-dialog>
         </div>

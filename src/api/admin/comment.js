@@ -15,7 +15,7 @@ export function saveComment(type,channelId,entryId,content,image,arAuthorId) {
     })
 }
 
-export function saveCommentRe(commentId,commentRepayId,content,image,repayAuthorId) {
+export function saveCommentRe(commentId,commentRepayId,content,image,repayAuthorId,entryId) {
   return coreRequest({
     url: '/comment/CommentRepay/saveCommentRe',
     method: 'POST',
@@ -25,6 +25,7 @@ export function saveCommentRe(commentId,commentRepayId,content,image,repayAuthor
       content: content,
       image: image,
       repayAuthorId: repayAuthorId,
+      entryId: entryId,
     }
   })
 }

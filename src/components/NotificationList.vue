@@ -6,27 +6,28 @@
                     {{ list.statisticsTime }}
                 </time>
             </div>
-            <div class="notificationList-Item-box" v-for=" info in list.notificationinfo" :key="info.id">
+            <div class="notificationList-Item-box" v-for=" info in list.notificationInfoList" :key="info.id">
                 <img class="notificationList-Item-icon" :src="extendicon">
                 <div class="list-itme-box">
                     <div class="list-itme-header " v-if="notificationType === 'comment'">
-                        <div class="list-itme-content list-feedback" @click="opcontentinfo(info.commentid)">
-                            {{ info.attach_info.title }}
+                     <!-- <div class="itme-content-box" v-for=" actor in info.actors" :key="actor.id"> -->
+                     <div class="itme-content-box">
+                        <div class="list-itme-content list-feedback" @click="opcontentinfo(info.id,info.commentId)">
+                            {{ info.title }}
                         </div>
-                        <div class="itme-content-box" v-for=" actor in info.actors" :key="actor.id">
                             <div class="content-box-start">
-                                <user-info-popover :author="actor">
+                                <user-info-popover :author="info.actors">
                                     <template v-slot:reference>
-                                        <span class="username" @click="opuserinfo(actor.id)">
-                                            <div> {{ actor.username }}</div>
+                                        <span class="username" @click="opuserinfo(actors.id)">
+                                            <div> {{ info.actors.username }}</div>
                                         </span>
                                     </template>
                                 </user-info-popover>
-                                <div>&nbsp;{{ info.verb }} &middot;&nbsp; </div>
-                                <time>{{ actor.replycontenttime }}</time>
+                                <div>&nbsp;{{ info.actors.verb }} &middot;&nbsp; </div>
+                                <time>{{ info.actors.replycontenttime }}</time>
                             </div>
                             <div class="item-extendText">
-                                {{ actor.replycontent }}
+                                {{ info.actors.replyContent }}
                             </div>
                         </div>
                     </div>
@@ -141,7 +142,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+import { ref, computed, onMounted } from 'vue';
 import UserInfoPopover from '@/components/UserInfoPopover.vue'
 import { useRouter } from 'vue-router';
 
@@ -153,12 +154,13 @@ const opuserinfo = (id) => {
     console.log('id', id);
 }
 
-const opcontentinfo = (id) => {
+const opcontentinfo = (id,commentId) => {
     console.log('contentid', id);
+    console.log('commentId', commentId);
     let routedata = router.resolve({
-        path: '/post/24',
+        path: `/post/${id}`,
         query: {
-            notificationId: '44424614237000152'
+            notificationId: commentId
         }
     })
 
@@ -192,7 +194,9 @@ const props = defineProps({
 });
 
 
-
+onMounted(()=>{
+    console.log(props.notificationList);
+})
 // const formattedTime = computed((oldValue) => {
 //   return  oldValue.slice(11, 16)
 // })

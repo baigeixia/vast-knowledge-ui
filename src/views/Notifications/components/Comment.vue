@@ -1,18 +1,18 @@
 <template>
-    <div class="comment-box" v-infinite-scroll="load">
-        <NotificationList notificationType="comment" :notificationList="notificationList" :extendicon="extendicon" :verb="verb" />
+    <div class="comment-box" v-infinite-scroll="load" :infinite-scroll-immediate="false" :infinite-scroll-disabled="noMore">
+        <NotificationList notificationType="comment" :notificationList="notificationList" :extendicon="extendicon"  />
     </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue';
 import NotificationList from '@/components/NotificationList.vue'
-
+import notificationAppStore from "@/stores/admin/notification";
+const notificationS=notificationAppStore()
 
 const extendicon=ref('https://picx.zhimg.com/v2-40cc57d7a7f9fc24711c601615c9fb57_200x0.png?source=582e62d4')
-const verb=ref('回复了您的评论')
 
-const notificationList = ref(
+/* const notificationList = ref(
     [
         {
             statisticsTime: '2024-07-09',
@@ -20,7 +20,6 @@ const notificationList = ref(
                 {
                     commentid: '16',
                     commentEndTime: '2024-07-09 22:05',
-                    verb: '回复了您的评论',
                     attach_info: {
                         id: 33,
                         title: '哪个瞬间你觉得你的宠物爱上了你？',
@@ -29,6 +28,7 @@ const notificationList = ref(
                         {
                             id: '1',
                             username: '柴柴啊柴',
+                            verb: '回复了您的评论',
                             avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
                             replycontent: '第二次就是修改了\/n，防止第 \//t一次添加的不正确[撇嘴]第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确',
                             replycontenttime: '21:05',
@@ -36,6 +36,7 @@ const notificationList = ref(
                         {
                             id: '2',
                             username: '柴柴啊柴',
+                            verb: '回复了您的评论',
                             avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
                             replycontent: '第二次就是修改了，防止第一次添加的不正确[撇嘴]',
                             replycontenttime: '21:05',
@@ -43,6 +44,7 @@ const notificationList = ref(
                         {
                             id: '3',
                             username: '柴柴啊柴',
+                            verb: '回复了您的评论',
                             avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
                             replycontent: '第二次就是修改了，防止第一次添加的不正确[撇嘴]',
                             replycontenttime: '21:05',
@@ -84,9 +86,8 @@ const notificationList = ref(
             ]
         },
     ]
-)
-
-const upnotificationList = ref(
+) */
+/* const upnotificationList = ref(
     [
         {
             statisticsTime: '2024-07-09',
@@ -158,18 +159,32 @@ const upnotificationList = ref(
             ]
         },
     ]
-)
-const count = ref(0)
-const load = () => {
+) */
+
+const count = ref(1)
+const noMore = ref(false)
+const notificationList=ref([])
+
+const load = async () => {
     count.value += 1
-    console.log(count.value);
-    notificationList.value=[...notificationList.value,...upnotificationList.value]
+   const data= await notificationS.getCommentNotificationInfo(count.value,10)
+
+    if (!data || data.length === 0) {
+      noMore.value = true
+    }
+
+    if(data){
+        notificationList.value=[...notificationList.value,...data]
+    }
 }
 
-
 const pageTitle = ref('评论与回复');
-onMounted(() => {
-    document.title = pageTitle.value;
+onMounted(async () => {
+const data = await notificationS.getCommentNotificationInfo(count.value,10)
+
+//   notificationList.value=notificationS.commentNotificationList
+notificationList.value=data
+  document.title = pageTitle.value;
 });
 
 const emit = defineEmits(['data-loaded']);

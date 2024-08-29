@@ -100,11 +100,13 @@ const sendmessage = () => {
         commentS.commentReDto.entryId = props.articleId
 
         if (props.replyauthorId) {
+            console.log(props.articleId);
             commentS.commentReDto.content = commentinput.value
             commentS.commentReDto.image = imageUrl.value
             commentS.commentReDto.commentRepayId = props.replyauthorId
             commentS.commentReDto.commentId = props.commentIdTop
             commentS.commentReDto.repayAuthorId = props.replyauthor.id
+            commentS.commentDto.entryId = props.articleId
             await commentS.saveCommentReContent()
             commentS.resetCommentRe()
             sendmessageAddVodataRe()

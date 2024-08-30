@@ -295,7 +295,16 @@ onMounted(async () => {
     let postId = props.postId
 
     commentS.commentHomeDto.entryId = postId
+    commentS.commentHomeDto.notificationId = notificationId
+
+    maincommentS.commentHomedrawerDto.notificationId = notificationId
     maincommentS.commentHomedrawerDto.entryId = postId
+
+    if (notificationId) {
+        // commentS.commentHomeDto.type = 3
+      maincommentS.commentHomedrawerDto.type = 3
+
+    }
 
     await contentS.getContent(postId)
     await articleS.getinfoArticle(postId)

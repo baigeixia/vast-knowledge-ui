@@ -31,7 +31,7 @@ export function saveCommentRe(commentId,commentRepayId,content,image,repayAuthor
 }
 
 
-export function getCommentList(entryId,type,page,size) {
+export function getCommentList(entryId,type,page,size,notificationId) {
   return coreRequest({
     url: '/comment/Comment/getCommentList',
     method: 'GET',
@@ -40,6 +40,7 @@ export function getCommentList(entryId,type,page,size) {
       type: type,
       page: page,
       size: size,
+      notificationId: notificationId,
     }
   })
 }

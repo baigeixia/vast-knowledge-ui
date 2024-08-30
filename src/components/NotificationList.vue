@@ -283,7 +283,7 @@ const formattedTime = (time) => {
     .notificationList-Item {
 
         .notificationList-Item-box {
-            padding: 20px 32px;
+            padding: 5px 35px;
             display: flex;
 
             .notificationList-Item-icon {

@@ -111,6 +111,8 @@ import { ref, onMounted, reactive } from 'vue';
 import useUserStore from '@/stores/admin/user'
 const userStore = useUserStore()
 
+import {socket ,useSockets} from '@/utils/socketclient'
+
 const contentFormRef = ref(null);
 const codeOrPas = ref(1);
 const longinloading = ref(false);
@@ -134,6 +136,8 @@ const onSubmit = async (formEl) => {
     if (valid.valid) {
       await userStore.login({ ...loginform, codeOrPas: codeOrPas.value });
       // formEl.resetFields();
+      socket.connect();
+      useSockets()
     } else {
       console.log('error submit!', valid.fields);
     }

@@ -62,10 +62,11 @@ const commentStore = defineStore(
             if (isLoadingEnd.value) return;
             isLoadingEnd.value = true;
 
-            const { entryId, type, page, size } = commentHomeDto.value
+            const { entryId, type, page, size,notificationId } = commentHomeDto.value
+            console.log('notificationId',notificationId);
 
             try {
-                const resp = await getCommentList(entryId, type, page, size);
+                const resp = await getCommentList(entryId, type, page, size,notificationId);
 
                 if (Array.isArray(resp.data?.comments) && resp.data?.comments.length === 0) {
                     noMore.value = true

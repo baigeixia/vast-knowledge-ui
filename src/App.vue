@@ -1,26 +1,33 @@
 <script setup>
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import { onBeforeMount } from "vue";
-import {socket ,socketAdmin ,useSockets} from '@/utils/socketclient'
+import {socket,useSockets} from '@/utils/socketclient'
 
 onBeforeMount(() => {
   if (getToken) {
     socket.connect();
-    socketAdmin.connect();
-    useSockets()
-    
-
-    socketAdmin.emit("hello", "worldadmin");
-    socketAdmin.on("receiveMsg", (data) => {
-      console.log('sendMsgdata:', data+'admin');
-    })
-    socket.emit("hello", "world");
-    socket.on("receiveMsg", (data) => {
-      console.log('sendMsgdata:', data);
-    })
+    // useSockets()
   }
 })
 
+/**
+ *  const like ={
+      articleId:24,
+      commentId:11,
+      commentReId:4
+    } 
+    const CommentMsg ={
+      articleId:24,
+      commentId:11,
+    }
+    socket.emit("likeMsg", like);
+    socket.emit("CommentMsg", CommentMsg);
+
+    // socket.emit("commentMsg", "world");
+    socket.on("likeMsg2", (data) => {
+      console.log('sendMsgdata:', data);
+    })
+ */
 
 </script>
 

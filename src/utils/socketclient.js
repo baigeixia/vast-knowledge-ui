@@ -1,34 +1,46 @@
 import { io } from "socket.io-client";
 import { onMounted ,onUnmounted} from 'vue';
+import { getToken } from '@/utils/auth'
 
 const config = {
   reconnectionDelayMax: 10000,
-  autoConnect: false,
-  forceNew: true,
+  // autoConnect: false,
+  // forceNew: true,
+  path: "/behaviour/",
+  auth: {
+    token: getToken()
+  }
 }
 
-export const socket = io('localhost:9090/collect',
+// {
+//   query: {  
+// mstoken: getToken()
+// }
+// }
+/**
+ *  
+ */
+export const socket = io('localhost:9090',
 {
   ...config,
 });
 
-export const socketAdmin = io('localhost:9090/admin',
-  {
-    ...config,
-  }
-);
+
+// export const socketAdmin = io('localhost:9090/admin',
+//   {
+//     ...config,
+//   }
+// );
 
 export function useSockets() {
   // 在组件挂载时设置重连尝试逻辑
   onMounted(() => {
     reconnectAttempt(socket);
-    reconnectAttempt(socketAdmin);
   });
 
   // 在组件卸载时断开连接
   onUnmounted(() => {
     socket.disconnect();
-    socketAdmin.disconnect();
   });
 
   function reconnectAttempt(socket) {
@@ -41,12 +53,10 @@ export function useSockets() {
     });
   }
 }
+
 // socket.on("connect", () => {
 //   console.log("此事件由 Socket 实例在连接和重新连接时触发。");
 // });
-
-
-
 
 // socket.io.on("reconnect_attempt", (attempt) => {
 //   // console.log('重新连接尝试 attempt:', attempt);

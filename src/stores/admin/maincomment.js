@@ -23,6 +23,7 @@ const maincommentAppStore = defineStore(
         const Loadingdisabled = computed(() => isLoadingEnd.value || noMore.value)
         const commentHomedrawerDto = ref({
             entryId: undefined,
+            notificationId: undefined,
             type: 0,
             page: 1,
             size: 10,
@@ -32,10 +33,10 @@ const maincommentAppStore = defineStore(
             if (isLoadingEnd.value) return;
             isLoadingEnd.value = true;
 
-            const { entryId, type, page, size } = commentHomedrawerDto.value
+            const { entryId, type, page, size,notificationId } = commentHomedrawerDto.value
 
             try {
-                const resp = await getCommentList(entryId, type, page, size);
+                const resp = await getCommentList(entryId, type, page, size,notificationId);
 
                 if (Array.isArray(resp.data?.comments) && resp.data?.comments.length === 0) {
                     noMore.value = true

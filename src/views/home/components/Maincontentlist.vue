@@ -78,9 +78,10 @@
                             </el-icon>
                             <span> {{ content.views }}</span>
                         </div>
-                        <div class="item-li like">
-                            <i class="bi bi-suit-heart"></i>
-                            <span> {{ content.likes }}</span>
+                        <div class="item-li like "  @click="likeArticle(content.id,content.authorId)">
+                            <i class="bi bi-suit-heart-fill" :class="{ 'islike' :  islikeArticle}" >
+                                <span> {{ content.likes }}</span>
+                            </i>
                         </div>
                         <div class="dislike-item">
                             <el-icon>
@@ -162,7 +163,7 @@ import articleAppStore from "@/stores/admin/article";
 import { ElMessage } from 'element-plus'
 const channelStore = channelAppStore()
 const articleS = articleAppStore()
-
+import {socket } from '@/utils/socketclient'
 
 const cities = ['涉政有害', '不友善', '垃圾广告'
     , '涉嫌侵权'
@@ -175,6 +176,22 @@ const cities = ['涉政有害', '不友善', '垃圾广告'
     , '涉嫌诈骗'
     , '冒充'
 ]
+
+const islikeArticle=ref(false)
+const operation=ref(0)
+
+
+const likeArticle=(articleId,authorId)=>{
+    console.log(articleId,authorId);
+    // operation.value == 0 ? operation.value = 1: operation.value = 0
+
+socket.emit("likeMsg",{
+    articleId:articleId,
+    repayAuthorId:authorId,
+    type:0,
+})
+islikeArticle.value=!islikeArticle.value
+}
 
 const openInNewTab = (contentid) => {
     console.log(contentid);
@@ -421,6 +438,10 @@ const props = defineProps({
                 }
 
                 .like:hover {
+                    color: #1e80ff;
+                }
+
+                .islike{
                     color: #1e80ff;
                 }
 

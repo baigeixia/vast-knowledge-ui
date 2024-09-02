@@ -49,6 +49,12 @@ import Login from '@/views/login/Login.vue'
 const { y } = useScroll(window)
 
 
+import {socket } from '@/utils/socketclient'
+
+socket.on("new_like", (data) => {
+console.log("new_like data",data);
+})
+
 
 const sendpropose = () => {
     feedbackdialog.value = false

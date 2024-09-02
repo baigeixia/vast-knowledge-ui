@@ -46,20 +46,21 @@
                 </div>
             </div>
             <div class="comment-meta">
-                <span>{{ $formatTime(comment.time)}}</span>
-                <span class="action-itme" :class="{ 'action': false }" @click="likesCilck">
-                    <i class="bi bi-suit-heart-fill"></i> {{ !comment.likes || comment.likes == 0 ? "喜欢" : comment.likes }}
+                <span>{{ $formatTime(comment.time) }}</span>
+                <span class="action-itme" :class="{ 'action': false }" @click="likeArticle(articleid,comment.authorId,comment.id)">
+                    <i class="bi bi-suit-heart-fill" :class="{ 'islike' :  islikeArticle}"  ></i> {{ !comment.likes || comment.likes == 0 ? "喜欢" : comment.likes }}
                 </span>
-                <span class="action-itme" :class="{ 'action': opencommenttime === maincommentS.istime }" @click="opencommentclick">
+                <span class="action-itme" :class="{ 'action': opencommenttime === maincommentS.istime }"
+                    @click="opencommentclick">
                     <i class="bi bi-chat-left-text-fill"></i> {{ opencommenttime === maincommentS.istime ? '取消回复' : '回复' }}
                 </span>
             </div>
             <div class="comment-reply-editor" v-if="opencommenttime === maincommentS.istime">
-                <PostComment :articleId="articleid" :replyauthor="comment.author" :replyauthorId="comment.id"  
+                <PostComment :articleId="articleid" :replyauthor="comment.author" :replyauthorId="comment.id"
                     :commentIdTop="commentIdTop" />
             </div>
             <div class="replies" v-if="comment.childComments && comment.childComments.length">
-                <PostCommentItem :vice="vice" v-for="reply in comment.childComments" :key="reply.id" :articleid="articleid" 
+                <PostCommentItem :vice="vice" v-for="reply in comment.childComments" :key="reply.id" :articleid="articleid"
                     :commentIdTop="commentIdTop" :comment="reply" class="reply-item" />
             </div>
             <div v-if="comment?.childCommentCount > 5" class="top-has-more">
@@ -68,19 +69,22 @@
                 </span>
             </div>
 
-            <el-dialog class="dialog-child-Comments" v-if="dialogFormVisible" v-model="dialogFormVisible"  width="700" top="2vh" @close="dialogchildclose">
+            <el-dialog class="dialog-child-Comments" v-if="dialogFormVisible" v-model="dialogFormVisible" width="700"
+                top="2vh" @close="dialogchildclose">
                 <template #header="{ titleId, titleClass }">
                     <h4 :id="titleId" :class="titleClass" class="dialog-title-Class">评论回复</h4>
                 </template>
-                <div   class="child-Comments" v-infinite-scroll="loadchildComments" :infinite-scroll-immediate="false"   v-loading="dialogloading">
-                    <PostCommentItem :vice="false" :comment="maincommentS.commentdialog" :articleid="articleid" :commentIdTop="comment.id"  />
+                <div class="child-Comments" v-infinite-scroll="loadchildComments" :infinite-scroll-immediate="false"
+                    v-loading="dialogloading">
+                    <PostCommentItem :vice="false" :comment="maincommentS.commentdialog" :articleid="articleid"
+                        :commentIdTop="comment.id" />
                 </div>
             </el-dialog>
         </div>
     </div>
 </template>
 <script setup>
-import { ref, onMounted, computed, nextTick ,toRaw } from 'vue';
+import { ref, onMounted, computed, nextTick, toRaw } from 'vue';
 import UserInfoPopover from '@/components/UserInfoPopover.vue'
 import PostComment from './PostComment.vue';
 import { escapeHtml } from '@/utils/escapeHtml'
@@ -88,6 +92,23 @@ import maincommentAppStore from '@/stores/admin/maincomment'
 const maincommentS = maincommentAppStore()
 import commentStore from "@/stores/admin/comment";
 const commentS = commentStore()
+
+const islikeArticle=ref(false)
+const operation=ref(0)
+import { socket } from '@/utils/socketclient'
+const likeArticle = (articleId, authorId,commentId) => {
+    console.log(articleId, authorId,commentId);
+    operation.value == 0 ? operation.value = 1: operation.value = 0
+    socket.emit("likeMsg", {
+        commentId: commentId,
+        articleId: articleId,
+        repayAuthorId: authorId,
+        operation: operation.value,
+        type: 1,
+    })
+    islikeArticle.value=!islikeArticle.value
+
+}
 
 
 const props = defineProps({
@@ -98,7 +119,7 @@ const props = defineProps({
     vice: {
         type: Boolean,
         required: false,
-        default: ()=>(false)
+        default: () => (false)
     },
     articleid: {
         type: String,
@@ -121,22 +142,22 @@ const dialogloading = ref(false);
 
 const dialogchildclose = () => {
     dialogFormVisible.value = false
-    maincommentS.commentdialog={}
-    loadPage.value=1
+    maincommentS.commentdialog = {}
+    loadPage.value = 1
 }
 
-const getCommentReList = async()=>{
+const getCommentReList = async () => {
     try {
-        dialogloading.value=true
-        const commentReList= await maincommentS.getCommentReListS(props.vice? maincommentS.commentHomedrawerDto.type : commentS.commentHomeDto.type ,props.comment.id,loadPage.value,10)
-     maincommentS.commentdialog.childComments=[... maincommentS.commentdialog.childComments,...commentReList]
-     dialogloading.value=false
+        dialogloading.value = true
+        const commentReList = await maincommentS.getCommentReListS(props.vice ? maincommentS.commentHomedrawerDto.type : commentS.commentHomeDto.type, props.comment.id, loadPage.value, 10)
+        maincommentS.commentdialog.childComments = [...maincommentS.commentdialog.childComments, ...commentReList]
+        dialogloading.value = false
     } catch (error) {
-        
-    }finally{
-        dialogloading.value=false
+
+    } finally {
+        dialogloading.value = false
     }
-   
+
     loadPage.value++
 }
 const loadchildComments = () => {
@@ -147,8 +168,8 @@ const likesCilck = () => {
     console.log(props.comment.id + '点击了喜欢');
 }
 
-const opencommentclick=()=>{
-    if(opencommenttime.value==0){
+const opencommentclick = () => {
+    if (opencommenttime.value == 0) {
         opencommenttime.value = Date.now()
     }
     maincommentS.toggleAnswer(opencommenttime.value)
@@ -157,9 +178,9 @@ const opChildComments = () => {
     dialogFormVisible.value = true
     maincommentS.commentdialog = JSON.parse(JSON.stringify(props.comment))
     if (maincommentS.commentdialog) {
-  maincommentS.commentdialog.childComments = [];
-}
-getCommentReList()
+        maincommentS.commentdialog.childComments = [];
+    }
+    getCommentReList()
 
     // console.log( maincommentS.commentdialog );
 }
@@ -171,10 +192,9 @@ const expanded = ref(false);
 const contentRef = ref(null)
 const expandRef = ref(null)
 
-onMounted(() =>
-   {
+onMounted(() => {
     contentRefOP()
-   }
+}
 )
 
 const contentRefOP = () => {
@@ -261,33 +281,35 @@ const renderLinks = (text) => {
 .comment-content {
     flex: 1;
 
-    .dialog-child-Comments{
+    .dialog-child-Comments {
 
         .dialog-title-Class {
-            
-        display: flex;
-        height: 54px;
-        align-items: center;
-        font-size: 15px;
-        color: rgb(55, 58, 64);
-        font-weight: 600;
-        border-bottom: 1px solid rgb(235, 236, 237);
-    }
-    .child-Comments {
-        height:750px;
-        max-height: 750px;
-        padding-top: 20px;
-        overflow-y: auto;
-    }
+
+            display: flex;
+            height: 54px;
+            align-items: center;
+            font-size: 15px;
+            color: rgb(55, 58, 64);
+            font-weight: 600;
+            border-bottom: 1px solid rgb(235, 236, 237);
+        }
+
+        .child-Comments {
+            height: 750px;
+            max-height: 750px;
+            padding-top: 20px;
+            overflow-y: auto;
+        }
 
     }
+
     :deep(.el-overlay) {
         background-color: rgba(0, 0, 0, 0.65);
         overflow-y: hidden;
     }
 
 
-    
+
 
 
     .top-has-more {
@@ -426,6 +448,9 @@ const renderLinks = (text) => {
         cursor: pointer;
     }
 
+    .islike{
+        color: #1e80ff;
+    }
     .action-itme:not(.action):hover {
         color: #1e80ff;
     }
@@ -444,5 +469,4 @@ const renderLinks = (text) => {
     // margin-left: 2rem;
     // border-left: 2px solid #e0e0e0;
     padding-left: 1rem;
-}
-</style>
+}</style>

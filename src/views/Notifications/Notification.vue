@@ -92,12 +92,6 @@ const digg = ref(true)
 const follow = ref(true)
 const im = ref(true)
 
-import {socket } from '@/utils/socketclient'
-
-socket.on("newsLike", () => {
-    comment.value++
-})
-
 
 const totitleType = (tab, event) => {
     titleType.value = tab.paneName

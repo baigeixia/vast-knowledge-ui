@@ -1,6 +1,13 @@
 <template>
     <div class="comment-box" v-infinite-scroll="load" :infinite-scroll-immediate="false" :infinite-scroll-disabled="noMore">
-        <NotificationList notificationType="comment" :notificationList="notificationList" :extendicon="extendicon"  />
+        <el-skeleton :rows="5" animated :loading="Loading">
+            <NotificationList notificationType="comment" :notificationList="notificationList" :extendicon="extendicon" />
+        </el-skeleton>
+        <el-skeleton style="padding-top: 24px;" :rows="5" animated :loading="endLoading"/>
+        <div v-if="noMore" class="end-of-data">
+            <div v-if="notificationList?.length > 1">已经到最底部了</div>
+            <div v-else>还没有内容</div>
+        </div>
     </div>
 </template>
 
@@ -8,183 +15,52 @@
 import { ref, onMounted } from 'vue';
 import NotificationList from '@/components/NotificationList.vue'
 import notificationAppStore from "@/stores/admin/notification";
-const notificationS=notificationAppStore()
+const notificationS = notificationAppStore()
 
-const extendicon=ref('https://picx.zhimg.com/v2-40cc57d7a7f9fc24711c601615c9fb57_200x0.png?source=582e62d4')
-
-/* const notificationList = ref(
-    [
-        {
-            statisticsTime: '2024-07-09',
-            notificationinfo: [
-                {
-                    commentid: '16',
-                    commentEndTime: '2024-07-09 22:05',
-                    attach_info: {
-                        id: 33,
-                        title: '哪个瞬间你觉得你的宠物爱上了你？',
-                    },
-                    actors: [
-                        {
-                            id: '1',
-                            username: '柴柴啊柴',
-                            verb: '回复了您的评论',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                            replycontent: '第二次就是修改了\/n，防止第 \//t一次添加的不正确[撇嘴]第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确',
-                            replycontenttime: '21:05',
-                        },
-                        {
-                            id: '2',
-                            username: '柴柴啊柴',
-                            verb: '回复了您的评论',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                            replycontent: '第二次就是修改了，防止第一次添加的不正确[撇嘴]',
-                            replycontenttime: '21:05',
-                        },
-                        {
-                            id: '3',
-                            username: '柴柴啊柴',
-                            verb: '回复了您的评论',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                            replycontent: '第二次就是修改了，防止第一次添加的不正确[撇嘴]',
-                            replycontenttime: '21:05',
-                        },
-                    ]
-                },
-                {
-                    commentid: '1111',
-                    commentEndTime: '2024-07-09 22:05',
-                    verb: '回复了您的评论',
-                    attach_info: {
-                        id: 11,
-                        title: '为什么电竞需要天赋极高？',
-                    },
-                    actors: [
-                        {
-                            id: '1',
-                            username: '柴柴啊柴',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                            replycontent: '第二次就是修改了，防止第一次添加的不正确[撇嘴]',
-                            replycontenttime: '21:05',
-                        },
-                        {
-                            id: '2',
-                            username: '柴柴啊柴',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                            replycontent: '第二次就是修改了，防止第一次添加的不正确[撇嘴]',
-                            replycontenttime: '21:05',
-                        },
-                        {
-                            id: '3',
-                            username: '柴柴啊柴',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                            replycontent: '第二次就是修改了，防止第一次添加的不正确[撇嘴]',
-                            replycontenttime: '21:05',
-                        },
-                    ]
-                }
-            ]
-        },
-    ]
-) */
-/* const upnotificationList = ref(
-    [
-        {
-            statisticsTime: '2024-07-09',
-            notificationinfo: [
-                {
-                    commentid: '1111',
-                    commentEndTime: '2024-07-09 22:05',
-                    verb: '评论了您的文章',
-                    attach_info: {
-                        id: 33,
-                        title: '哪个瞬间你觉得你的宠物爱上了你？',
-                    },
-                    actors: [
-                        {
-                            id: '1',
-                            username: '柴柴啊柴',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                            replycontent: '第二次就是修改了，防止第一次添加的不正确[撇嘴]',
-                            replycontenttime: '21:05',
-                        },
-                        {
-                            id: '2',
-                            username: '柴柴啊柴',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                            replycontent: '第二次就是修改了，防止第一次添加的不正确[撇嘴]',
-                            replycontenttime: '21:05',
-                        },
-                        {
-                            id: '3',
-                            username: '柴柴啊柴',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                            replycontent: '第二次就是修改了，防止第一次添加的不正确[撇嘴]',
-                            replycontenttime: '21:05',
-                        },
-                    ]
-                },
-                {
-                    commentid: '1111',
-                    commentEndTime: '2024-07-09 22:05',
-                    verb: '评论了您的文章',
-                    attach_info: {
-                        id: 11,
-                        title: '为什么电竞需要天赋极高？',
-                    },
-                    actors: [
-                        {
-                            id: '1',
-                            username: '柴柴啊柴',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                            replycontent: '第二次就是修改了，防止第一次添加的不正确[撇嘴]',
-                            replycontenttime: '21:05',
-                        },
-                        {
-                            id: '2',
-                            username: '柴柴啊柴',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                            replycontent: '第二次就是修改了，防止第一次添加的不正确[撇嘴]第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确第二次就是修改了，防止第一次添加的不正确',
-                            replycontenttime: '21:05',
-                        },
-                        {
-                            id: '3',
-                            username: '柴柴啊柴',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                            replycontent: '第二次就是修改了，防止第一次添加的不正确[撇嘴]',
-                            replycontenttime: '21:05',
-                        },
-                    ]
-                }
-            ]
-        },
-    ]
-) */
-
+const extendicon = ref('https://picx.zhimg.com/v2-40cc57d7a7f9fc24711c601615c9fb57_200x0.png?source=582e62d4')
 const count = ref(1)
 const noMore = ref(false)
-const notificationList=ref([])
+const notificationList = ref([])
+const Loading = ref(false)
+const endLoading = ref(false)
 
 const load = async () => {
     count.value += 1
-   const data= await notificationS.getCommentNotificationInfo(count.value,10)
+    endLoading.value = true
+    try {
+        const data = await notificationS.getCommentNotificationInfo(count.value, 10)
 
-    if (!data || data.length === 0) {
-      noMore.value = true
+        if (!data || data.length === 0) {
+            noMore.value = true
+        }
+
+        if (data) {
+            notificationList.value = [...notificationList.value, ...data]
+        }
+
+        endLoading.value = false
+    } catch (error) {
+        // console.error('Error loading more data:', error);
+    } finally {
+        endLoading.value = false;
     }
 
-    if(data){
-        notificationList.value=[...notificationList.value,...data]
-    }
 }
 
 const pageTitle = ref('评论与回复');
 onMounted(async () => {
-const data = await notificationS.getCommentNotificationInfo(count.value,10)
+    Loading.value = true
+    try {
+        const data = await notificationS.getCommentNotificationInfo(count.value, 10)
 
-//   notificationList.value=notificationS.commentNotificationList
-notificationList.value=data
-  document.title = pageTitle.value;
+        //   notificationList.value=notificationS.commentNotificationList
+        notificationList.value = data
+        document.title = pageTitle.value;
+    } catch (error) {
+        // console.error('Error loading more data:', error);
+    } finally {
+        Loading.value = false;
+    }
 });
 
 const emit = defineEmits(['data-loaded']);
@@ -202,5 +78,15 @@ onMounted(() => {
 <style lang="scss" scoped>
 .comment-box {
     flex: 1;
+
+    .end-of-data {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        padding: 10px;
+        color: #8a919f;
+        bottom: 20px;
+        z-index: 1000;
+    }
 }
 </style>

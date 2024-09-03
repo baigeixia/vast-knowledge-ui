@@ -1,15 +1,28 @@
 <template>
-  <div class="digg-box"    v-infinite-scroll="load">
-    <NotificationList notificationType="digg" :notificationList="notificationList" :extendicon="extendicon" :verb="verb" />
-  </div>
+    <div class="digg-box" v-infinite-scroll="load">
+        <el-skeleton :rows="5" animated :loading="Loading">
+            <NotificationList notificationType="digg" :notificationList="notificationList" :extendicon="extendicon"
+                :verb="verb" />
+        </el-skeleton>
+        <el-skeleton style="padding-top: 24px;" :rows="5" animated :loading="endLoading"/>
+        <div v-if="noMore" class="end-of-data">
+            <div v-if="notificationList?.length > 1">已经到最底部了</div>
+            <div v-else>还没有内容</div>
+        </div>
+    </div>
 </template>
 
 <script setup>
-import { ref,onMounted } from 'vue';
+import { ref, onMounted } from 'vue';
 import NotificationList from '@/components/NotificationList.vue'
 
-const extendicon=ref('https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4')
-const verb=ref('喜欢了您的评论')
+const extendicon = ref('https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4')
+const verb = ref('喜欢了您的评论')
+
+const Loading = ref(true)
+const endLoading = ref(false)
+
+
 
 const notificationList = ref(
     [
@@ -186,13 +199,13 @@ const notificationList = ref(
                 },
             ]
         },
-        
+
     ]
 )
 
 const upnotificationList = ref(
     [
-      {
+        {
             statisticsTime: '2024-07-09',
             notificationinfo: [
                 {
@@ -371,29 +384,39 @@ const count = ref(0)
 const load = () => {
     count.value += 1
     // console.log(count.value);
-    notificationList.value=[...notificationList.value,...upnotificationList.value]
+    notificationList.value = [...notificationList.value, ...upnotificationList.value]
 }
 
 
 
 const pageTitle = ref('赞和收藏');
 onMounted(() => {
-  document.title = pageTitle.value;
+    document.title = pageTitle.value;
 });
 const emit = defineEmits(['data-loaded']);
 
 // 使用组合式API中的 onMounted 钩子
 onMounted(() => {
-  setTimeout(() => {
-    // 数据加载完成后触发事件通知父组件
-    // console.log('data-loaded');
-    emit('data-loaded');
-  }, 2000);
+    setTimeout(() => {
+        // 数据加载完成后触发事件通知父组件
+        // console.log('data-loaded');
+        emit('data-loaded');
+    }, 2000);
 });
 </script>
 
 <style lang="scss" scoped>
-.digg-box{
-  flex: 1;
+.digg-box {
+    flex: 1;
+
+    .end-of-data {
+        display: flex;
+        justify-content: center;
+        text-align: center;
+        padding: 10px;
+        color: #8a919f;
+        bottom: 20px;
+        z-index: 1000;
+    }
 }
 </style>

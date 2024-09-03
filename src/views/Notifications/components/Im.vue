@@ -477,6 +477,7 @@ onMounted(() => {
 
 .im-box {
   flex: 1;
+  
 
   .chat-main {
 

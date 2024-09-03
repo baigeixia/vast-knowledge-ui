@@ -16,7 +16,6 @@ import 'nprogress/nprogress.css';
 import { sanitizeHtml } from './utils/helpers/sanitizeHtml';
 import { formatTime,formatDateTime } from './utils/formDate';
 import './loginblocking' 
-import { io } from "socket.io-client";
 
 
 

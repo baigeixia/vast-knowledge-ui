@@ -4,35 +4,33 @@
             <RouterLink class="header-link" to="/notifications">
                 <el-button :class="{ 'tabs': true, 'active': isActive('/notifications') }" size="large" link>
                     <!-- <el-badge :value="comment" :show-zero="false" :offset="[1, 5]" > -->
-                    <el-badge :is-dot="comment" :show-zero="false" :offset="[1, 10]" >
+                    <el-badge :is-dot="notificationS.iscomment" :show-zero="false" :offset="[1, 10]">
                         评论与回复
                     </el-badge>
                 </el-button>
             </RouterLink>
             <RouterLink class="header-link" to="/notifications/digg">
                 <el-button :class="{ 'tabs': true, 'active': isActive('/notifications/digg') }" size="large" link>
-                    <!-- <el-badge :value="digg" :show-zero="false" :offset="[1, 5]"> -->
-                    <el-badge :is-dot="digg" :show-zero="false" :offset="[1, 10]">
+                    <el-badge :is-dot="notificationS.isdigg" :show-zero="false" :offset="[1, 10]">
                         赞和收藏
                     </el-badge>
                 </el-button>
             </RouterLink>
             <RouterLink class="header-link" to="/notifications/follow">
                 <el-button :class="{ 'tabs': true, 'active': isActive('/notifications/follow') }" size="large" link>
-                    <!-- <el-badge  :value="follow" :show-zero="false" :offset="[1, 5]"> -->
-                    <el-badge  :is-dot="follow" :show-zero="false" :offset="[1, 10]">
+                    <el-badge :is-dot="notificationS.isfollow" :show-zero="false" :offset="[1, 10]">
                         新增粉丝
                     </el-badge></el-button>
             </RouterLink>
             <RouterLink class="header-link" to="/notifications/im">
                 <el-button :class="{ 'tabs': true, 'active': isActive('/notifications/im') }" size="large" link>
-                <el-badge :is-dot="im" :show-zero="false" :offset="[1, 10]">
+                    <el-badge :is-dot="notificationS.isim" :show-zero="false" :offset="[1, 10]">
                         私信
                     </el-badge></el-button>
             </RouterLink>
             <RouterLink class="header-link" to="/notifications/system">
                 <el-button :class="{ 'tabs': true, 'active': isActive('/notifications/system') }" size="large" link>
-                <el-badge :is-dot="system" :show-zero="false" :offset="[1, 10]">
+                    <el-badge :is-dot="notificationS.issystem" :show-zero="false" :offset="[1, 10]">
                         系统通知
                     </el-badge></el-button>
             </RouterLink>
@@ -83,6 +81,8 @@
 <script setup>
 import { ref, watch, onMounted } from "vue"
 import { useRoute } from 'vue-router';
+import notificationAppStore from "@/stores/admin/notification";
+const notificationS = notificationAppStore()
 
 const titleType = ref('1')
 const loading = ref(false)

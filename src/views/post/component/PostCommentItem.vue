@@ -47,7 +47,7 @@
             </div>
             <div class="comment-meta">
                 <span>{{ $formatTime(comment.time) }}</span>
-                <span class="action-itme" :class="{ 'action': false }" @click="likeArticle(articleid,comment.authorId,comment.id)">
+                <span class="action-itme" :class="{ 'action': false }" @click="likeArticle(articleid,comment.authorId,comment.author.id,comment.author.username)">
                     <i class="bi bi-suit-heart-fill" :class="{ 'islike' :  islikeArticle}"  ></i> {{ !comment.likes || comment.likes == 0 ? "喜欢" : comment.likes }}
                 </span>
                 <span class="action-itme" :class="{ 'action': opencommenttime === maincommentS.istime }"
@@ -96,16 +96,19 @@ const commentS = commentStore()
 const islikeArticle=ref(false)
 const operation=ref(0)
 import { socket } from '@/utils/socketclient'
-const likeArticle = (articleId, authorId,commentId) => {
-    console.log(articleId, authorId,commentId);
-    operation.value == 0 ? operation.value = 1: operation.value = 0
+
+const likeArticle = (articleId, authorId,commentId,articleName) =>
+ {
+    console.log(articleId, authorId,commentId,articleName);
+
     socket.emit("likeMsg", {
         commentId: commentId,
         articleId: articleId,
+        authorName: articleName,
         repayAuthorId: authorId,
-        operation: operation.value,
         type: 1,
     })
+
     islikeArticle.value=!islikeArticle.value
 
 }

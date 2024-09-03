@@ -4,20 +4,10 @@
     <div class="header-title">
       <div class="title-ul">
         <RouterLink to="/">
-          <div class="title-li active" :class="{ 'isactive': route.path === '/' }" >
+          <div class="title-li active" :class="{ 'isactive': route.path === '/' }">
             <i>首页</i>
           </div>
         </RouterLink>
-        <!-- <RouterLink to="/">
-          <div class="title-li active" :class="{ 'isactive': header.headertype === 2 }" @click="upheadertype(2)">
-            <i>推荐</i>
-          </div>
-        </RouterLink>
-        <RouterLink to="/">
-          <div class="title-li active" :class="{ 'isactive': header.headertype === 3 }" @click="upheadertype(3)">
-            <i>热榜</i>
-          </div>
-        </RouterLink> -->
       </div>
     </div>
     <div class="header-right">
@@ -31,11 +21,11 @@
           </el-input>
         </div>
         <div class="right-li">
-          <el-button style="border-radius:15px;" type="primary" @click=" navigateToPublish">发布</el-button>
+          <el-button style="border-radius:15px;" type="primary" @click="navigateToPublish">发布</el-button>
         </div>
-        <el-dropdown style=" cursor: pointer;">
+        <el-dropdown style=" cursor: pointer;" trigger="click">
           <div class="right-li">
-            <el-badge :show-zero='false'  :value="Bellvalue" :offset="[5, 3]">
+            <el-badge :show-zero='false' :value="Bellvalue" :offset="[5, 3]">
               <div class="right-li-datails">
                 <el-icon>
                   <Bell />
@@ -45,26 +35,41 @@
             </el-badge>
           </div>
           <template #dropdown>
-            <el-dropdown-menu>
-              <RouterLink to="/notifications"><el-dropdown-item><el-icon>
+            <el-dropdown-menu style="z-index: 1000;">
+              <RouterLink to="/notifications">
+                <el-dropdown-item>
+                  <el-icon>
                     <ChatLineSquare />
-                  </el-icon>评论</el-dropdown-item></RouterLink>
+                  </el-icon>
+                  <el-badge :is-dot="notificationS.iscomment" :show-zero="false" :offset="[10, 5]">
+                    评论与回复
+                  </el-badge>
+                </el-dropdown-item>
+              </RouterLink>
               <RouterLink to="/notifications/digg"><el-dropdown-item><el-icon>
                     <CollectionTag />
-                  </el-icon>赞和收藏</el-dropdown-item></RouterLink>
+                  </el-icon><el-badge :is-dot="notificationS.isdigg" :show-zero="false" :offset="[10, 5]">
+                    赞和收藏
+                  </el-badge></el-dropdown-item></RouterLink>
               <RouterLink to="/notifications/follow"><el-dropdown-item><el-icon>
                     <Notification />
-                  </el-icon>新增粉丝</el-dropdown-item></RouterLink>
+                  </el-icon>    <el-badge :is-dot="notificationS.isfollow" :show-zero="false" :offset="[10, 5]">
+                    新增粉丝
+                  </el-badge></el-dropdown-item></RouterLink>
               <RouterLink to="/notifications/im"><el-dropdown-item><el-icon>
                     <ChatDotRound />
-                  </el-icon>私信</el-dropdown-item></RouterLink>
+                  </el-icon><el-badge :is-dot="notificationS.isim" :show-zero="false" :offset="[10, 5]">
+                    私信
+                  </el-badge></el-dropdown-item></RouterLink>
               <RouterLink to="/notifications/system"><el-dropdown-item><el-icon>
                     <Bell />
-                  </el-icon>系统通知</el-dropdown-item></RouterLink>
+                  </el-icon><el-badge :is-dot="notificationS.issystem" :show-zero="false" :offset="[10, 5]">
+                    系统通知
+                  </el-badge></el-dropdown-item></RouterLink>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
-        <el-dropdown style=" cursor: pointer;">
+        <el-dropdown style=" cursor: pointer;" trigger="click">
           <div class="right-li">
             <!-- <el-badge :is-dot="Cpuvalue" :offset="[-10, 5]"> -->
             <div class="right-li-datails">
@@ -75,7 +80,7 @@
             </div>
           </div>
           <template #dropdown>
-            <el-dropdown-menu>
+            <el-dropdown-menu  style="z-index: 1000;">
               <el-dropdown-item @click="item_TO_WE(1)"><i class="bi bi-graph-up-arrow"></i>图文数据</el-dropdown-item>
               <el-dropdown-item @click="item_TO_WE(2)"><i class="bi bi-columns-gap"></i>发布文章</el-dropdown-item>
               <el-dropdown-item @click="item_TO_WE(3)"><i class="bi bi-layout-text-window-reverse"></i>内容列表</el-dropdown-item>
@@ -84,7 +89,7 @@
             </el-dropdown-menu>
           </template>
         </el-dropdown>
-        <el-dropdown style=" cursor: pointer;">
+        <el-dropdown style=" cursor: pointer;" trigger="click">
           <div class="right-li">
             <div class="right-li-datails">
               <el-icon>
@@ -94,7 +99,7 @@
             </div>
           </div>
           <template #dropdown>
-            <el-dropdown-menu>
+            <el-dropdown-menu  style="z-index: 1000;">
               <RouterLink to="/user"><el-dropdown-item><el-icon>
                     <User />
                   </el-icon>个人主页</el-dropdown-item></RouterLink>
@@ -112,13 +117,12 @@
 <script setup>
 import { ref } from "vue"
 import { byLoading } from '@/utils/Loading'
-import { useRouter,useRoute } from 'vue-router';
-
+import { useRouter, useRoute } from 'vue-router';
 import { channelAppStore } from "@/stores/admin/channel";
 const header = channelAppStore()
-
-import {socket } from '@/utils/socketclient'
-
+import { socket } from '@/utils/socketclient'
+import notificationAppStore from "@/stores/admin/notification";
+const notificationS = notificationAppStore()
 
 const route = useRoute();
 const router = useRouter();
@@ -137,14 +141,14 @@ const upheadertype = (type) => {
   header.headertype = type
 }
 
-const navigateToPublish=() =>{
-      // 使用 Vue Router 进行跳转
-      // this.$router.push('/publish');
-      
-      // 或者使用 window.location.href 进行跳转
-      // window.location.href = 'http://localhost:8081/publish';
-      window.open('http://localhost:8081/publish', '_blank');
-    }
+const navigateToPublish = () => {
+  // 使用 Vue Router 进行跳转
+  // this.$router.push('/publish');
+
+  // 或者使用 window.location.href 进行跳转
+  // window.location.href = 'http://localhost:8081/publish';
+  window.open('http://localhost:8081/publish', '_blank');
+}
 const headersearch = () => {
   // console.log(headerinput.value);
   const query = encodeURIComponent('先活着再生活');
@@ -255,6 +259,9 @@ const item_TO_WE = (type) => {
       .el-scrollbar {
         z-index: 1000;
       }
+      .header-dropdown-menu{
+          z-index: 1000;
+      }
 
       .right-li {
         padding: 0 10px 0 10px;
@@ -278,4 +285,5 @@ const item_TO_WE = (type) => {
       }
     }
   }
-}</style>
+}
+</style>

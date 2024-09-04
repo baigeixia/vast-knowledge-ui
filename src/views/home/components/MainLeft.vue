@@ -29,10 +29,17 @@ const page =ref(1)
 onMounted(() => channelStore.getchannellist())
 
 const tabSwit = (id) => {
-  articleStore.tagType = id
+
+    if(articleStore.tagType===id){
+      articleStore.tagType=0
+    }else{
+      articleStore.tagType = id
+
+    }
   articleStore.page = 1
   articleStore.articleList={}
   articleStore.getarticleList()
+  articleStore.noMore=false
 }
 
 

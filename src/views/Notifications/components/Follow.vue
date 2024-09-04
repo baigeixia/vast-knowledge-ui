@@ -21,6 +21,7 @@ const verb = ref('关注了您')
 
 const Loading = ref(true)
 const endLoading = ref(false)
+const noMore = ref(false)
 
 
 const notificationList = ref(

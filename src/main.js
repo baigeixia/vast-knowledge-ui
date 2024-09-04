@@ -15,6 +15,7 @@ import "bootstrap-icons/font/bootstrap-icons.css";
 import 'nprogress/nprogress.css';
 import { sanitizeHtml } from './utils/helpers/sanitizeHtml';
 import { formatTime,formatDateTime } from './utils/formDate';
+// import debounce from './utils/debouncing';
 import './loginblocking' 
 
 
@@ -29,6 +30,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 }
 
 
+// app.config.globalProperties.$debounce = debounce;
 app.config.globalProperties.$sanitizeHtml = sanitizeHtml;
 app.config.globalProperties.$formatTime = formatTime;
 app.config.globalProperties.$formatDateTime = formatDateTime;

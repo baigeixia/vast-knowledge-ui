@@ -72,7 +72,9 @@ import { onMounted, ref, nextTick } from "vue"
 import { escapeHtml } from '@/utils/escapeHtml'
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus'
-import { socket } from '@/utils/socketclient'
+import { socket ,socketEmit} from '@/utils/socketclient'
+import debounce from '@/utils/debouncing';
+
 
 const props = defineProps({
     content: {
@@ -96,21 +98,15 @@ const cities = ['涉政有害', '不友善', '垃圾广告'
 const islikeArticle = ref(false)
 
 
-const likeArticle = (articleId, authorId,articleName) => {
-    console.log(articleId, authorId,articleName);
-    socket.emit("likeMsg", {
-        articleId: articleId,
-        repayAuthorId: authorId,
-        authorName: articleName,
-        type: 0,
-    }, (response) => {
-        if(response){
-            console.log('Server response:', response);
-        }
-       
-    })
-    islikeArticle.value = !islikeArticle.value
-}
+const likeArticle = debounce((articleId, authorId,articleName) => {
+    // console.log(articleId, authorId,articleName);
+    socketEmit("likeMsg", {
+            articleId: articleId,
+            repayAuthorId: authorId,
+            authorName: articleName,
+            type: 0,
+        })
+},500)
 
 const openInNewTab = (contentid) => {
     const path = `/post/${contentid}`;

@@ -20,6 +20,8 @@ const extendicon = ref('https://pic1.zhimg.com/v2-e4573613154ffec3ced881b7170bc3
 
 const Loading = ref(true)
 const endLoading = ref(false)
+const noMore = ref(false)
+
 
 const notificationList = ref(
     [

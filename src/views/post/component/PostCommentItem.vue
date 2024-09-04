@@ -95,22 +95,17 @@ const commentS = commentStore()
 
 const islikeArticle=ref(false)
 const operation=ref(0)
-import { socket } from '@/utils/socketclient'
+import { socket ,socketEmit} from '@/utils/socketclient'
 
 const likeArticle = (articleId, authorId,commentId,articleName) =>
- {
-    console.log(articleId, authorId,commentId,articleName);
-
-    socket.emit("likeMsg", {
+ {console.log(articleId, authorId,commentId,articleName);
+    socketEmit("likeMsg", {
         commentId: commentId,
         articleId: articleId,
         authorName: articleName,
-        repayAuthorId: authorId,
+        // repayAuthorId: authorId,
         type: 1,
     })
-
-    islikeArticle.value=!islikeArticle.value
-
 }
 
 

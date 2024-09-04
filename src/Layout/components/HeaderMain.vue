@@ -25,7 +25,7 @@
         </div>
         <el-dropdown style=" cursor: pointer;" trigger="click">
           <div class="right-li">
-            <el-badge :show-zero='false' :value="Bellvalue" :offset="[5, 3]">
+            <el-badge :show-zero='false' :value="notificationS.hederMsgCount" :offset="[5, 3]">
               <div class="right-li-datails">
                 <el-icon>
                   <Bell />
@@ -120,7 +120,6 @@ import { byLoading } from '@/utils/Loading'
 import { useRouter, useRoute } from 'vue-router';
 import { channelAppStore } from "@/stores/admin/channel";
 const header = channelAppStore()
-import { socket } from '@/utils/socketclient'
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
 
@@ -132,9 +131,6 @@ const Bellvalue = ref(12)
 const Roundvalue = ref(99)
 const Cpuvalue = ref(true)
 
-socket.on("newsLike", () => {
-  Bellvalue.value++
-})
 
 
 const upheadertype = (type) => {

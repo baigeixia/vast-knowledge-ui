@@ -1,5 +1,5 @@
 import { io } from "socket.io-client";
-import { onMounted ,onUnmounted} from 'vue';
+import { onMounted, onUnmounted } from 'vue';
 import { getToken } from '@/utils/auth'
 
 const config = {
@@ -12,25 +12,12 @@ const config = {
   }
 }
 
-// {
-//   query: {  
-// mstoken: getToken()
-// }
-// }
-/**
- *  
- */
 export const socket = io('localhost:9090',
-{
-  ...config,
-});
+  {
+    ...config,
+  });
 
 
-// export const socketAdmin = io('localhost:9090/admin',
-//   {
-//     ...config,
-//   }
-// );
 
 export function useSockets() {
   // 在组件挂载时设置重连尝试逻辑
@@ -53,6 +40,22 @@ export function useSockets() {
     });
   }
 }
+
+
+export function socketEmit(topic, data) {
+  socket.emit(topic, data, callback)
+}
+const callback = (data) => {
+  if (data) {
+    if (data.code === 400) {
+      ElMessage({
+        message: data.msg
+        , type: 'warning'
+      })
+    }
+  }
+}
+
 
 // socket.on("connect", () => {
 //   console.log("此事件由 Socket 实例在连接和重新连接时触发。");

@@ -18,7 +18,7 @@ import NotificationList from '@/components/NotificationList.vue'
 const extendicon = ref('https://pic1.zhimg.com/v2-e4573613154ffec3ced881b7170bc3ac_200x0.png?source=582e62d4')
 // const verb=ref('举报处理通知 ')
 
-const Loading = ref(true)
+const Loading = ref(false)
 const endLoading = ref(false)
 const noMore = ref(false)
 
@@ -28,7 +28,7 @@ const notificationList = ref(
         {
             statisticsTime: '2024-07-09',
             verbType: '举报处理通知',
-            notificationinfo: [
+            notificationInfoList: [
                 {
                     id: '1111',
                     commentEndTime: '22:05',
@@ -89,7 +89,7 @@ const notificationList = ref(
         {
             statisticsTime: '2024-07-09',
             verbType: '反馈处理通知',
-            notificationinfo: [
+            notificationInfoList: [
                 {
                     id: '1111',
                     commentEndTime: '22:05',
@@ -111,7 +111,7 @@ const upnotificationList = ref(
         {
             statisticsTime: '2024-07-09',
             verbType: '反馈处理通知',
-            notificationinfo: [
+            notificationInfoList: [
                 {
                     id: '1111',
                     commentEndTime: '22:05',

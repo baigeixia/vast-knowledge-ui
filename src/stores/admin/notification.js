@@ -1,7 +1,8 @@
 import { getCommentNotification } from '@/api/admin/notification'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { socket } from '@/utils/socketclient'
+import { socket ,socketEmit} from '@/utils/socketclient'
+import debounce from '@/utils/debouncing';
 
  const notificationAppStore = defineStore(
   'notification', () => {
@@ -27,10 +28,30 @@ import { socket } from '@/utils/socketclient'
       isdigg.value=true
       console.log(hederMsgCount);
     })
+
+    const likeArticle = debounce((articleId, authorId,articleName,type,commentId) => {
+      socketEmit("likeMsg", {
+              articleId: articleId,
+              repayAuthorId: authorId,
+              authorName: articleName,
+              commentId: commentId,
+              type: type,
+          })
+  },500)
+
+  const fanMsg = debounce(( authorId,authorName) => {
+    console.log('authorId',authorId);
+    socketEmit("fanMsg", {
+      followId: authorId,
+      followName: authorName,
+        })
+},500)
     
     return {
         getCommentNotificationInfo,
         commentNotificationList,
+        likeArticle,
+        fanMsg,
         hederMsgCount,
         iscomment,
         isdigg,

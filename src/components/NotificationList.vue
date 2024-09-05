@@ -6,15 +6,15 @@
                     {{ list.statisticsTime }}
                 </time>
             </div>
-            <div class="notificationList-Item-box" v-for=" info in list.notificationInfoList" :key="info.id">
+            <div class="notificationList-Item-box" v-for=" info in list.notificationInfoList" :key="info.statisticsTime">
                 <img class="notificationList-Item-icon" :src="extendicon">
                 <div class="list-itme-box">
                     <div class="list-itme-header " v-if="notificationType === 'comment'">
-                     <!-- <div class="itme-content-box" v-for=" actor in info.actors" :key="actor.id"> -->
-                     <div class="itme-content-box">
-                        <div class="list-itme-content list-feedback" @click="opcontentinfo(info.id,info.commentId)">
-                            {{ info.title }}
-                        </div>
+                        <!-- <div class="itme-content-box" v-for=" actor in info.actors" :key="actor.id"> -->
+                        <div class="itme-content-box">
+                            <div class="list-itme-content list-feedback" @click="opcontentinfo(info.id, info.commentId)">
+                                {{ info.title }}
+                            </div>
                             <div class="content-box-start">
                                 <user-info-popover :author="info.actors">
                                     <template v-slot:reference>
@@ -32,8 +32,9 @@
                         </div>
                     </div>
                     <div class="list-itme-header" v-if="notificationType === 'digg'">
-                        <div class="list-itme-content list-feedback" @click="opcontentinfo(info.commentid)">
-                            {{ info.attach_info.title }}
+                        <div class="list-itme-content list-feedback"
+                            @click="opcontentinfo(info.attachInfo.id, info.attachInfo.commentid)">
+                            {{ info.attachInfo.title }}
                         </div>
                         <div class="itme-content-box">
                             <div class="content-box-start">
@@ -48,12 +49,12 @@
                                     </user-info-popover>
                                 </div>
                                 <span class="people-list" @click="opdialogTableVisible(info.actors)"
-                                    v-if="info.actors.length > 10">
-                                    &nbsp;等{{ info.actors.length }}人&nbsp;
+                                    v-if="info.mergeCount > 3">
+                                    &nbsp;等{{ info.mergeCount }}人&nbsp;
                                 </span>
                                 <div>&nbsp;{{ info.verb }} &middot;&nbsp; </div>
-                                <time :datetime="info.commentEndTime" :title="info.commentEndTime">{{
-                                    info.commentEndTime.slice(11, 16) }}</time>
+                                <time :datetime="info.commentEndTime" :title="info.commentEndTime">
+                                    {{info.commentEndTime }}</time>
                             </div>
                         </div>
                     </div>
@@ -90,12 +91,12 @@
                                 <time>{{ info.commentEndTime }}</time>
                             </div>
                             <div class="list-itme-content">
-                                <div class="itme-content-title list-feedback" @click="opcontentinfo(info.attach_info.id)">《
-                                    {{ info.attach_info.title }} 》</div>
+                                <div class="itme-content-title list-feedback" @click="opcontentinfo(info.attach_info.id)">
+                                    《{{ info.attach_info.title }}》</div>
                             </div>
+
                             <div class="list-itme-content">
-                                <div class="replyMesg" @click="opreportinfo(info.id)"> {{ info.replyMesg.contentText }}
-                                </div>
+                                <div class="replyMesg" @click="opreportinfo(info.id)"> {{ info.replyMesg.contentText }}</div>
                             </div>
                         </div>
                     </div>
@@ -133,7 +134,8 @@
                         <div class="ContentItem-status"></div>
                     </div>
                     <div class="ContentItem-extra">
-                        <el-button type="primary"><i class="bi bi-plus-lg"></i>关注</el-button>
+                        <el-button type="primary" @click="notificationS.fanMsg(actor.id, actor.username)"><i
+                                class="bi bi-plus-lg"></i>关注</el-button>
                     </div>
                 </div>
             </div>
@@ -145,6 +147,8 @@
 import { ref, computed, onMounted } from 'vue';
 import UserInfoPopover from '@/components/UserInfoPopover.vue'
 import { useRouter } from 'vue-router';
+import notificationAppStore from "@/stores/admin/notification";
+const notificationS = notificationAppStore()
 
 const router = useRouter();
 const dialogTableVisible = ref(false)
@@ -154,7 +158,7 @@ const opuserinfo = (id) => {
     console.log('id', id);
 }
 
-const opcontentinfo = (id,commentId) => {
+const opcontentinfo = (id, commentId) => {
     console.log('contentid', id);
     console.log('commentId', commentId);
     let routedata = router.resolve({
@@ -174,6 +178,7 @@ const opdialogTableVisible = (userlist) => {
     dialogTableVisible.value = true
     dialoguserlist.value = userlist
 }
+
 const props = defineProps({
     notificationList: {
         type: Object,
@@ -194,12 +199,9 @@ const props = defineProps({
 });
 
 
-onMounted(()=>{
+onMounted(() => {
     console.log(props.notificationList);
 })
-// const formattedTime = computed((oldValue) => {
-//   return  oldValue.slice(11, 16)
-// })
 
 const formattedTime = (time) => {
     return time.slice(11, 16)
@@ -363,6 +365,7 @@ const formattedTime = (time) => {
 
                     .itme-content-title {
                         font-size: 16px;
+
                     }
 
                 }

@@ -1,8 +1,7 @@
 <template>
     <div class="digg-box" v-infinite-scroll="load">
         <el-skeleton :rows="5" animated :loading="Loading">
-            <NotificationList notificationType="digg" :notificationList="notificationList" :extendicon="extendicon"
-                :verb="verb" />
+            <NotificationList notificationType="digg" :notificationList="notificationList" :extendicon="extendicon" :verb="verb" />
         </el-skeleton>
         <el-skeleton style="padding-top: 24px;" :rows="5" animated :loading="endLoading"/>
         <div v-if="noMore" class="end-of-data">
@@ -19,24 +18,25 @@ import NotificationList from '@/components/NotificationList.vue'
 const extendicon = ref('https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4')
 const verb = ref('喜欢了您的评论')
 
-const Loading = ref(true)
+const Loading = ref(false)
 const endLoading = ref(false)
 
 const noMore = ref(false)
-
+// const notificationList = ref([])
 
 const notificationList = ref(
     [
         {
             statisticsTime: '2024-07-09',
-            notificationinfo: [
+            notificationInfoList: [
                 {
-                    commentid: '1111',
                     extendicon: 'https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4',
-                    verb: '喜欢了您的评论',
-                    commentEndTime: '2024-07-09 22:05',
-                    attach_info: {
+                    verb: '喜欢您的评论',
+                    commentEndTime: '22:05',
+                    mergeCount: 9,
+                    attachInfo: {
                         id: 33,
+                        commentid: '1111',
                         title: '哪个瞬间您觉得您的宠物爱上了您？',
                     },
                     actors: [
@@ -55,167 +55,27 @@ const notificationList = ref(
                             username: '鑻籰',
                             avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
                         },
-                        {
-                            id: '4',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '5',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '6',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '7',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '8',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '9',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '10',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '11',
-                            username: '鑻籰11',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                    ]
-                },
-                {
-                    commentid: '1111',
-                    extendicon: 'https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4',
-                    verb: '喜欢了您的评论',
-                    commentEndTime: '2024-07-09 22:05',
-                    attach_info: {
-                        id: 33,
-                        title: '哪个瞬间您觉得您的宠物爱上了您？',
-                    },
-                    actors: [
-                        {
-                            id: '1',
-                            username: '柴柴啊柴',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '2',
-                            username: '大橙子吃小臣子',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '3',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '4',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '5',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '6',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '7',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '8',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '9',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '10',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '11',
-                            username: '鑻籰11',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                    ]
-                },
-                {
-                    commentid: '1111',
-                    extendicon: 'https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4',
-                    verb: '喜欢了您的评论',
-                    commentEndTime: '2024-07-09 22:05',
-                    attach_info: {
-                        id: 33,
-                        title: '哪个瞬间您觉得您的宠物爱上了您？',
-                    },
-                    actors: [
-                        {
-                            id: '1',
-                            username: '柴柴啊柴',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        }
-                    ]
-                },
-                {
-                    commentid: '1111',
-                    extendicon: 'https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4',
-                    verb: '喜欢了您的评论',
-                    commentEndTime: '2024-07-09 22:05',
-                    attach_info: {
-                        id: 33,
-                        title: '哪个瞬间您觉得您的宠物爱上了您？',
-                    },
-                    actors: [
-                        {
-                            id: '1',
-                            username: '柴柴啊柴',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        }
                     ]
                 },
             ]
         },
-
     ]
-)
+) 
+
 
 const upnotificationList = ref(
     [
         {
             statisticsTime: '2024-07-09',
-            notificationinfo: [
+            notificationInfoList: [
                 {
-                    commentid: '1111',
                     extendicon: 'https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4',
-                    verb: '收藏了您的评论',
+                    verb: '喜欢您的评论',
                     commentEndTime: '2024-07-09 22:05',
-                    attach_info: {
+                    mergeCount: 9,
+                    attachInfo: {
                         id: 33,
+                        commentid: '1111',
                         title: '哪个瞬间您觉得您的宠物爱上了您？',
                     },
                     actors: [
@@ -234,153 +94,13 @@ const upnotificationList = ref(
                             username: '鑻籰',
                             avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
                         },
-                        {
-                            id: '4',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '5',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '6',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '7',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '8',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '9',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '10',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '11',
-                            username: '鑻籰11',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                    ]
-                },
-                {
-                    commentid: '1111',
-                    extendicon: 'https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4',
-                    verb: '喜欢了您的文章',
-                    commentEndTime: '2024-07-09 22:05',
-                    attach_info: {
-                        id: 33,
-                        title: '哪个瞬间您觉得您的宠物爱上了您？',
-                    },
-                    actors: [
-                        {
-                            id: '1',
-                            username: '柴柴啊柴',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '2',
-                            username: '大橙子吃小臣子',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '3',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '4',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '5',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '6',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '7',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '8',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '9',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '10',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '11',
-                            username: '鑻籰11',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                    ]
-                },
-                {
-                    commentid: '1111',
-                    extendicon: 'https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4',
-                    verb: '喜欢了您的评论',
-                    commentEndTime: '2024-07-09 22:05',
-                    attach_info: {
-                        id: 33,
-                        title: '哪个瞬间您觉得您的宠物爱上了您？',
-                    },
-                    actors: [
-                        {
-                            id: '1',
-                            username: '柴柴啊柴',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        }
-                    ]
-                },
-                {
-                    commentid: '1111',
-                    extendicon: 'https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4',
-                    verb: '喜欢了您的评论',
-                    commentEndTime: '2024-07-09 22:05',
-                    attach_info: {
-                        id: 33,
-                        title: '哪个瞬间您觉得您的宠物爱上了您？',
-                    },
-                    actors: [
-                        {
-                            id: '1',
-                            username: '柴柴啊柴',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        }
                     ]
                 },
             ]
         },
     ]
-)
+) 
+
 const count = ref(0)
 const load = () => {
     count.value += 1

@@ -19,7 +19,7 @@ import NotificationList from '@/components/NotificationList.vue'
 const extendicon = ref('https://pica.zhimg.com/v2-bbe4688083199733e8e64d0fc447791d_200x0.png?source=582e62d4')
 const verb = ref('关注了您')
 
-const Loading = ref(true)
+const Loading = ref(false)
 const endLoading = ref(false)
 const noMore = ref(false)
 
@@ -28,7 +28,7 @@ const notificationList = ref(
     [
         {
             statisticsTime: '2024-07-09',
-            notificationinfo: [
+            notificationInfoList: [
                 {
                     focuson: true,
                     commentEndTime: '22:05',
@@ -110,7 +110,7 @@ const upnotificationList = ref(
     [
         {
             statisticsTime: '2024-07-09',
-            notificationinfo: [
+            notificationInfoList: [
                 {
                     focuson: true,
                     commentEndTime: '22:05',

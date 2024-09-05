@@ -20,7 +20,7 @@
                 </el-icon>
                 <span> {{ content.views }}</span>
             </div>
-            <div class="item-li like " @click="likeArticle(content.id, content.authorId,content.authorName)">
+            <div class="item-li like " @click="notificationS.likeArticle(content.id, content.authorId,content.authorName,0)">
                 <i class="bi bi-suit-heart-fill" :class="{ 'islike': islikeArticle }">
                     <span> {{ content.likes }}</span>
                 </i>
@@ -72,9 +72,9 @@ import { onMounted, ref, nextTick } from "vue"
 import { escapeHtml } from '@/utils/escapeHtml'
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus'
-import { socket ,socketEmit} from '@/utils/socketclient'
-import debounce from '@/utils/debouncing';
 
+import notificationAppStore from "@/stores/admin/notification";
+const notificationS = notificationAppStore()
 
 const props = defineProps({
     content: {
@@ -97,16 +97,6 @@ const cities = ['涉政有害', '不友善', '垃圾广告'
 
 const islikeArticle = ref(false)
 
-
-const likeArticle = debounce((articleId, authorId,articleName) => {
-    // console.log(articleId, authorId,articleName);
-    socketEmit("likeMsg", {
-            articleId: articleId,
-            repayAuthorId: authorId,
-            authorName: articleName,
-            type: 0,
-        })
-},500)
 
 const openInNewTab = (contentid) => {
     const path = `/post/${contentid}`;

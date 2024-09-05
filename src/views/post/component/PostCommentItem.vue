@@ -47,8 +47,8 @@
             </div>
             <div class="comment-meta">
                 <span>{{ $formatTime(comment.time) }}</span>
-                <span class="action-itme" :class="{ 'action': false }" @click="likeArticle(articleid,comment.authorId,comment.author.id,comment.author.username)">
-                    <i class="bi bi-suit-heart-fill" :class="{ 'islike' :  islikeArticle}"  ></i> {{ !comment.likes || comment.likes == 0 ? "喜欢" : comment.likes }}
+                <span class="action-itme" :class="{ 'action': false }" @click="notificationS.likeArticle(articleid,comment.author.id,comment.author.username,1,comment.id)">
+                    <i class="bi bi-suit-heart-fill" :class="{ 'islike' :  true}"  ></i> {{ !comment.likes || comment.likes == 0 ? "喜欢" : comment.likes }}
                 </span>
                 <span class="action-itme" :class="{ 'action': opencommenttime === maincommentS.istime }"
                     @click="opencommentclick">
@@ -92,21 +92,8 @@ import maincommentAppStore from '@/stores/admin/maincomment'
 const maincommentS = maincommentAppStore()
 import commentStore from "@/stores/admin/comment";
 const commentS = commentStore()
-
-const islikeArticle=ref(false)
-const operation=ref(0)
-import { socket ,socketEmit} from '@/utils/socketclient'
-
-const likeArticle = (articleId, authorId,commentId,articleName) =>
- {console.log(articleId, authorId,commentId,articleName);
-    socketEmit("likeMsg", {
-        commentId: commentId,
-        articleId: articleId,
-        authorName: articleName,
-        // repayAuthorId: authorId,
-        type: 1,
-    })
-}
+import notificationAppStore from "@/stores/admin/notification";
+const notificationS = notificationAppStore()
 
 
 const props = defineProps({

@@ -35,7 +35,7 @@
 
             </div>
             <div class="operate-btn">
-                <el-button class="button-ui" type="primary" @click="focusonclick">关注</el-button>
+                <el-button class="button-ui" type="primary" @click="focusonclick(author.id,author.username)">关注</el-button>
                 <el-button class="button-ui" @click="privateletterclick">私信</el-button>
             </div>
         </div>
@@ -46,6 +46,9 @@
 import { onMounted, ref } from 'vue';
 import useUserStore from "@/stores/admin/user";
 const userS = useUserStore()
+import notificationAppStore from "@/stores/admin/notification";
+const notificationS = notificationAppStore()
+
 
 const props = defineProps({
     author: {
@@ -84,7 +87,8 @@ const privateletterclick=()=>{
     console.log("私信",authorid.value);
 }
 
-const focusonclick=()=>{
+const focusonclick=(id,name)=>{
+    notificationS.fanMsg(id,name)
     console.log("关注",authorid.value);
 }
 

@@ -1,10 +1,10 @@
 <template>
-    <div class="digg-box" v-infinite-scroll="load">
+    <div class="digg-box" v-infinite-scroll="load" :infinite-scroll-immediate="false" :infinite-scroll-disabled="noMore">
         <el-skeleton :rows="5" animated :loading="Loading">
             <NotificationList notificationType="digg" :notificationList="notificationList" :extendicon="extendicon" :verb="verb" />
         </el-skeleton>
         <el-skeleton style="padding-top: 24px;" :rows="5" animated :loading="endLoading"/>
-        <div v-if="noMore" class="end-of-data">
+        <div v-if="noMore || !notificationList" class="end-of-data">
             <div v-if="notificationList?.length > 1">已经到最底部了</div>
             <div v-else>还没有内容</div>
         </div>
@@ -14,6 +14,8 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import NotificationList from '@/components/NotificationList.vue'
+import notificationAppStore from "@/stores/admin/notification";
+const notificationS = notificationAppStore()
 
 const extendicon = ref('https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4')
 const verb = ref('喜欢了您的评论')
@@ -22,8 +24,8 @@ const Loading = ref(false)
 const endLoading = ref(false)
 
 const noMore = ref(false)
-// const notificationList = ref([])
-
+const notificationList = ref([])
+/* 
 const notificationList = ref(
     [
         {
@@ -61,7 +63,7 @@ const notificationList = ref(
         },
     ]
 ) 
-
+ */
 
 const upnotificationList = ref(
     [
@@ -101,29 +103,58 @@ const upnotificationList = ref(
     ]
 ) 
 
-const count = ref(0)
-const load = () => {
+const count = ref(1)
+const load = async () => {
     count.value += 1
-    // console.log(count.value);
-    notificationList.value = [...notificationList.value, ...upnotificationList.value]
+    endLoading.value = true
+    try {
+        const data = await notificationS.getLikeNotificationInfo(count.value, 5)
+
+        if (!data || data.length === 0) {
+            noMore.value = true
+        }
+
+        if (data) {
+            notificationList.value = [...notificationList.value, ...data]
+        }
+
+        endLoading.value = false
+    } catch (error) {
+        // console.error('Error loading more data:', error);
+    } finally {
+        endLoading.value = false;
+    }
 }
 
 
 
-const pageTitle = ref('赞和收藏');
-onMounted(() => {
+const pageTitle = ref('赞与喜欢');
+onMounted(async () => {
     document.title = pageTitle.value;
-});
-const emit = defineEmits(['data-loaded']);
+    Loading.value = true
+    try {
+        const data = await notificationS.getLikeNotificationInfo(count.value, 10)
 
-// 使用组合式API中的 onMounted 钩子
-onMounted(() => {
-    setTimeout(() => {
-        // 数据加载完成后触发事件通知父组件
-        // console.log('data-loaded');
-        emit('data-loaded');
-    }, 2000);
+        notificationList.value = data
+        document.title = pageTitle.value;
+        Loading.value = false;
+
+    } catch (error) {
+        // console.error('Error loading more data:', error);
+    } finally {
+        Loading.value = false;
+    }
 });
+
+// const emit = defineEmits(['data-loaded']);
+// 影响父组件加载，但是现在改为单独控制
+// onMounted(() => {
+//     setTimeout(() => {
+//         // 数据加载完成后触发事件通知父组件
+//         // console.log('data-loaded');
+//         emit('data-loaded');
+//     }, 2000);
+// });
 </script>
 
 <style lang="scss" scoped>

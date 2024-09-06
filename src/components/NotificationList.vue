@@ -33,7 +33,7 @@
                     </div>
                     <div class="list-itme-header" v-if="notificationType === 'digg'">
                         <div class="list-itme-content list-feedback"
-                            @click="opcontentinfo(info.attachInfo.id, info.attachInfo.commentid)">
+                            @click="opcontentinfo(info.attachInfo.id, info.attachInfo.commentId)">
                             {{ info.attachInfo.title }}
                         </div>
                         <div class="itme-content-box">
@@ -53,7 +53,7 @@
                                     &nbsp;等{{ info.mergeCount }}人&nbsp;
                                 </span>
                                 <div>&nbsp;{{ info.verb }} &middot;&nbsp; </div>
-                                <time :datetime="info.commentEndTime" :title="info.commentEndTime">
+                                <time :datetime="info.actors.length" :title="info.commentEndTime">
                                     {{info.commentEndTime }}</time>
                             </div>
                         </div>
@@ -61,11 +61,11 @@
                     <div class="list-itme-header" v-if="notificationType === 'follow'">
                         <div class="itme-content-box">
                             <div class="list-itme-content">
-                                {{ info.focuson ? '新增关注' : '取消关注' }} &middot;
-                                <time>{{ info.commentEndTime }}</time>
+                                新增关注 &middot;
+                                <time>{{ info.followEndTime }}</time>
                             </div>
                             <div class="content-box-start">
-                                <div v-for="(actor, index) in info.actors.slice(0, 10)" :key="actor.id">
+                                <div v-for="(actor, index) in info.actors" :key="actor.id">
                                     <user-info-popover :author="actor">
                                         <template v-slot:reference>
                                             <span class="username" @click="opuserinfo(actor.id)">
@@ -77,10 +77,10 @@
                                     <!-- index从0开始，所以判断index小于9时才显示分隔符 -->
                                 </div>
                                 <span class="people-list" @click="opdialogTableVisible(info.actors)"
-                                    v-if="info.actors.length > 10">
-                                    &nbsp;等{{ info.actors.length }}人&nbsp;
+                                    v-if="info.mergeCount > 10">
+                                    &nbsp;等{{ info.mergeCount }}人&nbsp;
                                 </span>
-                                <div>&nbsp;{{ info.focuson ? '新增' : '取消' }}{{ verb }} &nbsp; </div>
+                                <div>&nbsp;{{ info.verb }}  &nbsp; </div>
                             </div>
                         </div>
                     </div>
@@ -161,12 +161,28 @@ const opuserinfo = (id) => {
 const opcontentinfo = (id, commentId) => {
     console.log('contentid', id);
     console.log('commentId', commentId);
-    let routedata = router.resolve({
+    // let routedata = router.resolve({
+    //     path: `/post/${id}`,
+    //     query: {
+    //         notificationId: commentId
+    //     }
+    // })
+    // 构建路由数据
+let routedata;
+if (commentId == null) {
+    // commentId 为 null 或 undefined 时，不包含 query 参数
+    routedata = router.resolve({
+        path: `/post/${id}`
+    });
+} else {
+    // commentId 有值时，包含 query 参数
+    routedata = router.resolve({
         path: `/post/${id}`,
         query: {
             notificationId: commentId
         }
-    })
+    });
+}
 
     window.open(routedata.href, '_blank')
 }
@@ -277,7 +293,7 @@ const formattedTime = (time) => {
 .listcontent-box {
     box-sizing: border-box;
     margin-bottom: 5px;
-    border-bottom: 1px solid #9196a1;
+    border-bottom: 1px solid #dcdddf;
     /* 确保内外边距不会影响宽度计算 */
 
 
@@ -333,6 +349,8 @@ const formattedTime = (time) => {
 
                             .username {
                                 cursor: pointer;
+                                color: #191b1f;
+                                font-weight: 600
                             }
 
                             .people-list {
@@ -341,6 +359,10 @@ const formattedTime = (time) => {
                             }
 
                             .people-list:hover {
+                                color: #09408e;
+                            }
+
+                            .username:hover {
                                 color: #09408e;
                             }
                         }

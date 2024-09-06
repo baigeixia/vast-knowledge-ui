@@ -36,7 +36,7 @@
             </RouterLink>
         </div>
         <div class="chat-view">
-            <el-skeleton animated :loading="loading">
+            <el-skeleton animated :loading="false">
                 <template #template>
                     <div class="itme">
                         <div class="itme-left">

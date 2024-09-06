@@ -1,5 +1,5 @@
 <template>
-    <div class="system-box" v-infinite-scroll="load">
+    <div class="system-box" v-infinite-scroll="load" :infinite-scroll-immediate="false" :infinite-scroll-disabled="noMore">
         <el-skeleton :rows="5" animated :loading="Loading">
             <NotificationList notificationType="system" :notificationList="notificationList" :extendicon="extendicon" />
         </el-skeleton>

@@ -47,7 +47,7 @@
             </div>
         </div>
     </div>
-    <el-dialog class="report-dialog" v-model="reportdialog" title="举报" width="650" :before-close="reportdialogClose">
+    <el-dialog class="report-dialog" v-model="reportdialog" :lock-scroll="false"  title="举报" width="650" :before-close="reportdialogClose">
             <div class="report-group-title">
                 <div class="title-marl">*</div>
                 请选择举报类型
@@ -59,7 +59,7 @@
             </el-radio-group>
             <template #footer>
                 <div class="report-dialog-footer">
-                    <el-button :disabled="!reporting" type="primary" round @click="reportsubmit()">
+                    <el-button :disabled="!reporting" type="primary" round @click="reportsubmit(content.id, content.authorId,content.authorName)">
                         提交举报
                     </el-button>
                 </div>
@@ -75,6 +75,10 @@ import { ElMessage } from 'element-plus'
 
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
+import reportAppStore from "@/stores/user/report";
+const reportAppStores = reportAppStore()
+
+
 
 const props = defineProps({
     content: {
@@ -108,14 +112,14 @@ const reporting = ref(null)
 const reportdialog = ref(false);
 const reportuserid = ref('')
 
-const reportsubmit = () => {
-    console.log('举报理由', reporting.value)
+const reportsubmit = (contentid,authorId,authorName) => {
     if (reporting.value) {
+        reportAppStores.userReportSeve(authorId,authorName,contentid,reporting.value)
         ElMessage.success('已提交举报申请')
     } else {
         ElMessage.warning('请选择举报理由')
     }
-    console.log('id', reportuserid.value, '举报', reporting.value);
+    // console.log('id', reportuserid.value, '举报', reporting.value);
     reportdialog.value = false
     reporting.value = ''
     reportuserid.value = ''
@@ -134,7 +138,6 @@ const dislike = (id) => {
 
 
 const report = (id) => {
-    console.log('举报', id);
     reportdialog.value = true
     reportuserid.value = id
 }
@@ -159,6 +162,7 @@ const router = useRouter();
     color: rgb(25, 27, 31);
 
     .title-marl {
+        text-align: center;
         color: rgb(217, 83, 80);
         margin-left: 10px;
         margin-right: 5px;

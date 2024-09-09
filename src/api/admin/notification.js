@@ -1,4 +1,4 @@
-import { coreRequest ,collectionRequest } from '@/utils/request'
+import { coreRequest ,collectionRequest ,systemRequest} from '@/utils/request'
 
 export function getCommentNotification(page,size) {
     return coreRequest({
@@ -28,6 +28,19 @@ export function getfollowNotification(page,size) {
     url: '/behaviour/follow/list',
     method: 'GET',
     params:{
+      page: page,
+      size: size,
+    }
+  })
+}
+
+
+export function getImList(tyep,page,size) {
+  return systemRequest({
+    url: '/user/letter/list',
+    method: 'GET',
+    params:{
+      tyep: tyep,
       page: page,
       size: size,
     }

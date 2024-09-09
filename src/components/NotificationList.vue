@@ -1,109 +1,117 @@
 <template>
-    <div class="listcontent-box" v-for=" list in  notificationList" :key="list.statisticsTime">
-        <div class="notificationList-Item">
-            <div class="dateSplit">
-                <time :datetime="list.statisticsTime" :title="list.statisticsTime">
-                    {{ list.statisticsTime }}
-                </time>
-            </div>
-            <div class="notificationList-Item-box" v-for=" info in list.notificationInfoList" :key="info.statisticsTime">
-                <img class="notificationList-Item-icon" :src="extendicon">
-                <div class="list-itme-box">
-                    <div class="list-itme-header " v-if="notificationType === 'comment'">
-                        <!-- <div class="itme-content-box" v-for=" actor in info.actors" :key="actor.id"> -->
-                        <div class="itme-content-box">
-                            <div class="list-itme-content list-feedback" @click="opcontentinfo(info.id, info.commentId)">
-                                {{ info.title }}
-                            </div>
-                            <div class="content-box-start">
-                                <user-info-popover :author="info.actors">
-                                    <template v-slot:reference>
-                                        <span class="username" @click="opuserinfo(actors.id)">
-                                            <div> {{ info.actors.username }}</div>
-                                        </span>
-                                    </template>
-                                </user-info-popover>
-                                <div>&nbsp;{{ info.actors.verb }} &middot;&nbsp; </div>
-                                <time>{{ info.actors.replycontenttime }}</time>
-                            </div>
-                            <div class="item-extendText">
-                                {{ info.actors.replyContent }}
-                            </div>
-                        </div>
-                    </div>
-                    <div class="list-itme-header" v-if="notificationType === 'digg'">
-                        <div class="list-itme-content list-feedback"
-                            @click="opcontentinfo(info.attachInfo.id, info.attachInfo.commentId)">
-                            {{ info.attachInfo.title }}
-                        </div>
-                        <div class="itme-content-box">
-                            <div class="content-box-start">
-                                <div v-for="(actor, index) in info.actors.slice(0, 10)" :key="actor.id">
-                                    <user-info-popover :author="actor">
+    <el-skeleton style="padding-top: 24px;" :rows="5" animated :loading="endLoading ">
+        <div class="listcontent-box" v-for=" list in  notificationList" :key="list.statisticsTime">
+            <div class="notificationList-Item">
+                <div class="dateSplit">
+                    <time :datetime="list.statisticsTime" :title="list.statisticsTime">
+                        {{ list.statisticsTime }}
+                    </time>
+                </div>
+                <div class="notificationList-Item-box" v-for=" info in list.notificationInfoList"
+                    :key="info.statisticsTime">
+                    <img class="notificationList-Item-icon" :src="extendicon">
+                    <div class="list-itme-box">
+                        <div class="list-itme-header " v-if="notificationType === 'comment'">
+                            <!-- <div class="itme-content-box" v-for=" actor in info.actors" :key="actor.id"> -->
+                            <div class="itme-content-box">
+                                <div class="list-itme-content list-feedback"
+                                    @click="opcontentinfo(info.id, info.commentId)">
+                                    {{ info.title }}
+                                </div>
+                                <div class="content-box-start">
+                                    <user-info-popover :author="info.actors">
                                         <template v-slot:reference>
-                                            <span class="username" @click="opuserinfo(actor.id)">
-                                                {{ actor.username }}
-                                                <span v-if="index < info.actors.length - 1 && index < 9">、</span>
+                                            <span class="username" @click="opuserinfo(actors.id)">
+                                                <div> {{ info.actors.username }}</div>
                                             </span>
                                         </template>
                                     </user-info-popover>
+                                    <div>&nbsp;{{ info.actors.verb }} &middot;&nbsp; </div>
+                                    <time>{{ info.actors.replycontenttime }}</time>
                                 </div>
-                                <span class="people-list" @click="opdialogTableVisible(info.actors)"
-                                    v-if="info.mergeCount > 3">
-                                    &nbsp;等{{ info.mergeCount }}人&nbsp;
-                                </span>
-                                <div>&nbsp;{{ info.verb }} &middot;&nbsp; </div>
-                                <time :datetime="info.actors.length" :title="info.commentEndTime">
-                                    {{info.commentEndTime }}</time>
+                                <div class="item-extendText">
+                                    {{ info.actors.replyContent }}
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="list-itme-header" v-if="notificationType === 'follow'">
-                        <div class="itme-content-box">
-                            <div class="list-itme-content">
-                                新增关注 &middot;
-                                <time>{{ info.followEndTime }}</time>
+                        <div class="list-itme-header" v-if="notificationType === 'digg'">
+                            <div class="list-itme-content list-feedback"
+                                @click="opcontentinfo(info.attachInfo.id, info.attachInfo.commentId)">
+                                {{ info.attachInfo.title }}
                             </div>
-                            <div class="content-box-start">
-                                <div v-for="(actor, index) in info.actors" :key="actor.id">
-                                    <user-info-popover :author="actor">
-                                        <template v-slot:reference>
-                                            <span class="username" @click="opuserinfo(actor.id)">
-                                                {{ actor.username }}
-                                                <span v-if="index < info.actors.length - 1 && index < 9">、</span>
-                                            </span>
-                                        </template>
-                                    </user-info-popover>
-                                    <!-- index从0开始，所以判断index小于9时才显示分隔符 -->
+                            <div class="itme-content-box">
+                                <div class="content-box-start">
+                                    <div v-for="(actor, index) in info.actors.slice(0, 10)" :key="actor.id">
+                                        <user-info-popover :author="actor">
+                                            <template v-slot:reference>
+                                                <span class="username" @click="opuserinfo(actor.id)">
+                                                    {{ actor.username }}
+                                                    <span v-if="index < info.actors.length - 1 && index < 9">、</span>
+                                                </span>
+                                            </template>
+                                        </user-info-popover>
+                                    </div>
+                                    <span class="people-list" @click="opdialogTableVisible(info.actors)"
+                                        v-if="info.mergeCount > 3">
+                                        &nbsp;等{{ info.mergeCount }}人&nbsp;
+                                    </span>
+                                    <div>&nbsp;{{ info.verb }} &middot;&nbsp; </div>
+                                    <time :datetime="info.actors.length" :title="info.commentEndTime">
+                                        {{ info.commentEndTime }}</time>
                                 </div>
-                                <span class="people-list" @click="opdialogTableVisible(info.actors)"
-                                    v-if="info.mergeCount > 10">
-                                    &nbsp;等{{ info.mergeCount }}人&nbsp;
-                                </span>
-                                <div>&nbsp;{{ info.verb }}  &nbsp; </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="list-itme-header" v-if="notificationType === 'system'">
-                        <div class="itme-content-box">
-                            <div class="list-itme-content">
-                                {{ list.verbType }} &middot;
-                                <time>{{ info.commentEndTime }}</time>
+                        <div class="list-itme-header" v-if="notificationType === 'follow'">
+                            <div class="itme-content-box">
+                                <div class="list-itme-content">
+                                    新增关注 &middot;
+                                    <time>{{ info.followEndTime }}</time>
+                                </div>
+                                <div class="content-box-start">
+                                    <div v-for="(actor, index) in info.actors" :key="actor.id">
+                                        <user-info-popover :author="actor">
+                                            <template v-slot:reference>
+                                                <span class="username" @click="opuserinfo(actor.id)">
+                                                    {{ actor.username }}
+                                                    <span v-if="index < info.actors.length - 1 && index < 9">、</span>
+                                                </span>
+                                            </template>
+                                        </user-info-popover>
+                                        <!-- index从0开始，所以判断index小于9时才显示分隔符 -->
+                                    </div>
+                                    <span class="people-list" @click="opdialogTableVisible(info.actors)"
+                                        v-if="info.mergeCount > 10">
+                                        &nbsp;等{{ info.mergeCount }}人&nbsp;
+                                    </span>
+                                    <div>&nbsp;{{ info.verb }} &nbsp; </div>
+                                </div>
                             </div>
-                            <div class="list-itme-content">
-                                <div class="itme-content-title list-feedback" @click="opcontentinfo(info.attach_info.id)">
-                                    《{{ info.attach_info.title }}》</div>
-                            </div>
+                        </div>
+                        <div class="list-itme-header" v-if="notificationType === 'system'">
+                            <div class="itme-content-box">
+                                <div class="list-itme-content">
+                                    {{ list.verbType }} &middot;
+                                    <time>{{ info.commentEndTime }}</time>
+                                </div>
+                                <div class="list-itme-content">
+                                    <div class="itme-content-title list-feedback"
+                                        @click="opcontentinfo(info.attach_info.id)">
+                                        《{{ info.attach_info.title }}》</div>
+                                </div>
 
-                            <div class="list-itme-content">
-                                <div class="replyMesg" @click="opreportinfo(info.id)"> {{ info.replyMesg.contentText }}</div>
+                                <div class="list-itme-content">
+                                    <div class="replyMesg">
+                                        {{ info.replyMesg.contentText }}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
+        <el-skeleton style="padding-top: 24px;" :rows="5" animated :loading="upLoading "></el-skeleton>
+    </el-skeleton>
     <el-dialog v-if="dialogTableVisible" v-model="dialogTableVisible" width="700" :lock-scroll="true" top="2vh">
         <template #header="{ titleId, titleClass }">
             <h4 :id="titleId" :class="titleClass">
@@ -168,21 +176,21 @@ const opcontentinfo = (id, commentId) => {
     //     }
     // })
     // 构建路由数据
-let routedata;
-if (commentId == null) {
-    // commentId 为 null 或 undefined 时，不包含 query 参数
-    routedata = router.resolve({
-        path: `/post/${id}`
-    });
-} else {
-    // commentId 有值时，包含 query 参数
-    routedata = router.resolve({
-        path: `/post/${id}`,
-        query: {
-            notificationId: commentId
-        }
-    });
-}
+    let routedata;
+    if (commentId == null) {
+        // commentId 为 null 或 undefined 时，不包含 query 参数
+        routedata = router.resolve({
+            path: `/post/${id}`
+        });
+    } else {
+        // commentId 有值时，包含 query 参数
+        routedata = router.resolve({
+            path: `/post/${id}`,
+            query: {
+                notificationId: commentId
+            }
+        });
+    }
 
     window.open(routedata.href, '_blank')
 }
@@ -204,8 +212,12 @@ const props = defineProps({
         type: String,
         required: true
     },
-    verb: {
-        type: String,
+    endLoading: {
+        type: Boolean,
+        required: false
+    },
+    upLoading: {
+        type: Boolean,
         required: false
     },
     notificationType: {
@@ -395,8 +407,9 @@ const formattedTime = (time) => {
 
 
                 .replyMesg {
+                    display: inline-block;
                     margin-top: 5px;
-                    cursor: pointer;
+                    // cursor: pointer; 
 
                 }
 
@@ -416,5 +429,4 @@ const formattedTime = (time) => {
             line-height: 2rem;
         }
     }
-}
-</style>
+}</style>

@@ -17,8 +17,6 @@ export const socket = io('localhost:9090',
     ...config,
   });
 
-
-
 export function useSockets() {
   // 在组件挂载时设置重连尝试逻辑
   onMounted(() => {
@@ -28,6 +26,7 @@ export function useSockets() {
   // 在组件卸载时断开连接
   onUnmounted(() => {
     socket.disconnect();
+    userSocket.disconnect();
   });
 
   function reconnectAttempt(socket) {

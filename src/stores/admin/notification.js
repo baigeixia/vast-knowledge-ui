@@ -1,7 +1,7 @@
-import { getCommentNotification, getLikeNotification ,getfollowNotification} from '@/api/admin/notification'
+import { getCommentNotification, getLikeNotification ,getfollowNotification,getImList} from '@/api/admin/notification'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { socket, socketEmit } from '@/utils/socketclient'
+import { socket,socketEmit } from '@/utils/socketclient'
 import debounce from '@/utils/debouncing';
 
 const notificationAppStore = defineStore(
@@ -36,6 +36,12 @@ const notificationAppStore = defineStore(
       return resp.data
     }
 
+    const getImListInfo = async (type,page, size) => {
+      const resp = await getImList(type,page, size)
+      // followNotificationList.value = resp.data
+      return resp.data
+    }
+
 
 
     socket.on("LIKE_NOTIFICATION", (data) => {
@@ -44,6 +50,12 @@ const notificationAppStore = defineStore(
       isdigg.value = true
       console.log(hederMsgCount);
     })
+
+    const chatMsg = ()=>{
+      console.log(11111);
+      socket.emit('chatMsg', {senderId:2,senderName:"zhangsan",content:"hello"})
+    }
+
 
     const likeArticle = debounce((articleId, authorId, articleName, type, commentId) => {
       socketEmit("likeMsg", {
@@ -67,8 +79,10 @@ const notificationAppStore = defineStore(
       getCommentNotificationInfo,
       getfollowNotificationInfo,
       getLikeNotificationInfo,
+      getImListInfo,
       likeArticle,
       fanMsg,
+      chatMsg,
       commentNotificationList,
       hederMsgCount,
       iscomment,

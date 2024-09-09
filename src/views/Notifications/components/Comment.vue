@@ -1,13 +1,11 @@
 <template>
     <div class="comment-box" v-infinite-scroll="load" :infinite-scroll-immediate="false" :infinite-scroll-disabled="noMore">
-        <el-skeleton :rows="5" animated :loading="Loading">
-            <NotificationList notificationType="comment" :notificationList="notificationList" :extendicon="extendicon" />
-        </el-skeleton>
-        <el-skeleton style="padding-top: 24px;" :rows="5" animated :loading="endLoading"/>
-        <div v-if="noMore" class="end-of-data">
-            <div v-if="notificationList?.length > 1">已经到最底部了</div>
-            <div v-else>还没有内容</div>
+        <NotificationList notificationType="comment" :notificationList="notificationList" :extendicon="extendicon" :endLoading="endLoading" :upLoading="upLoading" />
+        <div class="end-of-data">
+            <div v-if="noMore && notificationList.length>1">已经到最底部了</div>
+            <div v-if="!endLoading && notificationList.length === 0">还没有内容</div>
         </div>
+        <el-button @click="sendchatMsg" > 私信</el-button>
     </div>
 </template>
 
@@ -17,16 +15,20 @@ import NotificationList from '@/components/NotificationList.vue'
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
 
+const sendchatMsg=()=>{
+    console.log("sendchatMsg");
+    notificationS.chatMsg()
+}
 const extendicon = ref('https://picx.zhimg.com/v2-40cc57d7a7f9fc24711c601615c9fb57_200x0.png?source=582e62d4')
 const count = ref(1)
 const noMore = ref(false)
 const notificationList = ref([])
-const Loading = ref(false)
+const upLoading = ref(false)
 const endLoading = ref(false)
 
 const load = async () => {
     count.value += 1
-    endLoading.value = true
+    upLoading.value = true
     try {
         const data = await notificationS.getCommentNotificationInfo(count.value, 10)
 
@@ -38,28 +40,29 @@ const load = async () => {
             notificationList.value = [...notificationList.value, ...data]
         }
 
-        endLoading.value = false
+        upLoading.value = false
     } catch (error) {
         // console.error('Error loading more data:', error);
     } finally {
-        endLoading.value = false;
+        upLoading.value = false;
     }
 
 }
 
 const pageTitle = ref('评论与回复');
 onMounted(async () => {
-    Loading.value = true
+    endLoading.value = true
     try {
         const data = await notificationS.getCommentNotificationInfo(count.value, 10)
 
         //   notificationList.value=notificationS.commentNotificationList
         notificationList.value = data
         document.title = pageTitle.value;
+        endLoading.value = false;
     } catch (error) {
         // console.error('Error loading more data:', error);
     } finally {
-        Loading.value = false;
+        endLoading.value = false;
     }
 });
 

@@ -1,12 +1,9 @@
 <template>
     <div class="system-box" v-infinite-scroll="load" :infinite-scroll-immediate="false" :infinite-scroll-disabled="noMore">
-        <el-skeleton :rows="5" animated :loading="Loading">
-            <NotificationList notificationType="system" :notificationList="notificationList" :extendicon="extendicon" />
-        </el-skeleton>
-        <el-skeleton style="padding-top: 24px;" :rows="5" animated :loading="endLoading"/>
-        <div v-if="noMore" class="end-of-data">
-            <div v-if="notificationList?.length > 1">已经到最底部了</div>
-            <div v-else>还没有内容</div>
+        <NotificationList notificationType="system" :notificationList="notificationList" :extendicon="extendicon" :endLoading="endLoading"  :upLoading="upLoading" />
+        <div class="end-of-data">
+            <div v-if="noMore && notificationList.length>1">已经到最底部了</div>
+            <div v-if="!endLoading && notificationList.length === 0">还没有内容</div>
         </div>
     </div>
 </template>
@@ -18,12 +15,16 @@ import NotificationList from '@/components/NotificationList.vue'
 const extendicon = ref('https://pic1.zhimg.com/v2-e4573613154ffec3ced881b7170bc3ac_200x0.png?source=582e62d4')
 // const verb=ref('举报处理通知 ')
 
-const Loading = ref(false)
+const upLoading = ref(false)
 const endLoading = ref(false)
 const noMore = ref(false)
-
-
 const notificationList = ref(
+    [
+       
+    ]
+)
+
+/* const notificationList = ref(
     [
         {
             statisticsTime: '2024-07-09',
@@ -104,8 +105,8 @@ const notificationList = ref(
             ]
         },
     ]
-)
-
+) */
+/* 
 const upnotificationList = ref(
     [
         {
@@ -127,7 +128,7 @@ const upnotificationList = ref(
         },
     ]
 )
-
+ */
 const count = ref(0)
 const load = () => {
     count.value += 1

@@ -46,6 +46,10 @@ import { useScroll } from '@vueuse/core'
 import { ishide } from '@/components/Publicvariables'
 import Login from '@/views/login/Login.vue'
 
+import feedbackAppStore from "@/stores/user/feedback";
+const feedbackAppStores = feedbackAppStore()
+
+
 const { y } = useScroll(window)
 
 
@@ -59,8 +63,10 @@ console.log("new_like data",data);
 const sendpropose = () => {
     feedbackdialog.value = false
     console.log('意见提交', commentinput.value);
-    commentinput.value = ''
     //发消息
+    feedbackAppStores.userFeedbackSeve(commentinput.value)
+    commentinput.value = ''
+
 }
 
 

@@ -15,7 +15,7 @@
                 最近联系
               </el-badge>
             </template>
-            <div class="menu-list" v-infinite-scroll="loadrecent">
+            <div class="menu-list" v-infinite-scroll="loadrecent" :infinite-scroll-immediate="false">
               <div v-if="recentlist.length === 0" class="list-EmptyState">还没有对话</div>
               <div v-else class="listItem" :class="{ 'listItem-active': useractive === item.id }"
                 @click="sendmessage(item.id)" v-for="item in recentlist" :key="item.id">
@@ -23,15 +23,17 @@
                   <img class="info-avatar-img" :src="item.avatar">
                 </div>
                 <div class="info-content">
-                  <div class="info-name">
-                    <el-badge :offset="[3, 4]" :is-dot="item.unread">
-                      <div class="name-top">{{ item.name }}</div>
-                    </el-badge>
-                    <time>刚刚</time>
+                  <div class="info-content-name">
+                    <div class="info-name">
+                      <el-badge :offset="[3, 4]" :is-dot="item.unread">
+                        <div class="name-top">{{ item.name }}</div>
+                      </el-badge>
+                    </div>
+                    <div class="info-snippet">{{ item.snippet }}</div>
                   </div>
-                  <div class="info-snippet">{{ item.snippet }}</div>
                 </div>
                 <div class="info-more">
+                  <time>刚刚</time>
                   <el-dropdown trigger="click">
                     <i class="bi bi-three-dots-vertical"></i>
                     <template #dropdown>
@@ -50,7 +52,7 @@
               <el-badge :value="strangerCount" :offset="[0, 15]" :is-dot="focusonCount < 2">
                 陌生人私信
               </el-badge></template>
-            <div class="menu-list" v-infinite-scroll="loadrecent">
+            <div class="menu-list" v-infinite-scroll="loadrecent" :infinite-scroll-immediate="false">
               <div v-if="strangerlist.length === 0" class="list-EmptyState">还没有对话</div>
               <div v-else class="listItem" :class="{ 'listItem-active': useractive === item.id }"
                 @click="sendmessage(item.id)" v-for="item in strangerlist" :key="item.id">
@@ -58,24 +60,26 @@
                   <img class="info-avatar-img" :src="item.avatar">
                 </div>
                 <div class="info-content">
-                  <div class="info-name">
-                    <el-badge :offset="[3, 4]" :is-dot="item.unread">
-                      <div class="name-top">{{ item.name }}</div>
-                    </el-badge>
-                    <time>刚刚</time>
+                  <div class="info-content-name">
+                    <div class="info-name">
+                      <el-badge :offset="[3, 4]" :is-dot="item.unread">
+                        <div class="name-top">{{ item.name }}</div>
+                      </el-badge>
+                    </div>
+                    <div class="info-snippet">{{ item.snippet }}</div>
                   </div>
-                  <div class="info-snippet">{{ item.snippet }}</div>
-                </div>
-                <div class="info-more">
-                  <el-dropdown trigger="click">
-                    <i class="bi bi-three-dots-vertical"></i>
-                    <template #dropdown>
-                      <el-dropdown-menu>
-                        <el-dropdown-item @click="infodel(item.id)">删除</el-dropdown-item>
-                        <el-dropdown-item @click="inforeport(item.id)">举报</el-dropdown-item>
-                      </el-dropdown-menu>
-                    </template>
-                  </el-dropdown>
+                  <div class="info-more">
+                    <time>刚刚</time>
+                    <el-dropdown trigger="click">
+                      <i class="bi bi-three-dots-vertical"></i>
+                      <template #dropdown>
+                        <el-dropdown-menu>
+                          <el-dropdown-item @click="infodel(item.id)">删除</el-dropdown-item>
+                          <el-dropdown-item @click="inforeport(item.id)">举报</el-dropdown-item>
+                        </el-dropdown-menu>
+                      </template>
+                    </el-dropdown>
+                  </div>
                 </div>
               </div>
             </div>
@@ -86,7 +90,7 @@
                 互相关注
               </el-badge>
             </template>
-            <div class="menu-list" v-infinite-scroll="loadrecent">
+            <div class="menu-list" v-infinite-scroll="loadrecent" :infinite-scroll-immediate="false">
               <div v-if="mutualconcernlist.length === 0" class="list-EmptyState">还没有对话</div>
               <div v-else class="listItem" :class="{ 'listItem-active': useractive === item.id }"
                 @click="sendmessage(item.id)" v-for="item in mutualconcernlist" :key="item.id">
@@ -94,34 +98,35 @@
                   <img class="info-avatar-img" :src="item.avatar">
                 </div>
                 <div class="info-content">
-                  <div class="info-name">
-                    <el-badge :offset="[3, 4]" :is-dot="item.unread">
-                      <div class="name-top">
-                        {{ item.name }}
-                      </div>
-                    </el-badge>
-                    <time>刚刚</time>
+                  <div class="info-content-name">
+                    <div class="info-name">
+                      <el-badge :offset="[3, 4]" :is-dot="item.unread">
+                        <div class="name-top">
+                          {{ item.name }}
+                        </div>
+                      </el-badge>
+                    </div>
+                    <div class="info-snippet">{{ item.snippet }}</div>
                   </div>
-                  <div class="info-snippet">{{ item.snippet }}</div>
+                  <div class="info-more">
+                    <time>刚刚</time>
+                    <el-dropdown trigger="click">
+                      <i class="bi bi-three-dots-vertical"></i>
+                      <template #dropdown>
+                        <el-dropdown-menu>
+                          <el-dropdown-item @click="infodel(item.id)">删除</el-dropdown-item>
+                          <el-dropdown-item @click="inforeport(item.id)">举报</el-dropdown-item>
+                        </el-dropdown-menu>
+                      </template>
+                    </el-dropdown>
+                  </div>
                 </div>
-                <div class="info-more">
-                  <el-dropdown trigger="click">
-                    <i class="bi bi-three-dots-vertical"></i>
-                    <template #dropdown>
-                      <el-dropdown-menu>
-                        <el-dropdown-item @click="infodel(item.id)">删除</el-dropdown-item>
-                        <el-dropdown-item @click="inforeport(item.id)">举报</el-dropdown-item>
-                      </el-dropdown-menu>
-                    </template>
-                  </el-dropdown>
-                </div>
+
               </div>
             </div>
           </el-sub-menu>
         </el-menu>
       </div>
-
-
     </el-aside>
     <el-dialog class="report-dialog" v-model="reportdialog" title="举报" width="650" :before-close="reportdialogClose">
       <div class="report-group-title">
@@ -153,10 +158,16 @@
 import { ref, onMounted, computed } from 'vue';
 import { ElMessage } from 'element-plus'
 import ChatChatBox from './components/ChatChatBox.vue';
+
+import notificationAppStore from "@/stores/admin/notification";
+const notificationS = notificationAppStore()
+
+
 const useractive = ref('')
 const focusonCount = ref(1)
 const strangerCount = ref(2)
 const recentCount = ref(2)
+
 const recentlist = ref([
   {
     id: '11',
@@ -167,7 +178,7 @@ const recentlist = ref([
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
 「全媒体运营官培养计划」限额参加～`,
-unread:true
+    unread: true
   },
   {
     id: '11',
@@ -178,7 +189,7 @@ unread:true
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
 「全媒体运营官培养计划」限额参加～`,
-unread:false
+    unread: false
   },
   {
     id: '11',
@@ -189,7 +200,7 @@ unread:false
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
 「全媒体运营官培养计划」限额参加～`,
-unread:false
+    unread: false
   },
   {
     id: '11',
@@ -200,7 +211,7 @@ unread:false
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
 「全媒体运营官培养计划」限额参加～`,
-unread:false
+    unread: false
   },
   {
     id: '11',
@@ -211,7 +222,7 @@ unread:false
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
 「全媒体运营官培养计划」限额参加～`,
-unread:false
+    unread: false
   },
   {
     id: '11',
@@ -222,7 +233,7 @@ unread:false
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
 「全媒体运营官培养计划」限额参加～`,
-unread:false
+    unread: false
   },
   {
     id: '11',
@@ -233,7 +244,7 @@ unread:false
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
 「全媒体运营官培养计划」限额参加～`,
-unread:false
+    unread: false
   },
 ])
 const testlist = ref([
@@ -246,7 +257,7 @@ const testlist = ref([
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
 「全媒体运营官培养计划」限额参加～`,
-unread:false
+    unread: false
   },])
 const strangerlist = ref([
   {
@@ -258,7 +269,7 @@ const strangerlist = ref([
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
 「全媒体运营官培养计划」限额参加～`,
-unread:false
+    unread: false
 
   },
   {
@@ -270,7 +281,7 @@ unread:false
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
 「全媒体运营官培养计划」限额参加～`,
-unread:false
+    unread: false
   },
   {
     id: '5',
@@ -281,7 +292,7 @@ unread:false
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
 「全媒体运营官培养计划」限额参加～`,
-unread:false
+    unread: false
   },
 ])
 const mutualconcernlist = ref([
@@ -294,7 +305,7 @@ const mutualconcernlist = ref([
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
 「全媒体运营官培养计划」限额参加～`,
-unread:false
+    unread: false
   },
   {
     id: '7',
@@ -305,7 +316,7 @@ unread:false
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
 「全媒体运营官培养计划」限额参加～`,
-unread:false
+    unread: false
   },
   {
     id: '8',
@@ -316,7 +327,7 @@ unread:false
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
 「全媒体运营官培养计划」限额参加～`,
-unread:false
+    unread: false
   },
   {
     id: '8',
@@ -327,7 +338,7 @@ unread:false
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
 「全媒体运营官培养计划」限额参加～`,
-unread:false
+    unread: false
   },
   {
     id: '8',
@@ -338,7 +349,7 @@ unread:false
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
 「全媒体运营官培养计划」限额参加～`,
-unread:false
+    unread: false
   },
   {
     id: '8',
@@ -349,7 +360,7 @@ unread:false
 自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
 「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
 「全媒体运营官培养计划」限额参加～`,
-unread:false
+    unread: false
   },
 
 ])
@@ -360,6 +371,49 @@ const pagesize = ref(10)
 const handleSelect = (item) => {
   console.log(item.id)
 }
+
+const loadrecent = async (type) => {
+  page.value += 1;
+  console.log('type', type);
+  // upLoading.value = true
+  //   try {
+  //       const data = await notificationS.getImListInfo(count.value, 5)
+
+  //       if (!data || data.length === 0) {
+  //           noMore.value = true
+  //       }
+
+  //       if (data) {
+  //           notificationList.value = [...notificationList.value, ...data]
+  //       }
+
+  //       upLoading.value = false
+  //   } catch (error) {
+  //       // console.error('Error loading more data:', error);
+  //   } finally {
+  //       upLoading.value = false;
+  //   }
+
+  // console.log(page.value);
+  // recentlist.value = [...recentlist.value, ...testlist.value]
+}
+
+
+const handleOpen = async (type) => {
+  const data = await notificationS.getImListInfo(type, page.value, pagesize.value)
+  sametypeList(type, data)
+}
+
+const sametypeList = (type, data) => {
+  if (type == 1) {
+    recentlist.value = data
+  } else if (type == 2) {
+    strangerlist.value = data
+  } else if (type == 3) {
+    mutualconcernlist.value = data
+  }
+}
+
 
 
 const querySearch = (queryString, cb) => {
@@ -383,11 +437,7 @@ const searchInList = (list, queryString, results) => {
 };
 
 
-const loadrecent = () => {
-  page.value += 1;
-  console.log(page.value);
-  recentlist.value = [...recentlist.value, ...testlist.value]
-}
+
 
 const cities = ['涉政有害', '不友善', '垃圾广告'
   , '涉嫌侵权'
@@ -406,14 +456,11 @@ const reportuserid = ref('')
 const sendmessage = (userid) => {
   useractive.value = userid
   console.log(useractive.value);
+  console.log('sendmessage');
 }
 
 const pageTitle = ref('私信');
 const reportdialog = ref(false);
-
-const handleOpen = (key) => {
-  console.log('key', key)
-}
 
 const reportsubmit = () => {
   console.log('举报理由', reporting.value)
@@ -477,7 +524,7 @@ onMounted(() => {
 
 .im-box {
   flex: 1;
-  
+
 
   .chat-main {
 
@@ -560,14 +607,11 @@ onMounted(() => {
           }
         }
 
-        // :deep(.el-menu) {
-
-        // }
-
         .listItem {
           cursor: pointer;
           display: flex;
           align-content: center;
+
           padding: 10px 5px 10px 10px;
           margin-right: 5px;
           margin-top: 5px;
@@ -576,9 +620,15 @@ onMounted(() => {
 
           .info-more {
             display: flex;
+            
             align-items: center;
-            margin-left: 10px;
+            margin-left: 5px;
 
+            time {
+              font-size: 10px;
+              color: #929394;
+              text-align: center;
+            }
           }
 
           .info-avatar {
@@ -595,27 +645,31 @@ onMounted(() => {
 
           .info-content {
             display: flex;
-            flex-direction: column;
-            -webkit-box-flex: 1;
+            width: 100%;
+            justify-content: space-between;
+            // -webkit-box-flex: 1;
 
-            .info-name {
-              display: flex;
-              justify-content: space-between;
+            .info-content-name {
+              // max-width: 10rem;
 
-              .name-top {
-                font-size: 15px;
-                font-weight: 500;
-                max-width: 120px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-              }
+              .info-name {
+                display: flex;
+                justify-content: space-between;
 
-              time {
-                font-size: 10px;
-                color: #929394;
+                .name-top {
+                  font-size: 15px;
+                  font-weight: 500;
+                  max-width: 120px;
+                  overflow: hidden;
+                  text-overflow: ellipsis;
+                  white-space: nowrap;
+                }
+
+
               }
             }
+
+
 
             .info-snippet {
               font-size: 13px;

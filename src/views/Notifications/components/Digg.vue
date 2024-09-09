@@ -1,12 +1,9 @@
 <template>
     <div class="digg-box" v-infinite-scroll="load" :infinite-scroll-immediate="false" :infinite-scroll-disabled="noMore">
-        <el-skeleton :rows="5" animated :loading="Loading">
-            <NotificationList notificationType="digg" :notificationList="notificationList" :extendicon="extendicon" :verb="verb" />
-        </el-skeleton>
-        <el-skeleton style="padding-top: 24px;" :rows="5" animated :loading="endLoading"/>
-        <div v-if="noMore || !notificationList" class="end-of-data">
-            <div v-if="notificationList?.length > 1">已经到最底部了</div>
-            <div v-else>还没有内容</div>
+        <NotificationList notificationType="digg" :notificationList="notificationList" :extendicon="extendicon" :endLoading="endLoading" :upLoading="upLoading" />
+        <div class="end-of-data">
+            <div v-if="noMore && notificationList.length>1">已经到最底部了</div>
+            <div v-if="!endLoading && notificationList.length === 0">还没有内容</div>
         </div>
     </div>
 </template>
@@ -20,7 +17,7 @@ const notificationS = notificationAppStore()
 const extendicon = ref('https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4')
 const verb = ref('喜欢了您的评论')
 
-const Loading = ref(false)
+const upLoading = ref(false)
 const endLoading = ref(false)
 
 const noMore = ref(false)
@@ -106,7 +103,7 @@ const upnotificationList = ref(
 const count = ref(1)
 const load = async () => {
     count.value += 1
-    endLoading.value = true
+    upLoading.value = true
     try {
         const data = await notificationS.getLikeNotificationInfo(count.value, 5)
 
@@ -118,11 +115,11 @@ const load = async () => {
             notificationList.value = [...notificationList.value, ...data]
         }
 
-        endLoading.value = false
+        upLoading.value = false
     } catch (error) {
         // console.error('Error loading more data:', error);
     } finally {
-        endLoading.value = false;
+        upLoading.value = false;
     }
 }
 
@@ -131,18 +128,18 @@ const load = async () => {
 const pageTitle = ref('赞与喜欢');
 onMounted(async () => {
     document.title = pageTitle.value;
-    Loading.value = true
+    endLoading.value = true
     try {
         const data = await notificationS.getLikeNotificationInfo(count.value, 10)
 
         notificationList.value = data
         document.title = pageTitle.value;
-        Loading.value = false;
+        endLoading.value = false;
 
     } catch (error) {
         // console.error('Error loading more data:', error);
     } finally {
-        Loading.value = false;
+        endLoading.value = false;
     }
 });
 

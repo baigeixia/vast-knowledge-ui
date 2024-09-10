@@ -1,13 +1,9 @@
 <template>
     <div class="follow-box" v-infinite-scroll="load" :infinite-scroll-immediate="false" :infinite-scroll-disabled="noMore">
         <NotificationList notificationType="follow" :notificationList="notificationList" :extendicon="extendicon" :endLoading="endLoading"  :upLoading="upLoading" />
-        <!-- <div v-if="noMore" class="end-of-data">
-            <div v-if="notificationList?.length > 1">已经到最底部了</div>
-            <div v-else>还没有内容</div>
-        </div> -->
         <div class="end-of-data">
             <div v-if="noMore && notificationList.length>1">已经到最底部了</div>
-            <div v-if="!endLoading && notificationList.length === 0">还没有内容</div>
+            <div v-if="!endLoading && notificationList.length === 0">暂无新增粉丝</div>
         </div>
     </div>
 </template>
@@ -28,130 +24,6 @@ const endLoading = ref(false)
 const noMore = ref(false)
 
 const notificationList = ref([])
-
-
-/* const notificationList = ref(
-    [
-        {
-            statisticsTime: '2024-07-09',
-            notificationInfoList: [
-                {
-                    verb:"关注了你",
-                    mergeCount:11,
-                    followEndTime: '22:05',
-                    actors: [
-                        {
-                            id: '1',
-                            username: '柴柴啊柴',
-                        },
-                        {
-                            id: '2',
-                            username: '大橙子吃小臣子',
-                        },
-                        {
-                            id: '3',
-                            username: '鑻籰',
-                        },
-                        {
-                            id: '4',
-                            username: '鑻籰',
-                        },
-                        {
-                            id: '5',
-                            username: '鑻籰',
-                        },
-                        {
-                            id: '6',
-                            username: '鑻籰',
-                        },
-                        {
-                            id: '7',
-                            username: '鑻籰',
-                        },
-                        {
-                            id: '8',
-                            username: '鑻籰',
-                        },
-                        {
-                            id: '9',
-                            username: '鑻籰',
-                        },
-                        {
-                            id: '10',
-                            username: '鑻籰',
-                        },
-                        {
-                            id: '11',
-                            username: '鑻籰11',
-                        },
-                    ]
-                }
-            ]
-        },
-    ]
-)
- */
-const upnotificationList = ref(
-    [
-        {
-            statisticsTime: '2024-07-09',
-            notificationInfoList: [
-                {
-                    verb:"关注了你",
-                    mergeCount:11,
-                    followEndTime: '22:05',
-                    actors: [
-                        {
-                            id: '1',
-                            username: '柴柴啊柴',
-                        },
-                        {
-                            id: '2',
-                            username: '大橙子吃小臣子',
-                        },
-                        {
-                            id: '3',
-                            username: '鑻籰',
-                        },
-                        {
-                            id: '4',
-                            username: '鑻籰',
-                        },
-                        {
-                            id: '5',
-                            username: '鑻籰',
-                        },
-                        {
-                            id: '6',
-                            username: '鑻籰',
-                        },
-                        {
-                            id: '7',
-                            username: '鑻籰',
-                        },
-                        {
-                            id: '8',
-                            username: '鑻籰',
-                        },
-                        {
-                            id: '9',
-                            username: '鑻籰',
-                        },
-                        {
-                            id: '10',
-                            username: '鑻籰',
-                        },
-                        {
-                            id: '11',
-                            username: '鑻籰11',
-                        },
-                    ]
-                }
-            ]
-        },
-    ]
-)
-
 const count = ref(1)
 const load = async () => {
     count.value += 1
@@ -192,6 +64,8 @@ onMounted( async () => {
     } finally {
         endLoading  .value = false;
     }
+
+    notificationS.isfollow=false
 });
 /* const emit = defineEmits(['data-loaded']);
 // 使用组合式API中的 onMounted 钩子

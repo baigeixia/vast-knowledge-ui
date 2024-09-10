@@ -41,3 +41,43 @@ export function formatTime(timeString) {
     // Construct the formatted string
     return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
+
+export function getCurrentTime() {
+  // 获取当前时间
+  const now = new Date();
+  
+  // 提取小时、分钟和秒，并确保它们是两位数
+  const hours = String(now.getHours()).padStart(2, '0');
+  const minutes = String(now.getMinutes()).padStart(2, '0');
+  const seconds = String(now.getSeconds()).padStart(2, '0');
+
+  // 格式化时间字符串
+  return `${hours}:${minutes}:${seconds}`;
+}
+
+
+export function formatMessageTime(messageTime) {
+    const now = new Date();
+    const messageDate = new Date(messageTime);
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    // 定义格式化选项
+    const timeOptions = { hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    const dateOptions = { month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    const fullDateOptions = { year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+    // 如果是今天
+    if (messageDate.toDateString() === today.toDateString()) {
+        return messageDate.toLocaleTimeString([], timeOptions);
+    }
+    // 如果是昨天
+    if (messageDate.toDateString() === yesterday.toDateString()) {
+        return messageDate.toLocaleString([], dateOptions);
+    }
+    // 如果是大于一年的
+    if (messageDate < new Date(today.getFullYear() - 1, today.getMonth(), today.getDate())) {
+        return messageDate.toLocaleString([], fullDateOptions);
+    }
+    // 默认格式
+    return messageDate.toLocaleString([], dateOptions);
+}

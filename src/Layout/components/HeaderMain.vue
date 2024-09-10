@@ -25,7 +25,8 @@
         </div>
         <el-dropdown style=" cursor: pointer;" trigger="click">
           <div class="right-li">
-            <el-badge :show-zero='false' :value="notificationS.hederMsgCount" :offset="[5, 3]">
+            {{ notificationS.ishederMsg }}
+            <el-badge :show-zero='false' :is-dot="notificationS.ishederMsg" :offset="[5, 3]">
               <div class="right-li-datails">
                 <el-icon>
                   <Bell />

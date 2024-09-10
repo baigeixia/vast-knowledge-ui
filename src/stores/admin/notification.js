@@ -1,4 +1,4 @@
-import { getCommentNotification, getLikeNotification ,getfollowNotification,getImList} from '@/api/admin/notification'
+import { getCommentNotification, getLikeNotification ,getfollowNotification,getImList,getmsgListdata,setclearUnreadMsg} from '@/api/admin/notification'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { socket,socketEmit } from '@/utils/socketclient'
@@ -7,7 +7,7 @@ import debounce from '@/utils/debouncing';
 const notificationAppStore = defineStore(
   'notification', () => {
 
-    const hederMsgCount = ref(0)
+    // const hederMsgCount = ref(false)
     const iscomment = ref(false)
     const isdigg = ref(false)
     const isfollow = ref(false)
@@ -16,7 +16,12 @@ const notificationAppStore = defineStore(
 
     const commentNotificationList = ref([])
     const likeNotificationList = ref([])
-    const followNotificationList = ref([])
+    const upMsgdata = ref({})
+
+    const ishederMsg = computed(() => {
+      return iscomment.value || isdigg.value || isfollow.value || issystem.value || isim.value;
+    })
+
 
     const getCommentNotificationInfo = async (page, size) => {
       const resp = await getCommentNotification(page, size)
@@ -41,20 +46,56 @@ const notificationAppStore = defineStore(
       // followNotificationList.value = resp.data
       return resp.data
     }
+    
+
+    const upsetclearUnreadMsg = async (userId) => {
+      await setclearUnreadMsg(userId)
+      // followNotificationList.value = resp.data
+    }
+
+    
+    const getmsgList = async (userId,page,size)=>{
+      console.log(userId,page,size);
+      const resp = await getmsgListdata(userId,page, size)
+      return resp.data
+    }
 
 
 
     socket.on("LIKE_NOTIFICATION", (data) => {
       console.log('LIKE_NOTIFICATION:', data);
-      hederMsgCount.value++
       isdigg.value = true
       console.log(hederMsgCount);
     })
 
-    const chatMsg = ()=>{
-      console.log(11111);
-      socket.emit('chatMsg', {senderId:2,senderName:"zhangsan",content:"hello"})
-    }
+    //评论
+    socket.on("COMMENT_NOTIFICATION", (data) => {
+      console.log('COMMENT_NOTIFICATION:', data);
+      iscomment.value = true
+    })
+
+    //粉丝
+    socket.on("FAN_NOTIFICATION", (data) => {
+      console.log('FAN_NOTIFICATION:', data);
+      isfollow.value = true
+    })
+    //私信
+    socket.on("CHAT_MSG_NOTIFICATION", (data) => {
+      console.log('CHAT_MSG_NOTIFICATION:', data);
+      isim.value = true
+      upMsgdata.value = data
+    })
+
+    socket.on("SYSTEM_MSG_NOTIFICATION", (data) => {
+      console.log('SYSTEM_MSG_NOTIFICATION:', data);
+      issystem.value = true
+    })
+
+    const chatMsg = debounce((senderId,senderName,content)=>{
+      console.log(senderId,senderName,content);
+      socketEmit('chatMsg', {senderId:senderId,senderName:senderName,content:content})
+    }, 500)
+
 
 
     const likeArticle = debounce((articleId, authorId, articleName, type, commentId) => {
@@ -80,11 +121,14 @@ const notificationAppStore = defineStore(
       getfollowNotificationInfo,
       getLikeNotificationInfo,
       getImListInfo,
+      getmsgList,
       likeArticle,
       fanMsg,
       chatMsg,
+      upsetclearUnreadMsg,
       commentNotificationList,
-      hederMsgCount,
+      ishederMsg,
+      upMsgdata,
       iscomment,
       isdigg,
       isfollow,

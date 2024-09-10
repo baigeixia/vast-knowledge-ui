@@ -29,22 +29,22 @@ const router = createRouter({
               component: () => import('../views/notifications/components/Comment.vue'),
             },
             {
-              path: '/notifications/digg',
+              path: 'digg',
               name: 'digg',
               component: () => import('../views/notifications/components/Digg.vue'),
             },
             {
-              path: '/notifications/follow',
+              path: 'follow',
               name: 'follow',
               component: () => import('../views/notifications/components/Follow.vue'),
             },
             {
-              path: '/notifications/im',
+              path: 'im',
               name: 'im',
               component: () => import('../views/notifications/components/Im.vue'),
             },
             {
-              path: '/notifications/system',
+              path: 'system',
               name: 'system',
               component: () => import('../views/notifications/components/System.vue'),
             },

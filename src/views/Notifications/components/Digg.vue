@@ -3,7 +3,7 @@
         <NotificationList notificationType="digg" :notificationList="notificationList" :extendicon="extendicon" :endLoading="endLoading" :upLoading="upLoading" />
         <div class="end-of-data">
             <div v-if="noMore && notificationList.length>1">已经到最底部了</div>
-            <div v-if="!endLoading && notificationList.length === 0">还没有内容</div>
+            <div v-if="!endLoading && notificationList.length === 0">还没有收到赞</div>
         </div>
     </div>
 </template>
@@ -22,83 +22,6 @@ const endLoading = ref(false)
 
 const noMore = ref(false)
 const notificationList = ref([])
-/* 
-const notificationList = ref(
-    [
-        {
-            statisticsTime: '2024-07-09',
-            notificationInfoList: [
-                {
-                    extendicon: 'https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4',
-                    verb: '喜欢您的评论',
-                    commentEndTime: '22:05',
-                    mergeCount: 9,
-                    attachInfo: {
-                        id: 33,
-                        commentid: '1111',
-                        title: '哪个瞬间您觉得您的宠物爱上了您？',
-                    },
-                    actors: [
-                        {
-                            id: '1',
-                            username: '柴柴啊柴',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '2',
-                            username: '大橙子吃小臣子',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '3',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                    ]
-                },
-            ]
-        },
-    ]
-) 
- */
-
-const upnotificationList = ref(
-    [
-        {
-            statisticsTime: '2024-07-09',
-            notificationInfoList: [
-                {
-                    extendicon: 'https://picx.zhimg.com/v2-b14298b5e448985065c67ab60202199d_720w.png?source=582e62d4',
-                    verb: '喜欢您的评论',
-                    commentEndTime: '2024-07-09 22:05',
-                    mergeCount: 9,
-                    attachInfo: {
-                        id: 33,
-                        commentid: '1111',
-                        title: '哪个瞬间您觉得您的宠物爱上了您？',
-                    },
-                    actors: [
-                        {
-                            id: '1',
-                            username: '柴柴啊柴',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '2',
-                            username: '大橙子吃小臣子',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                        {
-                            id: '3',
-                            username: '鑻籰',
-                            avatar: 'https://picx.zhimg.com/v2-90bd7a603bfbec72f49c01d1dd73e142_xl.jpg?source=32738c0c',
-                        },
-                    ]
-                },
-            ]
-        },
-    ]
-) 
 
 const count = ref(1)
 const load = async () => {
@@ -141,6 +64,10 @@ onMounted(async () => {
     } finally {
         endLoading.value = false;
     }
+
+    notificationS.isdigg=false
+
+
 });
 
 // const emit = defineEmits(['data-loaded']);

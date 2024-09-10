@@ -1,34 +1,37 @@
 <template>
-  <div class="chat-chatBox">
+  <div v-if="boxshow" class="chat-chatBox">
     <div class="chat-header">
-      <div class="header-title">知乎小管家</div>
+      <div class="header-title">{{ boxUserName }}</div>
     </div>
     <div ref="chatmaincontentref" class="chat-main-content" @scroll="handleScroll">
-      <div class="message-wrapper" v-for="message in testmessage.messages" :key="message.id">
-        <div class="message-time">
-          <time>{{ formatDate(message.created_time) }}</time>
+      <div class="message-wrapper" v-for="message in messageListData.messages" :key="message.id">
+        <div class="message-time" v-if="message.showTimestamp">
+          <time>{{ formatMessageTime(message.createdTime) }}</time>
         </div>
         <div class="message"
-          :class="{ 'message-right': message.user_type == 'receiver', 'message-left': message.user_type == 'sender' }">
+          :class="{ 'message-right': message.userType == 'receiver', 'message-left': message.userType == 'sender' }">
           <div class="message-user">
             <div class="user-avatar">
               <img class="user-avatar-img"
-                :src="message.user_type == 'sender' ? testmessage.sender.avatar_url : testmessage.receiver.avatar_url">
+                :src="message.userType == 'sender' ? messageListData.receiver.avatar : messageListData.sender.avatar"
+                @click="useravatar(
+                  message.userType == 'sender' ? messageListData.receiver.id : messageListData.sender.id
+                )">
             </div>
           </div>
           <el-tooltip :offset="0" trigger="click" popper-class="chat-tooltip-message-popper" :show-after="200"
-            :placement="message.user_type == 'receiver' ? 'left' : 'right'" :show-arrow="false" effect="light">
+            :placement="message.userType == 'receiver' ? 'left' : 'right'" :show-arrow="false" effect="light">
             <div class="message-content">
               <div class="message-text" v-html="message.text"></div>
             </div>
             <template #content>
               <el-tooltip placement="bottom" popper-class="chat-tooltip-status-popper" effect="light" trigger="click">
-                <div class="content-status">
+                <div class="content-status" v-if="message.id">
                   <i class="bi bi-three-dots"></i>
                 </div>
                 <template #content>
                   <div class="content-status-op">
-                    <el-button  @click="statusopendel" link>
+                    <el-button @click="statusopendel" link>
                       删除
                     </el-button>
                     <!-- <el-button  link>
@@ -41,7 +44,7 @@
           </el-tooltip>
         </div>
       </div>
-      <div v-if="true" class="loading-animation">
+      <div v-if="loading" class="loading-animation">
         <div class="dot-pulse"></div>
         <div class="dot-pulse"></div>
         <div class="dot-pulse"></div>
@@ -80,135 +83,137 @@
       </div>
     </div>
   </div>
+  <div v-else class="ChatBox-emptyImage">
+    知乎
+  </div>
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick } from "vue"
+import { ref, onMounted, nextTick, watch } from "vue"
 import EmojiFileInput from '@/Layout/components/EmojiFileInput.vue';
 import { escapeHtml } from '@/utils/escapeHtml'
-import  {safeHtml}  from '@/utils/domPurifyConfig'
+import { safeHtml } from '@/utils/domPurifyConfig'
+import {formatMessageTime,getCurrentTime} from '@/utils/formDate'
+
+import notificationAppStore from "@/stores/admin/notification";
+const notificationS = notificationAppStore()
+
+const poper = defineProps({
+  boxuserid: {
+    type: [Number, String],
+    required: true
+  },
+  boxUserName: {
+    type: String,
+    required: true
+  },
+})
+
+const boxshow = ref(false)
+const loading = ref(false)
+const page = ref(1)
+
+
+
+watch(() => poper.boxuserid, async (newValue) => {
+  page.value = 1
+  if (newValue != 0) {
+    boxshow.value = true
+    console.log("newValue", newValue);
+    await fetchMessages()
+    nextTick(() => {
+      if (chatmaincontentref.value) {
+        chatmaincontentref.value.scrollTop = chatmaincontentref.value.scrollHeight
+      }
+    })
+  }
+})
+
+watch(() => notificationS.upMsgdata,  (newValue) => {
+console.log('upMsgdata',newValue);
+
+ console.log( notificationS.upMsgdata.userid);
+
+})
 
 const fileInput = ref(null)
 const EmojiFileInputRef = ref(null)
 const commentinputRef = ref(null)
 const commentinput = ref('')
 const chatmaincontentref = ref(null)
-const loadingMore = ref(false)
 
-const testmessage = ref(
-  {
-    "messages": [
-      {
-        "id": "1407317459048861696",
-        "type": "message",
-        "text": `<a href="https://github.com/vueComponent/ant-design-vue" target="_blank" title="https://github.com/vueComponent/ant-design-vue"><i class="bi bi-link-45deg"></i>github.com</a>`,
-        "created_time": 1628310628,
-        "content_type": 0,
-        "image": null,
-        "user_type": "receiver",
-        "is_canceled": false,
-      },
-      {
-        "id": "1407317459048861696",
-        "type": "message",
-        "text": `凌鲨(linksaas)是专注于软件研发团队的效率工具，里面提供了很多研发小工具。整个项目是开源的，`,
-        "created_time": 1628310628,
-        "content_type": 0,
-        "image": null,
-        "user_type": "sender",
-        "is_canceled": false,
-      },
-      {
-        "id": "1407317459048861696",
-        "type": "message",
-        "text": `凌鲨(linksaas)是专注于软件研发团队的效率工具，里面提供了很多研发小工具。整个项目是开源的，凌鲨(linksaas)是专注于软件研发团队的效率工具，里面提供了很多研发小工具。整个项目是开源的，`,
-        "created_time": 1628310628,
-        "content_type": 0,
-        "image": null,
-        "user_type": "receiver",
-        "is_canceled": false,
-      },
-      {
-        "id": "1407317459048861696",
-        "type": "message",
-        "text": `凌鲨(linksaas)是专注于软件研发团队的效率工具，里面提供了很多研发小工具。整个项目是开源的，`,
-        "created_time": 1628310628,
-        "content_type": 0,
-        "image": null,
-        "user_type": "sender",
-        "is_canceled": false,
-      },
-    ],
-    "receiver": {
-      "id": "a19f400e40b4bec800af89d8afe593fa",
-      "name": "枭有",
-      "avatar_url": "https://pic1.zhimg.com/v2-b9a68a9403798d64e2471e644af4a27a_l.jpg?source=78e73102",
-    },
-    "sender": {
-      "id": "ed9c1f03abe71cb8b735cf0014d5f350",
-      "name": "平泽唯",
-      "avatar_url": "https://pic1.zhimg.com/v2-1c58e538a97a3000a99b3a6330337ffd_l.jpg?source=78e73102",
-    }
+const messageListData = ref({
+  messages: [],
+  receiver: null,
+  sender: null,
+})
+
+onMounted(async () => {
+  const userid=poper.boxuserid
+  if (userid != 0) {
+    boxshow.value = true
+    await fetchMessages()
+    nextTick(() => {
+      if (chatmaincontentref.value) {
+        chatmaincontentref.value.scrollTop = chatmaincontentref.value.scrollHeight
+      }
+    })
   }
-)
-
-const upmessage = ref({
-  "messages": [
-    {
-      "id": "1407317459048861696",
-      "type": "message",
-      "text": ` &lt;img src=x onerror=alert(1)//>
-<a href="https://www.google.com/search?q=dompurify%E4%BD%BF%E7%94%A8&amp;newwindow=1&amp;client=firefox-b-d&amp;sca_esv=44aafcd442c2ff9c&amp;sca_upv=1&amp;sxsrf=ADLYWIIDMup5-whHfIeqNTDabjGUFqbZpw%3A1720419864454&amp;ei=GIaLZsmtG9q74-EPkvy7yA8&amp;oq=DOMPurify&amp;gs_lp=Egxnd3Mtd2l6LXNlcnAiCURPTVB1cmlmeSoCCAAyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEdIsAVQAFgAcAF4AZABAJgBAKABAKoBALgBAcgBAJgCAaACC5gDAIgGAZAGCpIHATGgBwA&amp;sclient=gws-wiz-serp" target="_blank" title="https://www.google.com/search?q=dompurify%E4%BD%BF%E7%94%A8&amp;newwindow=1&amp;client=firefox-b-d&amp;sca_esv=44aafcd442c2ff9c&amp;sca_upv=1&amp;sxsrf=ADLYWIIDMup5-whHfIeqNTDabjGUFqbZpw%3A1720419864454&amp;ei=GIaLZsmtG9q74-EPkvy7yA8&amp;oq=DOMPurify&amp;gs_lp=Egxnd3Mtd2l6LXNlcnAiCURPTVB1cmlmeSoCCAAyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEcyChAAGLADGNYEGEdIsAVQAFgAcAF4AZABAJgBAKABAKoBALgBAcgBAJgCAaACC5gDAIgGAZAGCpIHATGgBwA&amp;sclient=gws-wiz-serp"><i class="bi bi-link-45deg"></i>www.google.com</a> 11111`,
-      "created_time": 1628310628,
-      "content_type": 0,
-      "image": null,
-      "user_type": "receiver",
-      "is_canceled": false,
-    },
-    {
-      "id": "1407317459048861696",
-      "type": "message",
-      "text": `&lt;img src=x onerror=alert(1)//>
-<a href="https://element-plus.org/zh-CN/component/message-box.html#%E9%85%8D%E7%BD%AE%E9%A1%B9" target="_blank" title="https://element-plus.org/zh-CN/component/message-box.html#%E9%85%8D%E7%BD%AE%E9%A1%B9"><i class="bi bi-link-45deg"></i>element-plus.org</a> 111
-<a href="https://element-plus.org/zh-CN/component/message-box.html#%E9%85%8D%E7%BD%AE%E9%A1%B9" target="_blank" title="https://element-plus.org/zh-CN/component/message-box.html#%E9%85%8D%E7%BD%AE%E9%A1%B9"><i class="bi bi-link-45deg"></i>element-plus.org</a>
-555`,
-      "created_time": 1628310628,
-      "content_type": 0,
-      "image": null,
-      "user_type": "sender",
-      "is_canceled": false,
-    }
-  ],
 })
-onMounted(() => {
-  nextTick(() => {
-    chatmaincontentref.value.scrollTop = chatmaincontentref.value.scrollHeight
-  })
 
-})
-const handleScroll = () => {
+const useravatar = (id) => {
+  console.log(id);
+}
+
+const handleScroll = async () => {
   const chatMainContent = chatmaincontentref.value;
   let heightup = chatMainContent.scrollHeight
-  console.log(heightup);
   // 如果没有在加载更多数据且滚动接近顶部
-  if (!loadingMore.value && chatMainContent.scrollTop < 10) {
-    loadingMore.value = true;
-    // 模拟加载更多数据的延迟
-    setTimeout(() => {
-      fetchMessages()
-      nextTick(() => {
-        chatmaincontentref.value.scrollTop = (chatmaincontentref.value.scrollHeight - heightup) - 70
-      });
-      loadingMore.value = false;
-    }, 200); // 假设延迟1秒加载更多数据
+  if (!loading.value && chatMainContent.scrollTop < 10) {
+    page.value += 1
+    await fetchMessages()
+    nextTick(() => {
+      chatmaincontentref.value.scrollTop = (chatmaincontentref.value.scrollHeight - heightup) - 70
+    });
   }
 }
 
-const fetchMessages = () => {
-  testmessage.value = {
-    ...testmessage.value,
-    messages: [...upmessage.value.messages, ...testmessage.value.messages]
+const fetchMessages = async () => {
+  const userid = poper.boxuserid
+  if (userid != 0) {
+    loading.value = true;
+    try {
+      const data = await notificationS.getmsgList(userid, page.value, 10)
+      if (data) {
+        // 获取 messageListData 的当前值
+        const currentMessages = messageListData.value.messages || [];
+
+        // 确保 data.messages 是数组
+        const newMessages = Array.isArray(data.messages) ? data.messages : [];
+
+        // 更新 messageListData
+        messageListData.value.messages = [...newMessages, ...currentMessages];
+ 
+        messageListData.value.receiver = data.receiver || messageListData.value.receiver;
+        messageListData.value.sender = data.sender || messageListData.value.sender;
+       
+      }
+
+      loading.value = false;
+
+    } catch (error) {
+      // console.error('Error loading more data:', error);
+    } finally {
+      loading.value = false;
+    }
   }
+
+  
+
+  // testmessage.value = {
+  //   ...testmessage.value,
+  //   messages: [...upmessage.value.messages, ...testmessage.value.messages]
+  // }
 }
 
 const formatDate = (timestamp) => {
@@ -220,19 +225,26 @@ const formatDate = (timestamp) => {
   const minutes = ('0' + date.getMinutes()).slice(-2);
   return `${year}-${month}-${day} ${hours}:${minutes}`;
 }
-const sendmessage = () => {
+const sendmessage = async () => {
+  const vluse = sanitizeString(commentinput.value)
+  const userid = poper.boxuserid
+  const username = poper.boxUserName
+  notificationS.chatMsg(userid, username, vluse)
+  commentinput.value = ''
 
-  // const vluse =safeHtml(commentinput.value)
-  const vluse =sanitizeString(commentinput.value)
+  messageListData.value.messages.push({
+    userType:"receiver",
+    text:vluse,
+    createdTime:getCurrentTime(),
+  })
+  nextTick(() => {
+      chatmaincontentref.value.scrollTop =chatmaincontentref.value.scrollHeight
+    });
 
-  // console.log('消息', escapedString);
-  console.log('消息', vluse);
-
-  commentinput.value=''
 }
 const sanitizeString = (str) => {
   // const urlRegex = /(https?:\/\/[\w-]+\.[\w-]+(\/[\w- .\/?%&=]*)?)/g;
-  const urlRegex =  /(https?[^ \n]+)/g;
+  const urlRegex = /(https?[^ \n]+)/g;
   const escapestr = escapeHtml(str)
   // const escapestr =safeHtml(str)
   const sanitizedString = escapestr.replace(urlRegex, (match) => {
@@ -284,7 +296,7 @@ const handleFileChange = (event) => {
   }
 }
 
-const statusopendel=()=>{
+const statusopendel = () => {
   ElMessageBox.confirm(
     '是否删除该条消息',
     '删除消息',
@@ -325,7 +337,8 @@ const statusopendel=()=>{
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    .el-button{
+
+    .el-button {
       margin: 10px 10px;
     }
   }
@@ -346,6 +359,12 @@ const statusopendel=()=>{
   outline: none;
 }
 
+.ChatBox-emptyImage {
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
 .chat-chatBox {
 
@@ -533,6 +552,7 @@ const statusopendel=()=>{
           position: relative;
 
           .user-avatar {
+            cursor: pointer;
             box-sizing: border-box;
             margin: 0px;
             color: rgb(9, 64, 142);

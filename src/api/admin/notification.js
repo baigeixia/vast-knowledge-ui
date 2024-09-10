@@ -35,14 +35,37 @@ export function getfollowNotification(page,size) {
 }
 
 
-export function getImList(tyep,page,size) {
+export function getImList(type,page,size) {
   return systemRequest({
     url: '/user/letter/list',
     method: 'GET',
     params:{
-      tyep: tyep,
+      type: type,
       page: page,
       size: size,
+    }
+  })
+}
+
+export function getmsgListdata(userId,page,size) {
+  return systemRequest({
+    url: '/user/letter/msgList',
+    method: 'GET',
+    params:{
+      userId: userId,
+      page: page,
+      size: size,
+    }
+  })
+}
+
+
+export function setclearUnreadMsg(userId) {
+  return systemRequest({
+    url: '/user/letter/clearUnreadMsg',
+    method: 'GET',
+    params:{
+      userId: userId,
     }
   })
 }

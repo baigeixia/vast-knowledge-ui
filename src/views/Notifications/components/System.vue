@@ -3,7 +3,7 @@
         <NotificationList notificationType="system" :notificationList="notificationList" :extendicon="extendicon" :endLoading="endLoading"  :upLoading="upLoading" />
         <div class="end-of-data">
             <div v-if="noMore && notificationList.length>1">已经到最底部了</div>
-            <div v-if="!endLoading && notificationList.length === 0">还没有内容</div>
+            <div v-if="!endLoading && notificationList.length === 0">暂无通知</div>
         </div>
     </div>
 </template>
@@ -11,6 +11,9 @@
 <script setup>
 import { ref, onMounted } from 'vue';
 import NotificationList from '@/components/NotificationList.vue'
+import notificationAppStore from "@/stores/admin/notification";
+const notificationS = notificationAppStore()
+
 
 const extendicon = ref('https://pic1.zhimg.com/v2-e4573613154ffec3ced881b7170bc3ac_200x0.png?source=582e62d4')
 // const verb=ref('举报处理通知 ')
@@ -139,6 +142,7 @@ const load = () => {
 const pageTitle = ref('系统通知');
 onMounted(() => {
     document.title = pageTitle.value;
+    notificationS.issystem=false
 });
 const emit = defineEmits(['data-loaded']);
 

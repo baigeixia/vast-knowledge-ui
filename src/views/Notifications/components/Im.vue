@@ -11,58 +11,21 @@
         <el-menu :default-openeds="['1']" class="contacts-list-tac" :unique-opened="true" @open="handleOpen">
           <el-sub-menu index="1">
             <template #title>
-              <el-badge :value="recentCount" :offset="[0, 15]" :is-dot="focusonCount < 2">
+              <el-badge :offset="[0, 15]" :is-dot="recentisUnread">
                 最近联系
               </el-badge>
             </template>
             <div class="menu-list" v-infinite-scroll="loadrecent" :infinite-scroll-immediate="false">
               <div v-if="recentlist.length === 0" class="list-EmptyState">还没有对话</div>
-              <div v-else class="listItem" :class="{ 'listItem-active': useractive === item.id }"
-                @click="sendmessage(item.id)" v-for="item in recentlist" :key="item.id">
+              <div v-else class="listItem" :class="{ 'listItem-active': boxuserid === item.id }"
+                @click="sendmessage(item.id, item.name)" v-for="item in recentlist" :key="item.id">
                 <div class="info-avatar">
                   <img class="info-avatar-img" :src="item.avatar">
                 </div>
                 <div class="info-content">
                   <div class="info-content-name">
                     <div class="info-name">
-                      <el-badge :offset="[3, 4]" :is-dot="item.unread">
-                        <div class="name-top">{{ item.name }}</div>
-                      </el-badge>
-                    </div>
-                    <div class="info-snippet">{{ item.snippet }}</div>
-                  </div>
-                </div>
-                <div class="info-more">
-                  <time>刚刚</time>
-                  <el-dropdown trigger="click">
-                    <i class="bi bi-three-dots-vertical"></i>
-                    <template #dropdown>
-                      <el-dropdown-menu>
-                        <el-dropdown-item @click="infodel(item.id)">删除</el-dropdown-item>
-                        <el-dropdown-item @click="inforeport(item.id)">举报</el-dropdown-item>
-                      </el-dropdown-menu>
-                    </template>
-                  </el-dropdown>
-                </div>
-              </div>
-            </div>
-          </el-sub-menu>
-          <el-sub-menu index="2">
-            <template #title>
-              <el-badge :value="strangerCount" :offset="[0, 15]" :is-dot="focusonCount < 2">
-                陌生人私信
-              </el-badge></template>
-            <div class="menu-list" v-infinite-scroll="loadrecent" :infinite-scroll-immediate="false">
-              <div v-if="strangerlist.length === 0" class="list-EmptyState">还没有对话</div>
-              <div v-else class="listItem" :class="{ 'listItem-active': useractive === item.id }"
-                @click="sendmessage(item.id)" v-for="item in strangerlist" :key="item.id">
-                <div class="info-avatar">
-                  <img class="info-avatar-img" :src="item.avatar">
-                </div>
-                <div class="info-content">
-                  <div class="info-content-name">
-                    <div class="info-name">
-                      <el-badge :offset="[3, 4]" :is-dot="item.unread">
+                      <el-badge :offset="[3, 4]" :is-dot="!Boolean(item.unread)">
                         <div class="name-top">{{ item.name }}</div>
                       </el-badge>
                     </div>
@@ -83,24 +46,78 @@
                 </div>
               </div>
             </div>
+            <div v-if="menutype == 1 && upLoading" class="loading-animation">
+              <div class="dot-pulse"></div>
+              <div class="dot-pulse"></div>
+              <div class="dot-pulse"></div>
+              <div class="dot-pulse"></div>
+              <div class="dot-pulse"></div>
+              <div class="dot-pulse"></div>
+            </div>
           </el-sub-menu>
-          <el-sub-menu index="3">
+          <el-sub-menu index="2">
             <template #title>
-              <el-badge :value="focusonCount" :offset="[0, 15]" :is-dot="focusonCount < 2">
-                互相关注
+              <el-badge :offset="[0, 15]" :is-dot="strangerisUnread">
+                陌生人私信
               </el-badge>
             </template>
             <div class="menu-list" v-infinite-scroll="loadrecent" :infinite-scroll-immediate="false">
-              <div v-if="mutualconcernlist.length === 0" class="list-EmptyState">还没有对话</div>
-              <div v-else class="listItem" :class="{ 'listItem-active': useractive === item.id }"
-                @click="sendmessage(item.id)" v-for="item in mutualconcernlist" :key="item.id">
+              <div v-if="strangerlist.length === 0" class="list-EmptyState">还没有对话</div>
+              <div v-else class="listItem" :class="{ 'listItem-active': boxuserid === item.id }"
+                @click="sendmessage(item.id, item.name)" v-for="item in strangerlist" :key="item.id">
                 <div class="info-avatar">
                   <img class="info-avatar-img" :src="item.avatar">
                 </div>
                 <div class="info-content">
                   <div class="info-content-name">
                     <div class="info-name">
-                      <el-badge :offset="[3, 4]" :is-dot="item.unread">
+                      <el-badge :offset="[3, 4]" :is-dot="!Boolean(item.unread)">
+                        <div class="name-top">{{ item.name }}</div>
+                      </el-badge>
+                    </div>
+                    <div class="info-snippet">{{ item.snippet }}</div>
+                  </div>
+                  <div class="info-more">
+                    <time>刚刚</time>
+                    <el-dropdown trigger="click">
+                      <i class="bi bi-three-dots-vertical"></i>
+                      <template #dropdown>
+                        <el-dropdown-menu>
+                          <el-dropdown-item @click="infodel(item.id)">删除</el-dropdown-item>
+                          <el-dropdown-item @click="inforeport(item.id)">举报</el-dropdown-item>
+                        </el-dropdown-menu>
+                      </template>
+                    </el-dropdown>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div v-if="menutype == 2 && upLoading" class="loading-animation">
+              <div class="dot-pulse"></div>
+              <div class="dot-pulse"></div>
+              <div class="dot-pulse"></div>
+              <div class="dot-pulse"></div>
+              <div class="dot-pulse"></div>
+              <div class="dot-pulse"></div>
+            </div>
+          </el-sub-menu>
+          <el-sub-menu index="3">
+            <template #title>
+              <el-badge :offset="[0, 15]" :is-dot="mutualconcernisUnread">
+                互相关注
+              </el-badge>
+            </template>
+            <div class="menu-list" v-infinite-scroll="loadrecent" :infinite-scroll-immediate="false">
+              <div v-if="mutualconcernlist.length === 0" class="list-EmptyState">还没有对话</div>
+              <div v-else class="listItem" :class="{ 'listItem-active': boxuserid === item.id }"
+                @click="sendmessage(item.id, item.name)" v-for="item in mutualconcernlist" :key="item.id">
+                <div class="info-avatar">
+                  <img class="info-avatar-img" :src="item.avatar">
+                </div>
+                <div class="info-content">
+                  <div class="info-content-name">
+                    <div class="info-name">
+                      <el-badge :offset="[3, 4]" :is-dot="!Boolean(item.unread)">
                         <div class="name-top">
                           {{ item.name }}
                         </div>
@@ -121,8 +138,15 @@
                     </el-dropdown>
                   </div>
                 </div>
-
               </div>
+            </div>
+            <div v-if="menutype == 3 && upLoading" class="loading-animation">
+              <div class="dot-pulse"></div>
+              <div class="dot-pulse"></div>
+              <div class="dot-pulse"></div>
+              <div class="dot-pulse"></div>
+              <div class="dot-pulse"></div>
+              <div class="dot-pulse"></div>
             </div>
           </el-sub-menu>
         </el-menu>
@@ -148,7 +172,7 @@
     </el-dialog>
 
     <el-main class="chat-main">
-      <ChatChatBox></ChatChatBox>
+      <ChatChatBox :boxuserid="boxuserid" :boxUserName="boxUserName"></ChatChatBox>
     </el-main>
     <!-- {{ useractive }} -->
   </el-container>
@@ -163,245 +187,80 @@ import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
 
 
-const useractive = ref('')
-const focusonCount = ref(1)
-const strangerCount = ref(2)
-const recentCount = ref(2)
+const boxuserid = ref(0)
+const boxUserName = ref('')
 
-const recentlist = ref([
-  {
-    id: '11',
-    name: '用户1',
-    avatar: 'https://pic1.zhimg.com/v2-b5e4fe8f22096e9e84c5eb58885f448d_200x0.jpg?source=78e73102',
-    snippet: `亲爱的 枭有：自媒体赚钱红利期，你错过了吗？北漂小妹拍视频记录生活月赚 2w；
-8 旬老太直播卖货流水百万；
-自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
-「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`,
-    unread: true
-  },
-  {
-    id: '11',
-    name: '用户1',
-    avatar: 'https://pic1.zhimg.com/v2-b5e4fe8f22096e9e84c5eb58885f448d_200x0.jpg?source=78e73102',
-    snippet: `亲爱的 枭有：自媒体赚钱红利期，你错过了吗？北漂小妹拍视频记录生活月赚 2w；
-8 旬老太直播卖货流水百万；
-自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
-「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`,
-    unread: false
-  },
-  {
-    id: '11',
-    name: '用户1',
-    avatar: 'https://pic1.zhimg.com/v2-b5e4fe8f22096e9e84c5eb58885f448d_200x0.jpg?source=78e73102',
-    snippet: `亲爱的 枭有：自媒体赚钱红利期，你错过了吗？北漂小妹拍视频记录生活月赚 2w；
-8 旬老太直播卖货流水百万；
-自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
-「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`,
-    unread: false
-  },
-  {
-    id: '11',
-    name: '用户1',
-    avatar: 'https://pic1.zhimg.com/v2-b5e4fe8f22096e9e84c5eb58885f448d_200x0.jpg?source=78e73102',
-    snippet: `亲爱的 枭有：自媒体赚钱红利期，你错过了吗？北漂小妹拍视频记录生活月赚 2w；
-8 旬老太直播卖货流水百万；
-自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
-「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`,
-    unread: false
-  },
-  {
-    id: '11',
-    name: '用户1',
-    avatar: 'https://pic1.zhimg.com/v2-b5e4fe8f22096e9e84c5eb58885f448d_200x0.jpg?source=78e73102',
-    snippet: `亲爱的 枭有：自媒体赚钱红利期，你错过了吗？北漂小妹拍视频记录生活月赚 2w；
-8 旬老太直播卖货流水百万；
-自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
-「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`,
-    unread: false
-  },
-  {
-    id: '11',
-    name: '用户1',
-    avatar: 'https://pic1.zhimg.com/v2-b5e4fe8f22096e9e84c5eb58885f448d_200x0.jpg?source=78e73102',
-    snippet: `亲爱的 枭有：自媒体赚钱红利期，你错过了吗？北漂小妹拍视频记录生活月赚 2w；
-8 旬老太直播卖货流水百万；
-自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
-「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`,
-    unread: false
-  },
-  {
-    id: '11',
-    name: '用户1',
-    avatar: 'https://pic1.zhimg.com/v2-b5e4fe8f22096e9e84c5eb58885f448d_200x0.jpg?source=78e73102',
-    snippet: `亲爱的 枭有：自媒体赚钱红利期，你错过了吗？北漂小妹拍视频记录生活月赚 2w；
-8 旬老太直播卖货流水百万；
-自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
-「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`,
-    unread: false
-  },
-])
-const testlist = ref([
-  {
-    id: '11',
-    name: '用户1',
-    avatar: 'https://pic1.zhimg.com/v2-b5e4fe8f22096e9e84c5eb58885f448d_200x0.jpg?source=78e73102',
-    snippet: `亲爱的 枭有：自媒体赚钱红利期，你错过了吗？北漂小妹拍视频记录生活月赚 2w；
-8 旬老太直播卖货流水百万；
-自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
-「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`,
-    unread: false
-  },])
-const strangerlist = ref([
-  {
-    id: '3',
-    name: '陌生人用户1',
-    avatar: 'https://pic1.zhimg.com/v2-b5e4fe8f22096e9e84c5eb58885f448d_200x0.jpg?source=78e73102',
-    snippet: `亲爱的 枭有：自媒体赚钱红利期，你错过了吗？北漂小妹拍视频记录生活月赚 2w；
-8 旬老太直播卖货流水百万；
-自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
-「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`,
-    unread: false
+const recentlist = ref([])
+const strangerlist = ref([])
+const mutualconcernlist = ref([])
 
-  },
-  {
-    id: '4',
-    name: '陌生人用户2',
-    avatar: 'https://pic1.zhimg.com/v2-b5e4fe8f22096e9e84c5eb58885f448d_200x0.jpg?source=78e73102',
-    snippet: `亲爱的 枭有：自媒体赚钱红利期，你错过了吗？北漂小妹拍视频记录生活月赚 2w；
-8 旬老太直播卖货流水百万；
-自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
-「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`,
-    unread: false
-  },
-  {
-    id: '5',
-    name: '陌生人用户3',
-    avatar: 'https://pic1.zhimg.com/v2-b5e4fe8f22096e9e84c5eb58885f448d_200x0.jpg?source=78e73102',
-    snippet: `亲爱的 枭有：自媒体赚钱红利期，你错过了吗？北漂小妹拍视频记录生活月赚 2w；
-8 旬老太直播卖货流水百万；
-自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
-「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`,
-    unread: false
-  },
-])
-const mutualconcernlist = ref([
-  {
-    id: '6',
-    name: '互相关注用户1',
-    avatar: 'https://pic1.zhimg.com/v2-b5e4fe8f22096e9e84c5eb58885f448d_200x0.jpg?source=78e73102',
-    snippet: `亲爱的 枭有：自媒体赚钱红利期，你错过了吗？北漂小妹拍视频记录生活月赚 2w；
-8 旬老太直播卖货流水百万；
-自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
-「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`,
-    unread: false
-  },
-  {
-    id: '7',
-    name: '互相关注用户2',
-    avatar: 'https://pic1.zhimg.com/v2-b5e4fe8f22096e9e84c5eb58885f448d_200x0.jpg?source=78e73102',
-    snippet: `亲爱的 枭有：自媒体赚钱红利期，你错过了吗？北漂小妹拍视频记录生活月赚 2w；
-8 旬老太直播卖货流水百万；
-自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
-「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`,
-    unread: false
-  },
-  {
-    id: '8',
-    name: '互相关注用户3',
-    avatar: 'https://pic1.zhimg.com/v2-b5e4fe8f22096e9e84c5eb58885f448d_200x0.jpg?source=78e73102',
-    snippet: `亲爱的 枭有：自媒体赚钱红利期，你错过了吗？北漂小妹拍视频记录生活月赚 2w；
-8 旬老太直播卖货流水百万；
-自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
-「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`,
-    unread: false
-  },
-  {
-    id: '8',
-    name: '互相关注用户3',
-    avatar: 'https://pic1.zhimg.com/v2-b5e4fe8f22096e9e84c5eb58885f448d_200x0.jpg?source=78e73102',
-    snippet: `亲爱的 枭有：自媒体赚钱红利期，你错过了吗？北漂小妹拍视频记录生活月赚 2w；
-8 旬老太直播卖货流水百万；
-自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
-「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`,
-    unread: false
-  },
-  {
-    id: '8',
-    name: '互相关注用户3',
-    avatar: 'https://pic1.zhimg.com/v2-b5e4fe8f22096e9e84c5eb58885f448d_200x0.jpg?source=78e73102',
-    snippet: `亲爱的 枭有：自媒体赚钱红利期，你错过了吗？北漂小妹拍视频记录生活月赚 2w；
-8 旬老太直播卖货流水百万；
-自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
-「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`,
-    unread: false
-  },
-  {
-    id: '8',
-    name: '互相关注用户3',
-    avatar: 'https://pic1.zhimg.com/v2-b5e4fe8f22096e9e84c5eb58885f448d_200x0.jpg?source=78e73102',
-    snippet: `亲爱的 枭有：自媒体赚钱红利期，你错过了吗？北漂小妹拍视频记录生活月赚 2w；
-8 旬老太直播卖货流水百万；
-自媒体已成为普通人翻身的有利渠道！现在，各大平台加大了流量扶持，新手也能快速涨粉变现，戳此领取攻略⬇️
-「全媒体运营官培养计划」带你从 0 开始做账号，解决爆款内容制作、带货选品、推流涨粉等问题，助力新手上路，成功赚到钱！现在入局还不晚，速戳下方报名！
-「全媒体运营官培养计划」限额参加～`,
-    unread: false
-  },
+const recentisUnread = computed(() => {
+  return recentlist.value.some(item => item.unread === 0);
+})
 
-])
+const strangerisUnread = computed(() => {
+  return strangerlist.value.some(item => item.unread === 0);
+})
 
+const mutualconcernisUnread = computed(() => {
+  return recentlist.value.some(item => item.unread === 0);
+})
+
+
+const upLoading = ref(false)
+const menutype = ref(1)
 const page = ref(1)
 const pagesize = ref(10)
+const noMore = ref(false)
 
 const handleSelect = (item) => {
   console.log(item.id)
 }
 
-const loadrecent = async (type) => {
+const loadrecent = async () => {
   page.value += 1;
-  console.log('type', type);
-  // upLoading.value = true
-  //   try {
-  //       const data = await notificationS.getImListInfo(count.value, 5)
+  console.log('type', menutype.value);
+  upLoading.value = true
+  try {
+    const data = await notificationS.getImListInfo(menutype.value, count.value, 5)
 
-  //       if (!data || data.length === 0) {
-  //           noMore.value = true
-  //       }
+    if (!data || data.length === 0) {
+      noMore.value = true
+    }
 
-  //       if (data) {
-  //           notificationList.value = [...notificationList.value, ...data]
-  //       }
+    if (data) {
+      sametypeList(type, data)
+    }
 
-  //       upLoading.value = false
-  //   } catch (error) {
-  //       // console.error('Error loading more data:', error);
-  //   } finally {
-  //       upLoading.value = false;
-  //   }
+    upLoading.value = false
+  } catch (error) {
+    // console.error('Error loading more data:', error);
+  } finally {
+    upLoading.value = false;
+  }
 
-  // console.log(page.value);
-  // recentlist.value = [...recentlist.value, ...testlist.value]
+  console.log(page.value);
+  recentlist.value = [...recentlist.value, ...testlist.value]
 }
 
+onMounted(() => {
+  handleOpen(menutype.value)
+  notificationS.isim=false
+})
 
 const handleOpen = async (type) => {
-  const data = await notificationS.getImListInfo(type, page.value, pagesize.value)
-  sametypeList(type, data)
+  menutype.value = type
+  upLoading.value = true
+  try {
+    const data = await notificationS.getImListInfo(type, page.value, pagesize.value)
+    sametypeList(type, data)
+
+    upLoading.value = false;
+  } catch (error) {
+    // console.error('Error loading more data:', error);
+  } finally {
+    upLoading.value = false;
+  }
 }
 
 const sametypeList = (type, data) => {
@@ -413,6 +272,28 @@ const sametypeList = (type, data) => {
     mutualconcernlist.value = data
   }
 }
+
+const upclearUnreadMsg = (userid) => {
+  notificationS.upsetclearUnreadMsg(userid)
+  if (menutype.value == 1) {
+    const targetItem = recentlist.value.find(item => item.id === userid);
+    // 如果目标对象存在，则更新 unread 属性
+    if (targetItem) {
+      targetItem.unread = 1;
+    }
+  } else if (menutype.value == 2) {
+    const targetItem = strangerlist.value.find(item => item.id === userid);
+    if (targetItem) {
+      targetItem.unread = 1;
+    }
+  } else if (menutype.value == 3) {
+    const targetItem = mutualconcernlist.value.find(item => item.id === userid);
+    if (targetItem) {
+      targetItem.unread = 1;
+    }
+  }
+}
+
 
 
 
@@ -438,7 +319,6 @@ const searchInList = (list, queryString, results) => {
 
 
 
-
 const cities = ['涉政有害', '不友善', '垃圾广告'
   , '涉嫌侵权'
   , '色情低俗'
@@ -453,10 +333,13 @@ const cities = ['涉政有害', '不友善', '垃圾广告'
 const reporting = ref(null)
 const reportuserid = ref('')
 
-const sendmessage = (userid) => {
-  useractive.value = userid
-  console.log(useractive.value);
-  console.log('sendmessage');
+const sendmessage = (userid, name) => {
+  boxuserid.value = userid
+  boxUserName.value = name
+  console.log(boxuserid.value);
+  console.log(boxUserName.value);
+  upclearUnreadMsg(userid)
+
 }
 
 const pageTitle = ref('私信');
@@ -527,7 +410,6 @@ onMounted(() => {
 
 
   .chat-main {
-
     padding-top: 0;
   }
 
@@ -596,6 +478,69 @@ onMounted(() => {
 
       .contacts-list-tac {
 
+        .loading-animation {
+          position: absolute;
+          left: 50%;
+          // top: -10%;
+          bottom: 5%;
+          transform: translate(-50%, -50%);
+          display: flex;
+          justify-content: center;
+          align-items: center;
+        }
+
+        .dot-pulse {
+          width: 5px;
+          height: 5px;
+          background-color: #1772f6;
+          border-radius: 50%;
+          margin: 0 5px;
+          animation: dotPulse 1s infinite alternate;
+          /* 定义动画效果 */
+        }
+
+        .dot-pulse:nth-child(2) {
+          animation-delay: 0.2s;
+          /* 延迟第二个点的动画开始 */
+        }
+
+        .dot-pulse:nth-child(3) {
+          animation-delay: 0.4s;
+          /* 延迟第三个点的动画开始 */
+        }
+
+        .dot-pulse:nth-child(4) {
+          animation-delay: 0.4s;
+          /* 延迟第三个点的动画开始 */
+        }
+
+        .dot-pulse:nth-child(5) {
+          animation-delay: 0.4s;
+          /* 延迟第三个点的动画开始 */
+        }
+
+        .dot-pulse:nth-child(6) {
+          animation-delay: 0.4s;
+          /* 延迟第三个点的动画开始 */
+        }
+
+        @keyframes dotPulse {
+          0% {
+            transform: translateY(0);
+          }
+
+          50% {
+            transform: translateY(-10px);
+            /* 上跳 */
+          }
+
+          100% {
+            transform: translateY(0);
+          }
+        }
+
+
+
         .menu-list {
           transition: height 300ms;
           height: 390px;
@@ -620,7 +565,7 @@ onMounted(() => {
 
           .info-more {
             display: flex;
-            
+
             align-items: center;
             margin-left: 5px;
 
@@ -647,7 +592,6 @@ onMounted(() => {
             display: flex;
             width: 100%;
             justify-content: space-between;
-            // -webkit-box-flex: 1;
 
             .info-content-name {
               // max-width: 10rem;
@@ -672,6 +616,7 @@ onMounted(() => {
 
 
             .info-snippet {
+              max-width: 11rem;
               font-size: 13px;
               color: #929394;
               overflow: hidden;

@@ -3,9 +3,8 @@
         <NotificationList notificationType="comment" :notificationList="notificationList" :extendicon="extendicon" :endLoading="endLoading" :upLoading="upLoading" />
         <div class="end-of-data">
             <div v-if="noMore && notificationList.length>1">已经到最底部了</div>
-            <div v-if="!endLoading && notificationList.length === 0">还没有内容</div>
+            <div v-if="!endLoading && notificationList.length === 0">还没有回复您的评论</div>
         </div>
-        <el-button @click="sendchatMsg" > 私信</el-button>
     </div>
 </template>
 
@@ -15,10 +14,6 @@ import NotificationList from '@/components/NotificationList.vue'
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
 
-const sendchatMsg=()=>{
-    console.log("sendchatMsg");
-    notificationS.chatMsg()
-}
 const extendicon = ref('https://picx.zhimg.com/v2-40cc57d7a7f9fc24711c601615c9fb57_200x0.png?source=582e62d4')
 const count = ref(1)
 const noMore = ref(false)
@@ -55,7 +50,6 @@ onMounted(async () => {
     try {
         const data = await notificationS.getCommentNotificationInfo(count.value, 10)
 
-        //   notificationList.value=notificationS.commentNotificationList
         notificationList.value = data
         document.title = pageTitle.value;
         endLoading.value = false;
@@ -64,6 +58,8 @@ onMounted(async () => {
     } finally {
         endLoading.value = false;
     }
+    notificationS.iscomment=false
+
 });
 
 const emit = defineEmits(['data-loaded']);

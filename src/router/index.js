@@ -51,35 +51,52 @@ const router = createRouter({
           ]
         },
         {
-          path: '/user',
+          path: '/user/:userid',
           name: 'user',
           component: () => import('../views/user/UserHome.vue'),
-          redirect: '/user/pins',
+          props: route => ({
+            userid: route.params.userid 
+          }),
           children: [
             {
-              path: 'pins',
-              name: 'pins',
+              path: '',
+              name: 'user-pins',
               component: () => import('../views/user/components/UserPins.vue'),
+              props: route => ({
+                userid: route.params.userid || ''
+              })
             },
             {
               path: 'posts',
               name: 'posts',
               component: () => import('../views/user/components/UserPosts.vue'),
+              props: route => ({
+                userid: route.params.userid || ''
+              })
             },
             {
               path: 'columns',
               name: 'columns',
               component: () => import('../views/user/components/UserColumns.vue'),
+              props: route => ({
+                userid: route.params.userid || ''
+              })
             },
             {
               path: 'collections',
               name: 'collections',
               component: () => import('../views/user/components/UserCollections.vue'),
+              props: route => ({
+                userid: route.params.userid || ''
+              })
             },
             {
               path: 'tags',
               name: 'tags',
               component: () => import('../views/user/components/UserTags.vue'),
+              props: route => ({
+                userid: route.params.userid || ''
+              })
             },
 
           ]

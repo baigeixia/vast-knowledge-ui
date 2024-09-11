@@ -1,4 +1,4 @@
-import { getCommentNotification, getLikeNotification ,getfollowNotification,getImList,getmsgListdata,setclearUnreadMsg} from '@/api/admin/notification'
+import { getCommentNotification, getLikeNotification ,getfollowNotification,getImList,getmsgListdata,setclearUnreadMsg,setdelMsg} from '@/api/admin/notification'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { socket,socketEmit } from '@/utils/socketclient'
@@ -59,6 +59,14 @@ const notificationAppStore = defineStore(
       const resp = await getmsgListdata(userId,page, size)
       return resp.data
     }
+
+    
+
+    const delsetdelMsg = async (msgId)=>{
+      console.log('msgId',msgId);
+      await setdelMsg(msgId)
+    }
+
 
 
 
@@ -126,6 +134,7 @@ const notificationAppStore = defineStore(
       fanMsg,
       chatMsg,
       upsetclearUnreadMsg,
+      delsetdelMsg,
       commentNotificationList,
       ishederMsg,
       upMsgdata,

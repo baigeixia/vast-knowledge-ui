@@ -46,7 +46,7 @@
                         <h1 class="article-title">{{ articleS.articleDto.title }}</h1>
                         <div class="author-info-box">
                             <div class="author-name">
-                                <RouterLink to="/user/pins">{{ articleS.articleDto.authorName }}</RouterLink>
+                                <RouterLink :to="`/user/${articleS.articleDto.authorId}`">{{ articleS.articleDto.authorName }}</RouterLink>
                             </div>
                             <div class="meta-box">
                                 <div class="time">{{ $formatDateTime(articleS.articleDto.createdTime) }}</div>
@@ -110,13 +110,13 @@
             <el-aside class="home-right">
                 <div class="sidebar-block ">
                     <div class="block-body author-block">
-                        <RouterLink class="user-item" to="/user">
+                        <RouterLink class="user-item" :to="`/user/${articleS.articleDto.authorId}`">
                             <div class="item-left">
                                 <img class="avatar-img"
                                     src="https://p6-passport.byteacctimg.com/img/user-avatar/507312f17bf5e7cefebbf297105f1742~100x100.awebp">
                             </div>
                             <div class="item-right">
-                                <span class="username">程序员111</span>
+                                <span class="username">{{articleS.articleDto.authorName}}</span>
                                 <div class="position">前端开发</div>
                             </div>
                         </RouterLink>

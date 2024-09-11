@@ -25,7 +25,6 @@
         </div>
         <el-dropdown style=" cursor: pointer;" trigger="click">
           <div class="right-li">
-            {{ notificationS.ishederMsg }}
             <el-badge :show-zero='false' :is-dot="notificationS.ishederMsg" :offset="[5, 3]">
               <div class="right-li-datails">
                 <el-icon>
@@ -54,7 +53,7 @@
                   </el-badge></el-dropdown-item></RouterLink>
               <RouterLink to="/notifications/follow"><el-dropdown-item><el-icon>
                     <Notification />
-                  </el-icon>    <el-badge :is-dot="notificationS.isfollow" :show-zero="false" :offset="[10, 5]">
+                  </el-icon> <el-badge :is-dot="notificationS.isfollow" :show-zero="false" :offset="[10, 5]">
                     新增粉丝
                   </el-badge></el-dropdown-item></RouterLink>
               <RouterLink to="/notifications/im"><el-dropdown-item><el-icon>
@@ -81,10 +80,11 @@
             </div>
           </div>
           <template #dropdown>
-            <el-dropdown-menu  style="z-index: 1000;">
+            <el-dropdown-menu style="z-index: 1000;">
               <el-dropdown-item @click="item_TO_WE(1)"><i class="bi bi-graph-up-arrow"></i>图文数据</el-dropdown-item>
               <el-dropdown-item @click="item_TO_WE(2)"><i class="bi bi-columns-gap"></i>发布文章</el-dropdown-item>
-              <el-dropdown-item @click="item_TO_WE(3)"><i class="bi bi-layout-text-window-reverse"></i>内容列表</el-dropdown-item>
+              <el-dropdown-item @click="item_TO_WE(3)"><i
+                  class="bi bi-layout-text-window-reverse"></i>内容列表</el-dropdown-item>
               <el-dropdown-item @click="item_TO_WE(4)"><i class="bi bi-palette"></i>素材管理</el-dropdown-item>
               <el-dropdown-item @click="item_TO_WE(5)"><i class="bi bi-person-hearts"></i>粉丝管理</el-dropdown-item>
             </el-dropdown-menu>
@@ -100,13 +100,19 @@
             </div>
           </div>
           <template #dropdown>
-            <el-dropdown-menu  style="z-index: 1000;">
-              <RouterLink to="/user"><el-dropdown-item><el-icon>
+            <el-dropdown-menu style="z-index: 1000;">
+              <RouterLink to="/user/1">
+              <el-dropdown-item >
+                <el-icon>
                     <User />
-                  </el-icon>个人主页</el-dropdown-item></RouterLink>
+                  </el-icon>
+                  个人主页
+                  </el-dropdown-item>
+               </RouterLink>
               <RouterLink to="/user/settings"><el-dropdown-item><el-icon>
                     <Setting />
-                  </el-icon>我的设置</el-dropdown-item></RouterLink>
+                  </el-icon>我的设置</el-dropdown-item>
+              </RouterLink>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -128,9 +134,6 @@ const route = useRoute();
 const router = useRouter();
 
 const headerinput = ref('')
-const Bellvalue = ref(12)
-const Roundvalue = ref(99)
-const Cpuvalue = ref(true)
 
 
 
@@ -147,18 +150,21 @@ const navigateToPublish = () => {
   window.open('http://localhost:8081/publish', '_blank');
 }
 const headersearch = () => {
-  // console.log(headerinput.value);
-  const query = encodeURIComponent('先活着再生活');
-  const queryParams = {
-    query: '先活着再生活',
-    fromSeo: 0,
-    fromHistory: 0,
-    fromSuggest: 0,
-    type: 0
-  };
+  let queryimput = headerinput.value
+  console.log(headerinput.value);
+  // const query = encodeURIComponent('先活着再生活');
+  if (queryimput) {
+    const queryParams = {
+      query: queryimput,
+      fromSeo: 0,
+      fromHistory: 0,
+      fromSuggest: 0,
+      type: 0
+    };
+    // 使用 router.push 导航到带查询参数的路由
+    router.push({ name: 'search', query: queryParams });
+  }
 
-  // 使用 router.push 导航到带查询参数的路由
-  router.push({ name: 'search', query: queryParams });
 };
 
 
@@ -256,8 +262,9 @@ const item_TO_WE = (type) => {
       .el-scrollbar {
         z-index: 1000;
       }
-      .header-dropdown-menu{
-          z-index: 1000;
+
+      .header-dropdown-menu {
+        z-index: 1000;
       }
 
       .right-li {

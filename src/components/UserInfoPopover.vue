@@ -8,9 +8,12 @@
 
         <div class="popover-content">
             <div class="info-row">
-                <div class="info-avatar">
-                    <img :src="author?.avatar" alt="avatar" class="avatar" />
-                </div>
+                <!-- <div class="info-avatar"> -->
+                    <RouterLink :to="`/user/${author.id}`" class="info-avatar">
+                        <img :src="author?.avatar" alt="avatar" class="avatar"  />
+                </RouterLink>
+                    <!-- <img :src="author?.avatar" alt="avatar" class="avatar" @click="touserinfor(author.id)" /> -->
+                <!-- </div> -->
                 <div class="info-name" :title="author?.username">{{ author?.username }}</div>
                 <div class="info-position" :title="author?.position">{{ author?.position }}</div>
             </div>
@@ -22,7 +25,7 @@
             <div class="meta-row" v-else>
                 <div class="item">
                     <div class="item-name">粉丝</div>
-                    <div class="item-count">{{authorInfor?.fans}}</div>
+                    <div class="item-count">{{ authorInfor?.fans }}</div>
                 </div>
                 <!-- <div class="item">
                     <div class="item-count">{{authorInfor.follows}}</div>
@@ -30,12 +33,12 @@
                 </div> -->
                 <div class="item">
                     <div class="item-name">关注者</div>
-                    <div class="item-count">{{authorInfor?.follows}}</div>
+                    <div class="item-count">{{ authorInfor?.follows }}</div>
                 </div>
 
             </div>
             <div class="operate-btn">
-                <el-button class="button-ui" type="primary" @click="focusonclick(author.id,author.username)">关注</el-button>
+                <el-button class="button-ui" type="primary" @click="focusonclick(author.id, author.username)">关注</el-button>
                 <el-button class="button-ui" @click="privateletterclick">私信</el-button>
             </div>
         </div>
@@ -48,8 +51,13 @@ import useUserStore from "@/stores/admin/user";
 const userS = useUserStore()
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 
+const touserinfor=(userid)=>{
+    router.push(`/user/${userid}`);
+}
 const props = defineProps({
     author: {
         type: Object,
@@ -59,37 +67,37 @@ const props = defineProps({
 const isLoading = ref(false)
 const authorid = ref('')
 const authorInfor = ref({})
-onMounted(()=>{
-    if(props.author.id){
-        authorid.value= props.author.id
+onMounted(() => {
+    if (props.author.id) {
+        authorid.value = props.author.id
     }
 })
-const userpopovershow = async  () => {
+const userpopovershow = async () => {
     if (authorid.value) {
         if (isLoading.value) return
         try {
-            isLoading.value=true
-            const authordata = await  userS.getUserInfoPo(authorid.value)
+            isLoading.value = true
+            const authordata = await userS.getUserInfoPo(authorid.value)
             if (authordata) {
                 authorInfor.value = authordata
             }
-            isLoading.value=false
+            isLoading.value = false
         } catch (error) {
             console.error('Error loading more data:', error);
-        }finally{
-            isLoading.value=false
+        } finally {
+            isLoading.value = false
         }
 
     }
 }
 
-const privateletterclick=()=>{
-    console.log("私信",authorid.value);
+const privateletterclick = () => {
+    console.log("私信", authorid.value);
 }
 
-const focusonclick=(id,name)=>{
-    notificationS.fanMsg(id,name)
-    console.log("关注",authorid.value);
+const focusonclick = (id, name) => {
+    notificationS.fanMsg(id, name)
+    console.log("关注", authorid.value);
 }
 
 
@@ -178,6 +186,7 @@ const focusonclick=(id,name)=>{
             min-height: 42px;
 
             .info-avatar {
+                cursor: pointer;
                 width: 68px;
                 height: 68px;
                 position: absolute;

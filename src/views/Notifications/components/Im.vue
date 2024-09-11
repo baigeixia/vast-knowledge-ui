@@ -32,12 +32,12 @@
                     <div class="info-snippet">{{ item.snippet }}</div>
                   </div>
                   <div class="info-more">
-                    <time>刚刚</time>
+                    <time>{{formatTime(item.senderTime)}}</time>
                     <el-dropdown trigger="click">
                       <i class="bi bi-three-dots-vertical"></i>
                       <template #dropdown>
                         <el-dropdown-menu>
-                          <el-dropdown-item @click="infodel(item.id)">删除</el-dropdown-item>
+                          <!-- <el-dropdown-item @click="infodel(item.id)">删除</el-dropdown-item> -->
                           <el-dropdown-item @click="inforeport(item.id)">举报</el-dropdown-item>
                         </el-dropdown-menu>
                       </template>
@@ -78,7 +78,7 @@
                     <div class="info-snippet">{{ item.snippet }}</div>
                   </div>
                   <div class="info-more">
-                    <time>刚刚</time>
+                    <time>{{formatTime(item.senderTime)}}</time>
                     <el-dropdown trigger="click">
                       <i class="bi bi-three-dots-vertical"></i>
                       <template #dropdown>
@@ -126,7 +126,7 @@
                     <div class="info-snippet">{{ item.snippet }}</div>
                   </div>
                   <div class="info-more">
-                    <time>刚刚</time>
+                    <time>{{formatTime(item.senderTime)}}</time>
                     <el-dropdown trigger="click">
                       <i class="bi bi-three-dots-vertical"></i>
                       <template #dropdown>
@@ -182,6 +182,8 @@
 import { ref, onMounted, computed } from 'vue';
 import { ElMessage } from 'element-plus'
 import ChatChatBox from './components/ChatChatBox.vue';
+import Cookies from 'js-cookie'
+import {formatTime} from '@/utils/formDate'
 
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
@@ -245,7 +247,7 @@ const loadrecent = async () => {
 
 onMounted(() => {
   handleOpen(menutype.value)
-  notificationS.isim=false
+  notificationS.isim = false
 })
 
 const handleOpen = async (type) => {
@@ -359,9 +361,28 @@ const reportsubmit = () => {
 }
 
 
+
 const infodel = (userid) => {
   console.log('删除userid ', userid)
+  // localdeleteUser(userid)
 }
+
+// const UserRecordsKey = 'Remove-Records'
+
+// const localdeleteUser = (userid) => {
+//   const records = Cookies.get(UserRecordsKey)
+//   const recordsArray = records ? JSON.parse(records) : [];
+//   // 将新用户ID添加到记录数组中
+//   recordsArray.push(userid);
+
+//   // 更新 cookies 中的用户记录
+//   Cookies.set(UserRecordsKey, JSON.stringify(recordsArray));
+// }
+
+// const getLocaldelUsers = () => {
+//   const users = Cookies.get(UserRecordsKey);
+//   return users ? JSON.parse(users) : [];
+// }
 
 const inforeport = (userid) => {
   console.log('举报userid', userid)
@@ -571,7 +592,7 @@ onMounted(() => {
 
             time {
               font-size: 10px;
-              color: #929394;
+              color: #404244;
               text-align: center;
             }
           }
@@ -616,7 +637,7 @@ onMounted(() => {
 
 
             .info-snippet {
-              max-width: 11rem;
+              max-width: 10rem;
               font-size: 13px;
               color: #929394;
               overflow: hidden;

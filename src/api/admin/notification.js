@@ -69,3 +69,13 @@ export function setclearUnreadMsg(userId) {
     }
   })
 }
+
+export function setdelMsg(msgId) {
+  return systemRequest({
+    url: '/user/letter/delMsg',
+    method: 'DELETE',
+    params:{
+      msgId: msgId,
+    }
+  })
+}

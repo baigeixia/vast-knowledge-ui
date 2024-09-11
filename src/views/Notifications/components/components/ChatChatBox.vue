@@ -15,8 +15,7 @@
               <img class="user-avatar-img"
                 :src="message.userType == 'sender' ? messageListData.receiver.avatar : messageListData.sender.avatar"
                 @click="useravatar(
-                  message.userType == 'sender' ? messageListData.receiver.id : messageListData.sender.id
-                )">
+                  message.userType == 'sender' ? messageListData.receiver.id : messageListData.sender.id)">
             </div>
           </div>
           <el-tooltip :offset="0" trigger="click" popper-class="chat-tooltip-message-popper" :show-after="200"
@@ -31,7 +30,7 @@
                 </div>
                 <template #content>
                   <div class="content-status-op">
-                    <el-button @click="statusopendel" link>
+                    <el-button @click="statusopendel(message.id)" link>
                       删除
                     </el-button>
                     <!-- <el-button  link>
@@ -296,7 +295,7 @@ const handleFileChange = (event) => {
   }
 }
 
-const statusopendel = () => {
+const statusopendel = (messageid) => {
   ElMessageBox.confirm(
     '是否删除该条消息',
     '删除消息',
@@ -306,11 +305,24 @@ const statusopendel = () => {
       type: 'warning',
     }
   )
-    .then(() => {
-      ElMessage({
-        type: 'success',
-        message: '删除成功',
-      })
+    .then( async() => {
+     await notificationS.delsetdelMsg(messageid)
+        .then(response => {
+          // 处理请求成功的逻辑
+          ElMessage({
+            type: 'success',
+            message: '删除成功',
+          });
+          messageListData.value.messages = messageListData.value.messages.filter(message => message.id !== messageid);
+        })
+        .catch(error => {
+          // 处理请求失败的逻辑
+          ElMessage({
+            type: 'error',
+            message: '删除失败，请稍后再试',
+          });
+          console.error('删除消息失败', error);
+        });
     })
     .catch(() => {
       ElMessage({

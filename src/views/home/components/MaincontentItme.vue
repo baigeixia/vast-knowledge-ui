@@ -10,7 +10,7 @@
     <div class="row-footer">
         <div class="action-list">
             <div class="item-li">
-                <RouterLink to="/user" class="user-message">
+                <RouterLink :to="`/user/${content.authorId}`" class="user-message">
                     <div class="user-popover">{{ content.authorName }}</div>
                 </RouterLink>
             </div>

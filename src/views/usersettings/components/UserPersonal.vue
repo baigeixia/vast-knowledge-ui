@@ -5,41 +5,50 @@
         </div>
         <div class="user-infos">
             <div class="info-input">
-                <el-form class="info-form"  ref="formRef" :model="form" label-width="auto" style="max-width: 600px">
+                <el-form class="info-form" ref="formRef" :model="form" label-width="auto" style="max-width: 600px">
                     <div class="title">基本信息</div>
                     <el-form-item label="用户名" prop="name" :rules="[
                         { required: true, message: '请填写用户名' },
                     ]">
                         <el-input v-model="form.name" show-word-limit type="text" maxlength="20" placeholder="请填写用户名" />
                     </el-form-item>
-                    <el-form-item label="开始工作" prop="datatime" :rules="[
-                        { required: true, message: '请填写开始工作时间' },
+                    <el-form-item label="您的生日" prop="birthday" :rules="[
+                        { required: true, message: '您的生日时间' },
                     ]">
-                        <el-date-picker style="width: 100%;" :clearable="false" v-model="form.datatime" type="month"   :disabled-date="disabledDate"
+                        <el-date-picker style="width: 100%;" :clearable="false" v-model="form.birthday" type="date"
                             placeholder="请选择时间" />
                     </el-form-item>
-                    <el-form-item label="职业方向" prop="occupation" :rules="[
-                        { required: true, message: '请选择职业方向' },
+                    <!-- <el-form-item label="职业方向" prop="occupation" :rules="[
+                        { required: true, message: '职业方向' },
                     ]">
                         <el-select v-model="form.occupation" placeholder="Select" style="width: 100%">
                             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
                         </el-select>
+                    </el-form-item> -->
+                    <el-form-item label="性别">
+                        <el-radio-group v-model="form.sex">
+                            <el-radio :value="0">男</el-radio>
+                            <el-radio :value="1">女</el-radio>
+                        </el-radio-group>
                     </el-form-item>
-                    <el-form-item label="职位" >
-                        <el-input v-model="form.position" type="text" show-word-limit maxlength="100"
-                            placeholder="请输入您的职位" />
+                    <el-form-item label="职业方向">
+                        <el-input v-model="form.occupation" type="text" show-word-limit maxlength="100"
+                            placeholder="您的职业方向" />
+                    </el-form-item>
+                    <el-form-item label="职位">
+                        <el-input v-model="form.position" type="text" show-word-limit maxlength="100" placeholder="您的职位" />
                     </el-form-item>
                     <el-form-item label="公司">
-                        <el-input v-model="form.company" type="text" show-word-limit maxlength="100"
-                            placeholder="请输入您的公司" />
+                        <el-input v-model="form.company" type="text" show-word-limit maxlength="100" placeholder="您的公司" />
                     </el-form-item>
-                    <el-form-item label="个人主页">
+                    <!-- <el-form-item label="个人主页">
                         <el-input v-model="form.homepage" type="text" show-word-limit maxlength="100"
-                            placeholder="请输入您的个人主页" />
-                    </el-form-item>
+                            placeholder="您的个人主页" />
+                    </el-form-item> -->
                     <el-form-item label="个人介绍">
-                        <el-input v-model="form.describe" type="textarea" clearable :autosize="{ minRows: 4, maxRows: 30 }"
-                            show-word-limit maxlength="200" placeholder="请填写职业技能、擅长的事情、兴趣爱好等" />
+                        <el-input v-model="form.introduction" type="textarea" clearable
+                            :autosize="{ minRows: 4, maxRows: 30 }" show-word-limit maxlength="200"
+                            placeholder="请填写职业技能、擅长的事情、兴趣爱好等" />
                     </el-form-item>
                     <div class="title">兴趣标签管理 <div class="error-message" v-if="showError">请选择兴趣标签</div>
                     </div>
@@ -67,7 +76,8 @@
                         :before-upload="beforeAvatarUpload">
                         <!-- <div :style="{ backgroundImage: `url(${avatarUrl})` }" class="avatar-background"></div> -->
                         <!-- <img class="avatar-background" :src="avatarUrl" alt=""> -->
-                        <img class="avatar-background" src="https://pic1.zhimg.com/v2-c352b42456dbe31b3b3bab054e788368_b.jpg" alt="">
+                        <img class="avatar-background"
+                            src="https://pic1.zhimg.com/v2-c352b42456dbe31b3b3bab054e788368_b.jpg" alt="">
                         <div class="avatar-placeholder">
                             <el-icon class="avatar-uploader-icon avatar-icon">
                                 <Plus />
@@ -86,17 +96,38 @@
 </template>
 
 <script setup>
-import { ref, reactive ,onMounted} from "vue"
-const pageTitle = ref('个人设置');
-onMounted(() => {
-  document.title = pageTitle.value;
-});
+import { ref, reactive, onMounted } from "vue"
 import { ElMessage } from 'element-plus'
 
+import userinfoAppStore from "@/stores/user/userinfo"
+const userinfoAppStores = userinfoAppStore();
+
+
+
+const pageTitle = ref('个人设置');
+onMounted(async () => {
+    document.title = pageTitle.value;
+    await userinfoAppStores.getusergetLocalInfo()
+    upFrom()
+});
+
+const upFrom = () => {
+    Object.assign(form, userinfoAppStores.userLocalinfo);
+}
+
+const form = reactive({
+    name: '',
+    occupation: '',
+    position: '',
+    company: '',
+    sex: '',
+    birthday: '',
+    introduction: '',
+})
 const avatarUrl = ref('')
 
 const disabledDate = (time) => {
-  return time.getTime() > Date.now()
+    return time.getTime() > Date.now()
 }
 
 const handleAvatarChange = (file, fileList) => {
@@ -138,13 +169,15 @@ const formRef = ref()
 
 const onSubmit = (formEl) => {
     if (!formEl) return
-  formEl.validate((valid) => {
-    if (valid) {
-      console.log('submit!')
-    } else {
-      console.log('error submit!')
-    }
-  })
+    console.log(formEl);
+console.log(form);
+    formEl.validate((valid) => {
+        if (valid) {
+            console.log('submit!')
+        } else {
+            console.log('error submit!')
+        }
+    })
 }
 
 const toggleTag = (tag) => {
@@ -157,15 +190,7 @@ const toggleTag = (tag) => {
     showError.value = selectedTags.value.length === 0
 }
 
-const form = reactive({
-    name: 'zs',
-    datatime: '2024-06-25',
-    occupation: '前端',
-    position: '职位',
-    company: '公司',
-    homepage: '个人主页',
-    describe: '个人介绍',
-})
+
 
 
 const options = ref([

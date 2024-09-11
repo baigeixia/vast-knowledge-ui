@@ -4,7 +4,7 @@
     <div class="item">
       <span class="title">手机</span>
       <div class="input-box">
-        <div class="account">13*****2005</div>
+        <div class="account">{{userinfoAppStores.userLocalinfo.phone}}</div>
         <div class="action-box">编辑</div>
       </div>
     </div>
@@ -49,6 +49,11 @@
 <script setup>
 import { ref,onMounted } from 'vue';
 const pageTitle = ref('账号设置');
+
+import userinfoAppStore from "@/stores/user/userinfo"
+const userinfoAppStores = userinfoAppStore();
+
+
 onMounted(() => {
   document.title = pageTitle.value;
 });

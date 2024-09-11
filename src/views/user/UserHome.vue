@@ -3,52 +3,56 @@
         <div class="major-area">
             <div class="user-info-block block shadow">
                 <div class="avatar">
-                    <img class="avatar-img"
-                        src="https://p9-passport.byteacctimg.com/img/mosaic-legacy/3796/2975850990~90x90.awebp">
+                    <img class="avatar-img" :src="userinfoHome.image">
                 </div>
                 <div class="info-box">
                     <div class="top">
                         <div class="left">
-                            <h1 class="username">用户331112371026</h1>
+                            <h1 class="username">{{ userinfoHome.name }}</h1>
                         </div>
-                        <div class="link-box">这个是第三方切换地方</div>
+                        <div class="link-box">{{ userinfoHome.company }}</div>
                     </div>
-                    <div class="user-info-icon">图标位置</div>
+                    <div class="user-info-icon">{{ userinfoHome.position}}</div>
                     <div class="introduction">
-                        <div class="left">你从事什么职业？ 标签</div>
+                        <div class="left">{{ userinfoHome.occupation }}</div>
                         <div class="right">
                             <RouterLink to="/user/settings"><el-button><el-icon>
                                         <Setting />
                                     </el-icon></el-button></RouterLink>
                         </div>
                     </div>
+                    <div class="info-sex">
+                        <i v-if="userinfoHome.sex===0" class="bi bi-gender-male"></i>
+                        <i v-else-if="userinfoHome.sex===1" class="bi bi-gender-female"></i>
+                        <i v-else class="bi bi-gender-ambiguous"></i>
+                    </div>
                 </div>
             </div>
             <div class="list-block">
                 <div class="list-header">
                     <div class="header-content">
-                        <RouterLink to="/user/pins">
-                            <div class="nav-item" :class="{ 'active': isActive('/user/pins') }">
+                        <RouterLink :to="`/user/${userid}`" >
+                            <div class="nav-item" :class="{ 'active':  route.path.split('/').length==3 }">
                                 <el-button link><span>动态</span></el-button>
                             </div>
                         </RouterLink>
-                        <RouterLink to="/user/posts">
-                            <div class="nav-item" :class="{ 'active': isActive('/user/posts') }">
+                        <RouterLink :to="`/user/${userid}/posts`">
+                            <div class="nav-item" :class="{ 'active': isActive('/posts') }">
                                 <el-button link><span>文章</span></el-button>
                             </div>
                         </RouterLink>
-                        <RouterLink to="/user/columns">
-                            <div class="nav-item" :class="{ 'active': isActive('/user/columns') }">
+                        <RouterLink :to="`/user/${userid}/columns`" >
+                            <div class="nav-item" :class="{ 'active': isActive('/columns') }">
                                 <el-button link><span>专栏</span></el-button>
                             </div>
                         </RouterLink>
-                        <RouterLink to="/user/collections">
-                            <div class="nav-item" :class="{ 'active': isActive('/user/collections') }">
+                        <RouterLink :to="`/user/${userid}/collections`" >
+                            <div class="nav-item" :class="{ 'active': isActive('/collections') }">
                                 <el-button link><span>收藏集</span></el-button>
                             </div>
                         </RouterLink>
-                        <RouterLink to="/user/tags">
-                            <div class="nav-item" :class="{ 'active': isActive('/user/tags') }">
+                        <RouterLink :to="`/user/${userid}/tags`">
+                            <div class="nav-item" :class="{ 'active': isActive('/tags') }">
                                 <el-button link><span>关注</span></el-button>
                             </div>
                         </RouterLink>
@@ -86,12 +90,12 @@
             <div class="sticky">
                 <div class="follow-block">
                     <div class="follow-item">
-                        <div class="item-title">关注了</div>
-                        <div class="item-count">0</div>
+                        <div class="item-title">关注</div>
+                        <div class="item-count">{{ userinfoHome.follows }}</div>
                     </div>
                     <div class="follow-item">
-                        <div class="item-title">关注者</div>
-                        <div class="item-count">0</div>
+                        <div class="item-title">粉丝</div>
+                        <div class="item-count">{{ userinfoHome.fans }}</div>
                     </div>
                 </div>
                 <div class="more-block block">
@@ -105,7 +109,7 @@
                     </div>
                     <div class="more-item">
                         <div class="item-title">加入于</div>
-                        <div class="item-count">0</div>
+                        <div class="item-count">{{ userinfoHome.createdTime }}</div>
                     </div>
                 </div>
             </div>
@@ -115,15 +119,37 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { useRoute } from 'vue-router';
+
+import userinfoAppStore from "@/stores/user/userinfo"
+const userinfoAppStores = userinfoAppStore();
+
 const route = useRoute();
 
-const headerBut = ref(1)
+const props = defineProps({
+    userid: {
+        type: String,
+        required: true,
+        default: ''
+    }
+})
+
+
+onMounted(async () => {
+    const userid =route.params.userid
+    const id =props.userid
+    console.log("userid",userid);
+    console.log("id",id);
+    await userinfoAppStores.getusergetInfo(userid)
+    userinfoHome.value = userinfoAppStores.userinfo
+})
+
+const userinfoHome = ref({})
 const loading = ref(false)
 
 const isActive = (path) => {
-    return route.path === path;
+    return route.path.includes(path) ;
 };
 </script>
 
@@ -143,7 +169,7 @@ const isActive = (path) => {
 
         .activity-list-box {
             flex: 1;
-            margin:  20px 20px;
+            margin: 20px 20px;
         }
 
         .list-block {
@@ -212,12 +238,13 @@ const isActive = (path) => {
             }
 
             .itme-right {
-                width:100%;
+                width: 100%;
             }
         }
+
         .user-info-block {
             display: flex;
-            padding: 2.5rem;
+            padding: 2rem;
         }
 
         .shadow {
@@ -230,18 +257,10 @@ const isActive = (path) => {
             margin-bottom: 1rem;
 
             .avatar {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                flex: 0 0 auto;
                 margin-right: 2.4rem;
-                width: 7.5rem;
-                height: 7.5rem;
-                // background-color: #f9f9f9;
-                border-radius: 50%;
 
                 .avatar-img {
-                    border-radius: 50%;
+                    border-radius: 8px;
                 }
             }
 

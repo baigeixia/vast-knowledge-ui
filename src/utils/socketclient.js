@@ -26,7 +26,6 @@ export function useSockets() {
   // 在组件卸载时断开连接
   onUnmounted(() => {
     socket.disconnect();
-    userSocket.disconnect();
   });
 
   function reconnectAttempt(socket) {

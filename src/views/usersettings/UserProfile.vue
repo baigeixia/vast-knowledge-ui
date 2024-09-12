@@ -2,7 +2,7 @@
   <div class="prifile-main-box">
     <el-container class="container-header-box">
       <el-header class="header-box">
-        <RouterLink to="/user">
+        <RouterLink :to="`/user/${userinfoAppStores.userLocalinfo.id}`">
           <div class="text"><el-icon>
               <ArrowLeft />
             </el-icon>返回个人主页</div>
@@ -47,6 +47,9 @@
 <script setup>
 import { useRoute } from 'vue-router';
 const route = useRoute();
+import userinfoAppStore from "@/stores/user/userinfo"
+const userinfoAppStores = userinfoAppStore();
+
 const isActive = (path) => {
     return route.path === path;
 };

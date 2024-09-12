@@ -3,10 +3,11 @@ import { getUserInfo } from '@/api/admin/user'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-
+import userinfoAppStore  from '../user/userinfo'
 
  const useUserStore = defineStore(
     'user', () => {
+        const userinfoAppStores =userinfoAppStore()
         const userToken = ref(getToken())
         const userinfo = ref({})
         const userInfoPo = ref({})
@@ -27,10 +28,11 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
                     codeOrPas
                 })
 
-                .then((resp) => {
+                .then( async(resp) => {
                     setToken(resp.data.access_token);
                     userToken.value = resp.data.access_token;
-                    console.log('resp', resp);
+                    // console.log('resp', resp);
+                   await  userinfoAppStores.getusergetLocalInfo()
                     isnotlogin.value = false;
                     // location.href='/'
                     window.location.reload();

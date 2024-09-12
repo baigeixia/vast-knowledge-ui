@@ -16,7 +16,7 @@
                         { required: true, message: '您的生日时间' },
                     ]">
                         <el-date-picker style="width: 100%;" :clearable="false" v-model="form.birthday" type="date"
-                            placeholder="请选择时间" />
+                            placeholder="请选择时间"          :disabled-date="disabledDate" value-format="YYYY-MM-DD" />
                     </el-form-item>
                     <!-- <el-form-item label="职业方向" prop="occupation" :rules="[
                         { required: true, message: '职业方向' },
@@ -50,7 +50,7 @@
                             :autosize="{ minRows: 4, maxRows: 30 }" show-word-limit maxlength="200"
                             placeholder="请填写职业技能、擅长的事情、兴趣爱好等" />
                     </el-form-item>
-                    <div class="title">兴趣标签管理 <div class="error-message" v-if="showError">请选择兴趣标签</div>
+                    <!-- <div class="title">兴趣标签管理 <div class="error-message" v-if="showError">请选择兴趣标签</div>
                     </div>
                     <el-form-item>
                         <div class="tag-manager">
@@ -63,7 +63,7 @@
                                 </div>
                             </div>
                         </div>
-                    </el-form-item>
+                    </el-form-item> -->
                     <el-form-item>
                         <el-button class="submitbutton" style="width: 150px;" type="primary"
                             @click="onSubmit(formRef)">保存</el-button>
@@ -77,7 +77,7 @@
                         <!-- <div :style="{ backgroundImage: `url(${avatarUrl})` }" class="avatar-background"></div> -->
                         <!-- <img class="avatar-background" :src="avatarUrl" alt=""> -->
                         <img class="avatar-background"
-                            src="https://pic1.zhimg.com/v2-c352b42456dbe31b3b3bab054e788368_b.jpg" alt="">
+                            :src="form.image" alt="">
                         <div class="avatar-placeholder">
                             <el-icon class="avatar-uploader-icon avatar-icon">
                                 <Plus />
@@ -96,7 +96,7 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue"
+import { ref, reactive, onMounted ,toRaw} from "vue"
 import { ElMessage } from 'element-plus'
 
 import userinfoAppStore from "@/stores/user/userinfo"
@@ -111,12 +111,38 @@ onMounted(async () => {
     upFrom()
 });
 
+
+
 const upFrom = () => {
-    Object.assign(form, userinfoAppStores.userLocalinfo);
+    const {
+        id,
+        name,
+        image,
+        position,
+        company,
+        sex,
+        birthday,
+        occupation,
+        introduction,
+    } = userinfoAppStores.userLocalinfo
+
+    form.id=id
+    form.name=name
+    form.image=image
+    form.position=position
+    form.company=company
+    form.sex=sex
+    form.occupation=occupation
+    form.birthday=birthday
+    form.introduction=introduction
+
+    // Object.assign(form, userinfoAppStores.userLocalinfo);
 }
 
 const form = reactive({
+    id: '',
     name: '',
+    image: '',
     occupation: '',
     position: '',
     company: '',
@@ -169,11 +195,11 @@ const formRef = ref()
 
 const onSubmit = (formEl) => {
     if (!formEl) return
-    console.log(formEl);
-console.log(form);
-    formEl.validate((valid) => {
+    formEl.validate(async (valid) => {
         if (valid) {
-            console.log('submit!')
+            console.log('form',toRaw(form));
+            await userinfoAppStores.upuserInfo(toRaw(form))
+            ElMessage.success('修改完成')
         } else {
             console.log('error submit!')
         }

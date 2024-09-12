@@ -56,6 +56,10 @@
                                 <el-button link><span>关注</span></el-button>
                             </div>
                         </RouterLink>
+                        <RouterLink :to="`/notifications/im/${userid}`">
+                            私信
+                        </RouterLink>
+
                         <!-- <div class="nav-item" :class="{ active: headerBut == 6 }" @click="headerBut = 6">
                             <el-button link><span>作品</span></el-button>
                         </div> -->
@@ -119,14 +123,11 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { useRoute } from 'vue-router';
-
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
-
 const route = useRoute();
-
 const props = defineProps({
     userid: {
         type: String,
@@ -135,13 +136,14 @@ const props = defineProps({
     }
 })
 
-
 onMounted(async () => {
-    const userid =route.params.userid
     const id =props.userid
-    console.log("userid",userid);
-    console.log("id",id);
-    await userinfoAppStores.getusergetInfo(userid)
+    await userinfoAppStores.getusergetInfo(id)
+    userinfoHome.value = userinfoAppStores.userinfo
+})
+
+watch(()=>props.userid,async(newValue)=>{
+    await userinfoAppStores.getusergetInfo(newValue)
     userinfoHome.value = userinfoAppStores.userinfo
 })
 

@@ -39,9 +39,12 @@ const router = createRouter({
               component: () => import('../views/notifications/components/Follow.vue'),
             },
             {
-              path: 'im',
+              path: 'im/:userid?',
               name: 'im',
               component: () => import('../views/notifications/components/Im.vue'),
+              props: route => ({
+                participantId: route.params.userid 
+              }),
             },
             {
               path: 'system',

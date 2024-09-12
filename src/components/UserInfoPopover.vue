@@ -25,7 +25,7 @@
             <div class="meta-row" v-else>
                 <div class="item">
                     <div class="item-name">粉丝</div>
-                    <div class="item-count">{{ authorInfor?.fans }}</div>
+                    <div class="item-count">{{ authorInfor?.fans}}</div>
                 </div>
                 <!-- <div class="item">
                     <div class="item-count">{{authorInfor.follows}}</div>
@@ -33,7 +33,7 @@
                 </div> -->
                 <div class="item">
                     <div class="item-name">关注者</div>
-                    <div class="item-count">{{ authorInfor?.follows }}</div>
+                    <div class="item-count">{{ authorInfor?.follows	}}</div>
                 </div>
 
             </div>
@@ -79,15 +79,15 @@ const userpopovershow = async () => {
             isLoading.value = true
             const authordata = await userS.getUserInfoPo(authorid.value)
             if (authordata) {
-                authorInfor.value = authordata
+                authorInfor.value = authordata.data
             }
+            console.log(authorInfor.value);
             isLoading.value = false
         } catch (error) {
             console.error('Error loading more data:', error);
         } finally {
             isLoading.value = false
         }
-
     }
 }
 

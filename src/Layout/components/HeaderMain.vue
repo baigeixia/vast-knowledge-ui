@@ -90,7 +90,7 @@
             </el-dropdown-menu>
           </template>
         </el-dropdown>
-        <el-dropdown style=" cursor: pointer;" trigger="click">
+        <el-dropdown style=" cursor: pointer;" trigger="click" v-if="userinfoAppStores.userid && getToken()">
           <div class="right-li">
             <div class="right-li-datails">
               <el-icon>
@@ -101,7 +101,7 @@
           </div>
           <template #dropdown>
             <el-dropdown-menu style="z-index: 1000;">
-              <RouterLink to="/user/1">
+              <RouterLink :to="`/user/${userinfoAppStores.userid}`">
               <el-dropdown-item >
                 <el-icon>
                     <User />
@@ -122,20 +122,30 @@
 </template>
 
 <script setup>
-import { ref } from "vue"
+import { onMounted, ref } from "vue"
 import { byLoading } from '@/utils/Loading'
 import { useRouter, useRoute } from 'vue-router';
 import { channelAppStore } from "@/stores/admin/channel";
 const header = channelAppStore()
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
+import { getUserid ,getToken  } from '@/utils/auth'
+
+import userinfoAppStore from "@/stores/user/userinfo"
+const userinfoAppStores = userinfoAppStore();
+
 
 const route = useRoute();
 const router = useRouter();
 
 const headerinput = ref('')
 
-
+onMounted(async()=>{
+ const id= getUserid()
+  if(!id){
+    await userinfoAppStores.getusergetLocalInfo()
+  }
+})
 
 const upheadertype = (type) => {
   header.headertype = type

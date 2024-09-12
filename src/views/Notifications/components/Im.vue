@@ -32,7 +32,7 @@
                     <div class="info-snippet">{{ item.snippet }}</div>
                   </div>
                   <div class="info-more">
-                    <time>{{formatTime(item.senderTime)}}</time>
+                    <time v-if="item.senderTime">{{ formatTime(item.senderTime) }}</time>
                     <el-dropdown trigger="click">
                       <i class="bi bi-three-dots-vertical"></i>
                       <template #dropdown>
@@ -78,7 +78,7 @@
                     <div class="info-snippet">{{ item.snippet }}</div>
                   </div>
                   <div class="info-more">
-                    <time>{{formatTime(item.senderTime)}}</time>
+                    <time>{{ formatTime(item.senderTime) }}</time>
                     <el-dropdown trigger="click">
                       <i class="bi bi-three-dots-vertical"></i>
                       <template #dropdown>
@@ -126,7 +126,7 @@
                     <div class="info-snippet">{{ item.snippet }}</div>
                   </div>
                   <div class="info-more">
-                    <time>{{formatTime(item.senderTime)}}</time>
+                    <time>{{ formatTime(item.senderTime) }}</time>
                     <el-dropdown trigger="click">
                       <i class="bi bi-three-dots-vertical"></i>
                       <template #dropdown>
@@ -179,15 +179,42 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue';
+import { ref, onMounted, computed, watch } from 'vue';
 import { ElMessage } from 'element-plus'
 import ChatChatBox from './components/ChatChatBox.vue';
 import Cookies from 'js-cookie'
-import {formatTime} from '@/utils/formDate'
+import { formatTime } from '@/utils/formDate'
 
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
 
+import userinfoAppStore from "@/stores/user/userinfo"
+const userinfoAppStores = userinfoAppStore();
+
+
+const props = defineProps({
+  participantId: {
+    type: String,
+    required: true
+  },
+});
+
+onMounted(async() => {
+  handleOpen(menutype.value)
+  notificationS.isim = false
+  // if(props.participantId){
+  //   console.log("participantId",props.participantId);
+  //   const data= await userinfoAppStores.getusergetInfo(props.participantId)
+  //   console.log(data);
+  //   recentlist.value.unshift(data)
+  // }
+})
+
+
+watch(()=>props.participantId,async (newValue)=>{
+ const data= await userinfoAppStores.getusergetInfo(newValue)
+  recentlist.value.unshift(data)
+})
 
 const boxuserid = ref(0)
 const boxUserName = ref('')
@@ -245,10 +272,7 @@ const loadrecent = async () => {
   recentlist.value = [...recentlist.value, ...testlist.value]
 }
 
-onMounted(() => {
-  handleOpen(menutype.value)
-  notificationS.isim = false
-})
+
 
 const handleOpen = async (type) => {
   menutype.value = type

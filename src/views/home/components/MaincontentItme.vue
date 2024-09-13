@@ -20,10 +20,15 @@
                 </el-icon>
                 <span> {{ content.views }}</span>
             </div>
-            <div class="item-li like " @click="notificationS.likeArticle(content.id, content.authorId,content.authorName,0)">
-                <i class="bi bi-suit-heart-fill" :class="{ 'islike': islikeArticle }">
-                    <span> {{ content.likes }}</span>
-                </i>
+            <div class="item-li item-li-like ">
+                <i v-if="content.authorId == userinfoAppStores.userid" class="bi bi-heart-fill noLike"></i>
+                <div v-else>
+                    <i v-if="islikeArticle" class="bi bi-heart-fill islike"
+                        @click="Articlelike(content.id, content.authorId, content.authorName, 0)"></i>
+                    <i v-else class="bi bi-heart like"
+                        @click="Articlelike(content.id, content.authorId, content.authorName, 0)"></i>
+                </div>
+                <span> {{ content.likes }}</span>
             </div>
             <!-- <div class="dislike-item">
                 <el-icon>
@@ -35,11 +40,11 @@
                     <div><i class="bi bi-three-dots dots"></i></div>
                     <template #dropdown>
                         <el-dropdown-menu>
-                            <el-dropdown-item  @click="dislike(content.id)">
+                            <el-dropdown-item @click="dislike(content.id)">
                                 <div>不感兴趣</div>
                             </el-dropdown-item>
                             <el-dropdown-item @click="report(content.id)">
-                                <div >举报</div>
+                                <div>举报</div>
                             </el-dropdown-item>
                         </el-dropdown-menu>
                     </template>
@@ -47,28 +52,30 @@
             </div>
         </div>
     </div>
-    <el-dialog class="report-dialog" v-model="reportdialog" :lock-scroll="false"  title="举报" width="650" :before-close="reportdialogClose">
-            <div class="report-group-title">
-                <div class="title-marl">*</div>
-                请选择举报类型
+    <el-dialog class="report-dialog" v-model="reportdialog" :lock-scroll="false" title="举报" width="650"
+        :before-close="reportdialogClose">
+        <div class="report-group-title">
+            <div class="title-marl">*</div>
+            请选择举报类型
+        </div>
+        <el-radio-group class="report-group" v-model="reporting" size="large">
+            <el-radio-button v-for="city in cities" :key="city" :value="city">
+                {{ city }}
+            </el-radio-button>
+        </el-radio-group>
+        <template #footer>
+            <div class="report-dialog-footer">
+                <el-button :disabled="!reporting" type="primary" round
+                    @click="reportsubmit(content.id, content.authorId, content.authorName)">
+                    提交举报
+                </el-button>
             </div>
-            <el-radio-group class="report-group" v-model="reporting" size="large">
-                <el-radio-button v-for="city in cities" :key="city" :value="city">
-                    {{ city }}
-                </el-radio-button>
-            </el-radio-group>
-            <template #footer>
-                <div class="report-dialog-footer">
-                    <el-button :disabled="!reporting" type="primary" round @click="reportsubmit(content.id, content.authorId,content.authorName)">
-                        提交举报
-                    </el-button>
-                </div>
-            </template>
+        </template>
     </el-dialog>
 </template>
 
 <script setup>
-import { onMounted, ref, nextTick } from "vue"
+import { onMounted, ref, nextTick,computed } from "vue"
 import { escapeHtml } from '@/utils/escapeHtml'
 import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus'
@@ -77,8 +84,24 @@ import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
 import reportAppStore from "@/stores/user/report";
 const reportAppStores = reportAppStore()
+import articleAppStore from "@/stores/admin/article";
+const articleStore = articleAppStore()
 
+import userinfoAppStore from "@/stores/user/userinfo"
+const userinfoAppStores = userinfoAppStore();
 
+const Articlelike = (id, authorId, authorName, type) => {
+    notificationS.likeArticle(id, authorId, authorName, type)
+    articleStore.postoperation.set(id, !islikeArticle.value)
+    islikeArticle.value = !islikeArticle.value
+    islikeArticle.value ? props.content.likes++ : props.content.likes--
+}
+
+// onMounted(() => {
+//     islikeArticle.value = Boolean(articleStore.postoperation.get(Number(props.content.id)) ?? 0)
+// })
+
+const islikeArticle =computed(()=>!Boolean(articleStore.postoperation.get(Number(props.content.id)) ?? 1));
 
 const props = defineProps({
     content: {
@@ -99,7 +122,7 @@ const cities = ['涉政有害', '不友善', '垃圾广告'
     , '冒充'
 ]
 
-const islikeArticle = ref(false)
+// const islikeArticle = ref(false)
 
 
 const openInNewTab = (contentid) => {
@@ -112,9 +135,9 @@ const reporting = ref(null)
 const reportdialog = ref(false);
 const reportuserid = ref('')
 
-const reportsubmit = (contentid,authorId,authorName) => {
+const reportsubmit = (contentid, authorId, authorName) => {
     if (reporting.value) {
-        reportAppStores.userReportSeve(authorId,authorName,contentid,reporting.value)
+        reportAppStores.userReportSeve(authorId, authorName, contentid, reporting.value)
         ElMessage.success('已提交举报申请')
     } else {
         ElMessage.warning('请选择举报理由')
@@ -151,49 +174,49 @@ const router = useRouter();
 <style lang="scss" scoped>
 .report-dialog {
 
-.report-group-title {
-    margin-bottom: 20px;
-    display: flex;
-    box-sizing: border-box;
-    // margin: 0px;
-    min-width: 0px;
-    font-weight: 600;
-    font-size: 16px;
-    color: rgb(25, 27, 31);
+    .report-group-title {
+        margin-bottom: 20px;
+        display: flex;
+        box-sizing: border-box;
+        // margin: 0px;
+        min-width: 0px;
+        font-weight: 600;
+        font-size: 16px;
+        color: rgb(25, 27, 31);
 
-    .title-marl {
-        text-align: center;
-        color: rgb(217, 83, 80);
-        margin-left: 10px;
-        margin-right: 5px;
+        .title-marl {
+            text-align: center;
+            color: rgb(217, 83, 80);
+            margin-left: 10px;
+            margin-right: 5px;
 
-    }
-}
-
-.report-group {
-    justify-content: center;
-
-    .el-radio-button {
-        margin: 5px;
-        border: var(--el-border);
-
-        :deep(.el-radio-button__inner) {
-            width: 174px;
-            border: #f2f3f5;
         }
     }
-}
 
-.report-dialog-footer {
-    display: flex;
-    justify-content: center;
-    margin-top: 20px;
-    margin-bottom: 10px;
+    .report-group {
+        justify-content: center;
 
-    .el-button {
-        width: 370px;
+        .el-radio-button {
+            margin: 5px;
+            border: var(--el-border);
+
+            :deep(.el-radio-button__inner) {
+                width: 174px;
+                border: #f2f3f5;
+            }
+        }
     }
-}
+
+    .report-dialog-footer {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        margin-bottom: 10px;
+
+        .el-button {
+            width: 370px;
+        }
+    }
 
 }
 
@@ -290,11 +313,18 @@ const router = useRouter();
             color: #1e80ff;
         }
 
+        .noLike {
+            color: #bdbfc2;
+            cursor: default;
+        }
+
+  
+
         .islike {
             color: #1e80ff;
         }
 
-        .like {
+        .item-li-like {
             color: #000;
         }
 
@@ -365,5 +395,4 @@ const router = useRouter();
 
         }
     }
-}
-</style>
+}</style>

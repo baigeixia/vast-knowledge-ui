@@ -70,7 +70,7 @@ function setupInterceptors(instance) {
   }, error => {
     let { message } = error;
     if (message == "Network Error") {
-      message = "连接异常";
+      message = "网络异常";
     } else if (message.includes("timeout")) {
       message = "请求超时";
     } else if (message.includes("Request failed with status code")) {

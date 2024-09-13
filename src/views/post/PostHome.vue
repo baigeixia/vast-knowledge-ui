@@ -2,16 +2,19 @@
     <el-container class="post-home-main">
         <div class="suspended-panel" v-if="!centermainloading">
             <div class="panel-btn" v-if="y > 180">
-                <img src="https://p6-passport.byteacctimg.com/img/user-avatar/507312f17bf5e7cefebbf297105f1742~100x100.awebp">
+                <RouterLink :to="`/user/${articleS.articleDto.authorId}`"> <img :src="authorInfo.image">
+                </RouterLink>
                 <div class="follow-area" v-if="isfollow">
                     <div class="follow-text" @click="isfollow = false">关注</div>
                 </div>
             </div>
             <el-tooltip content="点赞" placement="left" effect="light">
-                <div class="panel-btn" :class="{ 'active': isagree }">
+                <div class="panel-btn"
+                    :class="{ 'active': isagree, 'user-active': articleS.articleDto.authorId == userinfoAppStores.userid }"
+                    @click="articlelike(articleS.articleDto.authorId)">
                     <el-badge :color="isagree ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
                         :value="Number(articleS.articleDto.likes)" :offset="[10, 3]">
-                        <i class="bi bi-suit-heart-fill"></i>
+                        <i class="bi bi-heart-fill"></i>
                     </el-badge>
                 </div>
             </el-tooltip>
@@ -42,33 +45,40 @@
         <el-container class="home-center">
             <el-container class="center-main">
                 <el-main class="center-main-text">
-                    <el-skeleton :loading="centermainloading" :rows="10" animated  >
+                    <el-skeleton :loading="centermainloading" :rows="10" animated>
                         <h1 class="article-title">{{ articleS.articleDto.title }}</h1>
                         <div class="author-info-box">
                             <div class="author-name">
-                                <RouterLink :to="`/user/${articleS.articleDto.authorId}`">{{ articleS.articleDto.authorName }}</RouterLink>
+                                <RouterLink :to="`/user/${articleS.articleDto.authorId}`">
+                                    {{ articleS.articleDto.authorName }}
+                                </RouterLink>
                             </div>
                             <div class="meta-box">
                                 <div class="time">{{ $formatDateTime(articleS.articleDto.createdTime) }}</div>
+                                <!-- <div class="time">{{ $formatDate(articleS.articleDto.createdTime) }}</div> -->
                                 <div class="read-time" v-if="articleS.articleDto.views > 1">
                                     <i class="bi bi-eye"></i>
                                     <span>{{ articleS.articleDto.views }}</span>
                                 </div>
-                                <div class="read-time" v-if="articleS.articleDto.comment > 1"><i
-                                        class="bi bi-clock"></i><span>{{ articleS.articleDto.comment }}条评论</span></div>
+                                <div class="read-time" v-if="articleS.articleDto.comment > 1">
+                                    <i class="bi bi-clock"></i>
+                                    <span>{{ articleS.articleDto.comment }}条评论</span>
+                                </div>
                             </div>
                         </div>
                         <p class="context-box" v-html="replaceImgWithTag(contentS.content.content)"></p>
                     </el-skeleton>
                 </el-main>
                 <el-footer class="comment-end">
-                    <div class="title">评论 {{ articleS.articleDto.comment }}</div>
+                    <div class="title">评论<span style="margin-left: 5px;" v-if="articleS.articleDto.comment > 1">{{
+                        articleS.articleDto.comment }}</span> </div>
                     <div class="comment-editor">
                         <div class="content">
                             <div class="avatar-box">
                                 <div class="avatar">
-                                    <img class="avatar-img"
-                                        src="https://pica.zhimg.com/v2-3385f8c86358be2b085231a4035e7709_l.jpg">
+                                    <RouterLink :to="`/user/${articleS.articleDto.authorId}`">
+                                        <img class="avatar-img" :src="authorInfo.image">
+                                    </RouterLink>
                                 </div>
                             </div>
                             <div class="form-box">
@@ -110,27 +120,26 @@
             <el-aside class="home-right">
                 <div class="sidebar-block ">
                     <div class="block-body author-block">
-                        <RouterLink class="user-item" :to="`/user/${articleS.articleDto.authorId}`">
+                        <RouterLink class="user-item" :to="`/user/${authorInfo.id}`">
                             <div class="item-left">
-                                <img class="avatar-img"
-                                    src="https://p6-passport.byteacctimg.com/img/user-avatar/507312f17bf5e7cefebbf297105f1742~100x100.awebp">
+                                <img class="avatar-img" :src="authorInfo.image">
                             </div>
                             <div class="item-right">
-                                <span class="username">{{articleS.articleDto.authorName}}</span>
-                                <div class="position">前端开发</div>
+                                <span class="username">{{ authorInfo.name }}</span>
+                                <div class="position">{{ authorInfo.authorName }}</div>
                             </div>
                         </RouterLink>
                         <div class="count-container">
-                            <RouterLink class="stat-item" to="/user/posts">
+                            <!-- <RouterLink class="stat-item" to="/user/posts">
                                 <div class="count">20</div>
                                 <div>文章</div>
+                            </RouterLink> -->
+                            <RouterLink class="stat-item" :to="`/user/${authorInfo.id}/posts`">
+                                <div class="count">{{ authorInfo.follows }}</div>
+                                <div>关注</div>
                             </RouterLink>
-                            <RouterLink class="stat-item" to="/user/posts">
-                                <div class="count">165k</div>
-                                <div>阅读</div>
-                            </RouterLink>
-                            <RouterLink class="stat-item" to="/user/tags">
-                                <div class="count">5555</div>
+                            <RouterLink class="stat-item" :to="`/user/${authorInfo.id}/tags`">
+                                <div class="count">{{ authorInfo.fans }}</div>
                                 <div>粉丝</div>
                             </RouterLink>
                         </div>
@@ -215,7 +224,7 @@
                     </div>
                     <div class="comment-list" v-infinite-scroll="maincommentS.loadMore" :infinite-scroll-immediate="false"
                         :infinite-scroll-disabled="maincommentS.Loadingdisabled">
-                        <PostCommentItem :isSubComments="true" :vice="true"  
+                        <PostCommentItem :isSubComments="true" :vice="true"
                             v-for="comment in maincommentS.commentHomedrawerVo.comments" :key="comment.id"
                             :comment="comment" :articleid="postId" :commentIdTop="comment.id" />
                     </div>
@@ -258,7 +267,14 @@ const contentS = contentStore()
 const articleS = articleAppStore()
 const commentS = commentStore()
 const maincommentS = maincommentAppStore()
+import userinfoAppStore from "@/stores/user/userinfo"
+const userinfoAppStores = userinfoAppStore();
 
+const articlelike = (id) => {
+    articleS.postoperation.set(id, !isagree.value)
+    isagree.value = !isagree.value
+    isagree.value ? articleS.articleDto.likes++ : articleS.articleDto.likes--
+}
 const PostCommentItemAsync = defineAsyncComponent(() => import('./component/PostCommentItem.vue'));
 const props = defineProps({
     postId: {
@@ -271,6 +287,8 @@ const props = defineProps({
         default: ''
     }
 })
+
+const authorInfo = ref({})
 
 
 const upheaderTag = (type) => {
@@ -302,13 +320,14 @@ onMounted(async () => {
 
     if (notificationId) {
         // commentS.commentHomeDto.type = 3
-      maincommentS.commentHomedrawerDto.type = 3
+        maincommentS.commentHomedrawerDto.type = 3
 
     }
-
     await contentS.getContent(postId)
     await articleS.getinfoArticle(postId)
     await commentS.commentListGet()
+    authorInfo.value = await userinfoAppStores.getusergetInfo(articleS.articleDto.authorId)
+
     // await maincommentS.commentListGet()
     // console.log(commentS.commentHomeDto);
     await nextTick(() => {
@@ -321,6 +340,7 @@ onMounted(async () => {
     codeLanguage()
     upTitle()
 })
+
 
 onUnmounted(() => {
     contentS.content = {}
@@ -408,7 +428,7 @@ const { y } = useScroll(window)
 
 const bellvalue = ref(1200)
 const showImageViewer = ref(false)
-const isagree = ref(true)
+const isagree = ref(false)
 const ismsg = ref(false)
 const centermainloading = ref(false)
 const isfollow = ref(true)
@@ -537,6 +557,7 @@ const replaceImgWithTag = (str) => {
                 font-size: 18px;
                 font-weight: 600;
                 line-height: 30px;
+
             }
         }
 
@@ -610,7 +631,7 @@ const replaceImgWithTag = (str) => {
 
         }
 
-        .panel-btn:not(.active):hover {
+        .panel-btn:not(.active, .user-active):hover {
             i {
                 color: #515767;
             }
@@ -621,6 +642,14 @@ const replaceImgWithTag = (str) => {
                 color: #1e80ff;
             }
 
+        }
+
+        .user-active {
+            cursor: default;
+
+            i {
+                color: #bdbfc2;
+            }
         }
 
     }
@@ -735,7 +764,7 @@ const replaceImgWithTag = (str) => {
 
             .center-main-text {
                 background-color: #fff;
-                
+
 
                 .article-title {
                     margin: 0 0 1.3rem;
@@ -1184,6 +1213,7 @@ const replaceImgWithTag = (str) => {
                         }
 
                         .stat-item {
+                            text-align: center;
                             color: #8a919f;
                             font-size: 13px;
                             font-weight: 400;

@@ -1,9 +1,12 @@
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { getCommentList, getCommentReList } from '@/api/admin/comment'
+import { getcommentLikeApi } from '@/api/collection/behaviour'
+import commentStore from './comment'
 
 const maincommentAppStore = defineStore(
     'maincomment', () => {
+        const commentStores = commentStore()
         const commentitemRefidMap = ref({})
 
         const istime = ref(null)
@@ -33,10 +36,10 @@ const maincommentAppStore = defineStore(
             if (isLoadingEnd.value) return;
             isLoadingEnd.value = true;
 
-            const { entryId, type, page, size,notificationId } = commentHomedrawerDto.value
+            const { entryId, type, page, size, notificationId } = commentHomedrawerDto.value
 
             try {
-                const resp = await getCommentList(entryId, type, page, size,notificationId);
+                const resp = await getCommentList(entryId, type, page, size, notificationId);
 
                 if (Array.isArray(resp.data?.comments) && resp.data?.comments.length === 0) {
                     noMore.value = true
@@ -62,6 +65,13 @@ const maincommentAppStore = defineStore(
 
                 commentHomedrawerDto.value.page++;
                 isLoadingEnd.value = false;
+
+                commentStores.getcommentLike(entryId,resp.data.comments)
+
+                
+
+                console.log('commentStores.commentLikes.value', commentStores.commentLikes.value);
+
             } catch (error) {
                 console.error('Error loading more data:', error);
             } finally {

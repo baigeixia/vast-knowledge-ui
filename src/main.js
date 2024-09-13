@@ -14,7 +14,7 @@ import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import "bootstrap-icons/font/bootstrap-icons.css";
 import 'nprogress/nprogress.css';
 import { sanitizeHtml } from './utils/helpers/sanitizeHtml';
-import { formatTime,formatDateTime } from './utils/formDate';
+import { formatTime,formatDateTime,formatDate } from './utils/formDate';
 // import debounce from './utils/debouncing';
 import './loginblocking' 
 
@@ -34,6 +34,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 app.config.globalProperties.$sanitizeHtml = sanitizeHtml;
 app.config.globalProperties.$formatTime = formatTime;
 app.config.globalProperties.$formatDateTime = formatDateTime;
+app.config.globalProperties.$formatDate = formatDate;
 
 app.use(router)
 app.use(ElementPlus, {

@@ -27,9 +27,9 @@ const load = async () => {
     try {
         const data = await notificationS.getCommentNotificationInfo(count.value, 10)
 
-        if (!data || data.length === 0) {
-            noMore.value = true
-        }
+        // if (!data || data.length === 0) {
+        //     noMore.value = true
+        // }
 
         if (data) {
             notificationList.value = [...notificationList.value, ...data]

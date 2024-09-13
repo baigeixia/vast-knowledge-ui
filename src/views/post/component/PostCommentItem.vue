@@ -47,8 +47,13 @@
             </div>
             <div class="comment-meta">
                 <span>{{ $formatTime(comment.time) }}</span>
-                <span class="action-itme" :class="{ 'action': false }" @click="notificationS.likeArticle(articleid,comment.author.id,comment.author.username,1,comment.id)">
-                    <i class="bi bi-suit-heart-fill" :class="{ 'islike' :  true}"  ></i> {{ !comment.likes || comment.likes == 0 ? "喜欢" : comment.likes }}
+                <span v-if="comment.author.id == userinfoAppStores.userid" class="nolike" >
+                    <i class="bi bi-suit-heart-fill"   ></i> 
+                    {{ !comment.likes || comment.likes == 0 ? "喜欢" : comment.likes }}
+                </span>
+                <span v-else class="action-itme" :class="{ 'action': islikeArticle}" @click="likeArticle(articleid,comment.author.id,comment.author.username,1,comment.id)">
+                    <i class="bi bi-suit-heart-fill" :class="{ 'islike' : islikeArticle}"  ></i> 
+                    {{ !comment.likes || comment.likes == 0 ? "喜欢" : comment.likes }}
                 </span>
                 <span class="action-itme" :class="{ 'action': opencommenttime === maincommentS.istime }"
                     @click="opencommentclick">
@@ -95,6 +100,8 @@ const commentS = commentStore()
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
 
+import userinfoAppStore from "@/stores/user/userinfo"
+const userinfoAppStores = userinfoAppStore();
 
 const props = defineProps({
     comment: {
@@ -121,6 +128,22 @@ const props = defineProps({
 });
 
 
+// onMounted(() => {
+//     islikeArticle.value = Boolean(commentS.commentLikes.get(Number(props.comment.id)) ?? 0)
+// })
+
+const likeArticle=(articleid,authorid,username,type,commentid)=>{
+    console.log(commentid);
+    // notificationS.likeArticle(articleid,authorid,username,type,commentid)
+    // commentS.commentLikes.set(commentid, islikeArticle.value ? 1 : 0)
+    // islikeArticle ? props.comment.likes-- : props.comment.likes++
+    commentS.commentLikes.set(commentid, islikeArticle.value ? 1: 0)
+    console.log( commentS.commentLikes);
+    console.log( commentS.commentLikes.get(Number(props.comment.id)) === 0);
+
+}
+
+const islikeArticle =computed(()=>commentS.commentLikes.get(Number(props.comment.id)) === 0 );
 const loadPage = ref(1);
 const dialogloading = ref(false);
 
@@ -432,6 +455,11 @@ const renderLinks = (text) => {
     .action-itme {
         cursor: pointer;
     }
+    .noLike {
+            color: #bdbfc2;
+            cursor: default;
+        }
+
 
     .islike{
         color: #1e80ff;

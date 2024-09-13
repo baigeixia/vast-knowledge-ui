@@ -31,9 +31,9 @@ const load = async () => {
     try {
         const data = await notificationS.getfollowNotificationInfo(count.value, 5)
 
-        if (!data || data.length === 0) {
-            noMore.value = true
-        }
+        // if (!data || data.length === 0) {
+        //     noMore.value = true
+        // }
 
         if (data) {
             notificationList.value = [...notificationList.value, ...data]

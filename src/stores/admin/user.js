@@ -1,5 +1,5 @@
 import { securityLogin } from '@/api/admin/login'
-import { getUserInfo } from '@/api/admin/user'
+import { usergetInfo } from  '@/api/user/userinfo'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { getToken, setToken, removeToken } from '@/utils/auth'
@@ -46,7 +46,7 @@ import userinfoAppStore  from '../user/userinfo'
 
         const getUserInfoPo = async (id)=>{
             try {
-              const resp =  await getUserInfo(id)
+              const resp =  await usergetInfo(id)
               return resp
             } catch (error) {
                 console.error('Error loading more data:', error);

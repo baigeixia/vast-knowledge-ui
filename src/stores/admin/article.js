@@ -1,4 +1,5 @@
 import { gethomeList, infoArticle } from '@/api/admin/article'
+import { getarticleLikeApi } from '@/api/collection/behaviour'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 const articleAppStore = defineStore(
@@ -13,6 +14,8 @@ const articleAppStore = defineStore(
     const articleDto = ref({})
     const noMore = ref(false)
     const loadingdisabled = computed(() => isLoadingEnd.value || noMore.value)
+
+    const postoperation = ref(new Map())
 
 
     const getinfoArticle = async (id) => {
@@ -51,8 +54,18 @@ const articleAppStore = defineStore(
           ]
         };
 
+
         isLoadingEnd.value = false;
 
+        const ids = resp.data?.records ? resp.data?.records.map(article => article.id) : [];
+        if(ids && ids.length >0 ){
+          const response = getarticleLikeApi(ids)
+          const dataObject = (await response).data; 
+          const dataMap = new Map(Object.entries(dataObject).map(([key, value]) => [Number(key), value]));
+          const mergedMap = new Map([...postoperation.value, ...dataMap]);
+          postoperation.value = mergedMap;
+        }
+        
       } catch (error) {
         // console.error('Error loading more data:', error);
       } finally {
@@ -78,6 +91,7 @@ const articleAppStore = defineStore(
       loadingdisabled,
       navigationtype,
       isLoadingEnd,
+      postoperation,
       getarticleList,
       getinfoArticle,
       loadMore,

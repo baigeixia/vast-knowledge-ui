@@ -97,7 +97,6 @@ const commentStore = defineStore(
 
                await getcommentLike(entryId, resp.data?.comments)
 
-                console.log('commentLikes.value', commentLikes.value);
 
             } catch (error) {
                 console.error('Error loading more data:', error);
@@ -130,10 +129,7 @@ const commentStore = defineStore(
                     const response = getcommentLikeApi(entryId, idSet)
                     const dataObject = (await response).data;
                     if (dataObject) {
-                        console.log('dataObject',dataObject);
                         const dataMap = new Map(Object.entries(dataObject).map(([key, value]) => [Number(key), value]));
-                        console.log('dataMap',dataMap.value);
-                        console.log('commentLikes',commentLikes.value);
                         const mergedMap = new Map([...commentLikes.value, ...dataMap]);
                         commentLikes.value = mergedMap;
                     }

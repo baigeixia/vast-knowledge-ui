@@ -87,6 +87,7 @@ const notificationAppStore = defineStore(
       console.log('FAN_NOTIFICATION:', data);
       isfollow.value = true
     })
+
     //私信
     socket.on("CHAT_MSG_NOTIFICATION", (data) => {
       console.log('CHAT_MSG_NOTIFICATION:', data);
@@ -107,6 +108,7 @@ const notificationAppStore = defineStore(
 
 
     const likeArticle = debounce((articleId, authorId, articleName, type, commentId) => {
+      console.log(articleId, authorId, articleName, type, commentId);
       socketEmit("likeMsg", {
         articleId: articleId,
         repayAuthorId: authorId,

@@ -48,11 +48,12 @@
             <div class="comment-meta">
                 <span>{{ $formatTime(comment.time) }}</span>
                 <span v-if="comment.author.id == userinfoAppStores.userid" class="nolike" >
-                    <i class="bi bi-suit-heart-fill"   ></i> 
+                    <i class="bi bi-suit-heart-fill "></i> 
                     {{ !comment.likes || comment.likes == 0 ? "喜欢" : comment.likes }}
                 </span>
-                <span v-else class="action-itme" :class="{ 'action': islikeArticle}" @click="likeArticle(articleid,comment.author.id,comment.author.username,1,comment.id)">
-                    <i class="bi bi-suit-heart-fill" :class="{ 'islike' : islikeArticle}"  ></i> 
+                <span v-else class="action-itme"  @click="likeArticle(articleid,comment.author.id,comment.author.username,1,comment.id)">
+                    <i class="bi" :class="iconClass"></i>
+                     <!-- <i class="bi bi-suit-heart" :class="{ 'islike' : !isnolikeArticle}"  ></i>  -->
                     {{ !comment.likes || comment.likes == 0 ? "喜欢" : comment.likes }}
                 </span>
                 <span class="action-itme" :class="{ 'action': opencommenttime === maincommentS.istime }"
@@ -128,22 +129,24 @@ const props = defineProps({
 });
 
 
-// onMounted(() => {
-//     islikeArticle.value = Boolean(commentS.commentLikes.get(Number(props.comment.id)) ?? 0)
-// })
 
 const likeArticle=(articleid,authorid,username,type,commentid)=>{
-    console.log(commentid);
-    // notificationS.likeArticle(articleid,authorid,username,type,commentid)
-    // commentS.commentLikes.set(commentid, islikeArticle.value ? 1 : 0)
-    // islikeArticle ? props.comment.likes-- : props.comment.likes++
-    commentS.commentLikes.set(commentid, islikeArticle.value ? 1: 0)
-    console.log( commentS.commentLikes);
-    console.log( commentS.commentLikes.get(Number(props.comment.id)) === 0);
+    notificationS.likeArticle(articleid,authorid,username,type,commentid)
+    commentS.commentLikes.set(Number(commentid), isnolikeArticle.value ? 0: 1)
+    isnolikeArticle.value ? props.comment.likes-- : props.comment.likes++
+    console.log(props.comment.likes);
 
 }
 
-const islikeArticle =computed(()=>commentS.commentLikes.get(Number(props.comment.id)) === 0 );
+const iconClass = computed(() => {
+  return {
+    'bi-heart-fill islike': !isnolikeArticle.value,
+    'bi-heart like': isnolikeArticle.value
+  };
+});
+
+
+const isnolikeArticle =computed(()=>commentS.commentLikes.get(Number(props.comment.id)) ?? 1 == 1 );
 const loadPage = ref(1);
 const dialogloading = ref(false);
 
@@ -454,6 +457,7 @@ const renderLinks = (text) => {
 
     .action-itme {
         cursor: pointer;
+        
     }
     .noLike {
             color: #bdbfc2;

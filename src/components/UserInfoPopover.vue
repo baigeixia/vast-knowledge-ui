@@ -73,6 +73,7 @@ onMounted(() => {
     }
 })
 const userpopovershow = async () => {
+    console.log(authorid.value);
     if (authorid.value) {
         if (isLoading.value) return
         try {

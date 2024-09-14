@@ -1,6 +1,6 @@
 import { gethomeList, infoArticle } from '@/api/admin/article'
 import { getarticleLikeApi } from '@/api/collection/behaviour'
-import { ref, computed } from 'vue'
+import { ref, computed ,reactive} from 'vue'
 import { defineStore } from 'pinia'
 const articleAppStore = defineStore(
   'article', () => {
@@ -15,7 +15,8 @@ const articleAppStore = defineStore(
     const noMore = ref(false)
     const loadingdisabled = computed(() => isLoadingEnd.value || noMore.value)
 
-    const postoperation = ref(new Map())
+    // const postoperation = ref(new Map())
+    const postoperation = reactive(new Map())
 
 
     const getinfoArticle = async (id) => {
@@ -58,14 +59,16 @@ const articleAppStore = defineStore(
         isLoadingEnd.value = false;
 
         const ids = resp.data?.records ? resp.data?.records.map(article => article.id) : [];
-        if(ids && ids.length >0 ){
-          const response = getarticleLikeApi(ids)
-          const dataObject = (await response).data; 
+        if (ids && ids.length > 0) {
+          const response =await getarticleLikeApi(ids)
+          const dataObject = response.data;
           const dataMap = new Map(Object.entries(dataObject).map(([key, value]) => [Number(key), value]));
-          const mergedMap = new Map([...postoperation.value, ...dataMap]);
-          postoperation.value = mergedMap;
+          const mergedMap = new Map([...postoperation, ...dataMap]);
+
+          postoperation.clear();
+        mergedMap.forEach((value, key) => postoperation.set(key, value));
         }
-        
+
       } catch (error) {
         // console.error('Error loading more data:', error);
       } finally {

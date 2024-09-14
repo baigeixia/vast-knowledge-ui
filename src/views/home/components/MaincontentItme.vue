@@ -14,20 +14,21 @@
                     <div class="user-popover">{{ content.authorName }}</div>
                 </RouterLink>
             </div>
-            <div class="item-li view">
+            <div class="item-li view" >
                 <el-icon>
                     <View />
                 </el-icon>
                 <span> {{ content.views }}</span>
             </div>
-            <div class="item-li item-li-like ">
-                <i v-if="content.authorId == userinfoAppStores.userid" class="bi bi-heart-fill noLike"></i>
-                <div v-else>
-                    <i v-if="islikeArticle" class="bi bi-heart-fill islike"
-                        @click="Articlelike(content.id, content.authorId, content.authorName, 0)"></i>
-                    <i v-else class="bi bi-heart like"
-                        @click="Articlelike(content.id, content.authorId, content.authorName, 0)"></i>
-                </div>
+            {{ content.authorId == userinfoAppStores.userid }}
+            {{ content.authorId  }}
+            {{ userinfoAppStores.userid }}
+            <div class="item-li item-li-like " v-if="content.authorId == userinfoAppStores.userid">
+                <i class="bi bi-heart-fill noLike"></i>
+                <span> {{ content.likes }}</span>
+            </div>
+            <div v-else class="item-li item-li-like " @click="Articlelike(content.id, content.authorId, content.authorName, 0)">
+                <i class="bi" :class="iconClass"></i>
                 <span> {{ content.likes }}</span>
             </div>
             <!-- <div class="dislike-item">
@@ -75,9 +76,8 @@
 </template>
 
 <script setup>
-import { onMounted, ref, nextTick,computed } from "vue"
+import { onMounted, ref, nextTick, computed, reactive } from "vue"
 import { escapeHtml } from '@/utils/escapeHtml'
-import { useRouter } from 'vue-router';
 import { ElMessage } from 'element-plus'
 
 import notificationAppStore from "@/stores/admin/notification";
@@ -86,22 +86,25 @@ import reportAppStore from "@/stores/user/report";
 const reportAppStores = reportAppStore()
 import articleAppStore from "@/stores/admin/article";
 const articleStore = articleAppStore()
-
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
+import { useRouter } from 'vue-router';
+
+const router = useRouter();
+
+const openInNewTab = (contentid) => {
+    const path = `/post/${contentid}`;
+    const url = router.resolve(path).href;
+    window.open(url, '_blank');
+}
+
 
 const Articlelike = (id, authorId, authorName, type) => {
     notificationS.likeArticle(id, authorId, authorName, type)
-    articleStore.postoperation.set(id, !islikeArticle.value)
-    islikeArticle.value = !islikeArticle.value
-    islikeArticle.value ? props.content.likes++ : props.content.likes--
+    articleStore.postoperation.set(Number(props.content.id), noislikeArticle.value ? 0 : 1)
+    noislikeArticle.value ? props.content.likes-- : props.content.likes++
 }
 
-// onMounted(() => {
-//     islikeArticle.value = Boolean(articleStore.postoperation.get(Number(props.content.id)) ?? 0)
-// })
-
-const islikeArticle =computed(()=>!Boolean(articleStore.postoperation.get(Number(props.content.id)) ?? 1));
 
 const props = defineProps({
     content: {
@@ -109,6 +112,18 @@ const props = defineProps({
         required: true,// 是否必须传递
     },
 });
+
+const noislikeArticle = computed(() => (articleStore.postoperation.get(Number(props.content.id)) ?? 1) == 1)
+
+
+const iconClass = computed(() => {
+  return {
+    'bi-heart-fill islike': !noislikeArticle.value,
+    'bi-heart like': noislikeArticle.value
+  };
+});
+
+
 
 const cities = ['涉政有害', '不友善', '垃圾广告'
     , '涉嫌侵权'
@@ -125,11 +140,7 @@ const cities = ['涉政有害', '不友善', '垃圾广告'
 // const islikeArticle = ref(false)
 
 
-const openInNewTab = (contentid) => {
-    const path = `/post/${contentid}`;
-    const url = router.resolve(path).href;
-    window.open(url, '_blank');
-}
+
 
 const reporting = ref(null)
 const reportdialog = ref(false);
@@ -166,7 +177,6 @@ const report = (id) => {
 }
 
 
-const router = useRouter();
 
 
 </script>
@@ -318,7 +328,7 @@ const router = useRouter();
             cursor: default;
         }
 
-  
+
 
         .islike {
             color: #1e80ff;
@@ -395,4 +405,5 @@ const router = useRouter();
 
         }
     }
-}</style>
+}
+</style>

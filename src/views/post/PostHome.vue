@@ -9,11 +9,14 @@
                 </div>
             </div>
             <el-tooltip content="点赞" placement="left" effect="light">
-                <div class="panel-btn"
-                    :class="{ 'active': isagree, 'user-active': articleS.articleDto.authorId == userinfoAppStores.userid }"
-                    @click="articlelike(articleS.articleDto.authorId)">
-                    <el-badge :color="isagree ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
-                        :value="Number(articleS.articleDto.likes)" :offset="[10, 3]">
+                <div class=" panel-btn user-active" v-if="articleS.articleDto.authorId == userinfoAppStores.userid">
+                    <el-badge color="#b2b2b2" :show-zero='false' :value="Number(articleS.articleDto.likes)"
+                        :offset="[10, 3]">
+                        <i class="bi bi-heart-fill "></i>
+                    </el-badge>
+                </div>
+                <div v-else class="panel-btn"  :class="{'active': !isnolikeArticle  }" @click="articlelike()">
+                    <el-badge :color="!isnolikeArticle ? '#1e80ff':'#b2b2b2'" :show-zero='false' :value="Number(articleS.articleDto.likes)"  :offset="[10, 3]">
                         <i class="bi bi-heart-fill"></i>
                     </el-badge>
                 </div>
@@ -61,8 +64,8 @@
                                     <span>{{ articleS.articleDto.views }}</span>
                                 </div>
                                 <div class="read-time" v-if="articleS.articleDto.comment > 1">
-                                    <i class="bi bi-clock"></i>
-                                    <span>{{ articleS.articleDto.comment }}条评论</span>
+                                    <i class="bi bi-chat-right-text"></i>
+                                    <span>{{ articleS.articleDto.comment }}&nbsp;条评论</span>
                                 </div>
                             </div>
                         </div>
@@ -251,7 +254,7 @@
     </el-image-viewer>
 </template>
 <script setup>
-import { ref, onMounted, onBeforeUnmount, watch, reactive, nextTick, onUnmounted, toRaw, watchEffect, isProxy, isReactive, isReadonly } from 'vue';
+import { ref, onMounted, computed, onBeforeUnmount, watch, reactive, nextTick, onUnmounted, toRaw, watchEffect, isProxy, isReactive, isReadonly } from 'vue';
 import { useScroll } from '@vueuse/core'
 import PostComment from './component/PostComment.vue';
 import PostCommentItem from './component/PostCommentItem.vue';
@@ -270,10 +273,11 @@ const maincommentS = maincommentAppStore()
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 
-const articlelike = (id) => {
-    articleS.postoperation.set(id, !isagree.value)
-    isagree.value = !isagree.value
-    isagree.value ? articleS.articleDto.likes++ : articleS.articleDto.likes--
+
+
+const articlelike = () => {
+    articleS.postoperation.set(Number(props.postId),  isnolikeArticle.value ? 0: 1)
+    isnolikeArticle.value ? articleS.articleDto.likes-- : articleS.articleDto.likes++
 }
 const PostCommentItemAsync = defineAsyncComponent(() => import('./component/PostCommentItem.vue'));
 const props = defineProps({
@@ -288,7 +292,12 @@ const props = defineProps({
     }
 })
 
+
+const isnolikeArticle = computed(() => articleS.postoperation.get(Number(props.postId)) ?? 1 == 1);
+
+
 const authorInfo = ref({})
+
 
 
 const upheaderTag = (type) => {
@@ -571,6 +580,7 @@ const replaceImgWithTag = (str) => {
         top: 140px;
         z-index: 2;
 
+       
         .panel-btn {
             display: flex;
             justify-content: center;
@@ -587,6 +597,8 @@ const replaceImgWithTag = (str) => {
             cursor: pointer;
             text-align: center;
             font-size: 20px;
+
+            
 
             img {
                 position: absolute;
@@ -1008,7 +1020,7 @@ const replaceImgWithTag = (str) => {
                             }
 
                             span {
-                                padding: 0 10px;
+                                padding: 0 5px;
                             }
                         }
                     }

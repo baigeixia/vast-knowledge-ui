@@ -12,6 +12,7 @@ const userinfoAppStore = defineStore(
     const userLocalinfo=ref({})
 
     const getusergetInfo= async (userid)=>{
+      console.log('userid',userid);
       const resp=  await usergetInfo(userid)
       userinfo.value=resp.data
       return resp.data;

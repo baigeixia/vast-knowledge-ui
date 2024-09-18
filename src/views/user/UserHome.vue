@@ -12,18 +12,22 @@
                         </div>
                         <div class="link-box">{{ userinfoHome.company }}</div>
                     </div>
-                    <div class="user-info-icon">{{ userinfoHome.position}}</div>
+                    <div class="user-info-icon">{{ userinfoHome.position }}</div>
                     <div class="introduction">
                         <div class="left">{{ userinfoHome.occupation }}</div>
                         <div class="right">
-                            <RouterLink to="/user/settings"><el-button><el-icon>
+                            <RouterLink to="/user/settings">
+                                <el-button>
+                                    <el-icon>
                                         <Setting />
-                                    </el-icon></el-button></RouterLink>
+                                    </el-icon>
+                                </el-button>
+                            </RouterLink>
                         </div>
                     </div>
                     <div class="info-sex">
-                        <i v-if="userinfoHome.sex===0" class="bi bi-gender-male"></i>
-                        <i v-else-if="userinfoHome.sex===1" class="bi bi-gender-female"></i>
+                        <i v-if="userinfoHome.sex === 0" class="bi bi-gender-male"></i>
+                        <i v-else-if="userinfoHome.sex === 1" class="bi bi-gender-female"></i>
                         <i v-else class="bi bi-gender-ambiguous"></i>
                     </div>
                 </div>
@@ -31,8 +35,8 @@
             <div class="list-block">
                 <div class="list-header">
                     <div class="header-content">
-                        <RouterLink :to="`/user/${userid}`" >
-                            <div class="nav-item" :class="{ 'active':  route.path.split('/').length==3 }">
+                        <RouterLink :to="`/user/${userid}`">
+                            <div class="nav-item" :class="{ 'active': route.path.split('/').length == 3 }">
                                 <el-button link><span>动态</span></el-button>
                             </div>
                         </RouterLink>
@@ -41,23 +45,20 @@
                                 <el-button link><span>文章</span></el-button>
                             </div>
                         </RouterLink>
-                        <RouterLink :to="`/user/${userid}/columns`" >
+                        <RouterLink :to="`/user/${userid}/columns`">
                             <div class="nav-item" :class="{ 'active': isActive('/columns') }">
                                 <el-button link><span>专栏</span></el-button>
                             </div>
                         </RouterLink>
-                        <RouterLink :to="`/user/${userid}/collections`" >
+                        <RouterLink :to="`/user/${userid}/collections`">
                             <div class="nav-item" :class="{ 'active': isActive('/collections') }">
                                 <el-button link><span>收藏集</span></el-button>
                             </div>
                         </RouterLink>
-                        <RouterLink :to="`/user/${userid}/tags`">
-                            <div class="nav-item" :class="{ 'active': isActive('/tags') }">
+                        <RouterLink :to="`/user/${userid}/following`">
+                            <div class="nav-item" :class="{ 'active': isActive('/following') ||  isActive('/followers')}">
                                 <el-button link><span>关注</span></el-button>
                             </div>
-                        </RouterLink>
-                        <RouterLink :to="`/notifications/im/${userid}`">
-                            私信
                         </RouterLink>
 
                         <!-- <div class="nav-item" :class="{ active: headerBut == 6 }" @click="headerBut = 6">
@@ -132,17 +133,16 @@ const props = defineProps({
     userid: {
         type: String,
         required: true,
-        default: ''
     }
 })
 
 onMounted(async () => {
-    const id =props.userid
+    const id = props.userid
     await userinfoAppStores.getusergetInfo(id)
     userinfoHome.value = userinfoAppStores.userinfo
 })
 
-watch(()=>props.userid,async(newValue)=>{
+watch(() => props.userid, async (newValue) => {
     await userinfoAppStores.getusergetInfo(newValue)
     userinfoHome.value = userinfoAppStores.userinfo
 })
@@ -151,7 +151,7 @@ const userinfoHome = ref({})
 const loading = ref(false)
 
 const isActive = (path) => {
-    return route.path.includes(path) ;
+    return route.path.includes(path);
 };
 </script>
 
@@ -171,7 +171,7 @@ const isActive = (path) => {
 
         .activity-list-box {
             flex: 1;
-            margin: 20px 20px;
+            margin: 5px  20px 20px 20px;
         }
 
         .list-block {

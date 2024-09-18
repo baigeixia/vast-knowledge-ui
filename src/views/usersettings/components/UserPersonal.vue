@@ -16,7 +16,7 @@
                         { required: true, message: '您的生日时间' },
                     ]">
                         <el-date-picker style="width: 100%;" :clearable="false" v-model="form.birthday" type="date"
-                            placeholder="请选择时间"          :disabled-date="disabledDate" value-format="YYYY-MM-DD" />
+                            placeholder="请选择时间"          :disabled-date="disabledDate" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
                     </el-form-item>
                     <!-- <el-form-item label="职业方向" prop="occupation" :rules="[
                         { required: true, message: '职业方向' },

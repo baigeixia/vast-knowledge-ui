@@ -20,9 +20,6 @@
                 </el-icon>
                 <span> {{ content.views }}</span>
             </div>
-            {{ content.authorId == userinfoAppStores.userid }}
-            {{ content.authorId  }}
-            {{ userinfoAppStores.userid }}
             <div class="item-li item-li-like " v-if="content.authorId == userinfoAppStores.userid">
                 <i class="bi bi-heart-fill noLike"></i>
                 <span> {{ content.likes }}</span>

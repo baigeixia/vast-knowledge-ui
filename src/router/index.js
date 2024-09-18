@@ -43,7 +43,7 @@ const router = createRouter({
               name: 'im',
               component: () => import('../views/notifications/components/Im.vue'),
               props: route => ({
-                participantId: route.params.userid 
+                participantId: route.params.userid
               }),
             },
             {
@@ -58,7 +58,7 @@ const router = createRouter({
           name: 'user',
           component: () => import('../views/user/UserHome.vue'),
           props: route => ({
-            userid: route.params.userid 
+            userid: route.params.userid
           }),
           children: [
             {
@@ -66,7 +66,7 @@ const router = createRouter({
               name: 'user-pins',
               component: () => import('../views/user/components/UserPins.vue'),
               props: route => ({
-                userid: route.params.userid || ''
+                userid: route.params.userid 
               })
             },
             {
@@ -94,14 +94,21 @@ const router = createRouter({
               })
             },
             {
-              path: 'tags',
-              name: 'tags',
-              component: () => import('../views/user/components/UserTags.vue'),
+              path: 'following',
+              name: 'following',
+              component: () => import('../views/user/components/UserFollowing.vue'),
               props: route => ({
                 userid: route.params.userid || ''
               })
             },
-
+            {
+              path: 'followers',
+              name: 'followers',
+              component: () => import('../views/user/components/UserFollowers.vue'),
+              props: route => ({
+                userid: route.params.userid || ''
+              }),
+            },
           ]
         },
         {
@@ -134,7 +141,7 @@ const router = createRouter({
               component: () => import('../views/usersettings/components/UserBlock.vue'),
             }
           ]
-        }, 
+        },
         {
           path: '/post/:postId',
           name: 'post',
@@ -143,7 +150,7 @@ const router = createRouter({
             postId: route.params.postId,
             notificationId: route.query.notificationId
           })
-        }, 
+        },
         {
           path: '/search',
           name: 'search',

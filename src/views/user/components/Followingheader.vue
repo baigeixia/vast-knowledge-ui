@@ -49,8 +49,6 @@ const props = defineProps({
     margin: 0 20px;
 
     .List-headerText {
-    
-
       .SubTabs {
         display: flex;
         font-weight: 400;

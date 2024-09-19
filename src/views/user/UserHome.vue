@@ -45,18 +45,18 @@
                                 <el-button link><span>文章</span></el-button>
                             </div>
                         </RouterLink>
-                        <RouterLink :to="`/user/${userid}/columns`">
+                        <!-- <RouterLink :to="`/user/${userid}/columns`">
                             <div class="nav-item" :class="{ 'active': isActive('/columns') }">
                                 <el-button link><span>专栏</span></el-button>
                             </div>
-                        </RouterLink>
+                        </RouterLink> -->
                         <RouterLink :to="`/user/${userid}/collections`">
                             <div class="nav-item" :class="{ 'active': isActive('/collections') }">
                                 <el-button link><span>收藏集</span></el-button>
                             </div>
                         </RouterLink>
                         <RouterLink :to="`/user/${userid}/following`">
-                            <div class="nav-item" :class="{ 'active': isActive('/following') ||  isActive('/followers')}">
+                            <div class="nav-item" :class="{ 'active': isActive('/following') || isActive('/followers') }">
                                 <el-button link><span>关注</span></el-button>
                             </div>
                         </RouterLink>
@@ -94,27 +94,33 @@
         <div class="minor-area">
             <div class="sticky">
                 <div class="follow-block">
+
                     <div class="follow-item">
-                        <div class="item-title">关注</div>
-                        <div class="item-count">{{ userinfoHome.follows }}</div>
+                        <RouterLink :to="`/user/${userid}/following`">
+                            <div class="item-title">关注</div>
+                            <div class="item-count">{{ userinfoHome.follows }}</div>
+                        </RouterLink>
+
                     </div>
                     <div class="follow-item">
-                        <div class="item-title">粉丝</div>
-                        <div class="item-count">{{ userinfoHome.fans }}</div>
+                        <RouterLink :to="`/user/${userid}/followers`">
+                            <div class="item-title">粉丝</div>
+                            <div class="item-count">{{ userinfoHome.fans }}</div>
+                        </RouterLink>
                     </div>
                 </div>
                 <div class="more-block block">
-                    <div class="more-item">
+                    <!-- <div class="more-item">
                         <div class="item-title">收藏集</div>
                         <div class="item-count">0</div>
                     </div>
                     <div class="more-item">
                         <div class="item-title">关注列表</div>
                         <div class="item-count">0</div>
-                    </div>
+                    </div> -->
                     <div class="more-item">
                         <div class="item-title">加入于</div>
-                        <div class="item-count">{{ userinfoHome.createdTime }}</div>
+                        <div class="item-count">{{$formatDate( userinfoHome.createdTime) }}</div>
                     </div>
                 </div>
             </div>
@@ -171,7 +177,7 @@ const isActive = (path) => {
 
         .activity-list-box {
             flex: 1;
-            margin: 5px  20px 20px 20px;
+            margin: 10px 20px 20px 20px;
         }
 
         .list-block {
@@ -182,9 +188,9 @@ const isActive = (path) => {
                 height: 4rem;
                 background-color: #fff;
                 border-radius: .2rem .2rem 0 0;
-                border-bottom: 1px solid #e4e6eb;
 
                 .header-content {
+                    border-top: 1px solid #e4e6eb;
                     display: flex;
                     align-items: center;
                     height: 100%;
@@ -255,8 +261,8 @@ const isActive = (path) => {
 
         .block {
             background-color: #fff;
-            border-radius: 2px;
-            margin-bottom: 1rem;
+            border-radius: 5px;
+            // margin-bottom: 1rem;
 
             .avatar {
                 margin-right: 2.4rem;
@@ -336,9 +342,15 @@ const isActive = (path) => {
 
                 .follow-item {
                     background-color: #fff;
+                    a {
+                        color: #000;
+                    }
 
+                    a:hover {
+                        color: #1e80ff;
+                    }
                     flex: 1 1 auto;
-                    padding: 1.333rem 0;
+                    // padding: 1.333rem 0;
                     text-align: center;
                     color: #31445b;
 

@@ -52,16 +52,17 @@ const tabSwit = (id) => {
   height: fit-content;
   border-radius: 4px;
   background-color: #fff;
-
   .side-wrapper {
 
     .search-top {
         transform: translate3d(0, -4rem, 0);
     }
     .item-wrap {
+      // box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
+      box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
       width: 180px;
       max-height: 830px;
-      border-radius: 4px;
+      border-radius: 10px;
       background-color: #fff;
       box-sizing: border-box;
       // padding: 8px;
@@ -97,6 +98,7 @@ const tabSwit = (id) => {
       .item-content {
         padding: 10px 10px;
         margin: 2px 0;
+        border-radius: 10px;
 
         .item {
           display: flex;

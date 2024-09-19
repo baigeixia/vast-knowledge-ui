@@ -22,7 +22,7 @@ const userinfoAppStore = defineStore(
       userLocalinfo.value=resp.data
       setUserid(resp.data.id)
       userid.value=resp.data.id
-      console.log('resp.data.id',resp.data.id);
+      // console.log('resp.data.id',resp.data.id);
       return resp.data;
     }
 

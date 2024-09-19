@@ -54,6 +54,8 @@ const navigationtypeSwit = (type) => {
 
 <style lang="scss" scoped>
 .main-container {
+  border-radius: 8px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   flex: 15;

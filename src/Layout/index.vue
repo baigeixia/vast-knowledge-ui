@@ -126,7 +126,7 @@ const totop = () => {
     min-width: 1100px;
 
     .guard-box {
-        :deep(a) {
+       :deep(a) {
             color: #1e80ff;
             margin: 0 2px;
         }
@@ -209,6 +209,7 @@ const totop = () => {
         border-radius: 5px;
         min-height: calc(100vh - 90px);
         overflow-y: hidden;
+
     }
 }
 </style>

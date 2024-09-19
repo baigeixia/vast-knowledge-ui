@@ -137,11 +137,11 @@
                                 <div class="count">20</div>
                                 <div>文章</div>
                             </RouterLink> -->
-                            <RouterLink class="stat-item" :to="`/user/${authorInfo.id}/posts`">
+                            <RouterLink class="stat-item" :to="`/user/${authorInfo.id}/following`">
                                 <div class="count">{{ authorInfo.follows }}</div>
                                 <div>关注</div>
                             </RouterLink>
-                            <RouterLink class="stat-item" :to="`/user/${authorInfo.id}/tags`">
+                            <RouterLink class="stat-item" :to="`/user/${authorInfo.id}/followers`">
                                 <div class="count">{{ authorInfo.fans }}</div>
                                 <div>粉丝</div>
                             </RouterLink>
@@ -790,7 +790,7 @@ const replaceImgWithTag = (str) => {
 
                 .context-box {
                     min-height: 50px;
-                    font-size: 1rem;
+                    font-size: 15px;
 
                     >*+* {
                         margin-top: 0.8em;

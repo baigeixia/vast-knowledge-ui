@@ -249,6 +249,8 @@ const report = (id) => {
         margin-bottom: 4px;
         display: flex;
         align-items: center;
+        line-height: 1.8;
+        font-size: 15px;
 
         .thumb {
             flex: 0 0 auto;
@@ -258,6 +260,8 @@ const report = (id) => {
             background-color: #ffffff;
             border-radius: 4px;
             border: 1px solid #f1f2f5;
+            
+
         }
 
         .abstract {

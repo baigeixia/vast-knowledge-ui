@@ -99,12 +99,13 @@ import { ref } from "vue"
 <style lang="scss" scoped>
 .main-right {
   flex: 5;
-  border-radius: 4px;
 
   .box-standard {
+    border-radius: 8px;
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+
     background-color: #fff;
     padding: 20px;
-    border-radius: 4px;
     margin-bottom: 1.66rem;
     line-height: 1.29;
   }
@@ -173,6 +174,8 @@ import { ref } from "vue"
   }
 
   .signin-tip {
+    border-radius: 8px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;

@@ -98,7 +98,7 @@
 <script setup>
 import { ref, reactive, onMounted ,toRaw} from "vue"
 import { ElMessage } from 'element-plus'
-
+import {formatDate} from '@/utils/formDate'
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 
@@ -133,7 +133,8 @@ const upFrom = () => {
     form.company=company
     form.sex=sex
     form.occupation=occupation
-    form.birthday=birthday
+    form.birthday=formatDate(birthday)
+    // console.log(form.birthday);
     form.introduction=introduction
 
     // Object.assign(form, userinfoAppStores.userLocalinfo);

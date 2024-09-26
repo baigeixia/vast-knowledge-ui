@@ -85,20 +85,25 @@ import articleAppStore from "@/stores/admin/article";
 const articleStore = articleAppStore()
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
+import behaviourAppStore from "@/stores/collection/behaviour"
+const behaviourAppStoreS = behaviourAppStore();
+
 import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
 const openInNewTab = (contentid) => {
     const path = `/post/${contentid}`;
-    const url = router.resolve(path).href;
-    window.open(url, '_blank');
+    router.push(path)
+    // const url = router.resolve(path).href;
+    // window.open(url);
+    // window.open(url, '_blank');
 }
 
 
 const Articlelike = (id, authorId, authorName, type) => {
     notificationS.likeArticle(id, authorId, authorName, type)
-    articleStore.postoperation.set(Number(props.content.id), noislikeArticle.value ? 0 : 1)
+    behaviourAppStoreS.postoperation.set(Number(props.content.id), noislikeArticle.value ? 0 : 1)
     noislikeArticle.value ? props.content.likes-- : props.content.likes++
 }
 
@@ -110,7 +115,7 @@ const props = defineProps({
     },
 });
 
-const noislikeArticle = computed(() => (articleStore.postoperation.get(Number(props.content.id)) ?? 1) == 1)
+const noislikeArticle = computed(() => (behaviourAppStoreS.postoperation.get(Number(props.content.id)) ?? 1) == 1)
 
 
 const iconClass = computed(() => {

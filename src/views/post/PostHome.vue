@@ -272,11 +272,11 @@ const commentS = commentStore()
 const maincommentS = maincommentAppStore()
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
-
-
+import behaviourAppStore from "@/stores/collection/behaviour"
+const behaviourAppStoreS = behaviourAppStore();
 
 const articlelike = () => {
-    articleS.postoperation.set(Number(props.postId),  isnolikeArticle.value ? 0: 1)
+    behaviourAppStoreS.postoperation.set(Number(props.postId),  isnolikeArticle.value ? 0: 1)
     isnolikeArticle.value ? articleS.articleDto.likes-- : articleS.articleDto.likes++
 }
 const PostCommentItemAsync = defineAsyncComponent(() => import('./component/PostCommentItem.vue'));
@@ -293,11 +293,10 @@ const props = defineProps({
 })
 
 
-const isnolikeArticle = computed(() => articleS.postoperation.get(Number(props.postId)) ?? 1 == 1);
+const isnolikeArticle = computed(() => behaviourAppStoreS.postoperation.get(Number(props.postId)) ?? 1 == 1);
 
 
 const authorInfo = ref({})
-
 
 
 const upheaderTag = (type) => {

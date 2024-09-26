@@ -30,3 +30,16 @@ export const  getcommentLikeApi =(id,ids)=>{
         data:idsArray
     })
 }
+
+
+export const  getdynamicsApi =(userid,page,size)=>{
+    return collectionRequest({
+        url: `/behaviour/behavior/list`,
+        method: 'GET',
+        params:{
+            page:page,
+            size:size,
+            userId:userid,
+        }
+    })
+}

@@ -15,7 +15,8 @@
                     <div class="user-info-icon">{{ userinfoHome.position }}</div>
                     <div class="introduction">
                         <div class="left">{{ userinfoHome.occupation }}</div>
-                        <div class="right">
+                        
+                        <div class="right" v-if="getUserid()===userid">
                             <RouterLink to="/user/settings">
                                 <el-button>
                                     <el-icon>
@@ -132,6 +133,8 @@
 <script setup>
 import { onMounted, ref, watch } from "vue";
 import { useRoute } from 'vue-router';
+import { getUserid } from '@/utils/auth'
+
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 const route = useRoute();

@@ -1,6 +1,6 @@
 import { gethomeList, infoArticle } from '@/api/admin/article'
 import { ref, computed ,reactive} from 'vue'
-import { getarticleLikeApi ,getdynamicsApi } from '@/api/collection/behaviour'
+import { getarticleLikeApi ,getdynamicsApi,userCollectListapi } from '@/api/collection/behaviour'
 import { defineStore } from 'pinia'
 
 const behaviourAppStore = defineStore(
@@ -34,10 +34,15 @@ const getdynamics=async (userid,page,size)=>{
       }
     }
 
+    const getuserCollectList=async(userId,page,size)=>{
+      const resp= await userCollectListapi(userId,page,size)
+      return resp.data
+    }
 
     return{
       newHomeListDataGetLike,
       getdynamics,
+      getuserCollectList,
       postoperation,
       dynamics,
     }

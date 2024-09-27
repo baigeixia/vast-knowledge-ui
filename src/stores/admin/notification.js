@@ -126,6 +126,15 @@ const notificationAppStore = defineStore(
       })
     }, 500)
 
+    const userToCollection = debounce((senderId, senderName,articleId) => {
+      console.log('collect', senderId);
+      socketEmit("collect", {
+        senderId: senderId,
+        senderName: senderName,
+        articleId: articleId,
+      })
+    }, 500)
+
     return {
       getCommentNotificationInfo,
       getfollowNotificationInfo,
@@ -133,6 +142,7 @@ const notificationAppStore = defineStore(
       getImListInfo,
       getmsgList,
       likeArticle,
+      userToCollection,
       fanMsg,
       chatMsg,
       upsetclearUnreadMsg,

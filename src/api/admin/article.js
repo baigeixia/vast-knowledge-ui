@@ -22,3 +22,16 @@ export function infoArticle(id) {
     }
   })
 }
+
+export function postsapi(userId,page,size,type) {
+  return coreRequest({
+    url: '/article/article/posts',
+    method: 'GET',
+    params:{
+      userId:userId,
+      page:size,
+      page:page,
+      type:type,
+    }
+  })
+}

@@ -43,3 +43,14 @@ export const  getdynamicsApi =(userid,page,size)=>{
         }
     })
 }
+export const  userCollectListapi =(userid,page,size)=>{
+    return collectionRequest({
+        url: `/behaviour/collect/list`,
+        method: 'GET',
+        params:{
+            page:page,
+            size:size,
+            userId:userid,
+        }
+    })
+}

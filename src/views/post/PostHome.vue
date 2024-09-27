@@ -2,7 +2,8 @@
     <el-container class="post-home-main">
         <div class="suspended-panel" v-if="!centermainloading">
             <div class="panel-btn" v-if="y > 180">
-                <RouterLink :to="`/user/${articleS.articleDto.authorId}`"> <img :src="authorInfo.image">
+                <RouterLink :to="`/user/${articleS.articleDto.authorId}`">
+                    <img :src="authorInfo.image">
                 </RouterLink>
                 <div class="follow-area" v-if="isfollow">
                     <div class="follow-text" @click="isfollow = false">关注</div>
@@ -15,8 +16,10 @@
                         <i class="bi bi-heart-fill "></i>
                     </el-badge>
                 </div>
-                <div v-else class="panel-btn"  :class="{'active': !isnolikeArticle  }" @click="articlelike()">
-                    <el-badge :color="!isnolikeArticle ? '#1e80ff':'#b2b2b2'" :show-zero='false' :value="Number(articleS.articleDto.likes)"  :offset="[10, 3]">
+                <div v-else class="panel-btn" :class="{ 'active': !isnolikeArticle }"
+                    @click="articlelike(postId, articleS.articleDto.authorId, articleS.articleDto.authorName, 0)">
+                    <el-badge :color="!isnolikeArticle ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
+                        :value="Number(articleS.articleDto.likes)" :offset="[10, 3]">
                         <i class="bi bi-heart-fill"></i>
                     </el-badge>
                 </div>
@@ -30,8 +33,11 @@
                 </div>
             </el-tooltip>
             <el-tooltip content="收藏" placement="left" effect="light">
-                <div class="panel-btn" @click="collect()">
+                <div class="panel-btn user-active" v-if="articleS.articleDto.authorId == userinfoAppStores.userid">
                     <i class="bi bi-star-fill"></i>
+                </div>
+                <div v-else class="panel-btn" @click="collect(articleS.articleDto.authorId, articleS.articleDto.authorName,postId)">
+                    <i class="bi bi-star-fill" :color="iscollect ? '#1e80ff' : '#b2b2b2'"></i>
                 </div>
             </el-tooltip>
             <el-tooltip content="分享" placement="left" effect="light">
@@ -275,8 +281,13 @@ const userinfoAppStores = userinfoAppStore();
 import behaviourAppStore from "@/stores/collection/behaviour"
 const behaviourAppStoreS = behaviourAppStore();
 
-const articlelike = () => {
-    behaviourAppStoreS.postoperation.set(Number(props.postId),  isnolikeArticle.value ? 0: 1)
+
+import notificationAppStore from "@/stores/admin/notification";
+const notificationS = notificationAppStore()
+
+const articlelike = (id, authorId, authorName, type) => {
+    notificationS.likeArticle(id, authorId, authorName, type)
+    behaviourAppStoreS.postoperation.set(Number(props.postId), isnolikeArticle.value ? 0 : 1)
     isnolikeArticle.value ? articleS.articleDto.likes-- : articleS.articleDto.likes++
 }
 const PostCommentItemAsync = defineAsyncComponent(() => import('./component/PostCommentItem.vue'));
@@ -438,6 +449,7 @@ const bellvalue = ref(1200)
 const showImageViewer = ref(false)
 const isagree = ref(false)
 const ismsg = ref(false)
+const iscollect = ref(false)
 const centermainloading = ref(false)
 const isfollow = ref(true)
 const drawer = ref(false)
@@ -448,8 +460,10 @@ const showImageViewerclose = () => {
     showImageViewer.value = false
 }
 
-const collect = () => {
-    console.log('收藏');
+const collect = (senderId, senderName, articleId) => {
+    console.log('收藏',senderId, senderName, articleId);
+    notificationS.userToCollection(senderId, senderName, articleId)
+    iscollect.value = !iscollect.value
 }
 
 const share = () => {
@@ -579,7 +593,7 @@ const replaceImgWithTag = (str) => {
         top: 140px;
         z-index: 2;
 
-       
+
         .panel-btn {
             display: flex;
             justify-content: center;
@@ -597,7 +611,7 @@ const replaceImgWithTag = (str) => {
             text-align: center;
             font-size: 20px;
 
-            
+
 
             img {
                 position: absolute;

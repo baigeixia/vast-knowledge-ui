@@ -3,7 +3,8 @@
         <div class="major-area">
             <div class="user-info-block block shadow">
                 <div class="avatar">
-                    <img class="avatar-img" :src="userinfoHome.image">
+                    <Avatar class="avatar-img" :Image="userinfoHome.image " ></Avatar>
+                    <!-- <img class="avatar-img" :src="userinfoHome.image"> -->
                 </div>
                 <div class="info-box">
                     <div class="top">
@@ -176,6 +177,8 @@ const isActive = (path) => {
         flex-direction: column;
         flex: 1 1 auto;
         background-color: #fff;
+        border-radius: 8px;
+        box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
 
 
         .activity-list-box {
@@ -271,6 +274,9 @@ const isActive = (path) => {
                 margin-right: 2.4rem;
 
                 .avatar-img {
+                    object-fit: cover;
+                    width: 200px;
+                    height: 150px;
                     border-radius: 8px;
                 }
             }

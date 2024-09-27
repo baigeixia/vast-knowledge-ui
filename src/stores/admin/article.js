@@ -1,4 +1,4 @@
-import { gethomeList, infoArticle } from '@/api/admin/article'
+import { gethomeList, infoArticle,postsapi } from '@/api/admin/article'
 import { ref, computed, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import behaviourAppStore from '../collection/behaviour'
@@ -77,6 +77,13 @@ const articleAppStore = defineStore(
       }
     }
 
+    const getuserArticleList=async(userId,page,size,type)=>{
+      const resp= await postsapi(userId,page,size,type)
+      return resp.data
+    }
+
+  
+
 
     return {
       articleList,
@@ -90,6 +97,7 @@ const articleAppStore = defineStore(
       getarticleList,
       getinfoArticle,
       loadMore,
+      getuserArticleList,
     }
   })
 

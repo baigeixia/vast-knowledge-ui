@@ -39,6 +39,8 @@ const getdynamics=async (userid,page,size)=>{
       return resp.data
     }
 
+
+
     return{
       newHomeListDataGetLike,
       getdynamics,

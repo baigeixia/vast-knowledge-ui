@@ -20,7 +20,7 @@
               <div v-else class="listItem" :class="{ 'listItem-active': boxuserid === item.id }"
                 @click="sendmessage(item.id, item.name)" v-for="item in recentlist" :key="item.id">
                 <div class="info-avatar">
-                  <img class="info-avatar-img" :src="item.avatar">
+                  <img class="info-avatar-img" :src="item.avatar || item.image">
                 </div>
                 <div class="info-content">
                   <div class="info-content-name">
@@ -199,23 +199,31 @@ const props = defineProps({
   },
 });
 
-onMounted(async() => {
-  handleOpen(menutype.value)
+onMounted(async () => {
+  await handleOpen(menutype.value)
   notificationS.isim = false
-  // if(props.participantId){
-  //   console.log("participantId",props.participantId);
-  //   const data= await userinfoAppStores.getusergetInfo(props.participantId)
-  //   console.log(data);
-  //   recentlist.value.unshift(data)
-  // }
+  let userid=props.participantId
+  if (userid) {
+   await newMsg(userid)
+    // const data = await userinfoAppStores.getusergetInfo(props.participantId)
+    // recentlist.value.unshift(data)
+
+  }
 })
 
 
-watch(()=>props.participantId,async (newValue)=>{
- const data= await userinfoAppStores.getusergetInfo(newValue)
-  recentlist.value.unshift(data)
+watch(() => props.participantId, async (newValue) => {
+  newMsg(newValue)
 })
 
+const newMsg = async (userid) => {
+  const data = await userinfoAppStores.getusergetInfo(userid)
+
+  recentlist.value = recentlist.value.filter(item => item.id !== data.id);
+  recentlist.value = [data].concat(recentlist.value);
+  sendmessage(data.id, data.name)
+
+}
 const boxuserid = ref(0)
 const boxUserName = ref('')
 

@@ -1,5 +1,5 @@
 <template>
-  <div class="user-activity" v-if="posts.records && posts.records.length > 0">
+  <div class="user-activity">
     <div class="List-header">
       <h4>{{ (userinfoAppStores.userinfo.id == getUserid() ? '我' : (userinfoAppStores.userinfo.sex == 0 ? '他' : '她'))
         + '的' + pageTitle }}</h4>
@@ -8,18 +8,47 @@
         <span :class="{ 'is-active': type == 2 }" @click="tgeType(2)">最火</span>
       </div>
     </div>
-    <div class="itme-List" v-infinite-scroll="loadMore" :infinite-scroll-immediate="false"
-      :infinite-scroll-disabled="loadingdisabled">
-      <div class="content-skeleton-item" v-for="post in posts.records" :key="post.id">
-        <div class="post-time">
-          <time>{{ $formatDateTime(post.createdTime) }}&nbsp;:&nbsp;创建时间</time>
+    <el-skeleton animated :loading="loading" style="padding-top: 32px">
+      <template #template>
+        <el-skeleton-item style="width: 40%;" variant="h1" />
+        <el-skeleton-item style="width: 100%;" variant="h1" />
+        <el-skeleton-item style="width: 40%;" variant="text" />
+        <br>
+        <br>
+        <el-skeleton-item style="width: 40%;" variant="h1" />
+        <el-skeleton-item style="width: 100%;" variant="h1" />
+        <el-skeleton-item style="width: 40%;" variant="text" />
+      </template>
+      <div>
+
+        <div class="itme-List" v-infinite-scroll="loadMore" :infinite-scroll-immediate="false"
+          :infinite-scroll-disabled="loadingdisabled" v-if="posts.records && posts.records.length > 0">
+          <div class="content-skeleton-item" v-for="post in posts.records" :key="post.id">
+            <div class="post-time">
+              <time>{{ $formatDateTime(post.createdTime) }}&nbsp;:&nbsp;创建时间</time>
+            </div>
+            <MaincontentItme :content="post" />
+          </div>
         </div>
-        <MaincontentItme :content="post" />
+        <div v-else class="user-activity-nodata">
+          
+          <span v-if="!loading">还没有发布过文章</span>
+        </div>
+        <div v-if="loadingdisabled && posts.records.length > 0" class="user-activity-nodata">
+          已经到底部了
+        </div>
+
+        <el-skeleton animated :loading="reloading" style="padding-top: 32px">
+          <template #template>
+            <el-skeleton-item style="width: 40%;" variant="h1" />
+            <el-skeleton-item style="width: 100%;" variant="h1" />
+            <el-skeleton-item style="width: 40%;" variant="text" />
+          </template>
+        </el-skeleton>
       </div>
-    </div>
-  </div>
-  <div v-else class="user-activity-nodata">
-  还没有数据
+    </el-skeleton>
+
+
   </div>
 </template>
   
@@ -51,6 +80,11 @@ const size = ref(5)
 const type = ref(1)
 const loadingdisabled = ref(false)
 
+const reloading = ref(false)
+const loading = ref(false)
+
+
+
 const pageTitle = '文章';
 
 const tgeType = async (t) => {
@@ -69,22 +103,38 @@ const tgeType = async (t) => {
     totalPage: 0,
     totalRow: 0,
   }
-
   await getPosts();
 
 }
 onMounted(async () => {
-  await getPosts();
-  nextTick(() =>
-    document.title = userinfoAppStores?.userinfo?.name + pageTitle
-  )
+  if (loading.value) {
+    return
+  }
+  try {
+    loading.value = true
+    await getPosts();
+    nextTick(() =>
+      document.title = userinfoAppStores?.userinfo?.name + pageTitle
+    )
+    loading.value = false
+  } catch {
+    console.error("数据加载错误");
+  } finally {
+    loading.value = false
+  }
+
+
 })
 
 async function getPosts() {
   try {
+    if (reloading.value) {
+      return;
+    }
+    reloading.value = true
     const data = await articleStore.getuserArticleList(props.userid, page.value, size.value, type.value);
     console.log(data);
-    if (data || data.records) {
+    if (data?.records && data?.records.length > 0) {
       // posts.value = [...posts.value, ...data];
       posts.value.records.push(...data.records);
       posts.value.pageNumber = data.pageNumber;
@@ -93,11 +143,15 @@ async function getPosts() {
       posts.value.totalRow = data.totalRow;
 
       page.value++;
+
     } else {
       loadingdisabled.value = true
     }
+    reloading.value = false
   } catch (error) {
     console.error('获取动态数据失败:', error);
+  } finally {
+    reloading.value = false
   }
 }
 
@@ -107,14 +161,17 @@ const loadMore = async () => {
 </script>
   
 <style lang="scss" scoped>
-.user-activity-nodata{
+.user-activity-nodata {
   display: flex;
   align-items: center;
   justify-content: center;
-  span{
+  padding-top: 10px;
+
+  span {
     font-weight: 600;
   }
 }
+
 .user-activity {
   .List-header {
     align-items: center;

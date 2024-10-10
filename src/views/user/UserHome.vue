@@ -3,7 +3,7 @@
         <div class="major-area">
             <div class="user-info-block block shadow">
                 <div class="avatar">
-                    <Avatar class="avatar-img" :Image="userinfoHome.image " ></Avatar>
+                    <Avatar class="avatar-img" :Image="userinfoHome.image"></Avatar>
                     <!-- <img class="avatar-img" :src="userinfoHome.image"> -->
                 </div>
                 <div class="info-box">
@@ -16,8 +16,7 @@
                     <div class="user-info-icon">{{ userinfoHome.position }}</div>
                     <div class="introduction">
                         <div class="left">{{ userinfoHome.occupation }}</div>
-                        
-                        <div class="right" v-if="getUserid()===userid">
+                        <div class="right" v-if="getUserid() === userid">
                             <RouterLink to="/user/settings">
                                 <el-button>
                                     <el-icon>
@@ -25,6 +24,15 @@
                                     </el-icon>
                                 </el-button>
                             </RouterLink>
+                        </div>
+                        <div v-else class="right">
+                            <el-button type="primary" >
+                                <i class="bi bi-dash-lg ">
+                                    <span class="button-icon "> 取消关注</span></i>
+                                <!-- <i class="bi bi-plus-lg">
+                                    <span class="button-icon">关注</span></i> -->
+                            </el-button>
+                            <el-button type="info" plain @click="router.push(`/notifications/im/${userid}`)">发私信</el-button>
                         </div>
                     </div>
                     <div class="info-sex">
@@ -122,7 +130,7 @@
                     </div> -->
                     <div class="more-item">
                         <div class="item-title">加入于</div>
-                        <div class="item-count">{{$formatDate( userinfoHome.createdTime) }}</div>
+                        <div class="item-count">{{ $formatDate(userinfoHome.createdTime) }}</div>
                     </div>
                 </div>
             </div>
@@ -132,10 +140,11 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from "vue";
+import { nextTick, onMounted, ref, watch } from "vue";
 import { useRoute } from 'vue-router';
 import { getUserid } from '@/utils/auth'
-
+import { useRouter } from 'vue-router';
+const router = useRouter();
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 const route = useRoute();
@@ -149,12 +158,18 @@ const props = defineProps({
 onMounted(async () => {
     const id = props.userid
     await userinfoAppStores.getusergetInfo(id)
-    userinfoHome.value = userinfoAppStores.userinfo
+    nextTick(() => {
+        userinfoHome.value = userinfoAppStores.userinfo
+    })
 })
 
 watch(() => props.userid, async (newValue) => {
+    router.replace(`/user/${newValue}`);
     await userinfoAppStores.getusergetInfo(newValue)
-    userinfoHome.value = userinfoAppStores.userinfo
+    // userinfoHome.value = userinfoAppStores.userinfo
+    nextTick(() => {
+        userinfoHome.value = userinfoAppStores.userinfo
+    })
 })
 
 const userinfoHome = ref({})
@@ -351,6 +366,7 @@ const isActive = (path) => {
 
                 .follow-item {
                     background-color: #fff;
+
                     a {
                         color: #000;
                     }
@@ -358,6 +374,7 @@ const isActive = (path) => {
                     a:hover {
                         color: #1e80ff;
                     }
+
                     flex: 1 1 auto;
                     // padding: 1.333rem 0;
                     text-align: center;

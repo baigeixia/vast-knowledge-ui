@@ -32,3 +32,28 @@ export const  upuserInfoApi =(from)=>{
         }
     })
 }
+
+
+export const  userfollowersListApi =(userId,page,size)=>{
+    return systemRequest({
+        url: `/user/fan/list`,
+        method: 'GET',
+        params:{
+            userId:userId,
+            page:page,
+            size:size,
+        }
+    })
+}
+
+export const  userFollowingListApi =(userId,page,size)=>{
+    return systemRequest({
+        url: `/user/follow/list`,
+        method: 'GET',
+        params:{
+            userId:userId,
+            page:page,
+            size:size,
+        }
+    })
+}

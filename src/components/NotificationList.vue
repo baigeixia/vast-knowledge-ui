@@ -154,10 +154,9 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue';
 import UserInfoPopover from '@/components/UserInfoPopover.vue'
-import { useRouter } from 'vue-router';
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
-
+import { useRouter } from 'vue-router';
 const router = useRouter();
 const dialogTableVisible = ref(false)
 const dialoguserlist = ref([])

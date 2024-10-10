@@ -12,10 +12,13 @@
           :class="{ 'message-right': message.userType == 'receiver', 'message-left': message.userType == 'sender' }">
           <div class="message-user">
             <div class="user-avatar">
-              <img class="user-avatar-img"
-                :src="message.userType == 'sender' ? messageListData.receiver.avatar : messageListData.sender.avatar"
-                @click="useravatar(
-                  message.userType == 'sender' ? messageListData.receiver.id : messageListData.sender.id)">
+              <RouterLink
+                :to="`/user/${message.userType == 'sender' ? messageListData.receiver.id : messageListData.sender.id}`">
+                <img class="user-avatar-img"
+                  :src="message.userType == 'sender' ? messageListData.receiver.avatar : messageListData.sender.avatar"
+                  @click="useravatar(
+                    message.userType == 'sender' ? messageListData.receiver.id : messageListData.sender.id)">
+              </RouterLink>
             </div>
           </div>
           <el-tooltip :offset="0" trigger="click" popper-class="chat-tooltip-message-popper" :show-after="200"
@@ -92,7 +95,7 @@ import { ref, onMounted, nextTick, watch } from "vue"
 import EmojiFileInput from '@/Layout/components/EmojiFileInput.vue';
 import { escapeHtml } from '@/utils/escapeHtml'
 import { safeHtml } from '@/utils/domPurifyConfig'
-import {formatMessageTime,getCurrentTime} from '@/utils/formDate'
+import { formatMessageTime, getCurrentTime } from '@/utils/formDate'
 
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
@@ -113,12 +116,12 @@ const loading = ref(false)
 const page = ref(1)
 
 
-
 watch(() => poper.boxuserid, async (newValue) => {
   page.value = 1
   if (newValue != 0) {
     boxshow.value = true
-    console.log("newValue", newValue);
+    console.log(1111);
+    messageListData.value={}
     await fetchMessages()
     nextTick(() => {
       if (chatmaincontentref.value) {
@@ -128,10 +131,10 @@ watch(() => poper.boxuserid, async (newValue) => {
   }
 })
 
-watch(() => notificationS.upMsgdata,  (newValue) => {
-console.log('upMsgdata',newValue);
+watch(() => poper.upMsgdata, (newValue) => {
+  console.log('upMsgdata', newValue);
 
- console.log( notificationS.upMsgdata.userid);
+  console.log(notificationS.upMsgdata.userid);
 
 })
 
@@ -148,9 +151,10 @@ const messageListData = ref({
 })
 
 onMounted(async () => {
-  const userid=poper.boxuserid
+  const userid = poper.boxuserid
   if (userid != 0) {
     boxshow.value = true
+    console.log('newuserid',userid);
     await fetchMessages()
     nextTick(() => {
       if (chatmaincontentref.value) {
@@ -159,6 +163,8 @@ onMounted(async () => {
     })
   }
 })
+
+
 
 const useravatar = (id) => {
   console.log(id);
@@ -192,10 +198,10 @@ const fetchMessages = async () => {
 
         // 更新 messageListData
         messageListData.value.messages = [...newMessages, ...currentMessages];
- 
+
         messageListData.value.receiver = data.receiver || messageListData.value.receiver;
         messageListData.value.sender = data.sender || messageListData.value.sender;
-       
+
       }
 
       loading.value = false;
@@ -207,7 +213,7 @@ const fetchMessages = async () => {
     }
   }
 
-  
+
 
   // testmessage.value = {
   //   ...testmessage.value,
@@ -232,13 +238,13 @@ const sendmessage = async () => {
   commentinput.value = ''
 
   messageListData.value.messages.push({
-    userType:"receiver",
-    text:vluse,
-    createdTime:getCurrentTime(),
+    userType: "receiver",
+    text: vluse,
+    createdTime: getCurrentTime(),
   })
   nextTick(() => {
-      chatmaincontentref.value.scrollTop =chatmaincontentref.value.scrollHeight
-    });
+    chatmaincontentref.value.scrollTop = chatmaincontentref.value.scrollHeight
+  });
 
 }
 const sanitizeString = (str) => {
@@ -305,8 +311,8 @@ const statusopendel = (messageid) => {
       type: 'warning',
     }
   )
-    .then( async() => {
-     await notificationS.delsetdelMsg(messageid)
+    .then(async () => {
+      await notificationS.delsetdelMsg(messageid)
         .then(response => {
           // 处理请求成功的逻辑
           ElMessage({
@@ -568,6 +574,10 @@ const statusopendel = (messageid) => {
             box-sizing: border-box;
             margin: 0px;
             color: rgb(9, 64, 142);
+
+            a {
+              margin: 0;
+            }
 
             .user-avatar-img {
               box-sizing: border-box;

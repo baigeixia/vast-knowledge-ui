@@ -7,46 +7,49 @@
         </template>
 
         <div class="popover-content">
-            <div class="info-row">
-                <!-- <div class="info-avatar"> -->
+            <div class="item loading-dots" v-if="false">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+            <div v-else>
+                <div class="info-row">
+                    <!-- <div class="info-avatar"> -->
                     <RouterLink :to="`/user/${author.id}`" class="info-avatar">
-                        <img :src="author?.avatar" alt="avatar" class="avatar"  />
-                </RouterLink>
+                        <img :src="authorInfor?.image" alt="avatar" class="avatar" />
+                    </RouterLink>
                     <!-- <img :src="author?.avatar" alt="avatar" class="avatar" @click="touserinfor(author.id)" /> -->
-                <!-- </div> -->
-                <div class="info-name" :title="author?.username">{{ author?.username }}</div>
-                <div class="info-position" :title="author?.position">{{ author?.position }}</div>
-            </div>
-            <div class="item loading-dots" v-if="isLoading">
-                <div class="dot"></div>
-                <div class="dot"></div>
-                <div class="dot"></div>
-            </div>
-            <div class="meta-row" v-else>
-                <div class="item">
-                    <div class="item-name">粉丝</div>
-                    <div class="item-count">{{ authorInfor?.fans}}</div>
+                    <!-- </div> -->
+                    <div class="info">
+                        <div class="info-name" :title="authorInfor?.username">  {{ authorInfor?.name }}</div>
+                        <!-- <div class="info-position" :title="authorInfor?.position"> {{ authorInfor?.position }}</div> -->
+                        <div class="info-position" :title="authorInfor?.position"> {{ authorInfor?.introduction	 }}</div>
+                    </div>
+                    <div class="meta-row">
+                        <div class="item">
+                            <div class="item-name">粉丝</div>
+                            <div class="item-count">{{ authorInfor?.fans }}</div>
+                        </div>
+                        <div class="item">
+                            <div class="item-name">关注者</div>
+                            <div class="item-count">{{ authorInfor?.follows }}</div>
+                        </div>
+                    </div>
+                    <div class="operate-btn">
+                        <el-button class="button-ui" type="primary"
+                            @click="focusonclick(author.id, author.username)">关注</el-button>
+                        <el-button class="button-ui" @click="privateletterclick">私信</el-button>
+                    </div>
                 </div>
-                <!-- <div class="item">
-                    <div class="item-count">{{authorInfor.follows}}</div>
-                    <div class="item-name">文章</div>
-                </div> -->
-                <div class="item">
-                    <div class="item-name">关注者</div>
-                    <div class="item-count">{{ authorInfor?.follows	}}</div>
-                </div>
+            </div>
 
-            </div>
-            <div class="operate-btn">
-                <el-button class="button-ui" type="primary" @click="focusonclick(author.id, author.username)">关注</el-button>
-                <el-button class="button-ui" @click="privateletterclick">私信</el-button>
-            </div>
+
         </div>
     </el-popover>
 </template>
   
 <script setup>
-import { onMounted, ref } from 'vue';
+import { nextTick, onMounted, ref } from 'vue';
 import useUserStore from "@/stores/admin/user";
 const userS = useUserStore()
 import notificationAppStore from "@/stores/admin/notification";
@@ -55,7 +58,7 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 
-const touserinfor=(userid)=>{
+const touserinfor = (userid) => {
     router.push(`/user/${userid}`);
 }
 const props = defineProps({
@@ -83,7 +86,9 @@ const userpopovershow = async () => {
                 authorInfor.value = authordata.data
             }
             console.log(authorInfor.value);
-            isLoading.value = false
+            nextTick(() => {
+                isLoading.value = false
+            })
         } catch (error) {
             console.error('Error loading more data:', error);
         } finally {
@@ -144,47 +149,38 @@ const focusonclick = (id, name) => {
     }
 
     .popover-content {
-        .operate-btn {
-            display: flex;
-            align-content: center;
-            justify-content: center;
-            padding: 0 40px 0 40px;
 
-            .button-ui {
-                flex: 1;
-            }
-        }
-
-        .meta-row {
-            padding: 8px 16px;
-            display: flex;
-            align-content: center;
-            justify-content: space-between;
-            text-align: center;
-
-            .meta-row-itmes {
-                display: flex;
-            }
-
-            .item {
-                flex: 1;
-                line-height: 1.6;
-                color: #8a919f;
-
-                .item-count {
-                    font-weight: 750;
-                    color: #252933;
-                    font-size: 16px;
-                }
-            }
-        }
 
         .info-row {
-            display: flex;
-            align-items: center;
+            // display: flex;
+            // align-items: center;
             position: relative;
-            border-bottom: 1px solid #e5e6eb;
             min-height: 42px;
+
+            .info{
+                font-size: 17px;
+                border-bottom: 1px solid #e5e6eb;
+                margin-left: 85px;
+
+                .info-name {
+                    color: #000;
+                 min-width: 100px;
+                max-width: 200px;
+                box-sizing: border-box;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+                font-weight: 600    ;
+            }
+
+            .info-position {
+                color: gray;
+                font-size: 13px;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
+            }
+            }
 
             .info-avatar {
                 cursor: pointer;
@@ -198,26 +194,45 @@ const focusonclick = (id, name) => {
                 }
             }
 
-            .info-name {
-                min-width: 100px;
-                font-size: 17px;
-                max-width: 200px;
-                box-sizing: border-box;
-                margin-left: 85px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+           
+
+            .meta-row {
+                padding: 8px 16px;
+                display: flex;
+                align-content: center;
+                justify-content: space-between;
+                text-align: center;
+
+                .meta-row-itmes {
+                    display: flex;
+                }
+
+                .item {
+                    flex: 1;
+                    line-height: 1.6;
+                    color: #8a919f;
+
+                    .item-count {
+                        font-weight: 750;
+                        color: #252933;
+                        font-size: 16px;
+                    }
+                }
             }
 
-            .info-position {
-                color: gray;
-                margin-left: 25px;
-                font-size: 13px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
+            .operate-btn {
+                display: flex;
+                align-content: center;
+                justify-content: center;
+                padding: 0 40px 0 40px;
+
+                .button-ui {
+                    flex: 1;
+                }
             }
         }
+
+
     }
 
     &.small-popup {

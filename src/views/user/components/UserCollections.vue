@@ -1,21 +1,46 @@
 <template>
-  <div class="user-activity" v-if="collects && collects.length > 0">
+  <div class="user-activity">
     <div class="List-header">
       <h4>{{ (userinfoAppStores.userinfo.id == getUserid() ? '我' : (userinfoAppStores.userinfo.sex == 0 ? '他' : '她'))
         + '的' + pageTitle }}</h4>
     </div>
-    <div class="itme-List" v-infinite-scroll="loadMore" :infinite-scroll-immediate="false"
-      :infinite-scroll-disabled="loadingdisabled">
-      <div class="content-skeleton-item" v-for="collect in collects" :key="collect.id">
-        <div class="post-time">
-          <time>{{ $formatDateTime(collect.createdTime) }}&nbsp;:&nbsp;创建时间</time>
+    <el-skeleton animated :loading="loading" style="padding-top: 32px">
+      <template #template>
+        <el-skeleton-item style="width: 40%;" variant="h1" />
+        <el-skeleton-item style="width: 100%;" variant="h1" />
+        <el-skeleton-item style="width: 40%;" variant="text" />
+        <br>
+        <br>
+        <el-skeleton-item style="width: 40%;" variant="h1" />
+        <el-skeleton-item style="width: 100%;" variant="h1" />
+        <el-skeleton-item style="width: 40%;" variant="text" />
+      </template>
+      <div>
+        <div class="itme-List" v-infinite-scroll="loadMore" :infinite-scroll-immediate="false"
+          :infinite-scroll-disabled="loadingdisabled" v-if="collects && collects.length > 0">
+          <div class="content-skeleton-item" v-for="collect in collects" :key="collect.id">
+            <div class="post-time">
+              <time>创建时间&nbsp;:&nbsp;{{ $formatDateTime(collect.createdTime) }}</time>
+            </div>
+            <MaincontentItme :content="collect" />
+          </div>
         </div>
-        <MaincontentItme :content="collect" />
+        <div v-else class="user-activity-nodata">
+          <span v-if="!loading">还没有任何收藏</span>
+        </div>
+        <div v-if="loadingdisabled &&collects.length > 0 " class="user-activity-nodata">
+          已经到底部了
+        </div>
+        <br>
+        <el-skeleton animated :loading="reloading">
+          <template #template>
+            <el-skeleton-item style="width: 40%;" variant="h1" />
+            <el-skeleton-item style="width: 100%;" variant="h1" />
+            <el-skeleton-item style="width: 40%;" variant="text" />
+          </template>
+        </el-skeleton>
       </div>
-    </div>
-  </div>
-  <div v-else class="user-activity-nodata">
-  <span >还没有数据</span>
+    </el-skeleton>
   </div>
 </template>
   
@@ -41,20 +66,35 @@ const page = ref(1)
 const size = ref(5)
 const type = ref(1)
 const loadingdisabled = ref(false)
+const loading = ref(false)
+const reloading = ref(false)
 
 const pageTitle = '收藏';
 
 onMounted(async () => {
-  await getcollects();
-  nextTick(() =>
-    document.title = userinfoAppStores?.userinfo?.name + pageTitle
-  )
+  if (loading.value) {
+    return
+  }
+  try {
+    loading.value = true
+    await getcollects();
+    nextTick(() =>
+      document.title = userinfoAppStores?.userinfo?.name + pageTitle
+    )
+    loading.value = false
+  } catch {
+    console.error("数据加载错误");
+  } finally {
+    loading.value = false
+  }
+
+
 })
 
 async function getcollects() {
   try {
-    const data = await behaviourAppStoreS.getuserCollectList(props.userid, page.value, size.value,type.value);
-    if (data ) {
+    const data = await behaviourAppStoreS.getuserCollectList(props.userid, page.value, size.value, type.value);
+    if (data && data.length > 0) {
       console.log(data);
       collects.value.push(...data);
       page.value++;
@@ -67,20 +107,35 @@ async function getcollects() {
 }
 
 const loadMore = async () => {
-  await getcollects();
+  if (reloading.value) {
+    return
+  }
+  try {
+    reloading.value = true
+    await getcollects();
+    reloading.value = false
+  } catch {
+    console.error("数据加载错误");
+  } finally {
+    reloading.value = false
+  }
 }
 </script>
   
 <style lang="scss" scoped>
-.user-activity-nodata{
+.user-activity-nodata {
   display: flex;
   align-items: center;
   justify-content: center;
-  span{
+  padding-top: 10px;
+
+  span {
     font-weight: 600;
   }
 }
-.user-activity{
+
+.user-activity {
+
   .List-header {
     align-items: center;
     border-bottom: 1px solid #f8f8fa;

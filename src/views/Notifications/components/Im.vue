@@ -172,17 +172,17 @@
     </el-dialog>
 
     <el-main class="chat-main">
-      <ChatChatBox :boxuserid="boxuserid" :boxUserName="boxUserName"></ChatChatBox>
+      <ChatChatBox :boxuserid="boxuserid" :boxUserName="boxUserName" @message-sent="handleMessage">
+      </ChatChatBox>
     </el-main>
     <!-- {{ useractive }} -->
   </el-container>
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from 'vue';
+import { ref, onMounted, computed, watch, onBeforeUnmount, nextTick } from 'vue';
 import { ElMessage } from 'element-plus'
 import ChatChatBox from './components/ChatChatBox.vue';
-import Cookies from 'js-cookie'
 import { formatTime } from '@/utils/formDate'
 
 import notificationAppStore from "@/stores/admin/notification";
@@ -190,7 +190,23 @@ const notificationS = notificationAppStore()
 
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
+import {  getCurrentTime } from '@/utils/formDate'
 
+const handleMessage = (message,userid) => {
+  console.log("接收到消息:", message,userid);
+  messageUp(recentlist,userid,message)
+  messageUp(strangerlist,userid,message)
+  messageUp(mutualconcernlist,userid,message)
+};
+
+const messageUp=(list,userId,message)=>{
+  list.value = list.value.map(item => {
+        if (item.id == userId) {
+          return { ...item, snippet: message };
+        }
+        return item;
+      });
+}
 
 const props = defineProps({
   participantId: {
@@ -202,9 +218,9 @@ const props = defineProps({
 onMounted(async () => {
   await handleOpen(menutype.value)
   notificationS.isim = false
-  let userid=props.participantId
+  let userid = props.participantId
   if (userid) {
-   await newMsg(userid)
+    await newMsg(userid)
     // const data = await userinfoAppStores.getusergetInfo(props.participantId)
     // recentlist.value.unshift(data)
 
@@ -216,12 +232,66 @@ watch(() => props.participantId, async (newValue) => {
   newMsg(newValue)
 })
 
-const newMsg = async (userid) => {
-  const data = await userinfoAppStores.getusergetInfo(userid)
+watch(() => notificationS.upMsgdata, (newValue) => {
+  upcontent(recentlist, newValue, true)
+  upcontent(strangerlist, newValue, false)
+  upcontent(mutualconcernlist, newValue, false)
 
+})
+
+//更新列表。list 更新对象  newValue 新数据  add 是否添加入列表
+const upcontent = async (list, newValue, add) => {
+  const { content, senderId, userId, userName } = newValue
+
+  const index = list.value.findIndex(item => item.id == userId);
+  console.log('index', index);
+  if (index !== -1) {
+    // 存在，更新 snippet
+    nextTick(() => {
+      recentlist.value = recentlist.value.map(item => {
+        if (item.id == userId) {
+          return { ...item, snippet: content, unread: (userId == boxuserid.value) ? 1 : 0 };
+        }
+        return item;
+      });
+
+      notificationS.isim = false;
+    })
+    // list.value[index].snippet = content;
+    // list.value[index].unread = (userId == boxuserid.value) ? 1 : 0;
+  } else {
+    // 不存在，添加新对象
+    if (add) {
+      const data = await userinfoAppStores.getusergetInfo(userId)
+      list.value.push(
+        {
+          id: userId,
+          avatar: data.image,
+          name: userName,
+          unread: 0,
+          senderTime: getCurrentTime(),
+          snippet: content
+        }
+      );
+    }
+
+  }
+}
+
+
+const newMsg = async (userid) => {
+  const targetItem = recentlist.value.find(item => item.id == userid);
+if(targetItem){
+  sendmessage(targetItem.id, targetItem.name)
+}else{
+  const data = await userinfoAppStores.getusergetInfo(userid)
   recentlist.value = recentlist.value.filter(item => item.id !== data.id);
   recentlist.value = [data].concat(recentlist.value);
   sendmessage(data.id, data.name)
+}
+
+  // recentlist.value = recentlist.value.filter(item => item.id !== data.id);
+  // recentlist.value = [data].concat(recentlist.value);
 
 }
 const boxuserid = ref(0)
@@ -230,6 +300,7 @@ const boxUserName = ref('')
 const recentlist = ref([])
 const strangerlist = ref([])
 const mutualconcernlist = ref([])
+
 
 const recentisUnread = computed(() => {
   return recentlist.value.some(item => item.unread === 0);
@@ -240,8 +311,19 @@ const strangerisUnread = computed(() => {
 })
 
 const mutualconcernisUnread = computed(() => {
-  return recentlist.value.some(item => item.unread === 0);
+  return mutualconcernlist.value.some(item => item.unread === 0);
 })
+
+// 组合 computed 属性
+const hasUnread = computed(() => {
+  return recentisUnread.value || strangerisUnread.value || mutualconcernisUnread.value;
+});
+
+
+watch(hasUnread, (newValue) => {
+  console.log('newValue', newValue);
+  notificationS.isim = newValue;
+});
 
 
 const upLoading = ref(false)
@@ -334,8 +416,6 @@ const upclearUnreadMsg = (userid) => {
 const querySearch = (queryString, cb) => {
   const results = []
 
-  console.log(queryString);
-
   searchInList(recentlist, queryString, results);
   searchInList(strangerlist, queryString, results);
   searchInList(mutualconcernlist, queryString, results)
@@ -370,8 +450,8 @@ const reportuserid = ref('')
 const sendmessage = (userid, name) => {
   boxuserid.value = userid
   boxUserName.value = name
-  console.log(boxuserid.value);
-  console.log(boxUserName.value);
+  // console.log(boxuserid.value);
+  // console.log(boxUserName.value);
   upclearUnreadMsg(userid)
 
 }
@@ -396,25 +476,8 @@ const reportsubmit = () => {
 
 const infodel = (userid) => {
   console.log('删除userid ', userid)
-  // localdeleteUser(userid)
 }
 
-// const UserRecordsKey = 'Remove-Records'
-
-// const localdeleteUser = (userid) => {
-//   const records = Cookies.get(UserRecordsKey)
-//   const recordsArray = records ? JSON.parse(records) : [];
-//   // 将新用户ID添加到记录数组中
-//   recordsArray.push(userid);
-
-//   // 更新 cookies 中的用户记录
-//   Cookies.set(UserRecordsKey, JSON.stringify(recordsArray));
-// }
-
-// const getLocaldelUsers = () => {
-//   const users = Cookies.get(UserRecordsKey);
-//   return users ? JSON.parse(users) : [];
-// }
 
 const inforeport = (userid) => {
   console.log('举报userid', userid)
@@ -433,19 +496,12 @@ onMounted(() => {
   document.title = pageTitle.value;
 });
 const searchinput = ref('')
-const emit = defineEmits(['data-loaded']);
 
 const searchchange = () => {
   console.log(searchinput.value);
 }
 // 使用组合式API中的 onMounted 钩子
-onMounted(() => {
-  setTimeout(() => {
-    // 数据加载完成后触发事件通知父组件
-    // console.log('data-loaded');
-    emit('data-loaded');
-  }, 2000);
-});
+
 </script>
 
 <style lang="scss" scoped>

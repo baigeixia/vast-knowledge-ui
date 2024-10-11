@@ -226,9 +226,9 @@ const props = defineProps({
 });
 
 
-onMounted(() => {
-    console.log(props.notificationList);
-})
+// onMounted(() => {
+//     console.log(props.notificationList);
+// })
 
 const formattedTime = (time) => {
     return time.slice(11, 16)

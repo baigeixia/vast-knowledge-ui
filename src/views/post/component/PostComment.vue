@@ -115,11 +115,14 @@ const sendmessage = () => {
             commentS.commentDto.arAuthorId = articleS.articleDto.authorId
             commentS.commentDto.entryId = props.articleId
             commentS.commentDto.image = imageUrl.value
-            console.log(commentS.commentDto);
             await commentS.saveCommentContent()
             sendmessageAddVodata()
             commentS.resetComment()
         }
+
+
+        console.log(commentS.commentDto);
+
         imageUrl.value = ''
         commentinput.value = ''
         // commentS.commentHomeVo = {}
@@ -131,13 +134,14 @@ const sendmessage = () => {
 
 const sendmessageAddVodata = () => {
     let newChildComment = commentS.TemporaryComments
+    console.log(newChildComment);
     if (newChildComment) {
         if (commentS.commentHomeVo && Array.isArray(commentS.commentHomeVo.comments)) {
             commentS.commentHomeVo.comments.unshift(newChildComment);
         }
 
         if (maincommentS.commentHomedrawerVo && Array.isArray(maincommentS.commentHomedrawerVo.comments)) {
-            commentS.commentHomeVo.comments.unshift(newChildComment);
+            maincommentS.commentHomedrawerVo.comments.unshift(newChildComment);
         }
     }
 }

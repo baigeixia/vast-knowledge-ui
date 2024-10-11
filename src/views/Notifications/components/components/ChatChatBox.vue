@@ -1,5 +1,5 @@
 <template>
-  <div v-if="boxshow" class="chat-chatBox">
+  <div v-if="boxshow" class="chat-chatBox" >
     <div class="chat-header">
       <div class="header-title">{{ boxUserName }}</div>
     </div>
@@ -27,8 +27,8 @@
               <div class="message-text" v-html="message.text"></div>
             </div>
             <template #content>
-              <el-tooltip placement="bottom" popper-class="chat-tooltip-status-popper" effect="light" trigger="click">
-                <div class="content-status" v-if="message.id">
+              <el-tooltip placement="bottom" popper-class="chat-tooltip-status-popper" effect="light" trigger="click" v-if="message.id">
+                <div class="content-status" >
                   <i class="bi bi-three-dots"></i>
                 </div>
                 <template #content>
@@ -91,7 +91,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, watch } from "vue"
+import { ref, onMounted, nextTick, watch ,defineEmits  } from "vue"
 import EmojiFileInput from '@/Layout/components/EmojiFileInput.vue';
 import { escapeHtml } from '@/utils/escapeHtml'
 import { safeHtml } from '@/utils/domPurifyConfig'
@@ -99,6 +99,8 @@ import { formatMessageTime, getCurrentTime } from '@/utils/formDate'
 
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
+
+const emit = defineEmits();
 
 const poper = defineProps({
   boxuserid: {
@@ -120,8 +122,7 @@ watch(() => poper.boxuserid, async (newValue) => {
   page.value = 1
   if (newValue != 0) {
     boxshow.value = true
-    console.log(1111);
-    messageListData.value={}
+    messageListData.value = {}
     await fetchMessages()
     nextTick(() => {
       if (chatmaincontentref.value) {
@@ -131,10 +132,24 @@ watch(() => poper.boxuserid, async (newValue) => {
   }
 })
 
-watch(() => poper.upMsgdata, (newValue) => {
-  console.log('upMsgdata', newValue);
 
-  console.log(notificationS.upMsgdata.userid);
+
+watch(() => notificationS.upMsgdata, (newValue) => {
+  console.log('upMsgdata', newValue);
+  const { content, senderId, userId, userName } = newValue
+  let localuserid = poper.boxuserid
+  if (localuserid == userId) {
+    messageListData.value.messages.push({
+      userType: "sender",
+      text: content,
+      createdTime: getCurrentTime(),
+    })
+
+    nextTick(() => {
+      chatmaincontentref.value.scrollTop = chatmaincontentref.value.scrollHeight
+    });
+
+  }
 
 })
 
@@ -151,10 +166,10 @@ const messageListData = ref({
 })
 
 onMounted(async () => {
+  // viewDetection()
   const userid = poper.boxuserid
   if (userid != 0) {
     boxshow.value = true
-    console.log('newuserid',userid);
     await fetchMessages()
     nextTick(() => {
       if (chatmaincontentref.value) {
@@ -214,34 +229,26 @@ const fetchMessages = async () => {
   }
 
 
-
-  // testmessage.value = {
-  //   ...testmessage.value,
-  //   messages: [...upmessage.value.messages, ...testmessage.value.messages]
-  // }
 }
 
-const formatDate = (timestamp) => {
-  const date = new Date(timestamp * 1000); // Convert UNIX timestamp to milliseconds
-  const year = date.getFullYear();
-  const month = ('0' + (date.getMonth() + 1)).slice(-2); // Month starts from 0
-  const day = ('0' + date.getDate()).slice(-2);
-  const hours = ('0' + date.getHours()).slice(-2);
-  const minutes = ('0' + date.getMinutes()).slice(-2);
-  return `${year}-${month}-${day} ${hours}:${minutes}`;
-}
 const sendmessage = async () => {
   const vluse = sanitizeString(commentinput.value)
+  commentinput.value = ''
+
   const userid = poper.boxuserid
   const username = poper.boxUserName
   notificationS.chatMsg(userid, username, vluse)
-  commentinput.value = ''
+  
 
   messageListData.value.messages.push({
     userType: "receiver",
     text: vluse,
     createdTime: getCurrentTime(),
   })
+
+  
+  emit('message-sent', vluse,userid);
+
   nextTick(() => {
     chatmaincontentref.value.scrollTop = chatmaincontentref.value.scrollHeight
   });
@@ -264,7 +271,6 @@ const sanitizeString = (str) => {
 
 const commentinputfocus = (emoji) => {
   if (emoji) {
-    console.log('mian ', emoji);
     commentinput.value = commentinput.value + emoji?.i
   }
   commentinputRef.value.focus();

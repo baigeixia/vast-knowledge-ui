@@ -1,7 +1,7 @@
-import { getCommentNotification, getLikeNotification ,getfollowNotification,getImList,getmsgListdata,setclearUnreadMsg,setdelMsg} from '@/api/admin/notification'
+import { getCommentNotification, getLikeNotification, getfollowNotification, getImList, getmsgListdata, setclearUnreadMsg, setdelMsg } from '@/api/admin/notification'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { socket,socketEmit } from '@/utils/socketclient'
+import { socket, socketEmit } from '@/utils/socketclient'
 import debounce from '@/utils/debouncing';
 
 const notificationAppStore = defineStore(
@@ -41,39 +41,37 @@ const notificationAppStore = defineStore(
       return resp.data
     }
 
-    const getImListInfo = async (type,page, size) => {
-      const resp = await getImList(type,page, size)
+    const getImListInfo = async (type, page, size) => {
+      const resp = await getImList(type, page, size)
       // followNotificationList.value = resp.data
       return resp.data
     }
-    
+
 
     const upsetclearUnreadMsg = async (userId) => {
       await setclearUnreadMsg(userId)
       // followNotificationList.value = resp.data
     }
 
-    
-    const getmsgList = async (userId,page,size)=>{
-      console.log(userId,page,size);
-      const resp = await getmsgListdata(userId,page, size)
+
+    const getmsgList = async (userId, page, size) => {
+      // console.log(userId, page, size);
+      const resp = await getmsgListdata(userId, page, size)
       return resp.data
     }
 
-    
 
-    const delsetdelMsg = async (msgId)=>{
-      console.log('msgId',msgId);
+
+    const delsetdelMsg = async (msgId) => {
+      console.log('msgId', msgId);
       await setdelMsg(msgId)
     }
 
-
-
-
+    //点赞
     socket.on("LIKE_NOTIFICATION", (data) => {
       console.log('LIKE_NOTIFICATION:', data);
       isdigg.value = true
-      console.log(hederMsgCount);
+      // console.log(hederMsgCount);
     })
 
     //评论
@@ -94,15 +92,15 @@ const notificationAppStore = defineStore(
       isim.value = true
       upMsgdata.value = data
     })
-
+    //系统通知
     socket.on("SYSTEM_MSG_NOTIFICATION", (data) => {
       console.log('SYSTEM_MSG_NOTIFICATION:', data);
       issystem.value = true
     })
 
-    const chatMsg = debounce((senderId,senderName,content)=>{
-      console.log(senderId,senderName,content);
-      socketEmit('chatMsg', {senderId:senderId,senderName:senderName,content:content})
+    const chatMsg = debounce((senderId, senderName, content) => {
+      console.log(senderId, senderName, content);
+      socketEmit('chatMsg', { senderId: senderId, senderName: senderName, content: content })
     }, 500)
 
 
@@ -126,7 +124,7 @@ const notificationAppStore = defineStore(
       })
     }, 500)
 
-    const userToCollection = debounce((senderId, senderName,articleId) => {
+    const userToCollection = debounce((senderId, senderName, articleId) => {
       console.log('collect', senderId);
       socketEmit("collect", {
         senderId: senderId,

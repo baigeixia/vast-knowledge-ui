@@ -103,6 +103,11 @@ const notificationAppStore = defineStore(
       socketEmit('chatMsg', { senderId: senderId, senderName: senderName, content: content })
     }, 500)
 
+    const commentMsg = debounce((articleId,senderId, senderName) => {
+      console.log(senderId, senderName, articleId);
+      socketEmit('commentMsg', { articleId: articleId, senderId: senderId, senderName: senderName })
+    }, 500)
+
 
 
     const likeArticle = debounce((articleId, authorId, articleName, type, commentId) => {
@@ -145,6 +150,7 @@ const notificationAppStore = defineStore(
       chatMsg,
       upsetclearUnreadMsg,
       delsetdelMsg,
+      commentMsg,
       commentNotificationList,
       ishederMsg,
       upMsgdata,

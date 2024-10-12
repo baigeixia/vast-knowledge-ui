@@ -12,6 +12,17 @@ export const  usergetInfo =(userid)=>{
     })
 }
 
+
+
+export const  InfoRelationApi =(userid)=>{
+    return systemRequest({
+        url: `/user/info/InfoRelation`,
+        method: 'GET',
+        params:{
+            id:userid
+        }
+    })
+}
 export const  upuserConfigApi =(state,type)=>{
     return systemRequest({
         url: `/user/info/userConfig/${type}`,

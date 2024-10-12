@@ -1,4 +1,4 @@
-import { usergetInfo, upuserConfigApi, upuserInfoApi, userfollowersListApi, userFollowingListApi } from '@/api/user/userinfo'
+import { usergetInfo, upuserConfigApi, upuserInfoApi, userfollowersListApi, userFollowingListApi,InfoRelationApi } from '@/api/user/userinfo'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { getUserid, setUserid, removeUserid } from '@/utils/auth'
@@ -13,11 +13,16 @@ const userinfoAppStore = defineStore(
     const userLocalinfo = ref({})
 
     const getusergetInfo = async (userid) => {
-      console.log('userid', userid);
       const resp = await usergetInfo(userid)
       userinfo.value = resp.data
       return resp.data;
     }
+
+    const getInfoRelation = async (userid) => {
+      const resp = await InfoRelationApi(userid)
+      return resp.data;
+    }
+
     const getusergetLocalInfo = async () => {
       const resp = await usergetInfo()
       userLocalinfo.value = resp.data
@@ -57,6 +62,7 @@ const userinfoAppStore = defineStore(
       userLocalinfo,
       getuserfollowersList,
       getuserFollowingList,
+      getInfoRelation,
     }
   })
 

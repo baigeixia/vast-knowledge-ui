@@ -25,12 +25,12 @@
                                 </el-button>
                             </RouterLink>
                         </div>
-                        <div v-else class="right">
-                            <el-button type="primary" >
-                                <i class="bi bi-dash-lg ">
+                        <div v-else class="right" >
+                            <el-button @click="followedButton(userinfoHome.id, userinfoHome.name)" :type="isfollow ? 'info' : 'primary'">
+                                <i class="bi bi-dash-lg " v-if="isfollow">
                                     <span class="button-icon "> 取消关注</span></i>
-                                <!-- <i class="bi bi-plus-lg">
-                                    <span class="button-icon">关注</span></i> -->
+                                <i class="bi bi-plus-lg" v-else>
+                                    <span class="button-icon">关注</span></i>
                             </el-button>
                             <el-button type="info" plain @click="router.push(`/notifications/im/${userid}`)">发私信</el-button>
                         </div>
@@ -147,6 +147,11 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
+
+import notificationAppStore from "@/stores/admin/notification";
+const notificationS = notificationAppStore()
+
+
 const route = useRoute();
 const props = defineProps({
     userid: {
@@ -155,9 +160,16 @@ const props = defineProps({
     }
 })
 
+const isfollow=ref(false)
+
 onMounted(async () => {
     const id = props.userid
     await userinfoAppStores.getusergetInfo(id)
+    if(getUserid() !== id){
+        const relationData = await userinfoAppStores.getInfoRelation(id)
+        isfollow.value=  relationData.follow
+    }
+//    console.log(data);
     nextTick(() => {
         userinfoHome.value = userinfoAppStores.userinfo
     })
@@ -171,6 +183,11 @@ watch(() => props.userid, async (newValue) => {
         userinfoHome.value = userinfoAppStores.userinfo
     })
 })
+
+const followedButton=(id,name)=>{
+    notificationS.fanMsg(id, name)
+    isfollow.value=!isfollow.value
+}
 
 const userinfoHome = ref({})
 const loading = ref(false)

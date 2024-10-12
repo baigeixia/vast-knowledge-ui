@@ -9,6 +9,8 @@ const commentStore = defineStore(
 
         const TemporaryComments = ref({})
 
+        const articleLike  = ref(1)
+        const articleCollect  = ref(false)
         const headerTag = ref(0)
 
         const commentDto = ref({
@@ -126,10 +128,12 @@ const commentStore = defineStore(
             if (comments && comments.length > 0) {
                 extractIds(comments)
                 try {
-                    const response = getcommentLikeApi(entryId, idSet)
-                    const dataObject = (await response).data;
+                    const response = await getcommentLikeApi(entryId, idSet)
+                    articleCollect.value=response.data.articleCollect
+                    articleLike.value=response.data.articleLike
+                    const dataObject = response.data.commentLike;
                     if (dataObject) {
-                        const dataMap = new Map(Object.entries(dataObject).map(([key, value]) => [Number(key), value]));
+                        const dataMap = new Map(Object.entries(dataObject).map(([key, value]) => [key, value]));
                         const mergedMap = new Map([...commentLikes.value, ...dataMap]);
                         commentLikes.value = mergedMap;
                     }
@@ -174,6 +178,8 @@ const commentStore = defineStore(
             commentHomeVo,
             TemporaryComments,
             headerTag,
+            articleCollect,
+            articleLike,
             loadMore,
             isLoadingEnd,
             noMore,

@@ -103,7 +103,7 @@ const openInNewTab = (contentid) => {
 
 const Articlelike = (id, authorId, authorName, type) => {
     notificationS.likeArticle(id, authorId, authorName, type)
-    behaviourAppStoreS.postoperation.set(Number(props.content.id), noislikeArticle.value ? 0 : 1)
+    behaviourAppStoreS.postoperation.set(props.content.id, noislikeArticle.value ? 0 : 1)
     noislikeArticle.value ? props.content.likes-- : props.content.likes++
 }
 
@@ -115,7 +115,7 @@ const props = defineProps({
     },
 });
 
-const noislikeArticle = computed(() => (behaviourAppStoreS.postoperation.get(Number(props.content.id)) ?? 1) == 1)
+const noislikeArticle = computed(() => (behaviourAppStoreS.postoperation.get(props.content.id) ?? 1) == 1)
 
 
 const iconClass = computed(() => {

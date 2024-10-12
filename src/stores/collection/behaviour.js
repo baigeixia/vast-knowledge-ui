@@ -26,7 +26,8 @@ const getdynamics=async (userid,page,size)=>{
       if (ids && ids.length > 0) {
         const response = await getarticleLikeApi(ids)
         const dataObject = response.data
-        const dataMap = new Map(Object.entries(dataObject).map(([key, value]) => [Number(key), value]))
+        console.log(response.data);
+        const dataMap = new Map(Object.entries(dataObject).map(([key, value]) => [key, value]))
         const mergedMap = new Map([...postoperation, ...dataMap])
 
         postoperation.clear()

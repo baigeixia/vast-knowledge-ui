@@ -91,7 +91,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, watch ,defineEmits  } from "vue"
+import { ref, onMounted, nextTick, watch   } from "vue"
 import EmojiFileInput from '@/Layout/components/EmojiFileInput.vue';
 import { escapeHtml } from '@/utils/escapeHtml'
 import { safeHtml } from '@/utils/domPurifyConfig'

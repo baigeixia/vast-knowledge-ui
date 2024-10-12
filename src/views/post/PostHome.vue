@@ -5,8 +5,10 @@
                 <RouterLink :to="`/user/${articleS.articleDto.authorId}`">
                     <img :src="authorInfo.image">
                 </RouterLink>
-                <div class="follow-area" v-if="isfollow">
-                    <div class="follow-text" @click="isfollow = false">关注</div>
+                <div class="follow-area" v-if="isLoadUser">
+                    <div class="follow-text" v-if="!isfollow" @click="followedButton(authorInfo.id,authorInfo.name)">
+                        关注
+                    </div>
                 </div>
             </div>
             <el-tooltip content="点赞" placement="left" effect="light">
@@ -16,9 +18,9 @@
                         <i class="bi bi-heart-fill "></i>
                     </el-badge>
                 </div>
-                <div v-else class="panel-btn" :class="{ 'active': !isnolikeArticle }"
+                <div v-else class="panel-btn" :class="{ 'active': isActive }"
                     @click="articlelike(postId, articleS.articleDto.authorId, articleS.articleDto.authorName, 0)">
-                    <el-badge :color="!isnolikeArticle ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
+                    <el-badge :color="isActive ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
                         :value="Number(articleS.articleDto.likes)" :offset="[10, 3]">
                         <i class="bi bi-heart-fill"></i>
                     </el-badge>
@@ -36,8 +38,8 @@
                 <div class="panel-btn user-active" v-if="articleS.articleDto.authorId == userinfoAppStores.userid">
                     <i class="bi bi-star-fill"></i>
                 </div>
-                <div v-else class="panel-btn" @click="collect(articleS.articleDto.authorId, articleS.articleDto.authorName,postId)">
-                    <i class="bi bi-star-fill" :color="iscollect ? '#1e80ff' : '#b2b2b2'"></i>
+                <div v-else class="panel-btn" @click="collectOp()">
+                    <i class="bi bi-star-fill" :style="{ color: (commentS.articleCollect ) ? '#1e80ff' : '#b2b2b2' }"></i>
                 </div>
             </el-tooltip>
             <el-tooltip content="分享" placement="left" effect="light">
@@ -271,25 +273,29 @@ import { defineAsyncComponent } from 'vue';
 import contentStore from "@/stores/admin/content";
 import articleAppStore from "@/stores/admin/article";
 import commentStore from "@/stores/admin/comment";
+const commentS = commentStore()
+
 import maincommentAppStore from "@/stores/admin/maincomment";
 const contentS = contentStore()
 const articleS = articleAppStore()
-const commentS = commentStore()
 const maincommentS = maincommentAppStore()
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 import behaviourAppStore from "@/stores/collection/behaviour"
 const behaviourAppStoreS = behaviourAppStore();
 
+import { getUserid } from '@/utils/auth'
 
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
 
 const articlelike = (id, authorId, authorName, type) => {
     notificationS.likeArticle(id, authorId, authorName, type)
-    behaviourAppStoreS.postoperation.set(Number(props.postId), isnolikeArticle.value ? 0 : 1)
+    behaviourAppStoreS.postoperation.set(props.postId, Boolean(isnolikeArticle.value) ? 0 : 1)
     isnolikeArticle.value ? articleS.articleDto.likes-- : articleS.articleDto.likes++
 }
+
+
 const PostCommentItemAsync = defineAsyncComponent(() => import('./component/PostCommentItem.vue'));
 const props = defineProps({
     postId: {
@@ -304,7 +310,8 @@ const props = defineProps({
 })
 
 
-const isnolikeArticle = computed(() => behaviourAppStoreS.postoperation.get(Number(props.postId)) ?? 1 == 1);
+const isnolikeArticle = computed(() => behaviourAppStoreS.postoperation.get(props.postId) ?? false);
+const isActive = computed(() => commentS.articleLike === 0 || isnolikeArticle.value);
 
 
 const authorInfo = ref({})
@@ -324,6 +331,14 @@ const upheaderTagdrawer = (type) => {
     maincommentS.commentHomedrawerDto.page = 1
     maincommentS.noMore = false
     maincommentS.commentListGet()
+}
+
+const isLoadUser=ref(false)
+const isfollow=ref(false)
+
+const followedButton=(id,name)=>{
+    notificationS.fanMsg(id, name)
+    isfollow.value=!isfollow.value
 }
 
 onMounted(async () => {
@@ -346,6 +361,13 @@ onMounted(async () => {
     await articleS.getinfoArticle(postId)
     await commentS.commentListGet()
     authorInfo.value = await userinfoAppStores.getusergetInfo(articleS.articleDto.authorId)
+
+    let id=authorInfo.value.id
+    isLoadUser.value= getUserid() !== id
+    if(isLoadUser.value){
+        const relationData = await userinfoAppStores.getInfoRelation(id)
+        isfollow.value=  relationData.follow
+    }
 
     // await maincommentS.commentListGet()
     // console.log(commentS.commentHomeDto);
@@ -445,13 +467,13 @@ const codeLanguage = () => {
 
 const { y } = useScroll(window)
 
-const bellvalue = ref(1200)
 const showImageViewer = ref(false)
-const isagree = ref(false)
 const ismsg = ref(false)
-const iscollect = ref(false)
 const centermainloading = ref(false)
-const isfollow = ref(true)
+// const isfollow = ref(true)
+
+
+
 const drawer = ref(false)
 const imgPreviewUrl = ref('');
 
@@ -460,11 +482,11 @@ const showImageViewerclose = () => {
     showImageViewer.value = false
 }
 
-const collect = (senderId, senderName, articleId) => {
-    console.log('收藏',senderId, senderName, articleId);
-    notificationS.userToCollection(senderId, senderName, articleId)
-    iscollect.value = !iscollect.value
+const collectOp=()=>{
+    notificationS.userToCollection(articleS.articleDto.authorId, articleS.articleDto.authorName,props.postId)
+    commentS.articleCollect=!commentS.articleCollect
 }
+
 
 const share = () => {
     console.log('分享');

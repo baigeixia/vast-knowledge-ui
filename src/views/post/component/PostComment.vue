@@ -47,6 +47,9 @@ import maincommentAppStore from "@/stores/admin/maincomment";
 const maincommentS = maincommentAppStore()
 import articleAppStore from "@/stores/admin/article";
 const articleS = articleAppStore()
+import notificationAppStore from "@/stores/admin/notification";
+const notificationS = notificationAppStore()
+
 
 const props = defineProps({
     articleId: {
@@ -91,13 +94,16 @@ const handleClick = () => {
 
 const sendmessage = () => {
     let timeoutId;
-
+    debugger;
     if (timeoutId) {
         clearTimeout(timeoutId);
     }
 
     timeoutId = setTimeout(async () => {
-        commentS.commentReDto.entryId = props.articleId
+        const articleId= props.articleId
+        commentS.commentReDto.entryId = articleId
+      
+      
 
         if (props.replyauthorId) {
             console.log(props.articleId);
@@ -128,14 +134,17 @@ const sendmessage = () => {
         // commentS.commentHomeVo = {}
         // await commentS.commentListGet()
         maincommentS.istime = null
+
+        
     }, 300);
 
 }
 
 const sendmessageAddVodata = () => {
     let newChildComment = commentS.TemporaryComments
-    console.log(newChildComment);
+    console.log('sendmessageAddVodata',newChildComment);
     if (newChildComment) {
+          notificationS.commentMsg(props.articleId,articleS.articleDto.authorId,articleS.articleDto.authorName)
         if (commentS.commentHomeVo && Array.isArray(commentS.commentHomeVo.comments)) {
             commentS.commentHomeVo.comments.unshift(newChildComment);
         }
@@ -148,7 +157,12 @@ const sendmessageAddVodata = () => {
 
 const sendmessageAddVodataRe = () => {
     let newChildComment = commentS.TemporaryComments
+    console.log('sendmessageAddVodataRe',newChildComment);
+
     if (newChildComment) {
+        const replyauthor= props.replyauthor
+        notificationS.commentMsg(props.articleId,replyauthor.id,replyauthor.username)
+
         let commentId = newChildComment.commentId
         if (commentS.commentHomeVo && Array.isArray(commentS.commentHomeVo.comments)) {
             commentS.commentHomeVo?.comments.forEach(comment => {
@@ -169,13 +183,13 @@ const sendmessageAddVodataRe = () => {
             });
         }
 
-        if (maincommentS.commentdialog) {
-            if (maincommentS.commentdialog.id === commentId) {
-                maincommentS.commentdialog.childComments.unshift(newChildComment);
-                // 更新子评论数量
-                maincommentS.commentdialog.childCommentCount = (parseInt(maincommentS.commentdialog.childCommentCount, 10) + 1).toString();
-            }
-        }
+        // if (maincommentS.commentdialog) {
+        //     if (maincommentS.commentdialog.id === commentId) {
+        //         maincommentS.commentdialog.childComments.unshift(newChildComment);
+        //         // 更新子评论数量
+        //         maincommentS.commentdialog.childCommentCount = (parseInt(maincommentS.commentdialog.childCommentCount, 10) + 1).toString();
+        //     }
+        // }
     }
 }
 

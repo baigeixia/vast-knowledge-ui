@@ -27,29 +27,26 @@ export default defineConfig(({ mode, command }) =>{
     port: 8080,
     host: true,
     open: true,
-    // proxy: {
-    //   // https://cn.vitejs.dev/config/#server-proxy
-    //   '/dev-system': {
-    //     target: VITE_APP_BASE_API_SYSTEM ,
-    //     changeOrigin: true,
-    //     rewrite: (p) => p.replace(/^\/dev-system/, '')
-    //   },
-    //   '/dev-core': {
-    //     target: VITE_APP_BASE_API_CORE,
-    //     changeOrigin: true,
-    //     rewrite: (p) => p.replace(/^\/dev-core/, '')
-    //   },
-    //   '/dev-collection': {
-    //     target: 'http://localhost:16003',
-    //     changeOrigin: true,
-    //     rewrite: (p) => {console.log(p); return p.replace(/^\/dev-collection/, '')}
-    //   },
-    // }
     proxy: {
-      '/dev-collection': 'http://localhost:16003',
-      '/dev-core': 'http://localhost:16002',
-      '/dev-system': 'http://localhost:16001',
+      // https://cn.vitejs.dev/config/#server-proxy
+      '/dev-system': {
+        target: 'http://localhost:16001' ,
+        changeOrigin: true,
+      },
+      '/dev-core': {
+        target: 'http://localhost:16002',
+        changeOrigin: true,
+      },
+      '/dev-collection': {
+        target: 'http://localhost:16003',
+        changeOrigin: true,
+      },
     }
+    // proxy: {
+    //   '/dev-collection': 'http://localhost:16003',
+    //   '/dev-core': 'http://localhost:16002',
+    //   '/dev-system': 'http://localhost:16001',
+    // }
   },
   resolve: {
     alias: {

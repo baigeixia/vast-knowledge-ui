@@ -6,7 +6,7 @@
                     <img :src="authorInfo.image">
                 </RouterLink>
                 <div class="follow-area" v-if="isLoadUser">
-                    <div class="follow-text" v-if="!isfollow" @click="followedButton(authorInfo.id,authorInfo.name)">
+                    <div class="follow-text" v-if="!isfollow" @click="followedButton(authorInfo.id, authorInfo.name)">
                         关注
                     </div>
                 </div>
@@ -39,7 +39,7 @@
                     <i class="bi bi-star-fill"></i>
                 </div>
                 <div v-else class="panel-btn" @click="collectOp()">
-                    <i class="bi bi-star-fill" :style="{ color: (commentS.articleCollect ) ? '#1e80ff' : '#b2b2b2' }"></i>
+                    <i class="bi bi-star-fill" :style="{ color: (commentS.articleCollect) ? '#1e80ff' : '#b2b2b2' }"></i>
                 </div>
             </el-tooltip>
             <el-tooltip content="分享" placement="left" effect="light">
@@ -77,7 +77,7 @@
                                 </div>
                             </div>
                         </div>
-                        <p class="context-box" v-html="replaceImgWithTag(contentS.content.content)"></p>
+                        <p class="context-box" v-html="replaceImgWithTag(contentS.content.content)" ref="mainTextRef"></p>
                     </el-skeleton>
                 </el-main>
                 <el-footer class="comment-end">
@@ -262,7 +262,7 @@
     </el-image-viewer>
 </template>
 <script setup>
-import { ref, onMounted, computed, onBeforeUnmount, watch, reactive, nextTick, onUnmounted, toRaw, watchEffect, isProxy, isReactive, isReadonly } from 'vue';
+import { ref, onMounted, computed, onBeforeUnmount, watch, reactive, nextTick, onUnmounted, watchEffect, isProxy, isReactive, isReadonly } from 'vue';
 import { useScroll } from '@vueuse/core'
 import PostComment from './component/PostComment.vue';
 import PostCommentItem from './component/PostCommentItem.vue';
@@ -271,12 +271,12 @@ import 'highlight.js/styles/github.css';
 import { escapeHtml } from '@/utils/escapeHtml'
 import { defineAsyncComponent } from 'vue';
 import contentStore from "@/stores/admin/content";
-import articleAppStore from "@/stores/admin/article";
 import commentStore from "@/stores/admin/comment";
 const commentS = commentStore()
 
 import maincommentAppStore from "@/stores/admin/maincomment";
 const contentS = contentStore()
+import articleAppStore from "@/stores/admin/article";
 const articleS = articleAppStore()
 const maincommentS = maincommentAppStore()
 import userinfoAppStore from "@/stores/user/userinfo"
@@ -295,6 +295,76 @@ const articlelike = (id, authorId, authorName, type) => {
     isnolikeArticle.value ? articleS.articleDto.likes-- : articleS.articleDto.likes++
 }
 
+/* /**
+     * 用户ID private Long entryId;
+     */
+/**
+ * 文章ID private Long articleId;
+ */
+/**
+ * 阅读时间单位秒 private Long readDuration;
+ */
+/**
+ * 阅读百分比 private Integer percentage;
+ */
+/**
+ * 文章加载时间 private Long loadDuration; */
+const mainTextRef = ref(null)
+const loadDuration = ref(0)
+const readStart = ref(0)
+
+onBeforeUnmount(() => {
+    console.log(mainTextRef.value);
+    console.log(mainTextRef.value.scrollTop);
+    //文章id
+    let postId = props.postId
+    //阅读时间
+    let readDuration = (Date.now() - readStart.value) / 1000
+    readDuration = readDuration.toFixed(3);
+
+    //阅读百分比
+    let percentage = percentagecount()
+    percentage = percentage.toFixed(0);
+
+    //加载时间
+    let loadTime = loadDuration.value / 1000
+    console.log(loadDuration.value);
+    loadTime = loadTime.toFixed(3);
+
+    //用户id
+    let userid = getUserid()
+    //阅读计算    
+    console.log(userid, postId, readDuration, percentage, loadTime);
+    notificationS.userRead(userid, postId, readDuration, percentage, loadTime)
+})
+
+const percentagecount = () => {
+    if (!mainTextRef.value) return 0;
+    const clientHeight = window.innerHeight; // 可视高度
+    const scrollHeight = document.documentElement.scrollHeight; // 总高度
+    const scrollTop = window.scrollY; // 当前滚动位置
+    const textHeight = mainTextRef.value.scrollHeight; //元素 总高度
+
+    if(clientHeight > textHeight){
+        return 100
+    }
+
+    // console.log('textHeight', textHeight);
+    // console.log('scrollTop', scrollTop);
+    // console.log('clientHeight', clientHeight);
+    // console.log('scrollHeight', scrollHeight);
+
+    const adjustedScrollHeight = scrollHeight - ((scrollHeight-textHeight) || 0); // 其他组件的高度
+    const percentageRead = (scrollTop / (adjustedScrollHeight - clientHeight)) * 100;
+
+    // const percentageRead = (scrollTop / (textHeight - clientHeight)) * 100;
+    // const percentageRead = (scrollTop / (scrollHeight - clientHeight)) * 100;
+    // const percentageRead = (scrollTop / textHeight) * 100;
+    // console.log('percentageRead', percentageRead);
+
+    // 计算视图百分比
+    return Math.min(Math.max(percentageRead, 0), 100); // 限制百分比在 0 到 100 之间
+}
 
 const PostCommentItemAsync = defineAsyncComponent(() => import('./component/PostCommentItem.vue'));
 const props = defineProps({
@@ -333,15 +403,17 @@ const upheaderTagdrawer = (type) => {
     maincommentS.commentListGet()
 }
 
-const isLoadUser=ref(false)
-const isfollow=ref(false)
+const isLoadUser = ref(false)
+const isfollow = ref(false)
 
-const followedButton=(id,name)=>{
+const followedButton = (id, name) => {
     notificationS.fanMsg(id, name)
-    isfollow.value=!isfollow.value
+    isfollow.value = !isfollow.value
 }
 
 onMounted(async () => {
+    //文章阅读 开始时间计算
+    let startTime, endTime;
     centermainloading.value = true
     let notificationId = props.notificationId
     let postId = props.postId
@@ -357,21 +429,31 @@ onMounted(async () => {
         maincommentS.commentHomedrawerDto.type = 3
 
     }
+    startTime = Date.now()
+    console.log('startTime', startTime);
+
     await contentS.getContent(postId)
     await articleS.getinfoArticle(postId)
     await commentS.commentListGet()
     authorInfo.value = await userinfoAppStores.getusergetInfo(articleS.articleDto.authorId)
 
-    let id=authorInfo.value.id
-    isLoadUser.value= getUserid() !== id
-    if(isLoadUser.value){
+    let id = authorInfo.value.id
+    isLoadUser.value = getUserid() !== id
+    if (isLoadUser.value) {
         const relationData = await userinfoAppStores.getInfoRelation(id)
-        isfollow.value=  relationData.follow
+        isfollow.value = relationData.follow
     }
+
+    endTime = Date.now()
+    console.log('endTime', endTime);
 
     // await maincommentS.commentListGet()
     // console.log(commentS.commentHomeDto);
     await nextTick(() => {
+        loadDuration.value = endTime - startTime;
+        console.log('loadDuration', loadDuration.value);
+        readStart.value = Date.now()
+        console.log('readStart', readStart.value);
         centermainloading.value = false
     });
 
@@ -482,9 +564,9 @@ const showImageViewerclose = () => {
     showImageViewer.value = false
 }
 
-const collectOp=()=>{
-    notificationS.userToCollection(articleS.articleDto.authorId, articleS.articleDto.authorName,props.postId)
-    commentS.articleCollect=!commentS.articleCollect
+const collectOp = () => {
+    notificationS.userToCollection(articleS.articleDto.authorId, articleS.articleDto.authorName, props.postId)
+    commentS.articleCollect = !commentS.articleCollect
 }
 
 

@@ -16,14 +16,14 @@ export function removeToken() {
 }
 
 
-const UserInfoKey = 'u-0-1'
+const UserInfoIdKey = 'u-0-1'
 
 export function setUserid(id) {
-  return Cookies.set(UserInfoKey, id)
+  return Cookies.set(UserInfoIdKey, id)
 }
 
 export function getUserid() {
-  const id =Cookies.get(UserInfoKey)
+  const id =Cookies.get(UserInfoIdKey)
   if(id){
     useUserStore.isnotlogin=true
   }
@@ -32,5 +32,23 @@ export function getUserid() {
 
 
 export function removeUserid() {
+  return Cookies.remove(UserInfoKey)
+}
+
+
+const UserInfoKey = 'u-0-2'
+
+export function getUserInfo() {
+  const info = Cookies.get(UserInfoKey);
+  return info ? JSON.parse(info) : '';
+}
+
+
+export function setUserInfo(info) {
+  return Cookies.set(UserInfoKey, JSON.stringify(info) || '')
+}
+
+
+export function removeUserInfo() {
   return Cookies.remove(UserInfoKey)
 }

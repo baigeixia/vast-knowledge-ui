@@ -102,6 +102,7 @@ import {formatDate} from '@/utils/formDate'
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 
+import { removeUserInfo } from '@/utils/auth'
 
 
 const pageTitle = ref('个人设置');
@@ -158,6 +159,7 @@ const disabledDate = (time) => {
 }
 
 const handleAvatarChange = (file, fileList) => {
+    removeUserInfo()
     const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg'
     if (!isJPG) {
         return
@@ -194,17 +196,20 @@ const selectedTags = ref([])
 const showError = ref(false)
 const formRef = ref()
 
-const onSubmit = (formEl) => {
+const onSubmit = async (formEl) => {
+    removeUserInfo()
     if (!formEl) return
     formEl.validate(async (valid) => {
         if (valid) {
             console.log('form',toRaw(form));
             await userinfoAppStores.upuserInfo(toRaw(form))
             ElMessage.success('修改完成')
+            await userinfoAppStores.getusergetLocalInfo()
         } else {
             console.log('error submit!')
         }
     })
+
 }
 
 const toggleTag = (tag) => {

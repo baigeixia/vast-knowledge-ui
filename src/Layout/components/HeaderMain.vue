@@ -93,29 +93,38 @@
         <el-dropdown style=" cursor: pointer;" trigger="click" v-if="userinfoAppStores.userid && getToken()">
           <div class="right-li">
             <div class="right-li-datails">
-              <el-icon>
+              <!-- <el-icon>
                 <User />
               </el-icon>
-              <div>头像</div>
+              <div>头像</div> -->
+              <Avatar class="avatar-img" :Image="userinfoAppStores.userLocalinfo.image" alt=" "></Avatar>
             </div>
           </div>
           <template #dropdown>
             <el-dropdown-menu style="z-index: 1000;">
               <RouterLink :to="`/user/${userinfoAppStores.userid}`">
-              <el-dropdown-item >
-                <el-icon>
+                <el-dropdown-item>
+                  <el-icon>
                     <User />
                   </el-icon>
                   个人主页
-                  </el-dropdown-item>
-               </RouterLink>
+                </el-dropdown-item>
+              </RouterLink>
               <RouterLink to="/user/settings"><el-dropdown-item><el-icon>
                     <Setting />
                   </el-icon>我的设置</el-dropdown-item>
               </RouterLink>
             </el-dropdown-menu>
           </template>
-        </el-dropdown>
+        </el-dropdown>  
+        <div class="login-button-wrap" v-else>
+          <div class="login-button">
+            <span @click="userStore.isnotlogin=true">登录/注册</span>
+          </div>
+          <!-- <div class="login-button">
+            <span>注册</span>
+          </div> -->
+        </div>
       </div>
     </div>
   </div>
@@ -129,22 +138,25 @@ import { channelAppStore } from "@/stores/admin/channel";
 const header = channelAppStore()
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
-import { getUserid ,getToken  } from '@/utils/auth'
+import { getUserid, getToken,getUserInfo } from '@/utils/auth'
 
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 
+import useUserStore from '@/stores/admin/user'
+const userStore = useUserStore()
 
 const route = useRoute();
 const router = useRouter();
 
 const headerinput = ref('')
 
-onMounted(async()=>{
- const id= getUserid()
-  if(!id){
-    await userinfoAppStores.getusergetLocalInfo()
-  }
+onMounted(async () => {
+  // const id = getUserid()
+  // if (!id) {
+  //   await userinfoAppStores.getusergetLocalInfo()
+  // }
+  await userinfoAppStores.getusergetLocalInfo()
 })
 
 const upheadertype = (type) => {
@@ -282,7 +294,16 @@ const item_TO_WE = (type) => {
 
         .right-li-datails {
           text-align: center;
+
+          .avatar-img {
+            object-fit: cover;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+          }
+          
         }
+        
 
         .header-input {
           --el-input-border-radius: 20px;
@@ -293,10 +314,30 @@ const item_TO_WE = (type) => {
           }
         }
       }
+      .login-button-wrap {
+            border: 1px solid rgba(191, 192, 194, 0.3);
+            border-radius: 4px;
+            color: #797a7c;
+            padding: 5px;
+            font-size: 14px;
+            font-weight: 400;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
 
-      .right-li:hover {
-        color: #1e80ff;
-      }
+            .login-button {
+              cursor:pointer;
+              margin: 5px;
+            }
+
+            span:hover {
+              color: #1e80ff;
+            }
+          }
+
+      // .right-li:hover {
+      //   color: #1e80ff;
+      // }
     }
   }
 }

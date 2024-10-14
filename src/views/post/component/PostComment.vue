@@ -50,7 +50,6 @@ const articleS = articleAppStore()
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
 
-
 const props = defineProps({
     articleId: {
         type: String,
@@ -94,7 +93,6 @@ const handleClick = () => {
 
 const sendmessage = () => {
     let timeoutId;
-    debugger;
     if (timeoutId) {
         clearTimeout(timeoutId);
     }
@@ -103,10 +101,7 @@ const sendmessage = () => {
         const articleId= props.articleId
         commentS.commentReDto.entryId = articleId
       
-      
-
         if (props.replyauthorId) {
-            console.log(props.articleId);
             commentS.commentReDto.content = commentinput.value
             commentS.commentReDto.image = imageUrl.value
             commentS.commentReDto.commentRepayId = props.replyauthorId
@@ -126,23 +121,25 @@ const sendmessage = () => {
             commentS.resetComment()
         }
 
-
-        console.log(commentS.commentDto);
+        upcomment(true)
 
         imageUrl.value = ''
         commentinput.value = ''
         // commentS.commentHomeVo = {}
         // await commentS.commentListGet()
         maincommentS.istime = null
-
         
     }, 300);
 
 }
 
+const upcomment=(isinsert)=>{
+    isinsert ?  articleS.articleDto.comment++ : articleS.articleDto.comment--
+
+}
+
 const sendmessageAddVodata = () => {
     let newChildComment = commentS.TemporaryComments
-    console.log('sendmessageAddVodata',newChildComment);
     if (newChildComment) {
           notificationS.commentMsg(props.articleId,articleS.articleDto.authorId,articleS.articleDto.authorName)
         if (commentS.commentHomeVo && Array.isArray(commentS.commentHomeVo.comments)) {
@@ -157,7 +154,6 @@ const sendmessageAddVodata = () => {
 
 const sendmessageAddVodataRe = () => {
     let newChildComment = commentS.TemporaryComments
-    console.log('sendmessageAddVodataRe',newChildComment);
 
     if (newChildComment) {
         const replyauthor= props.replyauthor

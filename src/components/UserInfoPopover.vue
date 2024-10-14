@@ -7,7 +7,7 @@
         </template>
 
         <div class="popover-content">
-            <div class="item loading-dots" v-if="false">
+            <div class="item loading-dots" v-if="isLoading">
                 <div class="dot"></div>
                 <div class="dot"></div>
                 <div class="dot"></div>
@@ -15,15 +15,15 @@
             <div v-else>
                 <div class="info-row">
                     <!-- <div class="info-avatar"> -->
-                    <RouterLink :to="`/user/${author.id}`" class="info-avatar">
+                    <RouterLink :to="`/user/${authorInfor.id}`" class="info-avatar">
                         <img :src="authorInfor?.image" alt="avatar" class="avatar" />
                     </RouterLink>
                     <!-- <img :src="author?.avatar" alt="avatar" class="avatar" @click="touserinfor(author.id)" /> -->
                     <!-- </div> -->
                     <div class="info">
-                        <div class="info-name" :title="authorInfor?.username">  {{ authorInfor?.name }}</div>
+                        <div class="info-name" :title="authorInfor?.username"> {{ authorInfor?.name }}</div>
                         <!-- <div class="info-position" :title="authorInfor?.position"> {{ authorInfor?.position }}</div> -->
-                        <div class="info-position" :title="authorInfor?.position"> {{ authorInfor?.introduction	 }}</div>
+                        <div class="info-position" :title="authorInfor?.position"> {{ authorInfor?.introduction }}</div>
                     </div>
                     <div class="meta-row">
                         <div class="item">
@@ -37,13 +37,11 @@
                     </div>
                     <div class="operate-btn">
                         <el-button class="button-ui" type="primary"
-                            @click="focusonclick(author.id, author.username)">关注</el-button>
+                            @click="focusonclick(authorInfor.id, authorInfor.username)">关注</el-button>
                         <el-button class="button-ui" @click="privateletterclick">私信</el-button>
                     </div>
                 </div>
             </div>
-
-
         </div>
     </el-popover>
 </template>
@@ -64,16 +62,18 @@ const touserinfor = (userid) => {
 const props = defineProps({
     author: {
         type: Object,
-        required: true
-    }
+        required: false
+    },
+    authorid: {
+        type: String || Number,
+        required: false
+    },
 });
 const isLoading = ref(false)
 const authorid = ref('')
 const authorInfor = ref({})
 onMounted(() => {
-    if (props.author.id) {
-        authorid.value = props.author.id
-    }
+    authorid.value = props.author?.id || props.authorid
 })
 const userpopovershow = async () => {
     console.log(authorid.value);
@@ -85,7 +85,6 @@ const userpopovershow = async () => {
             if (authordata) {
                 authorInfor.value = authordata.data
             }
-            console.log(authorInfor.value);
             nextTick(() => {
                 isLoading.value = false
             })
@@ -149,37 +148,35 @@ const focusonclick = (id, name) => {
     }
 
     .popover-content {
-
-
         .info-row {
             // display: flex;
             // align-items: center;
             position: relative;
             min-height: 42px;
 
-            .info{
+            .info {
                 font-size: 17px;
                 border-bottom: 1px solid #e5e6eb;
                 margin-left: 85px;
 
                 .info-name {
                     color: #000;
-                 min-width: 100px;
-                max-width: 200px;
-                box-sizing: border-box;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                font-weight: 600    ;
-            }
+                    min-width: 100px;
+                    max-width: 200px;
+                    box-sizing: border-box;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                    font-weight: 600;
+                }
 
-            .info-position {
-                color: gray;
-                font-size: 13px;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-            }
+                .info-position {
+                    color: gray;
+                    font-size: 13px;
+                    overflow: hidden;
+                    text-overflow: ellipsis;
+                    white-space: nowrap;
+                }
             }
 
             .info-avatar {
@@ -191,10 +188,11 @@ const focusonclick = (id, name) => {
 
                 .avatar {
                     width: 100%;
+                    border-radius: 4px;
                 }
             }
 
-           
+
 
             .meta-row {
                 padding: 8px 16px;

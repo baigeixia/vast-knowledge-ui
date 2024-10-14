@@ -138,6 +138,17 @@ const notificationAppStore = defineStore(
       })
     }, 500)
 
+    const userRead = debounce((entryId,articleId,readDuration,percentage,loadDuration,createdTime) => {
+      socketEmit("read", {
+        entryId: entryId,
+        articleId: articleId,
+        readDuration: readDuration,
+        percentage: percentage,
+        loadDuration: loadDuration,
+        createdTime: createdTime,
+      })
+    }, 500)
+
     return {
       getCommentNotificationInfo,
       getfollowNotificationInfo,
@@ -151,6 +162,7 @@ const notificationAppStore = defineStore(
       upsetclearUnreadMsg,
       delsetdelMsg,
       commentMsg,
+      userRead,
       commentNotificationList,
       ishederMsg,
       upMsgdata,

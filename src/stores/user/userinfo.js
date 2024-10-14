@@ -1,7 +1,7 @@
 import { usergetInfo, upuserConfigApi, upuserInfoApi, userfollowersListApi, userFollowingListApi,InfoRelationApi } from '@/api/user/userinfo'
 import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
-import { getUserid, setUserid, removeUserid } from '@/utils/auth'
+import { getUserid, setUserid, removeUserid, setUserInfo, getUserInfo,removeUserInfo } from '@/utils/auth'
 import debounce from '@/utils/debouncing';
 
 
@@ -13,6 +13,11 @@ const userinfoAppStore = defineStore(
     const userLocalinfo = ref({})
 
     const getusergetInfo = async (userid) => {
+      let info = getUserInfo()
+      if(info){
+        userinfo.value = info
+        return info;
+      }
       const resp = await usergetInfo(userid)
       userinfo.value = resp.data
       return resp.data;
@@ -24,21 +29,29 @@ const userinfoAppStore = defineStore(
     }
 
     const getusergetLocalInfo = async () => {
-      const resp = await usergetInfo()
-      userLocalinfo.value = resp.data
-      setUserid(resp.data.id)
-      userid.value = resp.data.id
-      // console.log('resp.data.id',resp.data.id);
-      return resp.data;
+      let info = getUserInfo()
+      if(!info){
+        const resp = await usergetInfo()
+        userLocalinfo.value = resp.data
+        setUserid(resp.data.id)
+        userid.value = resp.data.id
+        setUserInfo(resp.data)
+        return resp.data;
+      }else{
+        userLocalinfo.value = info
+        return info
+      }
+    
     }
 
-
     const upuserConfig = async (state, type) => {
+      removeUserInfo()
       await upuserConfigApi(state, type)
     }
 
     const upuserInfo = async (from) => {
       console.log('from', from);
+      removeUserInfo()
       await upuserInfoApi(from)
     }
 

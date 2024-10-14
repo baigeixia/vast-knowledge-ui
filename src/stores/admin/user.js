@@ -32,10 +32,11 @@ import userinfoAppStore  from '../user/userinfo'
                     setToken(resp.data.access_token);
                     userToken.value = resp.data.access_token;
                     // console.log('resp', resp);
-                   await  userinfoAppStores.getusergetLocalInfo()
                     isnotlogin.value = false;
                     // location.href='/'
-                    window.location.reload();
+                     window.location.reload();
+                    await  userinfoAppStores.getusergetLocalInfo()
+                    // history.pushState(null, '', window.location.href);
                     resolve(resp); // 成功时将结果传递给 Promise 的 resolve
                 })
                 .catch((error) => {

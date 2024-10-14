@@ -10,11 +10,21 @@
     <div class="row-footer">
         <div class="action-list">
             <div class="item-li">
+                <user-info-popover :authorid="content.authorId">
+                    <template v-slot:reference>
+                        <RouterLink :to="`/user/${content.authorId}`" class="user-message">
+                            <span class="user-popover" >
+                                <div> {{ content.authorName }}</div>
+                            </span>
+                        </RouterLink>
+                    </template>
+                </user-info-popover>
+<!-- 
                 <RouterLink :to="`/user/${content.authorId}`" class="user-message">
                     <div class="user-popover">{{ content.authorName }}</div>
-                </RouterLink>
+                </RouterLink> -->
             </div>
-            <div class="item-li view" >
+            <div class="item-li view">
                 <el-icon>
                     <View />
                 </el-icon>
@@ -24,7 +34,8 @@
                 <i class="bi bi-heart-fill noLike"></i>
                 <span> {{ content.likes }}</span>
             </div>
-            <div v-else class="item-li item-li-like " @click="Articlelike(content.id, content.authorId, content.authorName, 0)">
+            <div v-else class="item-li item-li-like "
+                @click="Articlelike(content.id, content.authorId, content.authorName, 0)">
                 <i class="bi" :class="iconClass"></i>
                 <span> {{ content.likes }}</span>
             </div>
@@ -76,6 +87,7 @@
 import { onMounted, ref, nextTick, computed, reactive } from "vue"
 import { escapeHtml } from '@/utils/escapeHtml'
 import { ElMessage } from 'element-plus'
+import UserInfoPopover from '@/components/UserInfoPopover.vue'
 
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
@@ -95,6 +107,7 @@ const router = useRouter();
 const openInNewTab = (contentid) => {
     const path = `/post/${contentid}`;
     router.push(path)
+    
     // const url = router.resolve(path).href;
     // window.open(url);
     // window.open(url, '_blank');
@@ -119,10 +132,10 @@ const noislikeArticle = computed(() => (behaviourAppStoreS.postoperation.get(pro
 
 
 const iconClass = computed(() => {
-  return {
-    'bi-heart-fill islike': !noislikeArticle.value,
-    'bi-heart like': noislikeArticle.value
-  };
+    return {
+        'bi-heart-fill islike': !noislikeArticle.value,
+        'bi-heart like': noislikeArticle.value
+    };
 });
 
 
@@ -265,7 +278,7 @@ const report = (id) => {
             background-color: #ffffff;
             border-radius: 4px;
             border: 1px solid #f1f2f5;
-            
+
 
         }
 

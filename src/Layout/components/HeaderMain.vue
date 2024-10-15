@@ -114,6 +114,12 @@
                     <Setting />
                   </el-icon>我的设置</el-dropdown-item>
               </RouterLink>
+              <RouterLink to="/footmark"><el-dropdown-item> <i class="bi bi-clock"></i>我的足迹</el-dropdown-item>
+              </RouterLink>
+              <!-- <RouterLink to="/user/settings"><el-dropdown-item><el-icon>
+                    <Setting />
+                  </el-icon>退出登录</el-dropdown-item>
+              </RouterLink> -->
             </el-dropdown-menu>
           </template>
         </el-dropdown>  

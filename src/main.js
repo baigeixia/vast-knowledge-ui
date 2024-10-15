@@ -26,7 +26,7 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component)
 }
 
-app.component('Avatar', Avatar);
+app.component( Avatar);
 // app.config.globalProperties.$debounce = debounce;
 app.config.globalProperties.$sanitizeHtml = sanitizeHtml;
 app.config.globalProperties.$formatTime = formatTime;

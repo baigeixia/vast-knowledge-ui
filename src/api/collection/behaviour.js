@@ -54,3 +54,26 @@ export const  userCollectListapi =(userid,page,size)=>{
         }
     })
 }
+
+
+export const  getArticleInfoApi =(id)=>{
+    return collectionRequest({
+        url: `/behaviour/read/article`,
+        method: 'GET',
+        params:{
+            id:id,
+          
+        }
+    })
+}
+
+export const  getuserFootMarkListapi =(page,size)=>{
+    return collectionRequest({
+        url: `/behaviour/read/userFootMark`,
+        method: 'GET',
+        params:{
+            page:page,
+            size:size,
+        }
+    })
+}

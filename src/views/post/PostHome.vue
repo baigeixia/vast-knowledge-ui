@@ -67,22 +67,27 @@
                             <div class="meta-box">
                                 <div class="time">{{ $formatDateTime(articleS.articleDto.createdTime) }}</div>
                                 <!-- <div class="time">{{ $formatDate(articleS.articleDto.createdTime) }}</div> -->
-                                <div class="read-time" v-if="articleS.articleDto.views > 1">
+                                <div class="read-time" v-if="articleS.articleDto.views > 0">
                                     <i class="bi bi-eye"></i>
                                     <span>{{ articleS.articleDto.views }}</span>
                                 </div>
-                                <div class="read-time" v-if="articleS.articleDto.comment > 1">
+                                <div class="read-time" v-if="articleS.articleDto.comment > 0">
                                     <i class="bi bi-chat-right-text"></i>
-                                    <span>{{ articleS.articleDto.comment }}&nbsp;条评论</span>
+                                    <span>{{ articleS.articleDto.comment}}&nbsp;条评论</span>
                                 </div>
+                                <div class="read-time" v-if="userRead">
+                                    <i class="bi bi-clock"></i>
+                                    <span>阅读{{ (userRead.readDuration / 60).toFixed(0) }}分钟 </span>
+                                </div>
+
                             </div>
                         </div>
                         <p class="context-box" v-html="replaceImgWithTag(contentS.content.content)" ref="mainTextRef"></p>
                     </el-skeleton>
                 </el-main>
                 <el-footer class="comment-end">
-                    <div class="title">评论<span style="margin-left: 5px;" v-if="articleS.articleDto.comment > 1">{{
-                        articleS.articleDto.comment }}</span> </div>
+                    <div class="title">评论<span style="margin-left: 5px;" v-if="articleS.articleDto.comment > 0">
+                        {{articleS.articleDto.comment }}</span> </div>
                     <div class="comment-editor">
                         <div class="content">
                             <div class="avatar-box">
@@ -154,10 +159,10 @@
                                 <div>粉丝</div>
                             </RouterLink>
                         </div>
-                        <div class="operate-btn">
+                        <!-- <div class="operate-btn">
                             <el-button type="primary">关注</el-button>
                             <el-button>私信</el-button>
-                        </div>
+                        </div> -->
                     </div>
                 </div>
                 <div class="sidebar-block " :class="{ 'is-top': y > 1000 }">
@@ -291,36 +296,33 @@ const notificationS = notificationAppStore()
 
 const articlelike = (id, authorId, authorName, type) => {
     notificationS.likeArticle(id, authorId, authorName, type)
-    behaviourAppStoreS.postoperation.set(props.postId, Boolean(isnolikeArticle.value) ? 0 : 1)
+    // behaviourAppStoreS.postoperation.set(props.postId, Boolean(isnolikeArticle.value) ? 0 : 1)
+    behaviourAppStoreS.postoperation.set(props.postId, Boolean(isActive.value) ? 1 : 0)
+    isnolikeArticle.value ? commentS.articleLike-- : commentS.articleLike++
     isnolikeArticle.value ? articleS.articleDto.likes-- : articleS.articleDto.likes++
 }
 
-/* /**
-     * 用户ID private Long entryId;
-     */
-/**
+/* 用户ID private Long entryId;
  * 文章ID private Long articleId;
- */
-/**
  * 阅读时间单位秒 private Long readDuration;
- */
-/**
  * 阅读百分比 private Integer percentage;
- */
-/**
- * 文章加载时间 private Long loadDuration; */
+ * 文章加载时间 private Long loadDuration; 
+*/
 const mainTextRef = ref(null)
 const loadDuration = ref(0)
-const readStart = ref(0)
+// const readStart = ref(0)
 
 onBeforeUnmount(() => {
-    console.log(mainTextRef.value);
-    console.log(mainTextRef.value.scrollTop);
+    stopTimer();
+    observer.disconnect(); // 断开观察
+    window.removeEventListener('mousemove', handleActivity);
+    window.removeEventListener('scroll', handleActivity);
     //文章id
     let postId = props.postId
     //阅读时间
-    let readDuration = (Date.now() - readStart.value) / 1000
-    readDuration = readDuration.toFixed(3);
+    // let readDuration = (Date.now() - readStart.value) / 1000
+    let readDuration = totalTime.value
+    // readDuration = readDuration.toFixed(2);
 
     //阅读百分比
     let percentage = percentagecount()
@@ -328,13 +330,12 @@ onBeforeUnmount(() => {
 
     //加载时间
     let loadTime = loadDuration.value / 1000
-    console.log(loadDuration.value);
-    loadTime = loadTime.toFixed(3);
+    loadTime = loadTime.toFixed(2);
 
     //用户id
     let userid = getUserid()
-    //阅读计算    
     console.log(userid, postId, readDuration, percentage, loadTime);
+    //阅读计算    
     notificationS.userRead(userid, postId, readDuration, percentage, loadTime)
 })
 
@@ -345,22 +346,12 @@ const percentagecount = () => {
     const scrollTop = window.scrollY; // 当前滚动位置
     const textHeight = mainTextRef.value.scrollHeight; //元素 总高度
 
-    if(clientHeight > textHeight){
+    if (clientHeight > textHeight) {
         return 100
     }
 
-    // console.log('textHeight', textHeight);
-    // console.log('scrollTop', scrollTop);
-    // console.log('clientHeight', clientHeight);
-    // console.log('scrollHeight', scrollHeight);
-
-    const adjustedScrollHeight = scrollHeight - ((scrollHeight-textHeight) || 0); // 其他组件的高度
+    const adjustedScrollHeight = scrollHeight - ((scrollHeight - textHeight) || 0); // 其他组件的高度
     const percentageRead = (scrollTop / (adjustedScrollHeight - clientHeight)) * 100;
-
-    // const percentageRead = (scrollTop / (textHeight - clientHeight)) * 100;
-    // const percentageRead = (scrollTop / (scrollHeight - clientHeight)) * 100;
-    // const percentageRead = (scrollTop / textHeight) * 100;
-    // console.log('percentageRead', percentageRead);
 
     // 计算视图百分比
     return Math.min(Math.max(percentageRead, 0), 100); // 限制百分比在 0 到 100 之间
@@ -381,7 +372,7 @@ const props = defineProps({
 
 
 const isnolikeArticle = computed(() => behaviourAppStoreS.postoperation.get(props.postId) ?? false);
-const isActive = computed(() => commentS.articleLike === 0 || isnolikeArticle.value);
+const isActive = computed(() => commentS.articleLike === 0);
 
 
 const authorInfo = ref({})
@@ -405,11 +396,45 @@ const upheaderTagdrawer = (type) => {
 
 const isLoadUser = ref(false)
 const isfollow = ref(false)
+const userRead = ref({})
 
 const followedButton = (id, name) => {
     notificationS.fanMsg(id, name)
     isfollow.value = !isfollow.value
 }
+
+let timer = null; // 定时器引用
+const totalTime = ref(0); // 总浏览时间
+const isReading = ref(false); // 用户是否在阅读
+
+const startTimer = () => {
+    timer = setInterval(() => {
+        if (isReading.value) {
+          totalTime.value += 1; // 只有在阅读时才增加时间
+        }
+    }, 1000);
+};
+
+const stopTimer = () => {
+    clearInterval(timer);
+};
+
+
+const handleActivity = () => {
+    isReading.value = true; // 用户有活动时设置为在阅读
+    setTimeout(() => {
+        isReading.value = false; // 一段时间后重置
+    }, 2000); // 2秒无活动后判断为未在阅读
+};
+
+// 使用 Intersection Observer 监测文章是否在视口内
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        isReading.value = entry.isIntersecting; // 当文章在视口内时，更新阅读状态
+    });
+});
+
+
 
 onMounted(async () => {
     //文章阅读 开始时间计算
@@ -424,13 +449,13 @@ onMounted(async () => {
     maincommentS.commentHomedrawerDto.notificationId = notificationId
     maincommentS.commentHomedrawerDto.entryId = postId
 
+   
+
     if (notificationId) {
         // commentS.commentHomeDto.type = 3
         maincommentS.commentHomedrawerDto.type = 3
-
     }
     startTime = Date.now()
-    console.log('startTime', startTime);
 
     await contentS.getContent(postId)
     await articleS.getinfoArticle(postId)
@@ -439,31 +464,90 @@ onMounted(async () => {
 
     let id = authorInfo.value.id
     isLoadUser.value = getUserid() !== id
+
     if (isLoadUser.value) {
         const relationData = await userinfoAppStores.getInfoRelation(id)
         isfollow.value = relationData.follow
     }
 
+    userRead.value = await behaviourAppStoreS.getArticleInfo(postId)
+
     endTime = Date.now()
-    console.log('endTime', endTime);
 
     // await maincommentS.commentListGet()
     // console.log(commentS.commentHomeDto);
     await nextTick(() => {
         loadDuration.value = endTime - startTime;
-        console.log('loadDuration', loadDuration.value);
-        readStart.value = Date.now()
-        console.log('readStart', readStart.value);
+        startTimer()
         centermainloading.value = false
     });
+
+    observer.observe(mainTextRef.value); // 观察文章元素
+    window.addEventListener('mousemove', handleActivity);
+    window.addEventListener('scroll', handleActivity);
 
     if (notificationId) {
         drawer.value = true
     }
+
+    if (userRead.value) {
+        const { maxPosition, percentage } = userRead.value
+        if (maxPosition == percentage) {
+            if (maxPosition == 100) {
+                return
+            }
+        }
+
+        viewReadingPosition(percentage)
+    }
+
+
+
     codeLanguage()
     upTitle()
 })
 
+let isScrolling;
+
+const viewReadingPosition = (percentage) => {
+    if (!mainTextRef.value) return;
+
+    const element = mainTextRef.value; // 获取元素
+    const elementHeight = element.scrollHeight; // 元素的总高度
+    const targetScrollPosition = (percentage / 100) * elementHeight; // 计算目标滚动位置
+
+    // 获取元素相对于文档顶部的位置
+    const elementRect = element.getBoundingClientRect();
+    const elementOffsetTop = elementRect.top + window.scrollY; // 元素的绝对顶部位置
+
+    // 计算最终的滚动位置
+    const scrollPosition = elementOffsetTop + targetScrollPosition;
+
+    // 滚动到指定的位置
+    window.scrollTo({
+        top: scrollPosition,
+        behavior: 'smooth' // 使滚动过程平滑
+    });
+
+    window.addEventListener('scroll', handleScroll);
+
+}
+
+
+const handleScroll = () => {
+    // 清除之前的定时器
+    clearTimeout(isScrolling);
+    // 设置一个新的定时器
+    isScrolling = setTimeout(() => {
+        // 滚动结束后提示
+        ElMessage({
+            message: '已定位到上传浏览位置',
+            center: true,
+        })
+        // 移除滚动事件监听器
+        window.removeEventListener('scroll', handleScroll);
+    }, 100); // 可以根据需要调整延迟时间
+};
 
 onUnmounted(() => {
     contentS.content = {}
@@ -593,7 +677,6 @@ const replaceImgWithTag = (str) => {
         });
     }
     // const reg = /^(https?|ftp):\/\/([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*$/
-
 }
 
 </script>
@@ -1137,7 +1220,7 @@ const replaceImgWithTag = (str) => {
                             }
 
                             span {
-                                padding: 0 5px;
+                                padding: 0 15px 0 5px;
                             }
                         }
                     }

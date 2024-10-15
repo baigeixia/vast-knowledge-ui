@@ -55,7 +55,7 @@
                 </div>
             </template>
             <div class="content-skeleton-item" v-for="content in  contents" :key="content.id"  >
-                <MaincontentItme :content="content" />
+                <MaincontentItme :content="content"/>
             </div>
             <el-skeleton class="skeleton" animated :loading="articleS.isLoadingEnd && contents.length > 0">
                 <template #template>
@@ -94,6 +94,22 @@ const props = defineProps({
         default: () => []
     },
 });
+
+const hasBrowsedevent=(id)=>{
+    markAsBrowsed(id)
+}
+
+const markAsBrowsed = (id) => {
+    console.log('子组件 id',id);
+    const article = props.contents.find(record => record.id === id);
+    if (article) {
+        // 直接设置 hasBrowsed 字段为 true
+        article.hasBrowsed = true; // 如果之前不存在，则会添加这个字段
+        console.log(`文章 ID ${id} 的浏览状态已更新为: ${article.hasBrowsed}`);
+      } else {
+        console.log(`未找到 ID 为 ${id} 的文章`);
+      }
+};
 
 </script>
 

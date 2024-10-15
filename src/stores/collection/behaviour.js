@@ -1,6 +1,6 @@
 import { gethomeList, infoArticle } from '@/api/admin/article'
 import { ref, computed ,reactive} from 'vue'
-import { getarticleLikeApi ,getdynamicsApi,userCollectListapi } from '@/api/collection/behaviour'
+import { getarticleLikeApi ,getdynamicsApi,userCollectListapi,getArticleInfoApi,getuserFootMarkListapi } from '@/api/collection/behaviour'
 import { defineStore } from 'pinia'
 
 const behaviourAppStore = defineStore(
@@ -26,7 +26,6 @@ const getdynamics=async (userid,page,size)=>{
       if (ids && ids.length > 0) {
         const response = await getarticleLikeApi(ids)
         const dataObject = response.data
-        console.log(response.data);
         const dataMap = new Map(Object.entries(dataObject).map(([key, value]) => [key, value]))
         const mergedMap = new Map([...postoperation, ...dataMap])
 
@@ -41,11 +40,27 @@ const getdynamics=async (userid,page,size)=>{
     }
 
 
+    
+    const getArticleInfo=async(id)=>{
+      const resp= await getArticleInfoApi(id)
+      return resp.data
+    }
+
+    const getuserFootMarkList=async(page,size)=>{
+      const resp= await getuserFootMarkListapi(page,size)
+      return resp.data
+    }
+
+
+
+
 
     return{
       newHomeListDataGetLike,
       getdynamics,
       getuserCollectList,
+      getuserFootMarkList,
+      getArticleInfo,
       postoperation,
       dynamics,
     }

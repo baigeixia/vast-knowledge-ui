@@ -36,9 +36,16 @@
                         </div>
                     </div>
                     <div class="operate-btn">
-                        <el-button class="button-ui" type="primary"
-                            @click="focusonclick(authorInfor.id, authorInfor.username)">关注</el-button>
-                        <el-button class="button-ui" @click="privateletterclick">私信</el-button>
+                        <el-button @click="followedButton(authorInfor.id, authorInfor.name)"
+                            :type="isfollow ? 'info' : 'primary'" v-if="isLoadUser">
+                            <i class="bi bi-dash-lg " v-if="isfollow">
+                                <span class="button-icon "> 取消关注</span></i>
+                            <i class="bi bi-plus-lg" v-else>
+                                <span class="button-icon">关注</span></i>
+                        </el-button>
+                        <!-- <el-button class="button-ui" type="primary"   @click="focusonclick(authorInfor.id, authorInfor.username)">关注</el-button> -->
+                        <el-button class="button-ui" @click="router.push(`/notifications/im/${authorInfor.id}`)"
+                            v-if="isLoadUser">私信</el-button>
                     </div>
                 </div>
             </div>
@@ -54,11 +61,18 @@ import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
 import { useRouter } from 'vue-router';
 const router = useRouter();
+import { getUserid } from '@/utils/auth'
+import userinfoAppStore from "@/stores/user/userinfo"
+const userinfoAppStores = userinfoAppStore();
 
+const isfollow = ref(false)
+const isLoadUser = ref(false)
 
-const touserinfor = (userid) => {
-    router.push(`/user/${userid}`);
+const followedButton = (id, name) => {
+    notificationS.fanMsg(id, name)
+    isfollow.value = !isfollow.value
 }
+
 const props = defineProps({
     author: {
         type: Object,
@@ -69,11 +83,16 @@ const props = defineProps({
         required: false
     },
 });
+
 const isLoading = ref(false)
 const authorid = ref('')
 const authorInfor = ref({})
-onMounted(() => {
-    authorid.value = props.author?.id || props.authorid
+
+onMounted(async () => {
+    let id = props.authorid ? props.authorid : props.author?.id
+    authorid.value = props.author?.id || id
+    isLoadUser.value = getUserid() !== id
+
 })
 const userpopovershow = async () => {
     console.log(authorid.value);
@@ -82,6 +101,10 @@ const userpopovershow = async () => {
         try {
             isLoading.value = true
             const authordata = await userS.getUserInfoPo(authorid.value)
+            if (isLoadUser.value) {
+                const relationData = await userinfoAppStores.getInfoRelation(id)
+                isfollow.value = relationData.follow
+            }
             if (authordata) {
                 authorInfor.value = authordata.data
             }
@@ -95,16 +118,6 @@ const userpopovershow = async () => {
         }
     }
 }
-
-const privateletterclick = () => {
-    console.log("私信", authorid.value);
-}
-
-const focusonclick = (id, name) => {
-    notificationS.fanMsg(id, name)
-    console.log("关注", authorid.value);
-}
-
 
 </script>
   

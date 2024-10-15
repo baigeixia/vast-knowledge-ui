@@ -1,10 +1,10 @@
 <template>
     <div class="content-skeleton-main" @click="openInNewTab(content.id)">
-        <div class="title-row" v-html="content.title"></div>
+        <div class="title-row" :class="{ 'hasBrowsed': content?.hasBrowsed }" v-html="content.title"></div>
         <div class="row-text">
             <img v-if="content.images" class="thumb" :src="content.images">
             <!-- <div class="abstract" v-html="escapeHtml(content.simpleDescription)"></div> -->
-            <div class="abstract">{{ content.simpleDescription }}</div>
+            <div class="abstract" :class="{ 'hasBrowsed': content?.hasBrowsed }">{{ content.simpleDescription }}</div>
         </div>
     </div>
     <div class="row-footer">
@@ -13,13 +13,13 @@
                 <user-info-popover :authorid="content.authorId">
                     <template v-slot:reference>
                         <RouterLink :to="`/user/${content.authorId}`" class="user-message">
-                            <span class="user-popover" >
+                            <span class="user-popover">
                                 <div> {{ content.authorName }}</div>
                             </span>
                         </RouterLink>
                     </template>
                 </user-info-popover>
-<!-- 
+                <!-- 
                 <RouterLink :to="`/user/${content.authorId}`" class="user-message">
                     <div class="user-popover">{{ content.authorName }}</div>
                 </RouterLink> -->
@@ -104,13 +104,13 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
+
 const openInNewTab = (contentid) => {
+    //浏览过
+    props.content.hasBrowsed = true;
     const path = `/post/${contentid}`;
-    router.push(path)
-    
-    // const url = router.resolve(path).href;
-    // window.open(url);
-    // window.open(url, '_blank');
+    window.open(router.resolve(path).href, '_blank')
+
 }
 
 
@@ -260,6 +260,11 @@ const report = (id) => {
         -webkit-line-clamp: 2;
         -webkit-box-orient: vertical;
     }
+
+    .hasBrowsed {
+        color: #7d7a7a;
+    }
+
 
 
     .row-text {

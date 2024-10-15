@@ -35,7 +35,6 @@
             <div class="comment-text">
                 <div ref="contentRef" class="content" :class="{ 'expand': expanded }">
                     <div v-html="sanitizeString(comment.text)"></div>
-                    <!-- <p v-html="comment.text"></p> -->
                 </div>
                 <div ref="expandRef" class="expand-action-wrap">
                     <span @click="expanded = !expanded" class="expand-action">{{ expanded ? '收起' : '展开' }}</span>
@@ -47,13 +46,13 @@
             </div>
             <div class="comment-meta">
                 <span>{{ $formatTime(comment.time) }}</span>
-                <span v-if="comment.author.id == userinfoAppStores.userid" class="nolike" >
-                    <i class="bi bi-suit-heart-fill "></i> 
+                <span v-if="comment.author.id == userinfoAppStores.userid" class="nolike">
+                    <i class="bi bi-suit-heart-fill "></i>
                     {{ !comment.likes || comment.likes == 0 ? "喜欢" : comment.likes }}
                 </span>
-                <span v-else class="action-itme"  @click="likeArticle(articleid,comment.author.id,comment.author.username,1,comment.id)">
+                <span v-else class="action-itme"
+                    @click="likeArticle(articleid, comment.author.id, comment.author.username, 1, comment.id)">
                     <i class="bi" :class="iconClass"></i>
-                     <!-- <i class="bi bi-suit-heart" :class="{ 'islike' : !isnolikeArticle}"  ></i>  -->
                     {{ !comment.likes || comment.likes == 0 ? "喜欢" : comment.likes }}
                 </span>
                 <span class="action-itme" :class="{ 'action': opencommenttime === maincommentS.istime }"
@@ -76,14 +75,20 @@
             </div>
 
             <el-dialog class="dialog-child-Comments" v-if="dialogFormVisible" v-model="dialogFormVisible" width="700"
-                top="2vh" @close="dialogchildclose">
+                top="2vh" @close="dialogchildclose" :lock-scroll="false">
                 <template #header="{ titleId, titleClass }">
                     <h4 :id="titleId" :class="titleClass" class="dialog-title-Class">评论回复</h4>
                 </template>
-                <div class="child-Comments" v-infinite-scroll="loadchildComments" :infinite-scroll-immediate="false"
-                    v-loading="dialogloading">
+                <div class="child-Comments" v-infinite-scroll="loadchildComments" :infinite-scroll-immediate="false">
                     <PostCommentItem :vice="false" :comment="maincommentS.commentdialog" :articleid="articleid"
                         :commentIdTop="comment.id" />
+                    <div class="item loading-dots" v-if="dialogloading">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
                 </div>
             </el-dialog>
         </div>
@@ -130,23 +135,23 @@ const props = defineProps({
 
 
 
-const likeArticle=(articleid,authorid,username,type,commentid)=>{
-    notificationS.likeArticle(articleid,authorid,username,type,commentid)
-    commentS.commentLikes.set(Number(commentid), isnolikeArticle.value ? 0: 1)
+const likeArticle = (articleid, authorid, username, type, commentid) => {
+    notificationS.likeArticle(articleid, authorid, username, type, commentid)
+    commentS.commentLikes.set(Number(commentid), isnolikeArticle.value ? 0 : 1)
     isnolikeArticle.value ? props.comment.likes-- : props.comment.likes++
     console.log(props.comment.likes);
 
 }
 
 const iconClass = computed(() => {
-  return {
-    'bi-heart-fill islike': !isnolikeArticle.value,
-    'bi-heart like': isnolikeArticle.value
-  };
+    return {
+        'bi-heart-fill islike': !isnolikeArticle.value,
+        'bi-heart like': isnolikeArticle.value
+    };
 });
 
 
-const isnolikeArticle =computed(()=>commentS.commentLikes.get(Number(props.comment.id)) ?? 1 == 1 );
+const isnolikeArticle = computed(() => commentS.commentLikes.get(Number(props.comment.id)) ?? 1 == 1);
 const loadPage = ref(1);
 const dialogloading = ref(false);
 
@@ -175,9 +180,6 @@ const loadchildComments = () => {
     getCommentReList()
 }
 
-const likesCilck = () => {
-    console.log(props.comment.id + '点击了喜欢');
-}
 
 const opencommentclick = () => {
     if (opencommenttime.value == 0) {
@@ -192,8 +194,6 @@ const opChildComments = () => {
         maincommentS.commentdialog.childComments = [];
     }
     getCommentReList()
-
-    // console.log( maincommentS.commentdialog );
 }
 
 const opencommenttime = ref(0);
@@ -311,6 +311,54 @@ const renderLinks = (text) => {
             padding-top: 20px;
             overflow-y: auto;
         }
+
+        .item {
+            flex: 1;
+            line-height: 1.6;
+            color: #8a919f;
+
+            .item-count {
+                font-weight: 750;
+                color: #252933;
+                font-size: 16px;
+            }
+        }
+
+        .loading-dots {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 80px;
+
+            .dot {
+                width: 10px;
+                height: 10px;
+                background-color: #1e80ff;
+                border-radius: 50%;
+                margin: 0 5px;
+                animation: dot-bounce 1s infinite ease-in-out alternate;
+            }
+
+            @keyframes dot-bounce {
+                0% {
+                    transform: translateY(0);
+                }
+
+                100% {
+                    transform: translateY(-10px);
+                }
+            }
+
+            .dot:nth-child(2) {
+                animation-delay: 0.1s;
+            }
+
+            .dot:nth-child(3) {
+                animation-delay: 0.2s;
+            }
+        }
+
 
     }
 
@@ -457,17 +505,19 @@ const renderLinks = (text) => {
 
     .action-itme {
         cursor: pointer;
-        
+
     }
+
     .noLike {
-            color: #bdbfc2;
-            cursor: default;
-        }
+        color: #bdbfc2;
+        cursor: default;
+    }
 
 
-    .islike{
+    .islike {
         color: #1e80ff;
     }
+
     .action-itme:not(.action):hover {
         color: #1e80ff;
     }
@@ -486,4 +536,5 @@ const renderLinks = (text) => {
     // margin-left: 2rem;
     // border-left: 2px solid #e0e0e0;
     padding-left: 1rem;
-}</style>
+}
+</style>

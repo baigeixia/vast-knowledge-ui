@@ -14,9 +14,12 @@
         </ul>
       </div>
     </header>
-    <div  v-if="articleStore.articleList" class="top-content">
+    <div  v-if="articleStore.articleList || articleStore.articleList?.records.length > 0 " class="top-content">
       <Maincontentlist :contents="articleStore.articleList.records"  :infinite-scroll-immediate="false"  v-infinite-scroll="articleStore.loadMore" :infinite-scroll-disabled="articleStore.loadingdisabled" />
     </div>
+   <div class="no-content" v-else>
+    还没有内容
+   </div>
   </div>
 </template>
 <script setup>
@@ -67,6 +70,12 @@ const navigationtypeSwit = (type) => {
 
   .top-content {
     padding: 10px;
+  }
+  .no-content{
+    display: flex;
+    justify-content: center;
+    margin: 20px 20px;
+    font-size: 16px;
   }
 
   .list-header {

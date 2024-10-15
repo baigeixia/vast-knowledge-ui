@@ -26,7 +26,7 @@
                             </RouterLink>
                         </div>
                         <div v-else class="right" >
-                            <el-button @click="followedButton(userinfoHome.id, userinfoHome.name)" :type="isfollow ? 'info' : 'primary'">
+                            <el-button @click="followedButton(userinfoHome.id, userinfoHome.name)" :type="isfollow ? 'info' : 'primary'" >
                                 <i class="bi bi-dash-lg " v-if="isfollow">
                                     <span class="button-icon "> 取消关注</span></i>
                                 <i class="bi bi-plus-lg" v-else>

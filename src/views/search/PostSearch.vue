@@ -14,44 +14,43 @@
                 <div class="list-nav">
                     <div class="nav-list-left">
                         <div class="nav-item" :class="{ 'nav-item-active': searchSorting == '0' }"
-                            @click="searchSorting = 0">
+                            @click="searchSortingShow(0)">
                             综合排序</div>
                         <div class="nav-item" :class="{ 'nav-item-active': searchSorting == '1' }"
-                            @click="searchSorting = 1">
+                            @click="searchSortingShow(1)">
                             最新优先</div>
                         <div class="nav-item" :class="{ 'nav-item-active': searchSorting == '2' }"
-                            @click="searchSorting = 2">
+                            @click="searchSortingShow(2)">
                             最热优先</div>
                     </div>
                     <div class="nav-list-right">
-                        <el-select v-model="searchtime" style="width: 100px">
+                        <el-select v-model="searchtime" style="width: 100px" @change="searchtimechange">
                             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
                         </el-select>
                     </div>
                 </div>
             </div>
             <div class="search-content">
-                <Maincontentlist :contents="articleStore.articleList.records" v-infinite-scroll="maincontent.loadMore" :infinite-scroll-disabled="maincontent.isLoading" />
+                <Maincontentlist :contents="articleStore.articleList.records" v-infinite-scroll="loadMore" :infinite-scroll-immediate="false" :infinite-scroll-disabled="isLoading" />
             </div>
         </div>
     </el-container>
 </template>
 
 <script setup>
-import { ref, onMounted, watchEffect } from "vue"
+import { ref, onMounted, watchEffect,reactive } from "vue"
 import { ishide } from '@/components/Publicvariables'
 import { useRouter } from 'vue-router';
 import Maincontentlist from '@/views/home/components/Maincontentlist.vue'
-
 import { channelAppStore } from "@/stores/admin/channel";
 const maincontent = channelAppStore()
-
 import articleAppStore from "@/stores/admin/article";
 const articleStore = articleAppStore()
 
 const router = useRouter();
 const searchtime = ref('1')
 const searchSorting = ref(0)
+const isLoading = ref(false)
 const options = [
     {
         value: '1',
@@ -71,6 +70,9 @@ const options = [
     },
 ]
 
+const loadMore=()=>{
+    console.log('loadMore');
+}
 
 const props = defineProps({
     query: String,
@@ -80,9 +82,9 @@ const props = defineProps({
     type: String
 });
 
-const queryParams = ref(
+const queryParams = reactive(
     {
-        query: '先活着再生活',
+        query: '',
         fromSeo: 0,
         fromHistory: 0,
         fromSuggest: 0,
@@ -92,16 +94,35 @@ const queryParams = ref(
     }
 );
 
+onMounted(()=>{
+    queryParams.query=props.query
+    queryParams.fromSeo=props.fromSeo
+    queryParams.fromHistory=props.fromHistory
+    queryParams.fromSuggest=props.fromSuggest
+    queryParams.type=props.type
+})
+
+const searchtimechange=()=>{
+    console.log('排序',searchtime.value);
+}
 
 const switchPage = (type) => {
     const upqueryParams = {
-        ...queryParams.value,
+        ...queryParams,
         type: type,
     }
     // 使用 router.push 导航到带查询参数的路由
     router.push({ query: upqueryParams });
+    console.log('头部标签',type);
 }
 
+
+const searchSortingShow = (type) => {
+    searchSorting.value=type
+    console.log('详情标签 ',type);
+    // queryParams.sort=type
+  
+}
 </script>
 
 <style lang="scss" scoped>

@@ -36,10 +36,17 @@
             </el-tooltip>
             <el-tooltip content="收藏" placement="left" effect="light">
                 <div class="panel-btn user-active" v-if="articleS.articleDto.authorId == userinfoAppStores.userid">
-                    <i class="bi bi-star-fill"></i>
+                    <el-badge :color="(commentS.articleCollect) ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
+                        :value="Number(articleS.articleDto.collection)" :offset="[10, 3]">
+                        <i class="bi bi-star-fill"></i>
+                    </el-badge>
                 </div>
                 <div v-else class="panel-btn" @click="collectOp()">
-                    <i class="bi bi-star-fill" :style="{ color: (commentS.articleCollect) ? '#1e80ff' : '#b2b2b2' }"></i>
+                    <el-badge :color="(commentS.articleCollect) ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
+                        :value="Number(articleS.articleDto.collection)" :offset="[10, 3]">
+                        <i class="bi bi-star-fill"
+                            :style="{ color: (commentS.articleCollect) ? '#1e80ff' : '#b2b2b2' }"></i>
+                    </el-badge>
                 </div>
             </el-tooltip>
             <el-tooltip content="分享" placement="left" effect="light">
@@ -73,13 +80,12 @@
                                 </div>
                                 <div class="read-time" v-if="articleS.articleDto.comment > 0">
                                     <i class="bi bi-chat-right-text"></i>
-                                    <span>{{ articleS.articleDto.comment}}&nbsp;条评论</span>
+                                    <span>{{ articleS.articleDto.comment }}&nbsp;条评论</span>
                                 </div>
-                                <div class="read-time" v-if="userRead">
+                                <div class="read-time" v-if="userRead && (userRead.readDuration / 60).toFixed(0) > 0">
                                     <i class="bi bi-clock"></i>
                                     <span>阅读{{ (userRead.readDuration / 60).toFixed(0) }}分钟 </span>
                                 </div>
-
                             </div>
                         </div>
                         <p class="context-box" v-html="replaceImgWithTag(contentS.content.content)" ref="mainTextRef"></p>
@@ -87,7 +93,7 @@
                 </el-main>
                 <el-footer class="comment-end">
                     <div class="title">评论<span style="margin-left: 5px;" v-if="articleS.articleDto.comment > 0">
-                        {{articleS.articleDto.comment }}</span> </div>
+                            {{ articleS.articleDto.comment }}</span> </div>
                     <div class="comment-editor">
                         <div class="content">
                             <div class="avatar-box">
@@ -302,6 +308,7 @@ const articlelike = (id, authorId, authorName, type) => {
     isnolikeArticle.value ? articleS.articleDto.likes-- : articleS.articleDto.likes++
 }
 
+
 /* 用户ID private Long entryId;
  * 文章ID private Long articleId;
  * 阅读时间单位秒 private Long readDuration;
@@ -310,33 +317,26 @@ const articlelike = (id, authorId, authorName, type) => {
 */
 const mainTextRef = ref(null)
 const loadDuration = ref(0)
-// const readStart = ref(0)
 
 onBeforeUnmount(() => {
     stopTimer();
     observer.disconnect(); // 断开观察
     window.removeEventListener('mousemove', handleActivity);
     window.removeEventListener('scroll', handleActivity);
+
     //文章id
     let postId = props.postId
     //阅读时间
-    // let readDuration = (Date.now() - readStart.value) / 1000
     let readDuration = totalTime.value
-    // readDuration = readDuration.toFixed(2);
-
     //阅读百分比
-    let percentage = percentagecount()
-    percentage = percentage.toFixed(0);
-
+    let percentage = percentagecount().toFixed(0);
     //加载时间
-    let loadTime = loadDuration.value / 1000
-    loadTime = loadTime.toFixed(2);
-
+    let loadTime = (loadDuration.value / 1000).toFixed(2);
     //用户id
     let userid = getUserid()
     console.log(userid, postId, readDuration, percentage, loadTime);
     //阅读计算    
-    notificationS.userRead(userid, postId, readDuration, percentage, loadTime)
+    notificationS.userRead(userid, postId, readDuration, percentage, loadTime);
 })
 
 const percentagecount = () => {
@@ -373,8 +373,6 @@ const props = defineProps({
 
 const isnolikeArticle = computed(() => behaviourAppStoreS.postoperation.get(props.postId) ?? false);
 const isActive = computed(() => commentS.articleLike === 0);
-
-
 const authorInfo = ref({})
 
 
@@ -410,7 +408,7 @@ const isReading = ref(false); // 用户是否在阅读
 const startTimer = () => {
     timer = setInterval(() => {
         if (isReading.value) {
-          totalTime.value += 1; // 只有在阅读时才增加时间
+            totalTime.value += 1; // 只有在阅读时才增加时间
         }
     }, 1000);
 };
@@ -437,8 +435,9 @@ const observer = new IntersectionObserver((entries) => {
 
 
 onMounted(async () => {
-    //文章阅读 开始时间计算
+    //加载时间
     let startTime, endTime;
+
     centermainloading.value = true
     let notificationId = props.notificationId
     let postId = props.postId
@@ -449,7 +448,7 @@ onMounted(async () => {
     maincommentS.commentHomedrawerDto.notificationId = notificationId
     maincommentS.commentHomedrawerDto.entryId = postId
 
-   
+
 
     if (notificationId) {
         // commentS.commentHomeDto.type = 3
@@ -472,19 +471,20 @@ onMounted(async () => {
 
     userRead.value = await behaviourAppStoreS.getArticleInfo(postId)
 
-    endTime = Date.now()
 
-    // await maincommentS.commentListGet()
-    // console.log(commentS.commentHomeDto);
     await nextTick(() => {
-        loadDuration.value = endTime - startTime;
+        endTime = Date.now()
+        upTitle()
         startTimer()
+        loadDuration.value = endTime - startTime;
         centermainloading.value = false
     });
+    codeLanguage()
 
     observer.observe(mainTextRef.value); // 观察文章元素
     window.addEventListener('mousemove', handleActivity);
     window.addEventListener('scroll', handleActivity);
+    // window.addEventListener('beforeunload', handleBeforeUnload);
 
     if (notificationId) {
         drawer.value = true
@@ -492,19 +492,18 @@ onMounted(async () => {
 
     if (userRead.value) {
         const { maxPosition, percentage } = userRead.value
-        if (maxPosition == percentage) {
-            if (maxPosition == 100) {
-                return
-            }
+        if (maxPosition !== 100 && maxPosition === percentage) {
+            viewReadingPosition(percentage);
         }
-
-        viewReadingPosition(percentage)
     }
 
 
-
-    codeLanguage()
-    upTitle()
+    //加载时间
+    let loadTime = (loadDuration.value / 1000).toFixed(2);
+    //用户id
+    console.log('开始阅读',id, postId,loadTime);
+    //阅读计算    
+    notificationS.userRead(id, postId, 0, 0, loadTime);
 })
 
 let isScrolling;

@@ -102,7 +102,7 @@ const userpopovershow = async () => {
             isLoading.value = true
             const authordata = await userS.getUserInfoPo(authorid.value)
             if (isLoadUser.value) {
-                const relationData = await userinfoAppStores.getInfoRelation(id)
+                const relationData = await userinfoAppStores.getInfoRelation(authorid.value)
                 isfollow.value = relationData.follow
             }
             if (authordata) {

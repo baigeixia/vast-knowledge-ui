@@ -7,7 +7,7 @@
                 </div>
                 <div class="operation">
                     <div class="search-ipt">
-                        <el-input v-model="searchinput" style="width: 320px" placeholder="搜索标题关键词">
+                        <el-input v-model="searchinput" style="width: 320px" placeholder="搜索标题关键词" @keyup.enter="searchipt">
                             <template #append>
                                 <el-button class="search" icon="Search" @click="searchipt" />
                             </template>
@@ -19,23 +19,34 @@
                     </div>
                 </div>
             </div>
-            <div class="descrip-list" v-for="itme in footmarkData" :key="itme.dateTime" :infinite-scroll-immediate="false" v-infinite-scroll="loadMore" :infinite-scroll-disabled="endLoading">
-                <div class="item-list" >
-                    <div class="time-show">{{ $formatDate(itme.dateTime) }}</div>
+            <div class="show-search-count" v-if="searchcount">
+                匹配到
+                <span style="color: rgb(29, 128, 254);">
+                    &nbsp;{{ searchcount }}&nbsp;
+                </span>
+                条记录
+            </div>
+            <div class="descrip-list">
+                <div class="item-list" v-for="itme in footmarkData" :key="itme.dateTime" :infinite-scroll-immediate="false"
+                    v-infinite-scroll="loadMore" :infinite-scroll-disabled="endLoading" :infinite-scroll-distance="20">
+                    <div class="time-show">
+                        <i class="bi bi-clock"></i>
+                        <span>{{ $formatDate(itme.dateTime) }}</span>
+                    </div>
                     <div class="art-list">
                         <Maincontentlist :contents="itme.footMark" />
                     </div>
                 </div>
             </div>
             <div class="item loading-dots" v-if="Loading">
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-                        <div class="dot"></div>
-             </div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
             <div class="end-of-data" v-if="endLoading && footmarkData.length > 1"> 已经到最底部了 </div>
-            <div class="end-of-data" v-if="footmarkData.length == 0">没有浏览记录</div>
+            <div class="end-of-data" v-if="Boolean(endLoading) && footmarkData.length == 0">没有浏览记录</div>
         </div>
     </div>
 </template>
@@ -55,8 +66,10 @@ const loadingdisabled = ref(true)
 const footmarkData = ref([])
 const Loading = ref(false)
 const endLoading = ref(false)
+const searchcount = ref(2)
 
 const loadMore = () => {
+    debugger
     console.log("loadMore");
     page.value++
     getuserFootMark()
@@ -138,7 +151,7 @@ const clearfootmark = () => {
                 .search-ipt {
                     .search {
                         padding: 0;
-                        font-size: 18px;
+                        font-size: 20px;
                     }
                 }
 
@@ -217,6 +230,16 @@ const clearfootmark = () => {
             }
         }
 
+        .show-search-count {
+            margin-left: 24px;
+            margin-top: 18px;
+            height: 24px;
+            font-style: normal;
+            font-weight: 400;
+            font-size: 14px;
+            line-height: 24px;
+            color: #252933;
+        }
 
         .descrip-list {
             overflow-y: scroll;
@@ -234,6 +257,15 @@ const clearfootmark = () => {
                     height: 24px;
                     margin: 5px 5px;
                     font-size: 15px;
+
+                    i {
+                        color: #298ce9;
+                    }
+
+                    span {
+                        margin-left: 5px;
+
+                    }
                 }
 
                 .art-list {

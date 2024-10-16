@@ -14,11 +14,32 @@
       <div class="right-ul">
         <!-- <el-input v-model="input" type="text" style="width: 260px" placeholder="搜索" suffix-icon="Search"  clearable /> -->
         <div class="right-li">
-          <el-input v-model="headerinput" style="width: 400px" placeholder="搜索" class="header-input">
+          <el-input v-model="headerinput" style="width: 400px" placeholder="搜索" class="header-input"
+            @keyup.enter="headersearch" :focus="inputfocus" @blur="inputblur">
             <template #append>
               <el-button class="header-search" @click="headersearch" icon="Search" />
             </template>
           </el-input>
+          <transition name="fade-slide">
+            <div class="search-suggestions" v-if="isfocus">
+              <div class="trending-searches">
+                <h3>搜索发现</h3>
+              </div>
+              <div class="itme-list" v-for="(term, index) in trendingTerms" :key="index">
+                  <span class="itme-text">{{ term.text }}</span>
+                  <span v-if="term.isHot" class="hot-icon">🔥</span>
+                </div>
+              <div class="search-history">
+                <div class="history-header">
+                  <h3>搜索历史</h3>
+                  <button @click="clearHistory"> <i class="bi bi-trash"></i>清空</button>
+                </div>
+              </div>
+              <div v-for="(term, index) in searchHistory" :key="index">
+                  {{ term }}
+                </div>
+            </div>
+          </transition>
         </div>
         <div class="right-li">
           <el-button style="border-radius:15px;" type="primary" @click="navigateToPublish">发布</el-button>
@@ -122,10 +143,10 @@
               </RouterLink> -->
             </el-dropdown-menu>
           </template>
-        </el-dropdown>  
+        </el-dropdown>
         <div class="login-button-wrap" v-else>
           <div class="login-button">
-            <span @click="userStore.isnotlogin=true">登录/注册</span>
+            <span @click="userStore.isnotlogin = true">登录/注册</span>
           </div>
           <!-- <div class="login-button">
             <span>注册</span>
@@ -137,14 +158,14 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from "vue"
+import { onMounted, ref, computed } from "vue"
 import { byLoading } from '@/utils/Loading'
 import { useRouter, useRoute } from 'vue-router';
 import { channelAppStore } from "@/stores/admin/channel";
 const header = channelAppStore()
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
-import { getUserid, getToken,getUserInfo } from '@/utils/auth'
+import { getUserid, getToken, getUserInfo } from '@/utils/auth'
 
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
@@ -156,6 +177,16 @@ const route = useRoute();
 const router = useRouter();
 
 const headerinput = ref('')
+const isfocus = ref(false);
+
+const inputfocus = () => {
+  console.log('focus');
+  isfocus.value = true
+}
+const inputblur = () => {
+  console.log('inputblur');
+  isfocus.value = false
+}
 
 onMounted(async () => {
   // const id = getUserid()
@@ -195,7 +226,6 @@ const headersearch = () => {
 
 };
 
-
 const item_TO_WE = (type) => {
   if (type === 1) {
     // window.location.href = 'http://localhost:8081/';
@@ -215,6 +245,27 @@ const item_TO_WE = (type) => {
   }
 
 }
+const searchQuery = ref('')
+const searchHistory = ref([])
+
+const trendingTerms = ref([
+  { text: '王楚钦孙颖莎', isHot: true },
+  { text: '东部战区演习', isHot: true },
+  { text: '18 强赛国足', isHot: false },
+  { text: '照潮推涌', isHot: false },
+  { text: '朝鲜炸毁南北', isHot: true }
+])
+
+const handleSearch = () => {
+  if (this.searchQuery) {
+    this.searchHistory.push(this.searchQuery);
+    this.searchQuery = ''; // Clear input after search
+  }
+}
+const clearHistory = () => {
+  searchHistory = [];
+}
+
 </script>
 
 <style lang="scss" scoped>
@@ -297,6 +348,76 @@ const item_TO_WE = (type) => {
 
       .right-li {
         padding: 0 10px 0 10px;
+        position: relative;
+
+        .search-suggestions {
+          position: absolute;
+          top: 100%;
+          left: 0;
+          width: 100%;
+          background-color: rgb(255, 255, 255);
+          z-index: 100;
+          border-radius: 8px;
+          margin-top: 5px;
+          box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3);
+          // box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);
+        }
+
+        .trending-searches,
+        .search-history {
+          border-bottom: 1px solid #aeb5c2 ;
+
+          h3 {
+            color: #939eb0;
+            font-size: 16px;
+            margin: 15px 0 10px 10px;
+          }
+
+        }
+        .itme-list {
+            margin: 5px 5px;
+            .itme-text{
+              cursor: pointer;
+            }
+            .itme-text:hover{
+              color: #1e80ff;
+            }
+          }
+
+        .search-history {
+          .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+
+            button {
+              background-color: transparent;
+              border: none;
+              color: #939eb0;
+              cursor: pointer;
+            }
+            button:hover{
+              color: #6a84af;
+            }
+          }
+        }
+
+        .fade-slide-enter-active,
+        .fade-slide-leave-active {
+          transition: all 0.3s ease;
+        }
+
+        .fade-slide-enter-from {
+          opacity: 0;
+          transform: translateY(-10px);
+          /* Slide in from top */
+        }
+
+        .fade-slide-leave-to {
+          opacity: 0;
+          transform: translateY(-10px);
+          /* Slide out to top */
+        }
 
         .right-li-datails {
           text-align: center;
@@ -307,39 +428,40 @@ const item_TO_WE = (type) => {
             height: 36px;
             border-radius: 50%;
           }
-          
+
         }
-        
+
 
         .header-input {
           --el-input-border-radius: 20px;
 
           .header-search {
             padding: 0;
-            font-size: 18px;
+            font-size: 20px;
           }
         }
       }
+
       .login-button-wrap {
-            border: 1px solid rgba(191, 192, 194, 0.3);
-            border-radius: 4px;
-            color: #797a7c;
-            padding: 5px;
-            font-size: 14px;
-            font-weight: 400;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
+        border: 1px solid rgba(191, 192, 194, 0.3);
+        border-radius: 4px;
+        color: #797a7c;
+        padding: 5px;
+        font-size: 14px;
+        font-weight: 400;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
 
-            .login-button {
-              cursor:pointer;
-              margin: 5px;
-            }
+        .login-button {
+          cursor: pointer;
+          margin: 5px;
+        }
 
-            span:hover {
-              color: #1e80ff;
-            }
-          }
+        span:hover {
+          color: #1e80ff;
+        }
+      }
 
       // .right-li:hover {
       //   color: #1e80ff;

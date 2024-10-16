@@ -109,6 +109,7 @@ const openInNewTab = (contentid) => {
     //浏览过
     props.content.hasBrowsed = true;
     const path = `/post/${contentid}`;
+    // router.push(path)
     window.open(router.resolve(path).href, '_blank')
 
 }
@@ -119,7 +120,6 @@ const Articlelike = (id, authorId, authorName, type) => {
     behaviourAppStoreS.postoperation.set(props.content.id, noislikeArticle.value ? 0 : 1)
     noislikeArticle.value ? props.content.likes-- : props.content.likes++
 }
-
 
 const props = defineProps({
     content: {

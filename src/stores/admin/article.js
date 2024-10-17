@@ -31,7 +31,9 @@ const articleAppStore = defineStore(
       if (isLoadingEnd.value) return;
       isLoadingEnd.value = true;
       try {
-        const resp = await gethomeList(page.value, pagesize.value, tagType.value)
+        console.log(tagType.value);
+        console.log('navigationtype',navigationtype.value);
+        const resp = await gethomeList(page.value, pagesize.value, tagType.value,navigationtype.value)
 
         if (Array.isArray(resp.data?.records) && resp.data?.records.length === 0) {
           noMore.value = true

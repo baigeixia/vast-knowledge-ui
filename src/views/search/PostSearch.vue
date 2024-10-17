@@ -24,21 +24,22 @@
                             最热优先</div>
                     </div>
                     <div class="nav-list-right">
-                        <el-select v-model="searchtime" style="width: 100px" @change="searchtimechange">
+                        <el-select v-model="period" style="width: 100px" @change="searchtimechange">
                             <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
                         </el-select>
                     </div>
                 </div>
             </div>
             <div class="search-content">
-                <Maincontentlist :contents="articleStore.articleList.records" v-infinite-scroll="loadMore" :infinite-scroll-immediate="false" :infinite-scroll-disabled="isLoading" />
+                <Maincontentlist :contents="articleStore.articleList.records" v-infinite-scroll="loadMore"
+                    :infinite-scroll-immediate="false" :infinite-scroll-disabled="isLoading" />
             </div>
         </div>
     </el-container>
 </template>
 
 <script setup>
-import { ref, onMounted, watchEffect,reactive } from "vue"
+import { ref, onMounted, watchEffect, reactive, watch } from "vue"
 import { ishide } from '@/components/Publicvariables'
 import { useRouter } from 'vue-router';
 import Maincontentlist from '@/views/home/components/Maincontentlist.vue'
@@ -48,7 +49,8 @@ import articleAppStore from "@/stores/admin/article";
 const articleStore = articleAppStore()
 
 const router = useRouter();
-const searchtime = ref('1')
+const period = ref('1')
+const type = ref(0)
 const searchSorting = ref(0)
 const isLoading = ref(false)
 const options = [
@@ -70,58 +72,67 @@ const options = [
     },
 ]
 
-const loadMore=()=>{
-    console.log('loadMore');
-}
+const page=ref(1)
 
 const props = defineProps({
     query: String,
-    fromSeo: String,
-    fromHistory: String,
-    fromSuggest: String,
-    type: String
 });
 
-const queryParams = reactive(
-    {
-        query: '',
-        fromSeo: 0,
-        fromHistory: 0,
-        fromSuggest: 0,
-        type: 0,
-        sort: 0,
-        period: 1,
-    }
-);
-
+const queryParams = ref({
+    query: props.query,
+});
 onMounted(()=>{
-    queryParams.query=props.query
-    queryParams.fromSeo=props.fromSeo
-    queryParams.fromHistory=props.fromHistory
-    queryParams.fromSuggest=props.fromSuggest
-    queryParams.type=props.type
+    searchInfo()
 })
 
-const searchtimechange=()=>{
-    console.log('排序',searchtime.value);
+const searchInfo=()=>{
+console.log(queryParams.value);
 }
 
-const switchPage = (type) => {
-    const upqueryParams = {
-        ...queryParams,
-        type: type,
+const loadMore = () => {
+    console.log('loadMore');
+    page.value++
+}
+
+watch(
+  () => props.query, 
+  (newVal) => {
+    queryParams.value = {
+      query: newVal,
+    };
+    searchInfo()
+  }
+);
+
+const searchtimechange = () => {
+    queryParams.value = {
+        ...queryParams.value,
+        period: period.value,
+    };
+    router.push({ query: { ...queryParams.value } });
+    searchInfo()
+}
+
+const switchPage = (t) => {
+    type.value=t
+    queryParams.value = {
+        ...queryParams.value,
+        type: type.value,
     }
-    // 使用 router.push 导航到带查询参数的路由
-    router.push({ query: upqueryParams });
-    console.log('头部标签',type);
+    router.push({ query:  { ...queryParams.value } });
+    searchInfo()
 }
 
 
-const searchSortingShow = (type) => {
-    searchSorting.value=type
-    console.log('详情标签 ',type);
-    // queryParams.sort=type
-  
+const searchSortingShow = (sort) => {
+    searchSorting.value = sort
+    queryParams.value = {
+        ...queryParams.value,
+        sort: sort,
+    }
+    router.push({ query:  { ...queryParams.value } });
+    searchInfo()
+
 }
 </script>
 
@@ -143,8 +154,8 @@ const searchSortingShow = (type) => {
 
         .header-title {
             height: 100%;
-        width: 800px;
-        margin: 0 auto;
+            width: 800px;
+            margin: 0 auto;
             display: flex;
             align-items: center;
 
@@ -180,13 +191,13 @@ const searchSortingShow = (type) => {
         box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
 
         .list-header {
-     
+
             .list-nav {
                 display: flex;
                 align-items: center;
                 justify-content: space-between;
                 padding: 1rem 1.66rem;
-  border-bottom: 1px solid #f2f3f5;
+                border-bottom: 1px solid #f2f3f5;
 
                 .nav-list-left {
                     display: flex;
@@ -211,6 +222,7 @@ const searchSortingShow = (type) => {
 
         .search-content {
             padding: 10px;
+
             :deep(.content-skeleton-item) {
                 padding-bottom: 12px;
             }

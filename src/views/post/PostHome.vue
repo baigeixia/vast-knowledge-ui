@@ -273,7 +273,7 @@
     </el-image-viewer>
 </template>
 <script setup>
-import { ref, onMounted, computed, onBeforeUnmount, watch, reactive, nextTick, onUnmounted, watchEffect, isProxy, isReactive, isReadonly } from 'vue';
+import { ref, onMounted, computed, onBeforeUnmount, onUnmounted, watch, reactive, nextTick, watchEffect, isProxy, isReactive, isReadonly } from 'vue';
 import { useScroll } from '@vueuse/core'
 import PostComment from './component/PostComment.vue';
 import PostCommentItem from './component/PostCommentItem.vue';
@@ -323,7 +323,9 @@ onBeforeUnmount(() => {
     observer.disconnect(); // 断开观察
     window.removeEventListener('mousemove', handleActivity);
     window.removeEventListener('scroll', handleActivity);
-
+    window.removeEventListener('beforeunload ', handleBeforeUnload);
+})
+const handleBeforeUnload = (event) => {
     //文章id
     let postId = props.postId
     //阅读时间
@@ -337,8 +339,12 @@ onBeforeUnmount(() => {
     console.log(userid, postId, readDuration, percentage, loadTime);
     //阅读计算    
     notificationS.userRead(userid, postId, readDuration, percentage, loadTime);
-})
 
+    event.preventDefault();
+    event.returnValue = "";
+}
+
+ 
 const percentagecount = () => {
     if (!mainTextRef.value) return 0;
     const clientHeight = window.innerHeight; // 可视高度
@@ -484,7 +490,7 @@ onMounted(async () => {
     observer.observe(mainTextRef.value); // 观察文章元素
     window.addEventListener('mousemove', handleActivity);
     window.addEventListener('scroll', handleActivity);
-    // window.addEventListener('beforeunload', handleBeforeUnload);
+    window.addEventListener('beforeunload', handleBeforeUnload);
 
     if (notificationId) {
         drawer.value = true
@@ -501,7 +507,7 @@ onMounted(async () => {
     //加载时间
     let loadTime = (loadDuration.value / 1000).toFixed(2);
     //用户id
-    console.log('开始阅读',id, postId,loadTime);
+    console.log('开始阅读', id, postId, loadTime);
     //阅读计算    
     notificationS.userRead(id, postId, 0, 0, loadTime);
 })

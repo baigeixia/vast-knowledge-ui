@@ -1,13 +1,14 @@
 import { coreRequest } from '@/utils/request'
 
-export function gethomeList(page,size,type) {
+export function gethomeList(page,size,tag,type) {
     return coreRequest({
       url: '/article/article/homeList',
       method: 'GET',
       params:{
         page:page,
         size:size,
-        tag:type,
+        tag:tag,
+        type:type,
       }
     })
 }

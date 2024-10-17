@@ -14,30 +14,32 @@
       <div class="right-ul">
         <!-- <el-input v-model="input" type="text" style="width: 260px" placeholder="搜索" suffix-icon="Search"  clearable /> -->
         <div class="right-li">
-          <el-input v-model="headerinput" style="width: 400px" placeholder="搜索" class="header-input"
-            @keyup.enter="headersearch" :focus="inputfocus" @blur="inputblur">
+          <el-input ref="searchInput" v-model="headerinput" style="width: 400px" :placeholder="placeholder"
+            class="header-input" @keyup.enter="headersearch" @focus="inputfocus()" @blur="inputblur()">
             <template #append>
               <el-button class="header-search" @click="headersearch" icon="Search" />
             </template>
           </el-input>
           <transition name="fade-slide">
-            <div class="search-suggestions" v-if="isfocus">
+            <!-- <div class="search-suggestions" v-if="isfocus"> -->
+            <div class="search-suggestions" v-show="isfocus && !ishide">
               <div class="trending-searches">
                 <h3>搜索发现</h3>
               </div>
-              <div class="itme-list" v-for="(term, index) in trendingTerms" :key="index">
-                  <span class="itme-text">{{ term.text }}</span>
-                  <span v-if="term.isHot" class="hot-icon">🔥</span>
-                </div>
+              <div class="itme-list" v-for="(term, index) in trendingTerms" :key="index" @click="searchesClick(term)">
+                <span class="itme-text">{{ term.text }}</span>
+              </div>
               <div class="search-history">
                 <div class="history-header">
                   <h3>搜索历史</h3>
                   <button @click="clearHistory"> <i class="bi bi-trash"></i>清空</button>
                 </div>
               </div>
-              <div v-for="(term, index) in searchHistory" :key="index">
-                  {{ term }}
-                </div>
+              <div class="itme-list" v-for="(term, index) in searchHistory" :key="index" @click="searchesClick(term)"
+                v-show="index < 5">
+                <span class="itme-text">{{ term.text }}</span>
+                <i class="bi bi-x-lg delete-button" @click.stop="deleteSearch(term)"></i>
+              </div>
             </div>
           </transition>
         </div>
@@ -158,14 +160,15 @@
 </template>
 
 <script setup>
-import { onMounted, ref, computed } from "vue"
+import { ishide } from '@/components/Publicvariables'
+import { onMounted, ref, computed, nextTick, onBeforeUnmount } from "vue"
 import { byLoading } from '@/utils/Loading'
 import { useRouter, useRoute } from 'vue-router';
+import { getToken } from '@/utils/auth'
 import { channelAppStore } from "@/stores/admin/channel";
 const header = channelAppStore()
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
-import { getUserid, getToken, getUserInfo } from '@/utils/auth'
 
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
@@ -180,25 +183,38 @@ const headerinput = ref('')
 const isfocus = ref(false);
 
 const inputfocus = () => {
-  console.log('focus');
   isfocus.value = true
 }
 const inputblur = () => {
-  console.log('inputblur');
-  isfocus.value = false
+    isfocus.value = false
 }
 
+let i = [
+  { text: '东部战区演习', isHot: true },
+  { text: '江歌妈妈', isHot: true },
+  { text: '进入组件刷新进入组件刷新进入组件刷新', isHot: true },
+  { text: '可控核聚变', isHot: true },
+  { text: '东部战区演习2', isHot: true },
+  { text: '东部战区演习3', isHot: true },
+  { text: '东部战区演习5', isHot: true },
+  { text: '东部战区演习8', isHot: true },
+]
+//搜索显示数量
+let searchNumber = 12
 onMounted(async () => {
-  // const id = getUserid()
-  // if (!id) {
-  //   await userinfoAppStores.getusergetLocalInfo()
-  // }
-  await userinfoAppStores.getusergetLocalInfo()
-})
+  let index = 0;
+  searchHistory.value = i;
 
-const upheadertype = (type) => {
-  header.headertype = type
-}
+  const interval = setInterval(() => {
+    index = (index + 1) % i.length;
+    placeholder.value = i[index].text.length > searchNumber ? i[index].text.substring(0, searchNumber) + '...' : i[index].text;
+  }, 5000);
+
+  onBeforeUnmount(() => {
+    clearInterval(interval);
+  });
+
+})
 
 const navigateToPublish = () => {
   // 使用 Vue Router 进行跳转
@@ -210,21 +226,30 @@ const navigateToPublish = () => {
 }
 const headersearch = () => {
   let queryimput = headerinput.value
-  console.log(headerinput.value);
-  // const query = encodeURIComponent('先活着再生活');
-  if (queryimput) {
-    const queryParams = {
-      query: queryimput,
-      fromSeo: 0,
-      fromHistory: 0,
-      fromSuggest: 0,
-      type: 0
-    };
-    // 使用 router.push 导航到带查询参数的路由
-    router.push({ name: 'search', query: queryParams });
+  if (!queryimput) {
+    queryimput = placeholder.value
+  }
+  if (queryimput !== sampletext) {
+    // const query = encodeURIComponent('先活着再生活');
+    if (queryimput) {
+      jumppars(queryimput)
+    }
   }
 
 };
+
+const jumppars = (queryimput) => {
+  if (queryimput) {
+    const queryParams = {
+      query: queryimput
+    };
+    // 使用 router.push 导航到带查询参数的路由
+    router.push({ name: 'search', query: queryParams });
+    // let routedata = router.resolve({ name: 'search', query: queryParams });
+    // window.open(routedata.href, '_blank')
+  }
+}
+
 
 const item_TO_WE = (type) => {
   if (type === 1) {
@@ -245,7 +270,9 @@ const item_TO_WE = (type) => {
   }
 
 }
-const searchQuery = ref('')
+
+let sampletext = '搜索文章/用户'
+const placeholder = ref(sampletext)
 const searchHistory = ref([])
 
 const trendingTerms = ref([
@@ -256,16 +283,21 @@ const trendingTerms = ref([
   { text: '朝鲜炸毁南北', isHot: true }
 ])
 
-const handleSearch = () => {
-  if (this.searchQuery) {
-    this.searchHistory.push(this.searchQuery);
-    this.searchQuery = ''; // Clear input after search
-  }
-}
+const searchInput = ref(null)
+
 const clearHistory = () => {
-  searchHistory = [];
+  searchHistory.value = [];
 }
 
+const searchesClick = (term) => {
+  headerinput.value=term.text
+  jumppars(term.text)
+}
+
+const deleteSearch = (term) => {
+  //删除
+  searchHistory.value = searchHistory.value.filter(item => item !== term);
+} 
 </script>
 
 <style lang="scss" scoped>
@@ -360,29 +392,63 @@ const clearHistory = () => {
           border-radius: 8px;
           margin-top: 5px;
           box-shadow: 0px 1px 5px rgba(0, 0, 0, 0.3);
-          // box-shadow: 0 1px 2px 0 rgba(0,0,0,.05);
         }
 
         .trending-searches,
         .search-history {
-          border-bottom: 1px solid #aeb5c2 ;
+          border-bottom: 1px solid #aeb5c2;
 
           h3 {
             color: #939eb0;
             font-size: 16px;
-            margin: 15px 0 10px 10px;
+            margin: 10px 0 5px 10px;
           }
 
         }
+
         .itme-list {
-            margin: 5px 5px;
-            .itme-text{
-              cursor: pointer;
-            }
-            .itme-text:hover{
-              color: #1e80ff;
-            }
+          padding: 10px 5px;
+          cursor: pointer;
+          position: relative;
+
+          .itme-text {
+            width: 90%;
+            margin-left: 5px;
+            font-size: 0.9rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
           }
+
+
+        }
+
+        .delete-button {
+          display: none;
+          /* 默认隐藏 */
+          position: absolute;
+          top: 50%;
+          /* 垂直居中 */
+          right: 10px;
+          /* 右侧距离 */
+          transform: translateY(-50%);
+          /* 垂直居中 */
+        }
+
+        .itme-list:hover .delete-button {
+          display: block;
+
+        }
+
+        .delete-button:hover {
+          color: #1e80ff;
+        }
+
+        .itme-list:hover {
+          background-color: #f7f8fa;
+        }
 
         .search-history {
           .history-header {
@@ -396,7 +462,8 @@ const clearHistory = () => {
               color: #939eb0;
               cursor: pointer;
             }
-            button:hover{
+
+            button:hover {
               color: #6a84af;
             }
           }

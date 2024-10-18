@@ -62,7 +62,7 @@
                         </RouterLink> -->
                         <RouterLink :to="`/user/${userid}/collections`">
                             <div class="nav-item" :class="{ 'active': isActive('/collections') }">
-                                <el-button link><span>收藏集</span></el-button>
+                                <el-button link><span>收藏</span></el-button>
                             </div>
                         </RouterLink>
                         <RouterLink :to="`/user/${userid}/following`">
@@ -121,7 +121,7 @@
                 </div>
                 <div class="more-block block">
                     <!-- <div class="more-item">
-                        <div class="item-title">收藏集</div>
+                        <div class="item-title">收藏</div>
                         <div class="item-count">0</div>
                     </div>
                     <div class="more-item">

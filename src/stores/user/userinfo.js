@@ -30,6 +30,7 @@ const userinfoAppStore = defineStore(
 
     const getusergetLocalInfo = async () => {
       let info = getUserInfo()
+      
       if(!info){
         const resp = await usergetInfo()
         userLocalinfo.value = resp.data

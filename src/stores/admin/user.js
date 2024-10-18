@@ -21,6 +21,7 @@ import userinfoAppStore  from '../user/userinfo'
                 const waitCode = userInfo.waitCode;
                 const codeOrPas = userInfo.codeOrPas;
                 
+                
                 securityLogin({
                     email,
                     password,
@@ -34,8 +35,9 @@ import userinfoAppStore  from '../user/userinfo'
                     // console.log('resp', resp);
                     isnotlogin.value = false;
                     // location.href='/'
-                     window.location.reload();
+                    window.location.reload();
                     await  userinfoAppStores.getusergetLocalInfo()
+                    
                     // history.pushState(null, '', window.location.href);
                     resolve(resp); // 成功时将结果传递给 Promise 的 resolve
                 })

@@ -134,6 +134,7 @@ const onSubmit = async (formEl) => {
     });
 
     if (valid.valid) {
+      debugger
       await userStore.login({ ...loginform, codeOrPas: codeOrPas.value });
       // formEl.resetFields();
       socket.connect();

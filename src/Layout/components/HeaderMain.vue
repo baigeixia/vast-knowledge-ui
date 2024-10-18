@@ -120,7 +120,7 @@
                 <User />
               </el-icon>
               <div>头像</div> -->
-              <Avatar class="avatar-img" :Image="userinfoAppStores.userLocalinfo.image" alt=" "></Avatar>
+              <Avatar class="avatar-img" :Image="getUserInfo().image" alt=" "></Avatar>
             </div>
           </div>
           <template #dropdown>
@@ -164,7 +164,7 @@ import { ishide } from '@/components/Publicvariables'
 import { onMounted, ref, computed, nextTick, onBeforeUnmount } from "vue"
 import { byLoading } from '@/utils/Loading'
 import { useRouter, useRoute } from 'vue-router';
-import { getToken } from '@/utils/auth'
+import { getToken ,getUserInfo} from '@/utils/auth'
 import { channelAppStore } from "@/stores/admin/channel";
 const header = channelAppStore()
 import notificationAppStore from "@/stores/admin/notification";
@@ -180,6 +180,7 @@ const route = useRoute();
 const router = useRouter();
 
 const headerinput = ref('')
+const userinfo = ref({})
 const isfocus = ref(false);
 
 const inputfocus = () => {
@@ -202,6 +203,11 @@ let i = [
 //搜索显示数量
 let searchNumber = 12
 onMounted(async () => {
+  userinfo.value =  getUserInfo()
+  if(!userinfo.value){
+   await  userinfoAppStores.getusergetLocalInfo()
+  }
+
   let index = 0;
   searchHistory.value = i;
 

@@ -7,8 +7,8 @@ export const channelAppStore = defineStore(
     const headertype = ref(1)
 
 
-    const page = ref(0)
-    const pagesize = ref(10)
+    const page = ref(0)     
+    const pagesize = ref(10)     
 
     const maincontentllist = ref([{
       id: 22,

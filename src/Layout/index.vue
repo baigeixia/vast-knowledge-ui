@@ -39,7 +39,6 @@
 
 <script setup>
 import { ref, watch, reactive } from "vue"
-import { RouterView } from "vue-router"
 import HeaderMain from './components/HeaderMain.vue'
 import ExternalLinkGuard from '@/Layout/components/ExternalLinkGuard.vue';
 import { useScroll } from '@vueuse/core'

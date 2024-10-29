@@ -9,13 +9,12 @@
                                 <div class="ContentItem-info">
                                     <div class="ContentItem-image">
                                         <RouterLink :to="`/user/${info.id}`" >
-                                            <img class="image-box" :src="info.avatar" alt="avatar" />
+                                            <img class="image-box" :src="info.avatar || info.image" alt="avatar" />
                                         </RouterLink>
                                     </div>
                                     <div class="info-text">
                                         <RouterLink :to="`/user/${info.id}`" >
-                                            <div class="UserItem-title-username" >
-                                            {{ info.username }}
+                                            <div class="UserItem-title-username" v-html="info.username ||  info.name">
                                         </div>
                                         </RouterLink>
                                         <div class="ContentItem-status">
@@ -86,7 +85,7 @@ const opuserinfo = (id) => {
 <style lang="scss" scoped>
 .dialog-list-box {
     max-height: 750px;
-    padding-top: 20px;
+    padding-top: 10px;
     overflow-y: auto;
 
     .list-item-box {

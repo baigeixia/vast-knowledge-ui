@@ -5,7 +5,7 @@
                 <div class="title" :class="{ active: type == 0 }" @click="switchPage(0)">综合</div>
                 <div class="title" :class="{ active: type == 1 }" @click="switchPage(1)">文章</div>
                 <!-- <div class="title" :class="{ active: type == 2 }" @click="switchPage(2)">课程</div> -->
-                <div class="title" :class="{ active: type == 3 }" @click="switchPage(3)">标签</div>
+                <!-- <div class="title" :class="{ active: type == 3 }" @click="switchPage(3)">标签</div> -->
                 <div class="title" :class="{ active: type == 4 }" @click="switchPage(4)">用户</div>
             </div>
         </el-header>
@@ -30,16 +30,42 @@
                     </div>
                 </div>
             </div>
-            <div class="search-content">
-                <Maincontentlist :contents="articleStore.articleList.records" v-infinite-scroll="loadMore"
-                    :infinite-scroll-immediate="false" :infinite-scroll-disabled="isLoading" />
+            <div class="search-content" v-if="type != 4">
+                <div class="itme-List" v-infinite-scroll="loadMore" :infinite-scroll-immediate="false"
+                    :infinite-scroll-disabled="endLoading">
+                    <Maincontentlist :contents="homeList" />
+                    <div class="item loading-dots" v-if="Loading">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                    <div class="end-of-data" v-if="endLoading && homeList.length > 0"> 已经到最底部了 </div>
+                    <div class="end-of-data" v-if="Boolean(endLoading) && homeList.length == 0">没有浏览记录</div>
+                </div>
+            </div>
+            <div class="search-content" v-else>
+                <div class="itme-List" v-infinite-scroll="userinfoloadMore" :infinite-scroll-immediate="false"
+                    :infinite-scroll-disabled="UserendLoading">
+                    <UserdialogTable :dialoguserlist="userinfoListData" style="overflow-y: hidden;" />
+                    <div class="item loading-dots" v-if="UserLoading">
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                        <div class="dot"></div>
+                    </div>
+                    <div class="end-of-data" v-if="UserendLoading && userinfoListData.length > 0"> 已经到最底部了 </div>
+                    <div class="end-of-data" v-if="Boolean(UserendLoading) && userinfoListData.length == 0">没有浏览记录</div>
+                </div>
             </div>
         </div>
     </el-container>
 </template>
 
 <script setup>
-import { ref, onMounted, watchEffect, reactive, watch } from "vue"
+import { ref, onMounted, watchEffect, reactive, watch, toRaw } from "vue"
 import { ishide } from '@/components/Publicvariables'
 import { useRouter } from 'vue-router';
 import Maincontentlist from '@/views/home/components/Maincontentlist.vue'
@@ -48,10 +74,13 @@ const maincontent = channelAppStore()
 import articleAppStore from "@/stores/admin/article";
 const articleStore = articleAppStore()
 
+import searchAppStore from "@/stores/admin/search";
+const searchS = searchAppStore()
+
+import UserdialogTable from '@/components/UserdialogTable.vue'
+
 const router = useRouter();
-const period = ref('1')
-const type = ref(0)
-const searchSorting = ref(0)
+
 const isLoading = ref(false)
 const options = [
     {
@@ -72,36 +101,110 @@ const options = [
     },
 ]
 
-const page=ref(1)
-
+const page = ref(1)
+const homeList = ref([])
 const props = defineProps({
-    query: String,
+    query: {
+        type: String,
+        required: true,
+    },
+    type: {
+        type: Number ,
+        required: false,
+        default:()=>0
+    },
+    sort: {
+        type: Number,
+        required: false,
+        default:()=>0
+    },
+    period: {
+        type: String,
+        required: false,
+        default:()=> "1"
+    },
 });
+
+const period = ref(props.period)
+const type = ref(props.type)
+const searchSorting = ref(props.sort)
+
 
 const queryParams = ref({
     query: props.query,
 });
-onMounted(()=>{
-    searchInfo()
-})
 
-const searchInfo=()=>{
-console.log(queryParams.value);
+onMounted(() => {
+    ApiAggregation()
+
+})
+const Loading = ref(false)
+const endLoading = ref(false)
+const searchInfo = async () => {
+    if (Loading.value) return
+    Loading.value = true
+    try {
+        const { query, type, sort, period } = toRaw(queryParams.value)
+        const data = await searchS.getsearchInfo(query, type, sort, period, page.value)
+        if (data && data.length != 0) {
+            homeList.value = [...homeList.value, ...data]
+        } else {
+            endLoading.value = true
+        }
+    } catch (error) {
+        // console.error('Error loading more data:', error);
+    } finally {
+        Loading.value = false;
+    }
 }
 
 const loadMore = () => {
     console.log('loadMore');
     page.value++
+    ApiAggregation()
 }
 
+const userinfoPage = ref(1)
+const loadingdisabled = ref(false)
+const userinfoListData = ref([])
+
+const userinfoloadMore = () => {
+    console.log('userinfoloadMore');
+    userinfoPage.value++
+    ApiAggregation()
+}
+
+const UserLoading = ref(false)
+const UserendLoading = ref(false)
+const getsearchUserInfo = async () => {
+    if (UserLoading.value) return
+    UserLoading.value = true
+    try {
+        const { query, type, sort, period, } = toRaw(queryParams.value)
+        const data = await searchS.getsearchUserInfo(query, type, sort, period, userinfoPage.value)
+        if (data && data.length != 0) {
+            userinfoListData.value = [...userinfoListData.value, ...data]
+        } else {
+            UserendLoading.value = true
+        }
+    } catch (error) {
+        // console.error('Error loading more data:', error);
+    } finally {
+        UserLoading.value = false;
+    }
+}
+
+
 watch(
-  () => props.query, 
-  (newVal) => {
-    queryParams.value = {
-      query: newVal,
-    };
-    searchInfo()
-  }
+    () => props.query,
+    (newVal) => {
+        reset()
+        queryParams.value = {
+            ...queryParams.value,
+            query: newVal,
+        };
+        ApiAggregation()
+    }
 );
 
 const searchtimechange = () => {
@@ -110,29 +213,48 @@ const searchtimechange = () => {
         period: period.value,
     };
     router.push({ query: { ...queryParams.value } });
-    searchInfo()
+    ApiAggregation()
 }
 
 const switchPage = (t) => {
-    type.value=t
+    reset()
+    type.value = t
     queryParams.value = {
         ...queryParams.value,
         type: type.value,
     }
-    router.push({ query:  { ...queryParams.value } });
-    searchInfo()
+    router.push({ query: { ...queryParams.value } });
+    ApiAggregation()
 }
 
 
 const searchSortingShow = (sort) => {
+    reset()
     searchSorting.value = sort
     queryParams.value = {
         ...queryParams.value,
         sort: sort,
     }
-    router.push({ query:  { ...queryParams.value } });
-    searchInfo()
+    router.push({ query: { ...queryParams.value } });
+    ApiAggregation()
 
+}
+const ApiAggregation = () => {
+    if (type.value === 4 ) {
+        getsearchUserInfo()
+    } else {
+        searchInfo()
+    }
+}
+
+const reset=()=>{
+    page.value=1
+    userinfoPage.value=1
+    endLoading.value=false
+    UserendLoading.value=false
+
+    userinfoListData.value=[]
+    homeList.value=[]
 }
 </script>
 
@@ -244,6 +366,63 @@ const searchSortingShow = (sort) => {
                     height: 60px;
                 }
             }
+
+            .item {
+                flex: 1;
+                line-height: 1.6;
+                color: #8a919f;
+
+                .item-count {
+                    font-weight: 750;
+                    color: #252933;
+                    font-size: 16px;
+                }
+            }
+
+            .loading-dots {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                text-align: center;
+                height: 80px;
+
+                .dot {
+                    width: 10px;
+                    height: 10px;
+                    background-color: #1e80ff;
+                    border-radius: 50%;
+                    margin: 0 5px;
+                    animation: dot-bounce 1s infinite ease-in-out alternate;
+                }
+
+                @keyframes dot-bounce {
+                    0% {
+                        transform: translateY(0);
+                    }
+
+                    100% {
+                        transform: translateY(-10px);
+                    }
+                }
+
+                .dot:nth-child(2) {
+                    animation-delay: 0.1s;
+                }
+
+                .dot:nth-child(3) {
+                    animation-delay: 0.2s;
+                }
+            }
+        }
+
+        .end-of-data {
+            display: flex;
+            justify-content: center;
+            text-align: center;
+            padding: 20px;
+            color: #8a919f;
+            font-size: 16px;
+
         }
     }
 }

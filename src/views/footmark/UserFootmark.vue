@@ -45,7 +45,7 @@
                 <div class="dot"></div>
                 <div class="dot"></div>
             </div>
-            <div class="end-of-data" v-if="endLoading && footmarkData.length > 1"> 已经到最底部了 </div>
+            <div class="end-of-data" v-if="endLoading && footmarkData.length > 0"> 已经到最底部了 </div>
             <div class="end-of-data" v-if="Boolean(endLoading) && footmarkData.length == 0">没有浏览记录</div>
         </div>
     </div>
@@ -69,8 +69,6 @@ const endLoading = ref(false)
 const searchcount = ref(2)
 
 const loadMore = () => {
-    debugger
-    console.log("loadMore");
     page.value++
     getuserFootMark()
 }

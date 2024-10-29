@@ -10,7 +10,7 @@
             </div>
         </el-header>
         <div class="search-main">
-            <div class="list-header">
+            <div class="list-header" v-if="type != 4">
                 <div class="list-nav">
                     <div class="nav-list-left">
                         <div class="nav-item" :class="{ 'nav-item-active': searchSorting == '0' }"
@@ -42,7 +42,7 @@
                         <div class="dot"></div>
                     </div>
                     <div class="end-of-data" v-if="endLoading && homeList.length > 0"> 已经到最底部了 </div>
-                    <div class="end-of-data" v-if="Boolean(endLoading) && homeList.length == 0">没有浏览记录</div>
+                    <div class="end-of-data" v-if="Boolean(endLoading) && homeList.length == 0">没有找到内容</div>
                 </div>
             </div>
             <div class="search-content" v-else>
@@ -57,7 +57,7 @@
                         <div class="dot"></div>
                     </div>
                     <div class="end-of-data" v-if="UserendLoading && userinfoListData.length > 0"> 已经到最底部了 </div>
-                    <div class="end-of-data" v-if="Boolean(UserendLoading) && userinfoListData.length == 0">没有浏览记录</div>
+                    <div class="end-of-data" v-if="Boolean(UserendLoading) && userinfoListData.length == 0">没有找到内容</div>
                 </div>
             </div>
         </div>
@@ -80,7 +80,6 @@ const searchS = searchAppStore()
 import UserdialogTable from '@/components/UserdialogTable.vue'
 
 const router = useRouter();
-
 const isLoading = ref(false)
 const options = [
     {
@@ -109,7 +108,7 @@ const props = defineProps({
         required: true,
     },
     type: {
-        type: Number ,
+        type: [Number, String] ,
         required: false,
         default:()=>0
     },
@@ -344,6 +343,9 @@ const reset=()=>{
 
         .search-content {
             padding: 10px;
+            box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .05);
+            min-height: 600px;
+
 
             :deep(.content-skeleton-item) {
                 padding-bottom: 12px;

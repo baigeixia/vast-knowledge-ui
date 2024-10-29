@@ -202,7 +202,13 @@ let i = [
 ]
 //搜索显示数量
 let searchNumber = 12
+
 onMounted(async () => {
+const {query } =route.query
+if(query){
+  headerinput.value=query
+}
+  
   userinfo.value =  getUserInfo()
   if(!userinfo.value){
    await  userinfoAppStores.getusergetLocalInfo()
@@ -241,6 +247,7 @@ const headersearch = () => {
       jumppars(queryimput)
     }
   }
+  searchInput.value.blur();
 
 };
 

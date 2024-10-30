@@ -29,7 +29,7 @@
                 </div>
                 <div class="ContentItem-extra ">
                     <el-button :type="info.concerned === 1 ? 'info' : 'primary'" :round="true" style="min-width: 130px;"
-                        @click="followedButton(info.id, info.username)" :disabled="info.id == getUserid()"
+                        @click="followedButton(info.id, info.username || info.name)" :disabled="info.id == getUserid()"
                         @mouseenter="hoverStates[index] = true" @mouseleave="hoverStates[index] = false">
                         <i class="bi  bi-dash-lg " v-if="info.concerned === 1">
                             <span class="button-icon "> {{ hoverStates[index] ? "取消" : "已" }}关注</span></i>
@@ -67,7 +67,7 @@ watch(() => props.dialoguserlist, (newVal) => {
     hoverStates.value = new Array(newVal.length).fill(false);
 });
 const followedButton = (id, username) => {
-    console.log(id, username);
+    console.log("关注",id, username);
     notificationS.fanMsg(id, username)
     const user = props.dialoguserlist.find(i => i.id === id);
     if (user) {

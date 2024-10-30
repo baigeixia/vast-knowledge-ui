@@ -131,11 +131,11 @@ const searchSorting = ref(props.sort)
 
 const queryParams = ref({
     query: props.query,
+    type: props.type,
 });
 
 onMounted(() => {
     ApiAggregation()
-
 })
 const Loading = ref(false)
 const endLoading = ref(false)
@@ -239,7 +239,8 @@ const searchSortingShow = (sort) => {
 
 }
 const ApiAggregation = () => {
-    if (type.value === 4 ) {
+   let propstype = props.type
+    if (type.value == 4 || propstype==4) {
         getsearchUserInfo()
     } else {
         searchInfo()

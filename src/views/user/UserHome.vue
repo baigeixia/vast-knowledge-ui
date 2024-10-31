@@ -25,8 +25,8 @@
                                 </el-button>
                             </RouterLink>
                         </div>
-                        <div v-else class="right" >
-                            <el-button @click="followedButton(userinfoHome.id, userinfoHome.name)" :type="isfollow ? 'info' : 'primary'" >
+                        <div v-else-if="getUserid()" class="right">
+                            <el-button @click="followedButton(userinfoHome.id, userinfoHome.name)" :type="isfollow ? 'info' : 'primary'"  >
                                 <i class="bi bi-dash-lg " v-if="isfollow">
                                     <span class="button-icon "> 取消关注</span></i>
                                 <i class="bi bi-plus-lg" v-else>
@@ -163,15 +163,17 @@ const props = defineProps({
 const isfollow=ref(false)
 
 onMounted(async () => {
+    userinfoHome.value=[]
     const id = props.userid
-    await userinfoAppStores.getusergetInfo(id)
-    if(getUserid() !== id){
+    const data =await userinfoAppStores.getusergetInfo(id)
+    userinfoHome.value = data
+
+    if(getUserid() ? getUserid() != id:false){
         const relationData = await userinfoAppStores.getInfoRelation(id)
         isfollow.value=  relationData.follow
     }
 //    console.log(data);
     nextTick(() => {
-        userinfoHome.value = userinfoAppStores.userinfo
     })
 })
 

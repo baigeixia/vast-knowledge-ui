@@ -1,7 +1,7 @@
 <template>
   <div class="user-activity">
     <div class="List-header">
-      <h4>{{ (userinfoAppStores.userinfo.id == getUserid() ? '我' : (userinfoAppStores.userinfo.sex == 0 ? '他' : '她'))
+      <h4>{{ (userid == getUserid() ? '我' : (userinfoAppStores.userinfo.sex == 0 ? '他' : '她'))
         + '的' + pageTitle }}</h4>
       <div class="tge">
         <span :class="{ 'is-active': type == 1 }" @click="tgeType(1)">最新</span>
@@ -27,7 +27,7 @@
             <div class="post-time">
               <time>{{ $formatDateTime(post.createdTime) }}&nbsp;:&nbsp;创建时间</time>
             </div>
-            <MaincontentItme :content="post" />
+            <MaincontentItme :content="post" :islocal="true" @deleteArticle="deleteArticle" />
           </div>
         </div>
         <div v-else class="user-activity-nodata">
@@ -67,6 +67,16 @@ const props = defineProps({
     required: true,
   }
 })
+
+const deleteArticle=async(id)=>{
+    await articleStore.deleteOne(id)
+    posts.value.records = posts.value.records.filter(post => post.id !== id);
+    ElMessage({
+        message: '删除成功',
+        type: 'success',
+    })
+
+}
 const posts = ref(
   {
     records: [],

@@ -13,10 +13,12 @@ const userinfoAppStore = defineStore(
     const userLocalinfo = ref({})
 
     const getusergetInfo = async (userid) => {
-      let info = getUserInfo()
-      if(info){
-        userinfo.value = info
-        return info;
+      if(userid == getUserid()){
+        let info = getUserInfo()
+        if(info){
+          userinfo.value = info
+          return info;
+        }
       }
       const resp = await usergetInfo(userid)
       userinfo.value = resp.data
@@ -33,10 +35,12 @@ const userinfoAppStore = defineStore(
       
       if(!info){
         const resp = await usergetInfo()
-        userLocalinfo.value = resp.data
-        setUserid(resp.data.id)
-        userid.value = resp.data.id
-        setUserInfo(resp.data)
+        if(resp.data){
+          userLocalinfo.value = resp.data
+          setUserid(resp.data.id)
+          userid.value = resp.data?.id
+          setUserInfo(resp.data)
+        }
         return resp.data;
       }else{
         userLocalinfo.value = info

@@ -36,3 +36,13 @@ export function postsapi(userId,page,size,type) {
     }
   })
 }
+
+export function deleteOneApi(id) {
+  return coreRequest({
+    url: '/article/article/deleteOne',
+    method: 'DELETE',
+    params:{
+      id:id,
+    }
+  })
+}

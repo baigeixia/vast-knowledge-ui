@@ -132,6 +132,7 @@ const totop = () => {
     }
 
     .global-component-box {
+
         .suspension-panel {
             display: flex;
             flex-direction: column;
@@ -183,6 +184,7 @@ const totop = () => {
         z-index: 1000;
         transition: top 0.3s ease;
 
+
         .guard {
             a {
                 color: #007fff;
@@ -198,11 +200,12 @@ const totop = () => {
     .header-placeholder {
         height: 60px;
 
+
     }
 
     .container-main {
         margin: 0 auto;
-        width: 1200px;
+        max-width: 1200px;
         display: flex;
         padding: 20px 0;
         border-radius: 5px;

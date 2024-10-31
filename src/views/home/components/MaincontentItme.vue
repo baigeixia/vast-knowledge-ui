@@ -19,10 +19,6 @@
                         </RouterLink>
                     </template>
                 </user-info-popover>
-                <!-- 
-                <RouterLink :to="`/user/${content.authorId}`" class="user-message">
-                    <div class="user-popover">{{ content.authorName }}</div>
-                </RouterLink> -->
             </div>
             <div class="item-li view">
                 <el-icon>
@@ -39,11 +35,18 @@
                 <i class="bi" :class="iconClass"></i>
                 <span> {{ content.likes }}</span>
             </div>
-            <!-- <div class="dislike-item">
-                <el-icon>
-                    <More />
-                </el-icon>
-            </div> -->
+            <div class="item-li" v-if="islocal && content.authorId == userinfoAppStores.userid">
+                <el-dropdown class="dropdown-menu" trigger="click">
+                    <div><i class="bi bi-nut-fill unifiedcolor"></i><span class="showfont">设置</span></div>
+                    <template #dropdown>
+                        <el-dropdown-menu>
+                            <el-dropdown-item @click="deleteid(content.id)">
+                                <div>删除</div>
+                            </el-dropdown-item>
+                        </el-dropdown-menu>
+                    </template>
+                </el-dropdown>
+            </div>
             <div class="item-li">
                 <el-dropdown class="dropdown-menu" trigger="click">
                     <div><i class="bi bi-three-dots dots"></i></div>
@@ -104,7 +107,6 @@ import { useRouter } from 'vue-router';
 
 const router = useRouter();
 
-
 const openInNewTab = (contentid) => {
     //浏览过
     props.content.hasBrowsed = true;
@@ -114,7 +116,10 @@ const openInNewTab = (contentid) => {
 
 }
 
-
+const emit = defineEmits(['deleteArticle']);
+const deleteid=async(id)=>{
+    emit('deleteArticle', id);
+}
 const Articlelike = (id, authorId, authorName, type) => {
     notificationS.likeArticle(id, authorId, authorName, type)
     behaviourAppStoreS.postoperation.set(props.content.id, noislikeArticle.value ? 0 : 1)
@@ -126,6 +131,10 @@ const props = defineProps({
         type: Object, // 定义接收的数据类型
         required: true,// 是否必须传递
     },
+    islocal:{
+        type: Boolean, // 定义接收的数据类型
+        required: false,
+    }
 });
 
 const noislikeArticle = computed(() => (behaviourAppStoreS.postoperation.get(props.content.id) ?? 1) == 1)
@@ -400,6 +409,13 @@ const report = (id) => {
 
             span {
                 margin-left: 4px;
+            }
+
+            .unifiedcolor{
+                color: #8a919f;
+            }
+            .showfont{
+                margin-left: 5px ;
             }
 
             .user-message {

@@ -9,17 +9,17 @@
                     <div class="search-ipt">
                         <el-input v-model="searchinput" style="width: 320px" placeholder="搜索标题关键词" @keyup.enter="searchipt">
                             <template #append>
-                                <el-button class="search" icon="Search" @click="searchipt" />
+                                <el-button class="search" icon="Search" @click="searchipt" @keyup.enter="searchipt" />
                             </template>
                         </el-input>
                     </div>
-                    <div class="clear-btn" @click="clearfootmark">
+                    <div class="clear-btn" @click="dialogVisible = true">
                         <i class="bi bi-trash"></i>
                         <span>清理记录</span>
                     </div>
                 </div>
             </div>
-            <div class="show-search-count" v-if="searchcount">
+            <div class="show-search-count" v-if="searchcount != 0">
                 匹配到
                 <span style="color: rgb(29, 128, 254);">
                     &nbsp;{{ searchcount }}&nbsp;
@@ -38,6 +38,23 @@
                     </div>
                 </div>
             </div>
+            <el-dialog class="history-dialog" v-model="dialogVisible" width="350" :align-center="true" :show-close="false">
+                <!-- <span class="history-dialog">浏览记录清除后无法恢复</span> -->
+                <div class="dialog-Content">
+                    <span>浏览记录清除后无法恢复</span>
+                </div>
+                <template #header>
+                    <h1>确定清空浏览记录吗？</h1>
+                </template>
+                <template #footer>
+                    <div class="dialog-footer">
+                        <el-button class="btn" @click="dialogVisible = false">关闭</el-button>
+                        <el-button class="btn" type="primary" @click="clearhistory">
+                            确定
+                        </el-button>
+                    </div>
+                </template>
+            </el-dialog>
             <div class="item loading-dots" v-if="Loading">
                 <div class="dot"></div>
                 <div class="dot"></div>
@@ -66,7 +83,8 @@ const loadingdisabled = ref(true)
 const footmarkData = ref([])
 const Loading = ref(false)
 const endLoading = ref(false)
-const searchcount = ref(2)
+const searchcount = ref(0)
+const dialogVisible = ref(false)
 
 const loadMore = () => {
     page.value++
@@ -82,10 +100,18 @@ const getuserFootMark = async () => {
     if (Loading.value) return
     Loading.value = true
     try {
-        const data = await behaviourAppStoreS.getuserFootMarkList(page.value, 5)
+        let data
+        const query = searchinput.value
+        if (query) {
+            let serechData = await behaviourAppStoreS.getreadsearch(query, page.value)
+            data = serechData.footMarkLists
+            searchcount.value = serechData.totalHits
+        } else {
+            data = await behaviourAppStoreS.getuserFootMarkList(page.value, 10)
+        }
         const ids = data.flatMap(i => i.footMark.map(o => o.id));
         await behaviourAppStoreS.newHomeListDataGetLike(ids)
-        if (data) {
+        if (data.length>0) {
             footmarkData.value = [...footmarkData.value, ...data]
         } else {
             endLoading.value = true
@@ -99,17 +125,28 @@ const getuserFootMark = async () => {
 
 onBeforeUnmount(() => {
     page.value = 1
-    endLoading.value = false
+    footmarkData.value = []
 })
 
-const searchipt = () => {
-    console.log('searchipt', searchinput.value);
+const searchipt = async () => {
+    page.value = 1
+    footmarkData.value = []
+    searchcount.value = 0
+    getuserFootMark()
 }
 
+const clearhistory = async () => {
+    dialogVisible.value = false
+    await behaviourAppStoreS.clearAll()
+    console.log('clearhistory');
+    footmarkData.value = []
+    ElMessage({
+        message: '清除完成',
+        type: 'success',
+    })
 
-const clearfootmark = () => {
-    console.log('clearfootmark');
 }
+
 </script>
 
 <style lang="scss" scoped>
@@ -237,6 +274,49 @@ const clearfootmark = () => {
             font-size: 14px;
             line-height: 24px;
             color: #252933;
+        }
+
+        .history-dialog {
+            h1 {
+                font-weight: 600;
+                font-size: 18px;
+                line-height: 30px;
+                text-align: center;
+                color: #252933;
+                margin: 0;
+            }
+
+            .dialog-Content {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                height: 50px;
+
+                span {
+                    font-weight: 400;
+                    font-size: 14px;
+                    line-height: 22px;
+                    text-align: center;
+                    color: #8a919f;
+                }
+
+            }
+
+            .dialog-footer {
+                display: flex;
+                justify-content: center;
+
+                .btn {
+                    width: 136px;
+                    height: 44px;
+                    border: 1px solid rgba(30, 128, 255, .3);
+                    border-radius: 4px;
+                    font-weight: 400;
+                    font-size: 16px;
+                    line-height: 24px;
+                }
+            }
+
         }
 
         .descrip-list {

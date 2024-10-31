@@ -1,6 +1,6 @@
 import { gethomeList, infoArticle } from '@/api/admin/article'
 import { ref, computed ,reactive} from 'vue'
-import { getarticleLikeApi ,getdynamicsApi,userCollectListapi,getArticleInfoApi,getuserFootMarkListapi } from '@/api/collection/behaviour'
+import { getarticleLikeApi ,getdynamicsApi,userCollectListapi,getArticleInfoApi,getuserFootMarkListapi ,getreadsearchApi,clearAllApi} from '@/api/collection/behaviour'
 import { defineStore } from 'pinia'
 
 const behaviourAppStore = defineStore(
@@ -25,12 +25,14 @@ const getdynamics=async (userid,page,size)=>{
    const newHomeListDataGetLike= async (ids)=> {
       if (ids && ids.length > 0) {
         const response = await getarticleLikeApi(ids)
-        const dataObject = response.data
-        const dataMap = new Map(Object.entries(dataObject).map(([key, value]) => [key, value]))
-        const mergedMap = new Map([...postoperation, ...dataMap])
-
-        postoperation.clear()
-        mergedMap.forEach((value, key) => postoperation.set(key, value))
+        if(response.data){
+          const dataObject = response.data
+          const dataMap = new Map(Object.entries(dataObject).map(([key, value]) => [key, value]))
+          const mergedMap = new Map([...postoperation, ...dataMap])
+  
+          postoperation.clear()
+          mergedMap.forEach((value, key) => postoperation.set(key, value))
+        }
       }
     }
 
@@ -52,6 +54,16 @@ const getdynamics=async (userid,page,size)=>{
     }
 
 
+    const getreadsearch=async(query,page,size)=>{
+      const resp= await getreadsearchApi(query,page,size)
+      return resp.data
+    }
+    
+
+    const clearAll=async()=>{
+      const resp= await clearAllApi()
+      return resp
+    }
 
 
 
@@ -63,6 +75,8 @@ const getdynamics=async (userid,page,size)=>{
       getArticleInfo,
       postoperation,
       dynamics,
+      getreadsearch,
+      clearAll,
     }
   })
 

@@ -5,12 +5,12 @@
         <div class="SubTabs">
           <div class="SubTabs-item" :class="{ 'is-active': isActive('/following')} ">
             <RouterLink :to="`/user/${userid}/following`">
-              <span>我关注的人</span>
+              <span>{{ (userid == getUserid() ? '我' : (userinfoAppStores.userinfo.sex == 0 ? '他' : '她'))+ '的' +"关注的人" }}</span>
             </RouterLink>
           </div>
           <div class="SubTabs-item" :class="{ 'is-active': isActive('/followers')} ">
             <RouterLink :to="`/user/${userid}/followers`">
-              <span>关注我的人</span>
+              <span>{{"关注"+(userid == getUserid() ? '我' : (userinfoAppStores.userinfo.sex == 0 ? '他' : '她'))+ '的' +"人" }}</span>
             </RouterLink>
           </div>
         </div>
@@ -23,7 +23,9 @@
 import { ref } from "vue"
 import { useRoute } from 'vue-router';
 const route = useRoute();
-
+import { getUserid } from '@/utils/auth'
+import userinfoAppStore from "@/stores/user/userinfo"
+const userinfoAppStores = userinfoAppStore();
 const isActive = (path) => {
     return route.path.includes(path);
 };

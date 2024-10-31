@@ -344,7 +344,7 @@ const handleBeforeUnload = (event) => {
     event.returnValue = "";
 }
 
- 
+
 const percentagecount = () => {
     if (!mainTextRef.value) return 0;
     const clientHeight = window.innerHeight; // 可视高度
@@ -443,73 +443,81 @@ const observer = new IntersectionObserver((entries) => {
 onMounted(async () => {
     //加载时间
     let startTime, endTime;
+    let notificationId = props.notificationId
 
     centermainloading.value = true
-    let notificationId = props.notificationId
-    let postId = props.postId
+    try {
+        let postId = props.postId
 
-    commentS.commentHomeDto.entryId = postId
-    commentS.commentHomeDto.notificationId = notificationId
+        commentS.commentHomeDto.entryId = postId
+        commentS.commentHomeDto.notificationId = notificationId
 
-    maincommentS.commentHomedrawerDto.notificationId = notificationId
-    maincommentS.commentHomedrawerDto.entryId = postId
-
-
-
-    if (notificationId) {
-        // commentS.commentHomeDto.type = 3
-        maincommentS.commentHomedrawerDto.type = 3
-    }
-    startTime = Date.now()
-
-    await contentS.getContent(postId)
-    await articleS.getinfoArticle(postId)
-    await commentS.commentListGet()
-    authorInfo.value = await userinfoAppStores.getusergetInfo(articleS.articleDto.authorId)
-
-    let id = authorInfo.value.id
-    isLoadUser.value = getUserid() !== id
-
-    if (isLoadUser.value) {
-        const relationData = await userinfoAppStores.getInfoRelation(id)
-        isfollow.value = relationData.follow
-    }
-
-    userRead.value = await behaviourAppStoreS.getArticleInfo(postId)
+        maincommentS.commentHomedrawerDto.notificationId = notificationId
+        maincommentS.commentHomedrawerDto.entryId = postId
 
 
-    await nextTick(() => {
-        endTime = Date.now()
-        upTitle()
-        startTimer()
-        loadDuration.value = endTime - startTime;
-        centermainloading.value = false
-    });
-    codeLanguage()
 
-    observer.observe(mainTextRef.value); // 观察文章元素
-    window.addEventListener('mousemove', handleActivity);
-    window.addEventListener('scroll', handleActivity);
-    window.addEventListener('beforeunload', handleBeforeUnload);
-
-    if (notificationId) {
-        drawer.value = true
-    }
-
-    if (userRead.value) {
-        const { maxPosition, percentage } = userRead.value
-        if (maxPosition !== 100 && maxPosition === percentage) {
-            viewReadingPosition(percentage);
+        if (notificationId) {
+            // commentS.commentHomeDto.type = 3
+            maincommentS.commentHomedrawerDto.type = 3
         }
+        startTime = Date.now()
+
+        await contentS.getContent(postId)
+        await articleS.getinfoArticle(postId)
+        await commentS.commentListGet()
+        authorInfo.value = await userinfoAppStores.getusergetInfo(articleS.articleDto.authorId)
+
+        let id = authorInfo.value.id
+        isLoadUser.value = getUserid() !== id
+
+        if (isLoadUser.value) {
+            const relationData = await userinfoAppStores.getInfoRelation(id)
+            isfollow.value = relationData.follow
+        }
+
+        userRead.value = await behaviourAppStoreS.getArticleInfo(postId)
+
+
+
+        await nextTick(() => {
+            endTime = Date.now()
+            upTitle()
+            startTimer()
+            loadDuration.value = endTime - startTime;
+            centermainloading.value = false
+
+        });
+        codeLanguage()
+
+        observer.observe(mainTextRef.value); // 观察文章元素
+        window.addEventListener('mousemove', handleActivity);
+        window.addEventListener('scroll', handleActivity);
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        if (notificationId) {
+            drawer.value = true
+        }
+
+        if (userRead.value) {
+            const { maxPosition, percentage } = userRead.value
+            if (maxPosition !== 100 && maxPosition === percentage) {
+                viewReadingPosition(percentage);
+            }
+        }
+
+
+        //加载时间
+        let loadTime = (loadDuration.value / 1000).toFixed(2);
+        //用户id
+        console.log('开始阅读', id, postId, loadTime);
+        //阅读计算    
+        notificationS.userRead(id, postId, 0, 0, loadTime);
+    } catch (error) {
+
+    } finally {
+        centermainloading.value = false
     }
-
-
-    //加载时间
-    let loadTime = (loadDuration.value / 1000).toFixed(2);
-    //用户id
-    console.log('开始阅读', id, postId, loadTime);
-    //阅读计算    
-    notificationS.userRead(id, postId, 0, 0, loadTime);
 })
 
 let isScrolling;

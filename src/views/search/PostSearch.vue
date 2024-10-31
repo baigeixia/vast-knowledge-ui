@@ -108,19 +108,19 @@ const props = defineProps({
         required: true,
     },
     type: {
-        type: [Number, String] ,
+        type: [Number, String],
         required: false,
-        default:()=>0
+        default: () => 0
     },
     sort: {
         type: Number,
         required: false,
-        default:()=>0
+        default: () => 0
     },
     period: {
         type: String,
         required: false,
-        default:()=> "1"
+        default: () => "1"
     },
 });
 
@@ -239,22 +239,25 @@ const searchSortingShow = (sort) => {
 
 }
 const ApiAggregation = () => {
-   let propstype = props.type
-    if (type.value == 4 || propstype==4) {
+
+    let propstype = props.type
+    queryParams.value.type
+    // if (type.value == 4 || propstype == 4) {
+    if (queryParams.value.type == 4) {
         getsearchUserInfo()
     } else {
         searchInfo()
     }
 }
 
-const reset=()=>{
-    page.value=1
-    userinfoPage.value=1
-    endLoading.value=false
-    UserendLoading.value=false
+const reset = () => {
+    page.value = 1
+    userinfoPage.value = 1
+    endLoading.value = false
+    UserendLoading.value = false
 
-    userinfoListData.value=[]
-    homeList.value=[]
+    userinfoListData.value = []
+    homeList.value = []
 }
 </script>
 

@@ -1,7 +1,7 @@
 <template>
   <div class="user-activity">
     <div class="List-header">
-      <h4>{{ (userinfoAppStores.userinfo.id == getUserid() ? '我' : (userinfoAppStores.userinfo.sex == 0 ? '他' : '她'))
+      <h4>{{ (userid== getUserid() ? '我' : (userinfoAppStores.userinfo.sex == 0 ? '他' : '她'))
         + '的' + pageTitle }}</h4>
     </div>
     <el-skeleton animated :loading="loading" style="padding-top: 32px">

@@ -1,7 +1,7 @@
 <template>
   <div class="UserPins">
     <div class="List-header">
-      <h4>{{ (userinfoAppStores.userinfo.id == getUserid() ? '我' : (userinfoAppStores.userinfo.sex == 0 ? '他' : '她')) +'的动态' }}</h4>
+      <h4>{{ (userid == getUserid() ? '我' : (userinfoAppStores.userinfo.sex == 0 ? '他' : '她')) +'的动态' }}</h4>
     </div>
     <el-skeleton animated :loading="loading" style="padding-top: 32px">
       <template #template>

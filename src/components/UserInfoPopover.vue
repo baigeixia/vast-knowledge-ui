@@ -91,7 +91,7 @@ const authorInfor = ref({})
 onMounted(async () => {
     let id = props.authorid ? props.authorid : props.author?.id
     authorid.value = props.author?.id || id
-    isLoadUser.value = getUserid() !== id
+    isLoadUser.value = getUserid() ? getUserid() != id :false
 
 })
 const userpopovershow = async () => {

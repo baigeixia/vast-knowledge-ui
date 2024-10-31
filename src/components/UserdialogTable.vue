@@ -27,7 +27,7 @@
                     </div>
 
                 </div>
-                <div class="ContentItem-extra ">
+                <div class="ContentItem-extra" v-if="getUserid()">
                     <el-button :type="info.concerned === 1 ? 'info' : 'primary'" :round="true" style="min-width: 130px;"
                         @click="followedButton(info.id, info.username || info.name)" :disabled="info.id == getUserid()"
                         @mouseenter="hoverStates[index] = true" @mouseleave="hoverStates[index] = false">

@@ -77,3 +77,24 @@ export const  getuserFootMarkListapi =(page,size)=>{
         }
     })
 }
+
+
+export const  getreadsearchApi =(query,page,size)=>{
+    return collectionRequest({
+        url: `/behaviour/read/search`,
+        method: 'GET',
+        params:{
+            query:query,
+            page:page,
+            size:size,
+        }
+    })
+}
+
+
+export const  clearAllApi =()=>{
+    return collectionRequest({
+        url: `/behaviour/read/clearAll`,
+        method: 'GET',
+    })
+}

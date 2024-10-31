@@ -27,7 +27,7 @@ export function getUserid() {
   if(id){
     useUserStore.isnotlogin=true
   }
-  return id ? id : ''
+  return id ? id : undefined
 }
 
 

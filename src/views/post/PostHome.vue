@@ -300,12 +300,19 @@ import { getUserid } from '@/utils/auth'
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
 
+import { islogin } from '@/utils/userislogin';
+import useUserStore from "@/stores/admin/user";
+const userS = useUserStore()
+
 const articlelike = (id, authorId, authorName, type) => {
-    notificationS.likeArticle(id, authorId, authorName, type)
-    // behaviourAppStoreS.postoperation.set(props.postId, Boolean(isnolikeArticle.value) ? 0 : 1)
-    behaviourAppStoreS.postoperation.set(props.postId, Boolean(isActive.value) ? 1 : 0)
-    isnolikeArticle.value ? commentS.articleLike-- : commentS.articleLike++
-    isnolikeArticle.value ? articleS.articleDto.likes-- : articleS.articleDto.likes++
+
+    if (userS.isloginReLongin()) {
+        notificationS.likeArticle(id, authorId, authorName, type)
+        // behaviourAppStoreS.postoperation.set(props.postId, Boolean(isnolikeArticle.value) ? 0 : 1)
+        behaviourAppStoreS.postoperation.set(props.postId, Boolean(isActive.value) ? 1 : 0)
+        isnolikeArticle.value ? commentS.articleLike-- : commentS.articleLike++
+        isnolikeArticle.value ? articleS.articleDto.likes-- : articleS.articleDto.likes++
+    }
 }
 
 
@@ -662,8 +669,10 @@ const showImageViewerclose = () => {
 }
 
 const collectOp = () => {
-    notificationS.userToCollection(articleS.articleDto.authorId, articleS.articleDto.authorName, props.postId)
-    commentS.articleCollect = !commentS.articleCollect
+    if (userS.isloginReLongin()) {
+        notificationS.userToCollection(articleS.articleDto.authorId, articleS.articleDto.authorName, props.postId)
+        commentS.articleCollect = !commentS.articleCollect
+    }
 }
 
 

@@ -4,6 +4,7 @@ import { ref, computed } from 'vue'
 import { defineStore } from 'pinia'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 import userinfoAppStore  from '../user/userinfo'
+import { getUserid } from '@/utils/auth'
 
  const useUserStore = defineStore(
     'user', () => {
@@ -20,7 +21,6 @@ import userinfoAppStore  from '../user/userinfo'
                 const password = userInfo.password;
                 const waitCode = userInfo.waitCode;
                 const codeOrPas = userInfo.codeOrPas;
-                
                 
                 securityLogin({
                     email,
@@ -56,6 +56,16 @@ import userinfoAppStore  from '../user/userinfo'
             }
         }
 
+         const isloginReLongin = ()=>{
+            const islogin= !!getUserid()
+            if(!islogin){
+                isnotlogin.value = true
+                
+            }
+            return islogin
+        };
+        
+
 
         return {
             isnotlogin,
@@ -64,6 +74,7 @@ import userinfoAppStore  from '../user/userinfo'
             login,
             getUserInfoPo,
             userInfoPo,
+            isloginReLongin,
 
         }
     })

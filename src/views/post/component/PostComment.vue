@@ -8,6 +8,7 @@
             <img :src="imageUrl" alt="预览图片" class="small-preview-image" @click="showLargePreview">
             <i class="remove-icon bi bi-x-circle" @click="removeImage"></i>
         </div>
+       
         <div class="action-box">
             <div class="emoji-container">
                 <el-popover width="280px" popper-style="padding: 0; border-radius: 10px;" :show-arrow='false'
@@ -48,7 +49,10 @@ const maincommentS = maincommentAppStore()
 import articleAppStore from "@/stores/admin/article";
 const articleS = articleAppStore()
 import notificationAppStore from "@/stores/admin/notification";
+import { getUserid } from '@/utils/auth';
 const notificationS = notificationAppStore()
+
+import { islogin} from '@/utils/userislogin';
 
 const props = defineProps({
     articleId: {
@@ -98,9 +102,10 @@ const sendmessage = () => {
     }
 
     timeoutId = setTimeout(async () => {
-        const articleId= props.articleId
+        
+        const articleId = props.articleId
         commentS.commentReDto.entryId = articleId
-      
+
         if (props.replyauthorId) {
             commentS.commentReDto.content = commentinput.value
             commentS.commentReDto.image = imageUrl.value
@@ -128,55 +133,60 @@ const sendmessage = () => {
         // commentS.commentHomeVo = {}
         // await commentS.commentListGet()
         maincommentS.istime = null
-        
+
     }, 300);
 
 }
 
-const upcomment=(isinsert)=>{
-    isinsert ?  articleS.articleDto.comment++ : articleS.articleDto.comment--
+const upcomment = (isinsert) => {
+    isinsert ? articleS.articleDto.comment++ : articleS.articleDto.comment--
 
 }
 
 const sendmessageAddVodata = () => {
     let newChildComment = commentS.TemporaryComments
-    if (newChildComment) {
-          notificationS.commentMsg(props.articleId,articleS.articleDto.authorId,articleS.articleDto.authorName)
-        if (commentS.commentHomeVo && Array.isArray(commentS.commentHomeVo.comments)) {
-            commentS.commentHomeVo.comments.unshift(newChildComment);
-        }
+    if (islogin.value) {
+        if (newChildComment) {
+            notificationS.commentMsg(props.articleId, articleS.articleDto.authorId, articleS.articleDto.authorName)
+            if (commentS.commentHomeVo && Array.isArray(commentS.commentHomeVo.comments)) {
+                commentS.commentHomeVo.comments.unshift(newChildComment);
+            }
 
-        if (maincommentS.commentHomedrawerVo && Array.isArray(maincommentS.commentHomedrawerVo.comments)) {
-            maincommentS.commentHomedrawerVo.comments.unshift(newChildComment);
+            if (maincommentS.commentHomedrawerVo && Array.isArray(maincommentS.commentHomedrawerVo.comments)) {
+                maincommentS.commentHomedrawerVo.comments.unshift(newChildComment);
+            }
         }
     }
+
 }
 
 const sendmessageAddVodataRe = () => {
     let newChildComment = commentS.TemporaryComments
+    if (islogin.value) {
+        if (newChildComment) {
+            const replyauthor = props.replyauthor
+            notificationS.commentMsg(props.articleId, replyauthor.id, replyauthor.username)
 
-    if (newChildComment) {
-        const replyauthor= props.replyauthor
-        notificationS.commentMsg(props.articleId,replyauthor.id,replyauthor.username)
+            let commentId = newChildComment.commentId
+            if (commentS.commentHomeVo && Array.isArray(commentS.commentHomeVo.comments)) {
+                commentS.commentHomeVo?.comments.forEach(comment => {
+                    if (comment.id === commentId) {
+                        comment.childComments.unshift(newChildComment);
+                        // 更新子评论数量
+                        comment.childCommentCount = (parseInt(comment.childCommentCount, 10) + 1).toString();
+                    }
+                });
+            }
+            if (maincommentS.commentHomedrawerVo && Array.isArray(maincommentS.commentHomedrawerVo.comments)) {
+                maincommentS.commentHomedrawerVo?.comments.forEach(comment => {
+                    if (comment.id === commentId) {
+                        comment.childComments.unshift(newChildComment);
+                        // 更新子评论数量
+                        comment.childCommentCount = (parseInt(comment.childCommentCount, 10) + 1).toString();
+                    }
+                });
+            }
 
-        let commentId = newChildComment.commentId
-        if (commentS.commentHomeVo && Array.isArray(commentS.commentHomeVo.comments)) {
-            commentS.commentHomeVo?.comments.forEach(comment => {
-                if (comment.id === commentId) {
-                    comment.childComments.unshift(newChildComment);
-                    // 更新子评论数量
-                    comment.childCommentCount = (parseInt(comment.childCommentCount, 10) + 1).toString();
-                }
-            });
-        }
-        if (maincommentS.commentHomedrawerVo && Array.isArray(maincommentS.commentHomedrawerVo.comments)) {
-            maincommentS.commentHomedrawerVo?.comments.forEach(comment => {
-                if (comment.id === commentId) {
-                    comment.childComments.unshift(newChildComment);
-                    // 更新子评论数量
-                    comment.childCommentCount = (parseInt(comment.childCommentCount, 10) + 1).toString();
-                }
-            });
         }
 
         // if (maincommentS.commentdialog) {

@@ -47,7 +47,7 @@
                     </template>
                 </el-dropdown>
             </div>
-            <div class="item-li">
+            <div class="item-li" v-if="islogin">
                 <el-dropdown class="dropdown-menu" trigger="click">
                     <div><i class="bi bi-three-dots dots"></i></div>
                     <template #dropdown>
@@ -91,7 +91,8 @@ import { onMounted, ref, nextTick, computed, reactive } from "vue"
 import { escapeHtml } from '@/utils/escapeHtml'
 import { ElMessage } from 'element-plus'
 import UserInfoPopover from '@/components/UserInfoPopover.vue'
-
+import useUserStore from "@/stores/admin/user";
+const userS = useUserStore()
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
 import reportAppStore from "@/stores/user/report";
@@ -102,6 +103,7 @@ import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 import behaviourAppStore from "@/stores/collection/behaviour"
 const behaviourAppStoreS = behaviourAppStore();
+import { islogin} from '@/utils/userislogin';
 
 import { useRouter } from 'vue-router';
 
@@ -121,9 +123,11 @@ const deleteid=async(id)=>{
     emit('deleteArticle', id);
 }
 const Articlelike = (id, authorId, authorName, type) => {
+    if (userS.isloginReLongin()) {
     notificationS.likeArticle(id, authorId, authorName, type)
     behaviourAppStoreS.postoperation.set(props.content.id, noislikeArticle.value ? 0 : 1)
     noislikeArticle.value ? props.content.likes-- : props.content.likes++
+    }
 }
 
 const props = defineProps({

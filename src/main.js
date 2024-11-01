@@ -18,6 +18,7 @@ import { formatTime,formatDateTime,formatDate } from './utils/formDate';
 // import debounce from './utils/debouncing';
 import './loginblocking' 
 import Avatar from '@/components/Avatar.vue'
+import { islogin} from './utils/userislogin';
 
 const app = createApp(App)
 
@@ -32,6 +33,7 @@ app.config.globalProperties.$sanitizeHtml = sanitizeHtml;
 app.config.globalProperties.$formatTime = formatTime;
 app.config.globalProperties.$formatDateTime = formatDateTime;
 app.config.globalProperties.$formatDate = formatDate;
+app.config.globalProperties.$islogin = islogin;
 
 app.use(router)
 app.use(ElementPlus, {

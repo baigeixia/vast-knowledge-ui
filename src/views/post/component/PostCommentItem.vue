@@ -105,7 +105,8 @@ import commentStore from "@/stores/admin/comment";
 const commentS = commentStore()
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
-
+import useUserStore from "@/stores/admin/user";
+const userS = useUserStore()
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 
@@ -136,10 +137,12 @@ const props = defineProps({
 
 
 const likeArticle = (articleid, authorid, username, type, commentid) => {
+    if (userS.isloginReLongin()) {
     notificationS.likeArticle(articleid, authorid, username, type, commentid)
     commentS.commentLikes.set(Number(commentid), isnolikeArticle.value ? 0 : 1)
     isnolikeArticle.value ? props.comment.likes-- : props.comment.likes++
     console.log(props.comment.likes);
+}
 
 }
 

@@ -10,7 +10,7 @@ const userinfoAppStore = defineStore(
 
     const userid = ref(getUserid())
     const userinfo = ref({})
-    const userLocalinfo = ref({})
+    const userLocalinfo = ref(getUserInfo())
 
     const getusergetInfo = async (userid) => {
       if(userid == getUserid()){

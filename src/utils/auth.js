@@ -32,7 +32,7 @@ export function getUserid() {
 
 
 export function removeUserid() {
-  return Cookies.remove(UserInfoKey)
+  return Cookies.remove(UserInfoIdKey)
 }
 
 

@@ -12,33 +12,48 @@
     </div>
     <div class="header-right">
       <div class="right-ul">
-        <!-- <el-input v-model="input" type="text" style="width: 260px" placeholder="搜索" suffix-icon="Search"  clearable /> -->
         <div class="right-li">
-          <el-input ref="searchInput" v-model="headerinput" style="width: 400px" :placeholder="placeholder"
-            class="header-input" @keyup.enter="headersearch" @focus="inputfocus()" @blur="inputblur()">
+          <el-input ref="searchInput" v-model="headerinput" style="width: 400px" :placeholder="placeholder" @input="onInput"
+           class="header-input" @keyup.enter="headersearch" @focus="inputfocus()" @blur="inputblur()"> 
             <template #append>
               <el-button class="header-search" @click="headersearch" icon="Search" />
             </template>
           </el-input>
-          <transition name="fade-slide">
+          <transition name="fade-slide" v-if="!headerinput">
             <!-- <div class="search-suggestions" v-if="isfocus"> -->
             <div class="search-suggestions" v-show="isfocus && !ishide">
               <div class="trending-searches">
                 <h3>搜索发现</h3>
               </div>
-              <div class="itme-list" v-for="(term, index) in trendingTerms" :key="index" @click="searchesClick(term)">
-                <span class="itme-text">{{ term.text }}</span>
+              <div class="itme-list" v-for="(term, index) in trendingTerms" :key="index" @click="searchesClick(term.hotWords)">
+                <div class="itme-text">
+                  <span>{{ term.hotWords }}</span>
+                  <span class="itme-ic" v-if="term.type == 0">热</span>
+                  <span class="itme-ic" v-if="term.type == 1">荐</span>
+                  <span class="itme-ic" v-if="term.type == 2">新</span>
+                  <span class="itme-ic" v-if="term.type == 3">火</span>
+                </div>
               </div>
               <div class="search-history">
                 <div class="history-header">
                   <h3>搜索历史</h3>
-                  <button @click="clearHistory"> <i class="bi bi-trash"></i>清空</button>
+                  <button @click="clearHistory" v-if="searchHistory.length > 0"> <i class="bi bi-trash"></i>清空</button>
                 </div>
               </div>
-              <div class="itme-list" v-for="(term, index) in searchHistory" :key="index" @click="searchesClick(term)"
+              <div class="itme-list" v-for="(term, index) in searchHistory" :key="index" @click="searchesClick(term.keyword)"
                 v-show="index < 5">
-                <span class="itme-text">{{ term.text }}</span>
+                <span class="itme-text">{{ term.keyword }}</span>
                 <i class="bi bi-x-lg delete-button" @click.stop="deleteSearch(term)"></i>
+              </div>
+              <div class="itme-list-not" v-if="searchHistory.length < 1">
+                还没有历史
+              </div>
+            </div>
+          </transition>
+          <transition name="fade-slide" v-else>
+            <div class="search-suggestions" v-show="isfocus && !ishide">
+              <div class="itme-list" v-for="(term, index) in restaurants" :key="index" @click="searchesClick(term.associateWords)">
+                <span class="itme-text" v-html="term.associateWordH"></span>
               </div>
             </div>
           </transition>
@@ -120,7 +135,7 @@
                 <User />
               </el-icon>
               <div>头像</div> -->
-              <Avatar class="avatar-img" :Image="getUserInfo().image" alt=" "></Avatar>
+              <Avatar class="avatar-img" :Image="userinfoAppStores.userLocalinfo.image" alt=" "></Avatar>
             </div>
           </div>
           <template #dropdown>
@@ -139,13 +154,11 @@
               </RouterLink>
               <RouterLink to="/footmark"><el-dropdown-item> <i class="bi bi-clock"></i>我的足迹</el-dropdown-item>
               </RouterLink>
-              <!-- <RouterLink to="/user/settings"><el-dropdown-item><el-icon>
-                    <Setting />
-                  </el-icon>退出登录</el-dropdown-item>
-              </RouterLink> -->
+              <el-dropdown-item @click="userExit"><i class="bi bi-box-arrow-right"></i>退出登录</el-dropdown-item>
             </el-dropdown-menu>
           </template>
         </el-dropdown>
+        <!-- {{ userinfoAppStores.userLocalinfo }} -->
         <div class="login-button-wrap" v-else>
           <div class="login-button">
             <span @click="userStore.isnotlogin = true">登录/注册</span>
@@ -154,6 +167,8 @@
             <span>注册</span>
           </div> -->
         </div>
+
+
       </div>
     </div>
   </div>
@@ -164,7 +179,7 @@ import { ishide } from '@/components/Publicvariables'
 import { onMounted, ref, computed, nextTick, onBeforeUnmount } from "vue"
 import { byLoading } from '@/utils/Loading'
 import { useRouter, useRoute } from 'vue-router';
-import { getToken ,getUserInfo} from '@/utils/auth'
+import { getToken, getUserInfo, removeToken, removeUserInfo, removeUserid } from '@/utils/auth'
 import { channelAppStore } from "@/stores/admin/channel";
 const header = channelAppStore()
 import notificationAppStore from "@/stores/admin/notification";
@@ -175,6 +190,12 @@ const userinfoAppStores = userinfoAppStore();
 
 import useUserStore from '@/stores/admin/user'
 const userStore = useUserStore()
+
+import searchinfoAppStore from '@/stores/search/searchinfo'
+const searchinfoS = searchinfoAppStore()
+
+import debounce from '@/utils/debouncing';
+
 
 const route = useRoute();
 const router = useRouter();
@@ -187,39 +208,57 @@ const inputfocus = () => {
   isfocus.value = true
 }
 const inputblur = () => {
-    isfocus.value = false
+  isfocus.value = false
 }
 
-let i = [
-  { text: '东部战区演习', isHot: true },
-  { text: '江歌妈妈', isHot: true },
-  { text: '进入组件刷新进入组件刷新进入组件刷新', isHot: true },
-  { text: '可控核聚变', isHot: true },
-  { text: '东部战区演习2', isHot: true },
-  { text: '东部战区演习3', isHot: true },
-  { text: '东部战区演习5', isHot: true },
-  { text: '东部战区演习8', isHot: true },
-]
+const userExit = () => {
+  console.log("用户退出");
+  ElMessageBox.confirm('是否要退出登录')
+    .then(() => {
+      removeToken()
+      removeUserInfo()
+      removeUserid()
+      userinfoAppStores.userLocalinfo.value = {}
+      userStore.isnotlogin = true
+    })
+    .catch(() => {
+      // catch error
+    })
+
+
+}
+
+
 //搜索显示数量
 let searchNumber = 12
+const trendingTerms = ref([])
+
+let sampletext = '搜索文章/用户'
+const searchHistory = ref([])
+const placeholder = ref(sampletext)
 
 onMounted(async () => {
-const {query } =route.query
-if(query){
-  headerinput.value=query
-}
-  
-  userinfo.value =  getUserInfo()
-  if(!userinfo.value){
-   await  userinfoAppStores.getusergetLocalInfo()
+  const { query } = route.query
+  if (query) {
+    headerinput.value = query
   }
 
-  let index = 0;
-  searchHistory.value = i;
+  userinfo.value = getUserInfo()
+  if (!userinfo.value) {
+    await userinfoAppStores.getusergetLocalInfo()
+  }
 
+
+  const usersearch = await searchinfoS.getusersearchinfo();
+  searchHistory.value = usersearch
+
+  const trending = await searchinfoS.getusersearchtrending();
+  trendingTerms.value = trending
+
+  let index = 0;
   const interval = setInterval(() => {
-    index = (index + 1) % i.length;
-    placeholder.value = i[index].text.length > searchNumber ? i[index].text.substring(0, searchNumber) + '...' : i[index].text;
+    index = (index + 1) % trendingTerms.value.length;
+    placeholder.value = trendingTerms.value[index].hotWords.length > searchNumber ? trendingTerms.value[index].hotWords.substring(0, searchNumber) + '...' : trendingTerms.value[index].hotWords;
   }, 5000);
 
   onBeforeUnmount(() => {
@@ -227,6 +266,13 @@ if(query){
   });
 
 })
+const restaurants = ref([])
+  
+const onInput=debounce(async (value)=>{
+  const dataList = await searchinfoS.associatelist(value);
+  restaurants.value=dataList
+},500)
+
 
 const navigateToPublish = () => {
   // 使用 Vue Router 进行跳转
@@ -236,7 +282,7 @@ const navigateToPublish = () => {
   // window.location.href = 'http://localhost:8081/publish';
   window.open('http://localhost:8081/publish', '_blank');
 }
-const headersearch = () => {
+const headersearch = async () => {
   let queryimput = headerinput.value
   if (!queryimput) {
     queryimput = placeholder.value
@@ -248,8 +294,29 @@ const headersearch = () => {
     }
   }
   searchInput.value.blur();
+  addLocalhistory(queryimput)
+
+  // searchHistory.value = [
+  //   addusersearchdata,
+  //   ...searchHistory.value,
+  // ]
 
 };
+
+const addLocalhistory = async (queryimput) => {
+  const addusersearchdata = await searchinfoS.addusersearchinfo(queryimput)
+
+  const existingIndex = searchHistory.value.findIndex(item => item.id === addusersearchdata.id);
+
+  if (existingIndex !== -1) {
+    // 如果找到相同 id 的元素，先移除它
+    searchHistory.value.splice(existingIndex, 1);
+  }
+
+  // 将新元素添加到数组开头
+  searchHistory.value = [addusersearchdata, ...searchHistory.value]
+}
+
 
 const jumppars = (queryimput) => {
   if (queryimput) {
@@ -284,33 +351,34 @@ const item_TO_WE = (type) => {
 
 }
 
-let sampletext = '搜索文章/用户'
-const placeholder = ref(sampletext)
-const searchHistory = ref([])
 
-const trendingTerms = ref([
-  { text: '王楚钦孙颖莎', isHot: true },
-  { text: '东部战区演习', isHot: true },
-  { text: '18 强赛国足', isHot: false },
-  { text: '照潮推涌', isHot: false },
-  { text: '朝鲜炸毁南北', isHot: true }
-])
+// const trendingTerms = ref([
+//   { text: '王楚钦孙颖莎', isHot: true },
+//   { text: '东部战区演习', isHot: true },
+//   { text: '18 强赛国足', isHot: false },
+//   { text: '照潮推涌', isHot: false },
+//   { text: '朝鲜炸毁南北', isHot: true }
+// ])
 
 const searchInput = ref(null)
 
+
+const searchesClick = (words) => {
+  headerinput.value = words
+  jumppars(words)
+  addLocalhistory(words)
+
+}
+//删除单个
+const deleteSearch = (term) => {
+  searchHistory.value = searchHistory.value.filter(item => item.id !== term.id);
+  searchinfoS.rmHistory(term.id)
+}
+//清空
 const clearHistory = () => {
   searchHistory.value = [];
+  searchinfoS.rmHistoryAll()
 }
-
-const searchesClick = (term) => {
-  headerinput.value=term.text
-  jumppars(term.text)
-}
-
-const deleteSearch = (term) => {
-  //删除
-  searchHistory.value = searchHistory.value.filter(item => item !== term);
-} 
 </script>
 
 <style lang="scss" scoped>
@@ -419,12 +487,23 @@ const deleteSearch = (term) => {
 
         }
 
+        .itme-list-not {
+          margin: 10px 0 10px 0;
+          color: #939eb0;
+          display: flex;
+          justify-content: center;
+          text-align: center;
+          font-size: 1rem;
+        }
+
         .itme-list {
           padding: 10px 5px;
           cursor: pointer;
           position: relative;
 
           .itme-text {
+            display: flex;
+
             width: 90%;
             margin-left: 5px;
             font-size: 0.9rem;
@@ -435,7 +514,11 @@ const deleteSearch = (term) => {
             -webkit-box-orient: vertical;
           }
 
-
+          .itme-ic {
+            margin-left: 5px;
+            font-size: 0.7rem;
+            color: red;
+          }
         }
 
         .delete-button {

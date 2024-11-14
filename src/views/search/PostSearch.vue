@@ -79,6 +79,7 @@ const searchS = searchAppStore()
 
 import UserdialogTable from '@/components/UserdialogTable.vue'
 
+
 const router = useRouter();
 const isLoading = ref(false)
 const options = [
@@ -239,7 +240,6 @@ const searchSortingShow = (sort) => {
 
 }
 const ApiAggregation = () => {
-
     let propstype = props.type
     queryParams.value.type
     // if (type.value == 4 || propstype == 4) {

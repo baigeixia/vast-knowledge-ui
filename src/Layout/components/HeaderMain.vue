@@ -13,8 +13,8 @@
     <div class="header-right">
       <div class="right-ul">
         <div class="right-li">
-          <el-input ref="searchInput" v-model="headerinput" style="width: 400px" :placeholder="placeholder" @input="onInput"
-           class="header-input" @keyup.enter="headersearch" @focus="inputfocus()" @blur="inputblur()"> 
+          <el-input ref="searchInput" v-model="headerinput" style="width: 400px" :placeholder="placeholder"
+            @input="onInput" class="header-input" @keyup.enter="headersearch" @focus="inputfocus()" @blur="inputblur()">
             <template #append>
               <el-button class="header-search" @click="headersearch" icon="Search" />
             </template>
@@ -25,7 +25,8 @@
               <div class="trending-searches">
                 <h3>搜索发现</h3>
               </div>
-              <div class="itme-list" v-for="(term, index) in trendingTerms" :key="index" @click="searchesClick(term.hotWords)">
+              <div class="itme-list" v-for="(term, index) in trendingTerms" :key="index"
+                @click="searchesClick(term.hotWords)">
                 <div class="itme-text">
                   <span>{{ term.hotWords }}</span>
                   <span class="itme-ic" v-if="term.type == 0">热</span>
@@ -40,8 +41,8 @@
                   <button @click="clearHistory" v-if="searchHistory.length > 0"> <i class="bi bi-trash"></i>清空</button>
                 </div>
               </div>
-              <div class="itme-list" v-for="(term, index) in searchHistory" :key="index" @click="searchesClick(term.keyword)"
-                v-show="index < 5">
+              <div class="itme-list" v-for="(term, index) in searchHistory" :key="index"
+                @click="searchesClick(term.keyword)" v-show="index < 5">
                 <span class="itme-text">{{ term.keyword }}</span>
                 <i class="bi bi-x-lg delete-button" @click.stop="deleteSearch(term)"></i>
               </div>
@@ -52,7 +53,8 @@
           </transition>
           <transition name="fade-slide" v-else>
             <div class="search-suggestions" v-show="isfocus && !ishide">
-              <div class="itme-list" v-for="(term, index) in restaurants" :key="index" @click="searchesClick(term.associateWords)">
+              <div class="itme-list" v-for="(term, index) in restaurants" :key="index"
+                @click="searchesClick(term.associateWords)">
                 <span class="itme-text" v-html="term.associateWordH"></span>
               </div>
             </div>
@@ -267,11 +269,14 @@ onMounted(async () => {
 
 })
 const restaurants = ref([])
-  
-const onInput=debounce(async (value)=>{
-  const dataList = await searchinfoS.associatelist(value);
-  restaurants.value=dataList
-},500)
+
+const onInput = debounce(async () => {
+  let value = headerinput.value
+  if (value) {
+    const dataList = await searchinfoS.associatelist(value);
+    restaurants.value = dataList
+  }
+}, 500)
 
 
 const navigateToPublish = () => {
@@ -477,11 +482,11 @@ const clearHistory = () => {
 
         .trending-searches,
         .search-history {
-          border-bottom: 1px solid #aeb5c2;
+          border-bottom: 1px solid #c4cbd8;
 
           h3 {
             color: #939eb0;
-            font-size: 16px;
+            font-size: 15px;
             margin: 10px 0 5px 10px;
           }
 

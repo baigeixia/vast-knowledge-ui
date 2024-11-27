@@ -72,13 +72,14 @@
             </div>
             <div class="avatar-input">
                 <div class="avatar-upload">
-                    <el-upload class="avatar-uploader" action="#" :show-file-list="false" :on-change="handleAvatarChange"
+
+                    <el-upload class="avatar-uploader" :action="uploadAction" :headers="{ 'from': fromValue }"  :show-file-list="false" 
+                        :on-success="handleAvatarSuccess" 
                         :before-upload="beforeAvatarUpload">
                         <!-- <div :style="{ backgroundImage: `url(${avatarUrl})` }" class="avatar-background"></div> -->
                         <!-- <img class="avatar-background" :src="avatarUrl" alt=""> -->
-                        <img class="avatar-background"
-                            :src="form.image" alt="">
-                        <div class="avatar-placeholder">
+                        <img   class="avatar-background"  :src="form.image" alt="">
+                        <div   class="avatar-placeholder">
                             <el-icon class="avatar-uploader-icon avatar-icon">
                                 <Plus />
                             </el-icon>
@@ -103,6 +104,10 @@ import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 
 import { removeUserInfo } from '@/utils/auth'
+
+//头像容器
+const fromValue="avatar"
+const uploadAction="http://localhost:19011/dfs/upload"
 
 
 const pageTitle = ref('个人设置');
@@ -158,6 +163,16 @@ const disabledDate = (time) => {
     return time.getTime() > Date.now()
 }
 
+const handleAvatarSuccess = (response,uploadFile) => {
+    if (uploadFile.raw) {
+        form.image=URL.createObjectURL(uploadFile.raw);
+        // avatarUrl.value = URL.createObjectURL(uploadFile.raw);
+  } else {
+    console.error("No file uploaded.");
+  }
+}
+
+
 const handleAvatarChange = (file, fileList) => {
     removeUserInfo()
     const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg'
@@ -167,6 +182,7 @@ const handleAvatarChange = (file, fileList) => {
     console.log(isJPG);
     const reader = new FileReader()
     reader.onload = (e) => {
+        console.log(e);
         avatarUrl.value = e.target.result
     }
     reader.readAsDataURL(file.raw)
@@ -270,10 +286,12 @@ const options = ref([
             overflow: hidden;
             cursor: pointer;
             border: 1px dashed #d9d9d9;
+           
 
             :deep(.el-upload) {
-
                 object-fit: cover;
+                width: 100%;
+                height: 100%;
             }
 
             .avatar-background {

@@ -175,7 +175,8 @@ const totop = () => {
     .main-header {
         display: flex;
         align-items: center;
-        box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+        // box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+        box-shadow:0px 1px 2px rgba(0, 0, 0, 0.2);
         --el-header-padding: 0;
         background-color: #ffffff;
         position: fixed;

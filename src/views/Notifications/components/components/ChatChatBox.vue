@@ -1,5 +1,5 @@
 <template>
-  <div v-if="boxshow" class="chat-chatBox" >
+  <div v-if="boxshow" class="chat-chatBox">
     <div class="chat-header">
       <div class="header-title">{{ boxUserName }}</div>
     </div>
@@ -27,8 +27,9 @@
               <div class="message-text" v-html="message.text"></div>
             </div>
             <template #content>
-              <el-tooltip placement="bottom" popper-class="chat-tooltip-status-popper" effect="light" trigger="click" v-if="message.id">
-                <div class="content-status" >
+              <el-tooltip placement="bottom" popper-class="chat-tooltip-status-popper" effect="light" trigger="click"
+                v-if="message.id">
+                <div class="content-status">
                   <i class="bi bi-three-dots"></i>
                 </div>
                 <template #content>
@@ -67,12 +68,20 @@
             </template>
             <EmojiFileInput ref="EmojiFileInputRef" class="emoji-input" @emoji-click="commentinputfocus" />
           </el-popover>
-          <div class="emoji-box" @click="handleClick">
+          <!-- <div class="emoji-box" @click="handleClick">
             <el-tooltip content="上传图片最大 10mb" placement="bottom">
               <i class="bi bi-card-image upload-icon"></i>
             </el-tooltip>
-          </div>
-          <input type="file" ref="fileInput" @change="handleFileChange" accept="image/*" style="display: none;">
+          </div> -->
+          <el-upload ref="fileInput" :action="uploadAction" :headers="fromValue" :show-file-list="false"
+            :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+            <div class="emoji-box">
+              <el-tooltip content="上传图片最大 10mb" placement="bottom">
+                <i class="bi bi-card-image upload-icon"></i>
+              </el-tooltip>
+            </div>
+          </el-upload>
+          <!-- <input type="file" ref="fileInput" @change="handleFileChange" accept="image/*" style="display: none;"> -->
         </div>
       </div>
       <div class="inputBox-input">
@@ -91,7 +100,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, watch   } from "vue"
+import { ref, onMounted, nextTick, watch } from "vue"
 import EmojiFileInput from '@/Layout/components/EmojiFileInput.vue';
 import { escapeHtml } from '@/utils/escapeHtml'
 import { safeHtml } from '@/utils/domPurifyConfig'
@@ -152,6 +161,38 @@ watch(() => notificationS.upMsgdata, (newValue) => {
   }
 
 })
+
+const fromValue = {
+    from: 'comment',
+    Authorization: getToken()
+}
+
+const uploadAction = "http://localhost:16003/dev-collection/dfs/dfs/upload"
+
+const handleAvatarSuccess = (response, uploadFile) => {
+    if(response?.data){
+        let image =response.data.url
+        imageUrl.value = image
+        console.log("imageUrl:" + imageUrl.value);
+        ElMessage.success('已添加')
+    }else {
+        console.error("No file uploaded.");
+    }
+}
+
+const beforeAvatarUpload = (file) => {
+    const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg'
+    const isLt5M = file.size / 1024 / 1024 < 5
+
+    if (!isJPG) {
+        ElMessage.error('上传头像图片只能是 JPG 或 PNG 格式!')
+    }
+    if (!isLt5M) {
+        ElMessage.error('上传头像图片大小不能超过 5MB!')
+    }
+    return isJPG && isLt5M
+}
+
 
 const fileInput = ref(null)
 const EmojiFileInputRef = ref(null)
@@ -238,7 +279,7 @@ const sendmessage = async () => {
   const userid = poper.boxuserid
   const username = poper.boxUserName
   notificationS.chatMsg(userid, username, vluse)
-  
+
 
   messageListData.value.messages.push({
     userType: "receiver",
@@ -246,8 +287,8 @@ const sendmessage = async () => {
     createdTime: getCurrentTime(),
   })
 
-  
-  emit('message-sent', vluse,userid);
+
+  emit('message-sent', vluse, userid);
 
   nextTick(() => {
     chatmaincontentref.value.scrollTop = chatmaincontentref.value.scrollHeight
@@ -283,6 +324,8 @@ const handleClick = () => {
 
 
 const handleFileChange = (event) => {
+  debugger
+
   const file = event.target.files[0]
   if (!file) return
 

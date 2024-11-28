@@ -8,7 +8,7 @@
             <img :src="imageUrl" alt="预览图片" class="small-preview-image" @click="showLargePreview">
             <i class="remove-icon bi bi-x-circle" @click="removeImage"></i>
         </div>
-       
+
         <div class="action-box">
             <div class="emoji-container">
                 <el-popover width="280px" popper-style="padding: 0; border-radius: 10px;" :show-arrow='false'
@@ -20,16 +20,20 @@
                     </template>
                     <EmojiFileInput ref="EmojiFileInputRef" class="emoji-input" @emoji-click="commentinputfocus" />
                 </el-popover>
-                <div class="emoji-box" @click="handleClick">
+               
+                <el-upload ref="fileInput" :action="uploadAction" :headers="fromValue" :show-file-list="false"
+                    :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
+                    <div class="emoji-box" >
                     <el-tooltip content="上传图片最大 10mb" placement="bottom">
                         <i class="bi bi-card-image upload-icon"></i>
                     </el-tooltip>
                 </div>
-                <input type="file" ref="fileInput" @change="handleFileChange" accept="image/*" style="display: none;">
+                </el-upload>
+                <!-- <input type="file" ref="fileInput" @change="handleFileChange" accept="image/*" style="display: none;"> -->
             </div>
             <div class="text-count-wrapper">
                 <span>{{ commentinput.length }}/1000</span>
-                <el-button :disabled="!commentinput.trim().length >= 1" @click="sendmessage">发送</el-button>
+                <el-button :disabled="!commentinput.trim().length >= 1 && !imageUrl"  @click="sendmessage">发送</el-button>
             </div>
         </div>
         <el-dialog v-model:visible="dialogVisible" width="50%">
@@ -49,10 +53,10 @@ const maincommentS = maincommentAppStore()
 import articleAppStore from "@/stores/admin/article";
 const articleS = articleAppStore()
 import notificationAppStore from "@/stores/admin/notification";
-import { getUserid } from '@/utils/auth';
+import { getUserid, getToken } from '@/utils/auth';
 const notificationS = notificationAppStore()
 
-import { islogin} from '@/utils/userislogin';
+import { islogin } from '@/utils/userislogin';
 
 const props = defineProps({
     articleId: {
@@ -74,6 +78,41 @@ const props = defineProps({
     }
 });
 
+const fromValue = {
+    from: 'comment',
+    Authorization: getToken()
+}
+
+const uploadAction = "http://localhost:16003/dev-collection/dfs/dfs/upload"
+
+const handleAvatarSuccess = (response, uploadFile) => {
+    if(response?.data){
+        let image =response.data.url
+        imageUrl.value = image
+        console.log("imageUrl:" + imageUrl.value);
+        ElMessage.success('已添加')
+    }else {
+        // console.error("No file uploaded.");
+        ElMessage.error('文件上传失败:'+response.msg)
+
+    }
+}
+
+const beforeAvatarUpload = (file) => {
+    const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg'
+    const isLt5M = file.size / 1024 / 1024 < 5
+
+    if (!isJPG) {
+        ElMessage.error('上传头像图片只能是 JPG 或 PNG 格式!')
+    }
+    if (!isLt5M) {
+        ElMessage.error('上传头像图片大小不能超过 5MB!')
+    }
+    return isJPG && isLt5M
+}
+
+
+
 onMounted(() => {
     if (props.replyauthor?.username) {
         inputplaceholder.value = '回复： ' + props.replyauthor.username
@@ -91,9 +130,7 @@ const dialogVisible = ref(false)
 const isHovered = ref(false)
 const isFocused = ref(false)
 
-const handleClick = () => {
-    fileInput.value.click()
-}
+
 
 const sendmessage = () => {
     let timeoutId;
@@ -102,7 +139,7 @@ const sendmessage = () => {
     }
 
     timeoutId = setTimeout(async () => {
-        
+
         const articleId = props.articleId
         commentS.commentReDto.entryId = articleId
 
@@ -230,6 +267,8 @@ const handleFileChange = (event) => {
     reader.readAsDataURL(file)
     reader.onload = () => {
         imageUrl.value = reader.result
+        console.log("imageUrl:" + imageUrl.value);
+
         ElMessage.success('已添加')
     }
 }

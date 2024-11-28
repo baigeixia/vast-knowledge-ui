@@ -16,7 +16,8 @@
                         { required: true, message: '您的生日时间' },
                     ]">
                         <el-date-picker style="width: 100%;" :clearable="false" v-model="form.birthday" type="date"
-                            placeholder="请选择时间"          :disabled-date="disabledDate" format="YYYY-MM-DD" value-format="YYYY-MM-DD" />
+                            placeholder="请选择时间" :disabled-date="disabledDate" format="YYYY-MM-DD"
+                            value-format="YYYY-MM-DD" />
                     </el-form-item>
                     <!-- <el-form-item label="职业方向" prop="occupation" :rules="[
                         { required: true, message: '职业方向' },
@@ -72,14 +73,12 @@
             </div>
             <div class="avatar-input">
                 <div class="avatar-upload">
-
-                    <el-upload class="avatar-uploader" :action="uploadAction" :headers="{ 'from': fromValue }"  :show-file-list="false" 
-                        :on-success="handleAvatarSuccess" 
-                        :before-upload="beforeAvatarUpload">
+                    <el-upload class="avatar-uploader" :action="uploadAction" :headers="fromValue" :show-file-list="false"
+                        :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
                         <!-- <div :style="{ backgroundImage: `url(${avatarUrl})` }" class="avatar-background"></div> -->
                         <!-- <img class="avatar-background" :src="avatarUrl" alt=""> -->
-                        <img   class="avatar-background"  :src="form.image" alt="">
-                        <div   class="avatar-placeholder">
+                        <img class="avatar-background" :src="form.image" alt="">
+                        <div class="avatar-placeholder">
                             <el-icon class="avatar-uploader-icon avatar-icon">
                                 <Plus />
                             </el-icon>
@@ -97,17 +96,22 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted ,toRaw} from "vue"
+import { ref, reactive, onMounted, toRaw } from "vue"
 import { ElMessage } from 'element-plus'
-import {formatDate} from '@/utils/formDate'
+import { formatDate } from '@/utils/formDate'
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 
-import { removeUserInfo } from '@/utils/auth'
+import { getUserInfo, setUserInfo, getToken } from '@/utils/auth'
 
 //头像容器
-const fromValue="avatar"
-const uploadAction="http://localhost:19011/dfs/upload"
+const fromValue = {
+    from: 'avatar',
+    Authorization: getToken()
+}
+
+// const uploadAction="http://localhost:19011/dfs/upload"
+const uploadAction = "http://localhost:16003/dev-collection/dfs/dfs/upload"
 
 
 const pageTitle = ref('个人设置');
@@ -132,16 +136,16 @@ const upFrom = () => {
         introduction,
     } = userinfoAppStores.userLocalinfo
 
-    form.id=id
-    form.name=name
-    form.image=image
-    form.position=position
-    form.company=company
-    form.sex=sex
-    form.occupation=occupation
-    form.birthday=formatDate(birthday)
+    form.id = id
+    form.name = name
+    form.image = image
+    form.position = position
+    form.company = company
+    form.sex = sex
+    form.occupation = occupation
+    form.birthday = formatDate(birthday)
     // console.log(form.birthday);
-    form.introduction=introduction
+    form.introduction = introduction
 
     // Object.assign(form, userinfoAppStores.userLocalinfo);
 }
@@ -163,13 +167,31 @@ const disabledDate = (time) => {
     return time.getTime() > Date.now()
 }
 
-const handleAvatarSuccess = (response,uploadFile) => {
-    if (uploadFile.raw) {
-        form.image=URL.createObjectURL(uploadFile.raw);
-        // avatarUrl.value = URL.createObjectURL(uploadFile.raw);
-  } else {
-    console.error("No file uploaded.");
-  }
+const handleAvatarSuccess = (response, uploadFile) => {
+    if(response?.data){
+        let image =response.data.url
+        form.image = image;
+        const info = getUserInfo()
+        info.image = image
+        setUserInfo(info)
+
+    }else {
+        console.error("No file uploaded.");
+    }
+
+
+    // if (uploadFile.raw) {
+    //     let image = URL.createObjectURL(uploadFile.raw);
+    //     form.image = image;
+    //     const info = getUserInfo()
+    //     info.image = image
+    //     setUserInfo(info)
+
+    //     userinfoAppStores.userLocalinfo = info
+    //     // avatarUrl.value = URL.createObjectURL(uploadFile.raw);
+    // } else {
+    //     console.error("No file uploaded.");
+    // }
 }
 
 
@@ -217,7 +239,7 @@ const onSubmit = async (formEl) => {
     if (!formEl) return
     formEl.validate(async (valid) => {
         if (valid) {
-            console.log('form',toRaw(form));
+            console.log('form', toRaw(form));
             await userinfoAppStores.upuserInfo(toRaw(form))
             ElMessage.success('修改完成')
             await userinfoAppStores.getusergetLocalInfo()
@@ -286,7 +308,7 @@ const options = ref([
             overflow: hidden;
             cursor: pointer;
             border: 1px dashed #d9d9d9;
-           
+
 
             :deep(.el-upload) {
                 object-fit: cover;

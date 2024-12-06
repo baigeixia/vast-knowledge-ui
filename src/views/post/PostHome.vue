@@ -88,7 +88,8 @@
                                 </div>
                             </div>
                         </div>
-                        <p class="context-box" v-html="replaceImgWithTag(contentS.content.content)" ref="mainTextRef"></p>
+                        <!-- <p class="context-box" v-html="replaceImgWithTag(contentS.content.content)" ref="mainTextRef"></p> -->
+                        <p class="context-box" v-html="contentS.content.content" ref="mainTextRef"></p>
                     </el-skeleton>
                 </el-main>
                 <el-footer class="comment-end">
@@ -496,6 +497,8 @@ onMounted(async () => {
 
         });
         codeLanguage()
+        replaceImg()
+
 
         observer.observe(mainTextRef.value); // 观察文章元素
         window.addEventListener('mousemove', handleActivity);
@@ -526,6 +529,22 @@ onMounted(async () => {
         centermainloading.value = false
     }
 })
+
+const replaceImg =()=>{
+    const images = document.querySelectorAll('img');
+    images.forEach((img) => {
+  // 添加 class
+  img.classList.add('comment-img');
+  
+  // 为每个图片添加点击事件
+  img.onclick = function() {
+    const src = img.src; // 获取图片的 src
+    console.log(src);
+
+    previewImg(src); // 调用 previewImg 函数
+  };
+});
+}
 
 let isScrolling;
 
@@ -693,12 +712,14 @@ window.previewImg = (url) => {
 
 
 const replaceImgWithTag = (str) => {
-    if (str) {
-        return str.replace(/<img\s+src="([^"]+)"[^>]*>/g, (match, src) => {
-            return `<img class="comment-img" onclick="previewImg('${src}')" src=${src}>`;
-        });
-    }
+    // if (str) {
+    //     return str.replace(/<img\s+src="([^"]+)"[^>]*>/g, (match, src) => {
+    //         console.log('match'+match);
+    //         return `<img class="comment-img" onclick="previewImg('${src}')" src=${src}>`;
+    //     });
+    // }
     // const reg = /^(https?|ftp):\/\/([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*$/
+
 }
 
 </script>

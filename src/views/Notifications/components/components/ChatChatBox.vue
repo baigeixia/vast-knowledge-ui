@@ -59,8 +59,8 @@
     <div class="inputBox">
       <div class="toolBar">
         <div class="emoji-container">
-          <el-popover width="280px" popper-style="padding: 0; border-radius: 10px;" :show-arrow='false' placement="bottom"
-            trigger="click">
+          <el-popover width="280px" popper-style="padding: 0; border-radius: 10px;" :show-arrow='false'
+            placement="bottom" trigger="click">
             <template #reference>
               <div class="emoji-box">
                 <i class="bi bi-emoji-laughing"></i>
@@ -68,11 +68,7 @@
             </template>
             <EmojiFileInput ref="EmojiFileInputRef" class="emoji-input" @emoji-click="commentinputfocus" />
           </el-popover>
-          <!-- <div class="emoji-box" @click="handleClick">
-            <el-tooltip content="上传图片最大 10mb" placement="bottom">
-              <i class="bi bi-card-image upload-icon"></i>
-            </el-tooltip>
-          </div> -->
+      
           <el-upload ref="fileInput" :action="uploadAction" :headers="fromValue" :show-file-list="false"
             :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
             <div class="emoji-box">
@@ -87,6 +83,11 @@
       <div class="inputBox-input">
         <el-input ref="commentinputRef" v-model="commentinput" :autosize="{ minRows: 4, maxRows: 5 }" type="textarea"
           placeholder="发送消息 . . ." @keyup.enter.ctrl.prevent="sendmessage" />
+
+          <div v-if="imageUrl" class="small-preview-box">
+              <img :src="imageUrl" alt="预览图片" class="small-preview-image" @click="showLargePreview">
+              <i class="remove-icon bi bi-x-circle" @click="removeImage"></i>
+            </div>
       </div>
       <div class="inputBox-footer">
         <span class="footer-hint">按Enter换行 </span>
@@ -97,6 +98,9 @@
   <div v-else class="ChatBox-emptyImage">
     知乎
   </div>
+  <el-dialog v-model:visible="dialogVisible" width="50%">
+            <img width="100%" :src="dialogImageUrl" alt="预览图片">
+   </el-dialog>
 </template>
 
 <script setup>
@@ -164,34 +168,34 @@ watch(() => notificationS.upMsgdata, (newValue) => {
 })
 
 const fromValue = {
-    from: 'comment',
-    Authorization: getToken()
+  from: 'comment',
+  Authorization: getToken()
 }
 
+const imageUrl = ref('')
 const uploadAction = "http://localhost:16003/dev-collection/dfs/dfs/upload"
 
 const handleAvatarSuccess = (response, uploadFile) => {
-    if(response?.data){
-        let image =response.data.url
-        imageUrl.value = image
-        console.log("imageUrl:" + imageUrl.value);
-        ElMessage.success('已添加')
-    }else {
-        console.error("No file uploaded.");
-    }
+  if (response?.data) {
+    let image = response.data.url
+    imageUrl.value = image
+    ElMessage.success('已添加')
+  } else {
+    console.error("No file uploaded.");
+  }
 }
 
 const beforeAvatarUpload = (file) => {
-    const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg'
-    const isLt5M = file.size / 1024 / 1024 < 5
+  const isJPG = file.type === 'image/jpeg' || file.type === 'image/png' || file.type === 'image/jpg'
+  const isLt5M = file.size / 1024 / 1024 < 5
 
-    if (!isJPG) {
-        ElMessage.error('上传头像图片只能是 JPG 或 PNG 格式!')
-    }
-    if (!isLt5M) {
-        ElMessage.error('上传头像图片大小不能超过 5MB!')
-    }
-    return isJPG && isLt5M
+  if (!isJPG) {
+    ElMessage.error('上传头像图片只能是 JPG 或 PNG 格式!')
+  }
+  if (!isLt5M) {
+    ElMessage.error('上传头像图片大小不能超过 5MB!')
+  }
+  return isJPG && isLt5M
 }
 
 
@@ -309,6 +313,17 @@ const sanitizeString = (str) => {
 
   // return escapedString;
   return sanitizedString;
+}
+
+const dialogImageUrl = ref('')
+const dialogVisible = ref(false)
+const showLargePreview = () => {
+    dialogImageUrl.value = imageUrl.value
+    dialogVisible.value = true
+}
+const removeImage = () => {
+    imageUrl.value = ''
+    ElMessage.info('已移除')
 }
 
 const commentinputfocus = (emoji) => {
@@ -484,6 +499,42 @@ const statusopendel = (messageid) => {
         }
 
       }
+    }
+    .inputBox-input{
+    
+    .small-preview-box {
+        display: block;
+        align-items: center;
+        // margin: 10px 50px;
+        margin-top: 10px;
+        position: relative;
+        width: 66px;
+        height: 66px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        margin-left: 10px;
+    }
+
+    .small-preview-image {
+        width: 100%;
+        height: 100%;
+    }
+    .remove-icon{
+      position: absolute;
+      top: 0;
+      right: 0;
+      color: #fff;
+    }
+
+    .small-preview-box:hover .remove-icon {
+        display: block;
+    }
+
+    .small-preview-box:hover  .remove-icon {
+    color: #1e80ff;
+    cursor: pointer;
+
+}
     }
 
     .inputBox-footer {

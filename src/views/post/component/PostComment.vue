@@ -1,7 +1,7 @@
 <template>
     <div class="auth-card" :class="{ 'auth-card-hovered': isHovered, 'auth-card-focused': (isFocused || commentinput) }"
         @mouseover="isHovered = true" @mouseleave="isHovered = false">
-        <el-input ref="commentinputRef" :autosize="{ minRows: 2, maxRows: 10 }" show-word-limi maxlength="1000"
+        <el-input ref="commentinputRef" :autosize="{ minRows: 2, maxRows: 10 }"  maxlength="500"
             type="textarea" v-model="commentinput" :placeholder="inputplaceholder" clearable @focus="isFocused = true"
             @blur="isFocused = false" />
         <div v-if="imageUrl" class="small-preview-box">
@@ -32,7 +32,7 @@
                 <!-- <input type="file" ref="fileInput" @change="handleFileChange" accept="image/*" style="display: none;"> -->
             </div>
             <div class="text-count-wrapper">
-                <span>{{ commentinput.length }}/1000</span>
+                <span>{{ commentinput.length }}/500</span>
                 <el-button :disabled="!commentinput.trim().length >= 1 && !imageUrl"  @click="sendmessage">发送</el-button>
             </div>
         </div>
@@ -467,7 +467,6 @@ const showLargePreview = () => {
 
 .small-preview-box:hover .remove-icon {
     color: #1e80ff;
-    ;
 }
 </style>
   

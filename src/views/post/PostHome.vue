@@ -88,10 +88,10 @@
                             </div>
                         </div>
                         <!-- <p class="context-box" v-html="replaceImgWithTag(contentS.content.content)" ref="mainTextRef"></p> -->
-                        <p class="context-box" v-html="contentS.content.content" ref="mainTextRef"></p>
+                        <div class="context-box" v-html="contentS.content.content" ref="mainTextRef"></div>
                     </el-skeleton>
+                 
                 </el-main>
-                {{ commentS.articleCollect }}
                 <el-footer class="comment-end">
                     <div class="title">评论<span style="margin-left: 5px;" v-if="articleS.articleDto.comment > 0">
                             {{ articleS.articleDto.comment }}</span> </div>
@@ -265,9 +265,9 @@
                 </div>
             </div>
         </el-drawer>
-         <!-- <el-image-viewer v-if="showImageViewer" :preview-teleported="false" :url-list="[imgPreviewUrl]"
-            @close="showImageViewerclose" hide-on-click-modal="true">
-        </el-image-viewer> -->
+         <el-image-viewer v-if="showImageViewer"  :url-list="[imgPreviewUrl]"
+            @close="showImageViewerclose" :hide-on-click-modal="true">
+        </el-image-viewer>
     </el-container>
 
    
@@ -303,6 +303,47 @@ const notificationS = notificationAppStore()
 import { islogin } from '@/utils/userislogin';
 import useUserStore from "@/stores/admin/user";
 const userS = useUserStore()
+
+
+let handletimer = null;
+// 使用 Intersection Observer 监测文章是否在视口内
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        isReading.value = entry.isIntersecting; // 当文章在视口内时，更新阅读状态
+    });
+});
+
+onBeforeUnmount(() => {
+    if (handletimer) {
+        clearInterval(handletimer);
+    }
+    stopTimer();
+    if (observer) {
+  observer.disconnect();// 断开观察
+}
+    window.removeEventListener('mousemove', handleActivity);
+    window.removeEventListener('scroll', handleActivity);
+    window.removeEventListener('beforeunload', handleBeforeUnload);
+})
+
+const addImageClickEvents=()=>{
+    const images = mainTextRef.value.querySelectorAll('img');
+    images.forEach((img) => {
+      img.addEventListener('click', handleImageClick);
+      img.classList.add('comment-img');
+  });
+}
+// const imageOp=ref('')
+// const imageOpif=ref(false)
+const handleImageClick=(event)=>{
+    const imgSrc = event.target.src;
+    console.log(imgSrc);
+    if(imgSrc){
+        document.body.style.overflow = 'hidden';
+        imgPreviewUrl.value=imgSrc
+        showImageViewer.value=true
+    }
+}
 
 
 const articlelike = (id, authorId, authorName, type) => {
@@ -343,17 +384,7 @@ const articlelike = (id, authorId, authorName, type) => {
 */
 const mainTextRef = ref(null)
 const loadDuration = ref(0)
-let handletimer = null;
-onBeforeUnmount(() => {
-    if (handletimer) {
-        clearInterval(handletimer);
-    }
-    stopTimer();
-    observer.disconnect(); // 断开观察
-    window.removeEventListener('mousemove', handleActivity);
-    window.removeEventListener('scroll', handleActivity);
-    window.removeEventListener('beforeunload ', handleBeforeUnload);
-})
+
 const handleBeforeUnload = (event) => {
     //文章id
     let postId = props.postId
@@ -463,16 +494,12 @@ const handleActivity = () => {
     }, 2000); // 2秒无活动后判断为未在阅读
 };
 
-// 使用 Intersection Observer 监测文章是否在视口内
-const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-        isReading.value = entry.isIntersecting; // 当文章在视口内时，更新阅读状态
-    });
-});
+
 
 
 
 onMounted(async () => {
+
     //加载时间
     let startTime, endTime;
     let notificationId = props.notificationId
@@ -523,9 +550,11 @@ onMounted(async () => {
 
         });
         codeLanguage()
-        replaceImg()
+        // replaceImg()
+        addImageClickEvents();
 
-
+        handletimer = setInterval(handleBeforeUnload, 10000); // 每5秒调用一次
+        
         observer.observe(mainTextRef.value); // 观察文章元素
         window.addEventListener('mousemove', handleActivity);
         window.addEventListener('scroll', handleActivity);
@@ -555,7 +584,6 @@ onMounted(async () => {
         centermainloading.value = false
     }
 
-    handletimer = setInterval(handleBeforeUnload, 10000); // 每5秒调用一次
 })
 
 const replaceImg = () => {
@@ -569,7 +597,7 @@ const replaceImg = () => {
             const src = img.src; // 获取图片的 src
             console.log(src);
 
-            previewImg(src); // 调用 previewImg 函数
+            // previewImg(src); // 调用 previewImg 函数
         };
     });
 }
@@ -700,20 +728,19 @@ const codeLanguage = () => {
 
 const { y } = useScroll(window)
 
-// const showImageViewer = ref(false)
+const showImageViewer = ref(false)
 const ismsg = ref(false)
 const centermainloading = ref(false)
 // const isfollow = ref(true)
 
 
-
 const drawer = ref(false)
 const imgPreviewUrl = ref('');
 
-// const showImageViewerclose = () => {
-//     document.body.style.overflow = 'auto';
-//     showImageViewer.value = false
-// }
+const showImageViewerclose = () => {
+    document.body.style.overflow = 'auto';
+    showImageViewer.value = false
+}
 
 const collectOp = () => {
     if (userS.isloginReLongin()) {
@@ -756,6 +783,8 @@ const replaceImgWithTag = (str) => {
     // const reg = /^(https?|ftp):\/\/([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*$/
 
 }
+
+
 
 </script>
 

@@ -42,13 +42,10 @@
                 <div class="comment-img-box" v-if="comment.image">
                     <el-image class="comment-img" :src="comment.image" :zoom-rate="1.2" :max-scale="7" :min-scale="0.2"
                         :preview-src-list="[comment.image]" fit="cover"  :hide-on-click-modal="true" lazy />
-                    <!-- <Avatar class="comment-img" :Image="comment.image" alt=" " @click="showImageViewer=true"></Avatar> -->
-                    <!-- <img class="comment-img" :src="comment.image" @click="showImageViewer = true">
-                    <el-image-viewer v-if="showImageViewer" :preview-teleported="false" :url-list="[comment.image]"
-                        @close="showImageViewerclose" hide-on-click-modal="true">
-                    </el-image-viewer> -->
                 </div>
+                
             </div>
+             
             <div class="comment-meta">
                 <span>{{ $formatTime(comment.time) }}</span>
                 <span v-if="comment.author.id == userinfoAppStores.userid" class="nolike">
@@ -217,8 +214,7 @@ const expandRef = ref(null)
 
 onMounted(() => {
     contentRefOP()
-}
-)
+})
 
 const contentRefOP = () => {
     if (contentRef.value.scrollHeight > contentRef.value.clientHeight) {

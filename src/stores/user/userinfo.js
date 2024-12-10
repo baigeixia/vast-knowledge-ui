@@ -20,7 +20,7 @@ const userinfoAppStore = defineStore(
         if(userLocalinfo.value  && Object.keys(userLocalinfo.value).length > 0) return userLocalinfo.value
         resp = await usergetInfo()
       }else{
-        if(userinfoHome.value===id ) return userinfoHome.value
+        if(userinfoHome.value === id ) return userinfoHome.value
         resp = await usergetInfo(id)
         userinfoHome.value= resp.data
       }

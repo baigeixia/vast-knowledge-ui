@@ -178,11 +178,13 @@ onMounted(async () => {
 })
 
 watch(() => props.userid, async (newValue) => {
+    console.log(newValue);
     router.replace(`/user/${newValue}`);
-    await userinfoAppStores.getusergetInfo(newValue)
-    // userinfoHome.value = userinfoAppStores.userinfo
+    const data =await userinfoAppStores.getusergetInfo(newValue)
+    userinfoHome.value = data
+    // userinfoHome.value = userinfoAppStores.userLocalinfo
     nextTick(() => {
-        userinfoHome.value = userinfoAppStores.userinfo
+        // userinfoHome.value = userinfoAppStores.userLocalinfo
     })
 })
 

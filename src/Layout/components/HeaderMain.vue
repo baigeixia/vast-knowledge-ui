@@ -126,7 +126,7 @@
               <el-dropdown-item @click="item_TO_WE(3)"><i
                   class="bi bi-layout-text-window-reverse"></i>内容列表</el-dropdown-item>
               <el-dropdown-item @click="item_TO_WE(4)"><i class="bi bi-palette"></i>素材管理</el-dropdown-item>
-              <el-dropdown-item @click="item_TO_WE(5)"><i class="bi bi-person-hearts"></i>粉丝管理</el-dropdown-item>
+              <!-- <el-dropdown-item @click="item_TO_WE(5)"><i class="bi bi-person-hearts"></i>粉丝管理</el-dropdown-item> -->
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -138,6 +138,7 @@
               </el-icon>
               <div>头像</div> -->
               <Avatar class="avatar-img" :Image="userinfoAppStores.userLocalinfo.image" alt=" "></Avatar>
+              <!-- <img class="avatar-img" :src="userinfoAppStores.userLocalinfo.image"> -->
             </div>
           </div>
           <template #dropdown>
@@ -169,8 +170,6 @@
             <span>注册</span>
           </div> -->
         </div>
-
-
       </div>
     </div>
   </div>

@@ -1,7 +1,7 @@
 <template>
   <div class="user-activity">
     <div class="List-header">
-      <h4>{{ (userid == getUserid() ? '我' : (userinfoAppStores.userinfo.sex == 0 ? '他' : '她'))
+      <h4>{{ (userid == getUserid() ? '我' : (userinfoAppStores.userLocalinfo.sex == 0 ? '他' : '她'))
         + '的' + pageTitle }}</h4>
       <div class="tge">
         <span :class="{ 'is-active': type == 1 }" @click="tgeType(1)">最新</span>
@@ -31,7 +31,7 @@
           </div>
         </div>
         <div v-else class="user-activity-nodata">
-          
+
           <span v-if="!loading">还没有发布过文章</span>
         </div>
         <div v-if="loadingdisabled && posts.records.length > 0" class="user-activity-nodata">
@@ -68,13 +68,13 @@ const props = defineProps({
   }
 })
 
-const deleteArticle=async(id)=>{
-    await articleStore.deleteOne(id)
-    posts.value.records = posts.value.records.filter(post => post.id !== id);
-    ElMessage({
-        message: '删除成功',
-        type: 'success',
-    })
+const deleteArticle = async (id) => {
+  await articleStore.deleteOne(id)
+  posts.value.records = posts.value.records.filter(post => post.id !== id);
+  ElMessage({
+    message: '删除成功',
+    type: 'success',
+  })
 
 }
 const posts = ref(
@@ -123,8 +123,9 @@ onMounted(async () => {
   try {
     loading.value = true
     await getPosts();
+    let data = await getUserinfo()
     nextTick(() =>
-      document.title = userinfoAppStores?.userinfo?.name + pageTitle
+      document.title = data.name + pageTitle
     )
     loading.value = false
   } catch {
@@ -135,6 +136,12 @@ onMounted(async () => {
 
 
 })
+
+const getUserinfo = async () => {
+  const data = await userinfoAppStores.getusergetInfo(props.userid)
+  return data
+}
+
 
 async function getPosts() {
   try {

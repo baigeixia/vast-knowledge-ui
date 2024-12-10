@@ -1,7 +1,7 @@
 <template>
   <div class="user-activity">
     <div class="List-header">
-      <h4>{{ (userid== getUserid() ? '我' : (userinfoAppStores.userinfo.sex == 0 ? '他' : '她'))
+      <h4>{{ (userid == getUserid() ? '我' : (userinfoAppStores.userLocalinfo.sex == 0 ? '他' : '她'))
         + '的' + pageTitle }}</h4>
     </div>
     <el-skeleton animated :loading="loading" style="padding-top: 32px">
@@ -28,7 +28,7 @@
         <div v-else class="user-activity-nodata">
           <span v-if="!loading">还没有任何收藏</span>
         </div>
-        <div v-if="loadingdisabled &&collects.length > 0 " class="user-activity-nodata">
+        <div v-if="loadingdisabled && collects.length > 0" class="user-activity-nodata">
           已经到底部了
         </div>
         <br>
@@ -78,8 +78,9 @@ onMounted(async () => {
   try {
     loading.value = true
     await getcollects();
+    let data = await getUserinfo()
     nextTick(() =>
-      document.title = userinfoAppStores?.userinfo?.name + pageTitle
+      document.title = data.name + pageTitle
     )
     loading.value = false
   } catch {
@@ -90,6 +91,11 @@ onMounted(async () => {
 
 
 })
+
+const getUserinfo = async () => {
+  const data = await userinfoAppStores.getusergetInfo(props.userid)
+  return data
+}
 
 async function getcollects() {
   try {

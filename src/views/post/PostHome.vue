@@ -19,7 +19,7 @@
                     </el-badge>
                 </div>
                 <div v-else class="panel-btn" :class="{ 'active': isActive }"
-                    @click="articlelike(postId, articleS.articleDto.authorId, articleS.articleDto.authorName, 0)">
+                    @click="articlelike(postId, articleS.articleDto.authorId, articleS.articleDto.authorName, isActive ? 0 : 1)">
                     <el-badge :color="isActive ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
                         :value="Number(articleS.articleDto.likes)" :offset="[10, 3]">
                         <i class="bi bi-heart-fill"></i>
@@ -36,16 +36,15 @@
             </el-tooltip>
             <el-tooltip content="收藏" placement="left" effect="light">
                 <div class="panel-btn user-active" v-if="articleS.articleDto.authorId == userinfoAppStores.userid">
-                    <el-badge :color="(commentS.articleCollect) ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
+                    <el-badge :color="(isfollow) ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
                         :value="Number(articleS.articleDto.collection)" :offset="[10, 3]">
                         <i class="bi bi-star-fill"></i>
                     </el-badge>
                 </div>
                 <div v-else class="panel-btn" @click="collectOp()">
-                    <el-badge :color="(commentS.articleCollect) ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
+                    <el-badge :color="(isfollow) ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
                         :value="Number(articleS.articleDto.collection)" :offset="[10, 3]">
-                        <i class="bi bi-star-fill"
-                            :style="{ color: (commentS.articleCollect) ? '#1e80ff' : '#b2b2b2' }"></i>
+                        <i class="bi bi-star-fill" :style="{ color: (isfollow) ? '#1e80ff' : '#b2b2b2' }"></i>
                     </el-badge>
                 </div>
             </el-tooltip>
@@ -92,6 +91,7 @@
                         <p class="context-box" v-html="contentS.content.content" ref="mainTextRef"></p>
                     </el-skeleton>
                 </el-main>
+                {{ commentS.articleCollect }}
                 <el-footer class="comment-end">
                     <div class="title">评论<span style="margin-left: 5px;" v-if="articleS.articleDto.comment > 0">
                             {{ articleS.articleDto.comment }}</span> </div>
@@ -100,7 +100,7 @@
                             <div class="avatar-box">
                                 <div class="avatar">
                                     <RouterLink :to="`/user/${articleS.articleDto.authorId}`">
-                                        <img class="avatar-img" :src="authorInfo.image">
+                                        <img class="avatar-img" :src="userinfoAppStores.userLocalinfo.image">
                                     </RouterLink>
                                 </div>
                             </div>
@@ -265,13 +265,12 @@
                 </div>
             </div>
         </el-drawer>
-
-
+         <!-- <el-image-viewer v-if="showImageViewer" :preview-teleported="false" :url-list="[imgPreviewUrl]"
+            @close="showImageViewerclose" hide-on-click-modal="true">
+        </el-image-viewer> -->
     </el-container>
 
-    <el-image-viewer v-if="showImageViewer" :preview-teleported="false" :url-list="[imgPreviewUrl]"
-        @close="showImageViewerclose" hide-on-click-modal="true">
-    </el-image-viewer>
+   
 </template>
 <script setup>
 import { ref, onMounted, computed, onBeforeUnmount, onUnmounted, watch, reactive, nextTick, watchEffect, isProxy, isReactive, isReadonly } from 'vue';
@@ -305,14 +304,33 @@ import { islogin } from '@/utils/userislogin';
 import useUserStore from "@/stores/admin/user";
 const userS = useUserStore()
 
-const articlelike = (id, authorId, authorName, type) => {
 
+const articlelike = (id, authorId, authorName, type) => {
     if (userS.isloginReLongin()) {
         notificationS.likeArticle(id, authorId, authorName, type)
-        // behaviourAppStoreS.postoperation.set(props.postId, Boolean(isnolikeArticle.value) ? 0 : 1)
-        behaviourAppStoreS.postoperation.set(props.postId, Boolean(isActive.value) ? 1 : 0)
-        isnolikeArticle.value ? commentS.articleLike-- : commentS.articleLike++
-        isnolikeArticle.value ? articleS.articleDto.likes-- : articleS.articleDto.likes++
+         // 根据 type 更新点赞状态
+         if (type === 1) {
+            isnolikeArticle.value = true; // 设置为已点赞
+            commentS.articleLike++;
+            articleS.articleDto.likes++;
+        } else if (type === 0) {
+            isnolikeArticle.value = false; // 设置为未点赞
+            commentS.articleLike--;
+            articleS.articleDto.likes--;
+        }
+
+        // 更新本地存储的操作状态
+        behaviourAppStoreS.postoperation.set(props.postId, type);
+        // const newLikeState = isnolikeArticle.value ? 0 : 1;
+        // behaviourAppStoreS.postoperation.set(props.postId, newLikeState);
+        // // 更新文章点赞状态
+        // if (isnolikeArticle.value) {
+        //     commentS.articleLike--;
+        //     articleS.articleDto.likes--;
+        // } else {
+        //     commentS.articleLike++;
+        //     articleS.articleDto.likes++;
+        // }
     }
 }
 
@@ -325,8 +343,11 @@ const articlelike = (id, authorId, authorName, type) => {
 */
 const mainTextRef = ref(null)
 const loadDuration = ref(0)
-
+let handletimer = null;
 onBeforeUnmount(() => {
+    if (handletimer) {
+        clearInterval(handletimer);
+    }
     stopTimer();
     observer.disconnect(); // 断开观察
     window.removeEventListener('mousemove', handleActivity);
@@ -343,14 +364,16 @@ const handleBeforeUnload = (event) => {
     //加载时间
     let loadTime = (loadDuration.value / 1000).toFixed(2);
     //用户id
-    let userid = getUserid()
+    // let userid = getUserid()
+    let userid = authorInfo.value.id
     console.log(userid, postId, readDuration, percentage, loadTime);
     //阅读计算    
     notificationS.userRead(userid, postId, readDuration, percentage, loadTime);
 
-    event.preventDefault();
-    event.returnValue = "";
+    // event.preventDefault();
+    // event.returnValue = "";
 }
+
 
 
 const percentagecount = () => {
@@ -413,6 +436,7 @@ const userRead = ref({})
 const followedButton = (id, name) => {
     notificationS.fanMsg(id, name)
     isfollow.value = !isfollow.value
+
 }
 
 let timer = null; // 定时器引用
@@ -476,6 +500,8 @@ onMounted(async () => {
         await commentS.commentListGet()
         authorInfo.value = await userinfoAppStores.getusergetInfo(articleS.articleDto.authorId)
 
+        console.log(articleS.articleDto.authorId);
+        console.log(authorInfo.value);
         let id = authorInfo.value.id
         isLoadUser.value = getUserid() !== id
 
@@ -528,22 +554,24 @@ onMounted(async () => {
     } finally {
         centermainloading.value = false
     }
+
+    handletimer = setInterval(handleBeforeUnload, 10000); // 每5秒调用一次
 })
 
-const replaceImg =()=>{
+const replaceImg = () => {
     const images = document.querySelectorAll('img');
     images.forEach((img) => {
-  // 添加 class
-  img.classList.add('comment-img');
-  
-  // 为每个图片添加点击事件
-  img.onclick = function() {
-    const src = img.src; // 获取图片的 src
-    console.log(src);
+        // 添加 class
+        img.classList.add('comment-img');
 
-    previewImg(src); // 调用 previewImg 函数
-  };
-});
+        // 为每个图片添加点击事件
+        img.onclick = function () {
+            const src = img.src; // 获取图片的 src
+            console.log(src);
+
+            previewImg(src); // 调用 previewImg 函数
+        };
+    });
 }
 
 let isScrolling;
@@ -672,7 +700,7 @@ const codeLanguage = () => {
 
 const { y } = useScroll(window)
 
-const showImageViewer = ref(false)
+// const showImageViewer = ref(false)
 const ismsg = ref(false)
 const centermainloading = ref(false)
 // const isfollow = ref(true)
@@ -682,15 +710,22 @@ const centermainloading = ref(false)
 const drawer = ref(false)
 const imgPreviewUrl = ref('');
 
-const showImageViewerclose = () => {
-    document.body.style.overflow = 'auto';
-    showImageViewer.value = false
-}
+// const showImageViewerclose = () => {
+//     document.body.style.overflow = 'auto';
+//     showImageViewer.value = false
+// }
 
 const collectOp = () => {
     if (userS.isloginReLongin()) {
         notificationS.userToCollection(articleS.articleDto.authorId, articleS.articleDto.authorName, props.postId)
-        commentS.articleCollect = !commentS.articleCollect
+        // commentS.articleCollect = !commentS.articleCollect
+        isfollow.value = !isfollow.value
+        if (isfollow.value) {
+            console.log("11:" + articleS.articleDto.collection);
+            articleS.articleDto.collection++;  // 增加 1
+        } else {
+            articleS.articleDto.collection--;  // 减少 1
+        }
     }
 }
 
@@ -704,11 +739,11 @@ const report = () => {
 }
 
 
-window.previewImg = (url) => {
-    imgPreviewUrl.value = url
-    showImageViewer.value = true
-    document.body.style.overflow = 'hidden';
-}
+// window.previewImg = (url) => {
+//     imgPreviewUrl.value = url
+//     showImageViewer.value = true
+//     document.body.style.overflow = 'hidden';
+// }
 
 
 const replaceImgWithTag = (str) => {

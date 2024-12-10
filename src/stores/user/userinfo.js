@@ -9,19 +9,21 @@ const userinfoAppStore = defineStore(
   'userinfo', () => {
 
     const userid = ref(getUserid())
-    const userinfo = ref({})
-    const userLocalinfo = ref(getUserInfo())
+    const userLocalinfo = ref({})
+    const userinfoHome = ref({})
 
-    const getusergetInfo = async (userid) => {
-      if(userid == getUserid()){
-        let info = getUserInfo()
-        if(info){
-          userinfo.value = info
-          return info;
-        }
+    const getusergetInfo = async (id) => {
+      let resp=null;
+      let localid=getUserid()
+      if(id === localid){
+        console.log(userLocalinfo.value);
+        if(userLocalinfo.value  && Object.keys(userLocalinfo.value).length > 0) return userLocalinfo.value
+        resp = await usergetInfo()
+      }else{
+        if(userinfoHome.value===id ) return userinfoHome.value
+        resp = await usergetInfo(id)
+        userinfoHome.value= resp.data
       }
-      const resp = await usergetInfo(userid)
-      userinfo.value = resp.data
       return resp.data;
     }
 
@@ -31,32 +33,23 @@ const userinfoAppStore = defineStore(
     }
 
     const getusergetLocalInfo = async () => {
-      let info = getUserInfo()
-      
-      if(!info){
-        const resp = await usergetInfo()
-        if(resp.data){
-          userLocalinfo.value = resp.data
-          setUserid(resp.data.id)
-          userid.value = resp.data?.id
-          setUserInfo(resp.data)
-        }
-        return resp.data;
-      }else{
-        userLocalinfo.value = info
-        return info
+      const resp = await usergetInfo()
+      if(resp.data){
+        userLocalinfo.value = resp.data
+        setUserid(resp.data.id)
+        userid.value = resp.data?.id
       }
-    
+      return resp.data;
     }
 
     const upuserConfig = async (state, type) => {
-      removeUserInfo()
+      // removeUserInfo()
       await upuserConfigApi(state, type)
     }
 
     const upuserInfo = async (from) => {
       console.log('from', from);
-      removeUserInfo()
+      // removeUserInfo()
       await upuserInfoApi(from)
     }
 
@@ -69,15 +62,15 @@ const userinfoAppStore = defineStore(
       const resp = await userFollowingListApi(userId, page, size)
       return resp.data
     }
-
+      // userinfo,
     return {
       getusergetInfo,
       getusergetLocalInfo,
       upuserConfig,
       upuserInfo,
-      userinfo,
       userid,
       userLocalinfo,
+      userinfoHome,
       getuserfollowersList,
       getuserFollowingList,
       getInfoRelation,

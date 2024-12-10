@@ -1,7 +1,7 @@
 <template>
   <div class="UserPins">
     <div class="List-header">
-      <h4>{{ (userid == getUserid() ? '我' : (userinfoAppStores.userinfo.sex == 0 ? '他' : '她')) +'的动态' }}</h4>
+      <h4>{{ (userid == getUserid() ? '我' : (userinfoAppStores.userLocalinfo.sex == 0 ? '他' : '她')) + '的动态' }}</h4>
     </div>
     <el-skeleton animated :loading="loading" style="padding-top: 32px">
       <template #template>
@@ -27,10 +27,10 @@
         </div>
       </div>
       <div v-else class="user-activity-nodata">
-        
+
         <span v-if="!loading">还没有发布任何动态</span>
       </div>
-      <div v-if="loadingdisabled && dynamics.length > 0"  class="user-activity-nodata">
+      <div v-if="loadingdisabled && dynamics.length > 0" class="user-activity-nodata">
         已经到底部了
       </div>
       <el-skeleton animated :loading="reloading" style="padding-top: 32px">
@@ -47,7 +47,7 @@
   
 <script setup>
 import MaincontentItme from '@/views/home/components/MaincontentItme.vue'
-import { ref, onMounted, reactive, nextTick,watch } from 'vue';
+import { ref, onMounted, reactive, nextTick, watch } from 'vue';
 import behaviourAppStore from "@/stores/collection/behaviour"
 const behaviourAppStoreS = behaviourAppStore();
 import { getUserid } from '@/utils/auth'
@@ -68,19 +68,27 @@ const page = ref(1)
 const size = ref(5)
 const loadingdisabled = ref(false)
 const reloading = ref(false)
+const userinfo = ref({})
 const loading = ref(false)
 
-const pageTitle = '的动态';
+const pageTitle = '动态';
 
 watch(() => props.userid, async (newValue) => {
-  // router.go(0);
 
-  console.log('动态',newValue);
-  page.value=1
-  loadingdisabled.value=false
-  dynamics.value=[]
+  let data = await getUserinfo()
+  nextTick(() =>
+    document.title = data.name + pageTitle
+  )
+  page.value = 1
+  loadingdisabled.value = false
+  dynamics.value = []
   await getdynamics()
 })
+
+const getUserinfo = async () => {
+  const data = await userinfoAppStores.getusergetInfo(props.userid)
+  return data
+}
 
 onMounted(async () => {
   if (loading.value) {
@@ -89,8 +97,9 @@ onMounted(async () => {
   try {
     loading.value = true
     await getdynamics();
+    let data = await getUserinfo()
     nextTick(() =>
-      document.title = userinfoAppStores?.userinfo?.name + pageTitle
+      document.title = data.name + pageTitle
     )
     loading.value = false
   } catch {
@@ -109,7 +118,7 @@ async function getdynamics() {
     }
     reloading.value = true
     const data = await behaviourAppStoreS.getdynamics(props.userid, page.value, size.value);
-    console.log(data);
+    // console.log(data);
     if (data && data.length > 0) {
       dynamics.value = [...dynamics.value, ...data];
       page.value++;
@@ -145,16 +154,17 @@ const loadMore = async () => {
     }
   }
 
-  .user-activity-nodata{
+  .user-activity-nodata {
     display: flex;
-  align-items: center;
-  justify-content: center;
-  padding-top: 10px;
+    align-items: center;
+    justify-content: center;
+    padding-top: 10px;
 
-  span {
-    font-weight: 600;
+    span {
+      font-weight: 600;
+    }
   }
-  }
+
   .List-content {
     .List-itme {
       padding: 5px 20px;

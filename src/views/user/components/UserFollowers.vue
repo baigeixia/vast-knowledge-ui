@@ -17,7 +17,7 @@
                 <UserdialogTable :dialoguserlist="followersData" />
             </div>
             <div v-else class="user-activity-nodata">
-                
+
                 <span v-if="!loading">还没有关注</span>
             </div>
             <div v-if="loadingdisabled && followersData.length > 0" class="user-activity-nodata">
@@ -61,6 +61,7 @@ const loadingdisabled = ref(false)
 
 const reloading = ref(false);
 const loading = ref(false);
+const pageTitle = '粉丝';
 
 const followersData = ref([])
 
@@ -71,6 +72,12 @@ onMounted(async () => {
     try {
         loading.value = true
         await getData()
+
+        let data = await getUserinfo()
+        nextTick(() =>
+            document.title = data.name + pageTitle
+        )
+
         nextTick()
         loading.value = false
     } catch {
@@ -78,10 +85,12 @@ onMounted(async () => {
     } finally {
         loading.value = false
     }
-
-
 })
 
+const getUserinfo = async () => {
+  const data = await userinfoAppStores.getusergetInfo(props.userid)
+  return data
+}
 
 const getData = async () => {
     try {

@@ -105,6 +105,7 @@ import EmojiFileInput from '@/Layout/components/EmojiFileInput.vue';
 import { escapeHtml } from '@/utils/escapeHtml'
 import { safeHtml } from '@/utils/domPurifyConfig'
 import { formatMessageTime, getCurrentTime } from '@/utils/formDate'
+import { getToken, setToken, removeToken } from '@/utils/auth'
 
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()

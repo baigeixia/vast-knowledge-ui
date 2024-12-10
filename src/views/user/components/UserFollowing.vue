@@ -46,9 +46,14 @@ import { ref, onMounted ,nextTick} from 'vue';
 import Followingheader from './Followingheader.vue'
 import UserdialogTable from '@/components/UserdialogTable.vue'
 
-const pageTitle = ref('关注');
-onMounted(() => {
-    document.title = pageTitle.value;
+const pageTitle = '关注';
+onMounted(async () => {
+    let data = await getUserinfo()
+    nextTick(() =>
+      document.title = data.name + pageTitle
+    )
+
+    // document.title = pageTitle.value;
 });
 
 const props = defineProps({
@@ -58,7 +63,10 @@ const props = defineProps({
     }
 })
 
-
+const getUserinfo = async () => {
+  const data = await userinfoAppStores.getusergetInfo(props.userid)
+  return data
+}
 
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();

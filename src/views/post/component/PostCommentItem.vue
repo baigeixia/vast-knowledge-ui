@@ -41,7 +41,12 @@
                 </div>
                 <div class="comment-img-box" v-if="comment.image">
                     <el-image class="comment-img" :src="comment.image" :zoom-rate="1.2" :max-scale="7" :min-scale="0.2"
-                        :preview-src-list="[comment.image]" fit="cover" :hide-on-click-modal="true" lazy />
+                        :preview-src-list="[comment.image]" fit="cover"  :hide-on-click-modal="true" lazy />
+                    <!-- <Avatar class="comment-img" :Image="comment.image" alt=" " @click="showImageViewer=true"></Avatar> -->
+                    <!-- <img class="comment-img" :src="comment.image" @click="showImageViewer = true">
+                    <el-image-viewer v-if="showImageViewer" :preview-teleported="false" :url-list="[comment.image]"
+                        @close="showImageViewerclose" hide-on-click-modal="true">
+                    </el-image-viewer> -->
                 </div>
             </div>
             <div class="comment-meta">
@@ -138,11 +143,11 @@ const props = defineProps({
 
 const likeArticle = (articleid, authorid, username, type, commentid) => {
     if (userS.isloginReLongin()) {
-    notificationS.likeArticle(articleid, authorid, username, type, commentid)
-    commentS.commentLikes.set(Number(commentid), isnolikeArticle.value ? 0 : 1)
-    isnolikeArticle.value ? props.comment.likes-- : props.comment.likes++
-    console.log(props.comment.likes);
-}
+        notificationS.likeArticle(articleid, authorid, username, type, commentid)
+        commentS.commentLikes.set(Number(commentid), isnolikeArticle.value ? 0 : 1)
+        isnolikeArticle.value ? props.comment.likes-- : props.comment.likes++
+        console.log(props.comment.likes);
+    }
 
 }
 
@@ -198,7 +203,11 @@ const opChildComments = () => {
     }
     getCommentReList()
 }
-
+const showImageViewer = ref(false)
+const showImageViewerclose = () => {
+    document.body.style.overflow = 'auto';
+    showImageViewer.value = false
+}
 const opencommenttime = ref(0);
 
 const dialogFormVisible = ref(false);

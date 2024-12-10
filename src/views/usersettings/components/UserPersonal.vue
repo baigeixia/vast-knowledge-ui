@@ -167,13 +167,14 @@ const disabledDate = (time) => {
     return time.getTime() > Date.now()
 }
 
-const handleAvatarSuccess = (response, uploadFile) => {
+const handleAvatarSuccess =async (response, uploadFile) => {
     if(response?.data){
         let image =response.data.url
         form.image = image;
-        const info = getUserInfo()
-        info.image = image
-        setUserInfo(info)
+        await userinfoAppStores.getusergetLocalInfo()
+        // const info = getUserInfo()
+        // info.image = image
+        // setUserInfo(info)
 
     }else {
         console.error("No file uploaded.");
@@ -235,7 +236,7 @@ const showError = ref(false)
 const formRef = ref()
 
 const onSubmit = async (formEl) => {
-    removeUserInfo()
+    // removeUserInfo()
     if (!formEl) return
     formEl.validate(async (valid) => {
         if (valid) {

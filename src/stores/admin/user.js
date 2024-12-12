@@ -60,7 +60,6 @@ import { getUserid } from '@/utils/auth'
             const islogin= !!getUserid()
             if(!islogin){
                 isnotlogin.value = true
-                
             }
             return islogin
         };

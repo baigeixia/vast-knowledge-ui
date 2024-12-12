@@ -12,8 +12,6 @@ export const  usergetInfo =(userid)=>{
     })
 }
 
-
-
 export const  InfoRelationApi =(userid)=>{
     return systemRequest({
         url: `/user/info/InfoRelation`,

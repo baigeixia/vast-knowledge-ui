@@ -26,11 +26,12 @@
                                             </span>
                                         </template>
                                     </user-info-popover>
-                                    <div>&nbsp;{{ info.actors.verb }} &middot;&nbsp; </div>
+                                    <div class="start-article" @click="opcontentinfo(info.id, info.commentId)">&nbsp;{{ info.actors.verb }} &middot;&nbsp; </div>
                                     <time>{{ info.actors.replycontenttime }}</time>
                                 </div>
                                 <div class="item-extendText">
-                                    {{ info.actors.replyContent }}
+                                    <div class="text-message"> {{ info.actors.replyContent }}</div>
+                                    <el-image class="text-img" @click="handleImageClick" v-if="info.actors.image"  :src="info.actors.image"></el-image>
                                 </div>
                             </div>
                         </div>
@@ -149,6 +150,9 @@
             </div>
         </div>
     </el-dialog>
+    <el-image-viewer v-if="showImageViewer" :url-list="[imgPreviewUrl]" @close="showImageViewerclose"
+            :hide-on-click-modal="true">
+    </el-image-viewer>
 </template>
 
 <script setup>
@@ -163,6 +167,23 @@ const dialoguserlist = ref([])
 
 const opuserinfo = (id) => {
     console.log('id', id);
+}
+const showImageViewer = ref(false)
+const imgPreviewUrl = ref('');
+
+const showImageViewerclose = () => {
+    document.body.style.overflow = 'auto';
+    showImageViewer.value = false
+}
+
+const handleImageClick = (event) => {
+    const imgSrc = event.target.src;
+    console.log(imgSrc);
+    if (imgSrc) {
+        document.body.style.overflow = 'hidden';
+        imgPreviewUrl.value = imgSrc
+        showImageViewer.value = true
+    }
 }
 
 const opcontentinfo = (id, commentId) => {
@@ -358,6 +379,14 @@ const formattedTime = (time) => {
                             display: flex;
                             margin: 10px 0;
 
+                            .start-article{
+                                cursor: pointer;
+                            }
+
+                            .start-article:hover{
+                            color: #afb2b9;
+                            }
+
                             .username {
                                 cursor: pointer;
                                 color: #191b1f;
@@ -385,6 +414,12 @@ const formattedTime = (time) => {
                             margin: 4px 0 6px;
                             padding-left: 10px;
                             border-left: 3px solid #9196a1;
+                            .text-img{
+                                width: 100px;
+                                 height: 100px;
+                                 cursor: zoom-in;
+
+                            }
                         }
                     }
                 }

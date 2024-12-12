@@ -19,7 +19,7 @@
                     </el-badge>
                 </div>
                 <div v-else class="panel-btn" :class="{ 'active': isActive }"
-                    @click="articlelike(postId, articleS.articleDto.authorId, articleS.articleDto.authorName, isActive ? 0 : 1)">
+                    @click="articlelike(postId, articleS.articleDto.authorId, articleS.articleDto.authorName, 0)">
                     <el-badge :color="isActive ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
                         :value="Number(articleS.articleDto.likes)" :offset="[10, 3]">
                         <i class="bi bi-heart-fill"></i>
@@ -90,7 +90,7 @@
                         <!-- <p class="context-box" v-html="replaceImgWithTag(contentS.content.content)" ref="mainTextRef"></p> -->
                         <div class="context-box" v-html="contentS.content.content" ref="mainTextRef"></div>
                     </el-skeleton>
-                 
+
                 </el-main>
                 <el-footer class="comment-end">
                     <div class="title">评论<span style="margin-left: 5px;" v-if="articleS.articleDto.comment > 0">
@@ -265,12 +265,10 @@
                 </div>
             </div>
         </el-drawer>
-         <el-image-viewer v-if="showImageViewer"  :url-list="[imgPreviewUrl]"
-            @close="showImageViewerclose" :hide-on-click-modal="true">
+        <el-image-viewer v-if="showImageViewer" :url-list="[imgPreviewUrl]" @close="showImageViewerclose"
+            :hide-on-click-modal="true">
         </el-image-viewer>
     </el-container>
-
-   
 </template>
 <script setup>
 import { ref, onMounted, computed, onBeforeUnmount, onUnmounted, watch, reactive, nextTick, watchEffect, isProxy, isReactive, isReadonly } from 'vue';
@@ -319,38 +317,42 @@ onBeforeUnmount(() => {
     }
     stopTimer();
     if (observer) {
-  observer.disconnect();// 断开观察
-}
+        observer.disconnect();// 断开观察
+    }
     window.removeEventListener('mousemove', handleActivity);
     window.removeEventListener('scroll', handleActivity);
     window.removeEventListener('beforeunload', handleBeforeUnload);
 })
 
-const addImageClickEvents=()=>{
+const addImageClickEvents = () => {
     const images = mainTextRef.value.querySelectorAll('img');
     images.forEach((img) => {
-      img.addEventListener('click', handleImageClick);
-      img.classList.add('comment-img');
-  });
+        img.addEventListener('click', handleImageClick);
+        img.classList.add('comment-img');
+    });
 }
 // const imageOp=ref('')
 // const imageOpif=ref(false)
-const handleImageClick=(event)=>{
+const handleImageClick = (event) => {
     const imgSrc = event.target.src;
     console.log(imgSrc);
-    if(imgSrc){
+    if (imgSrc) {
         document.body.style.overflow = 'hidden';
-        imgPreviewUrl.value=imgSrc
-        showImageViewer.value=true
+        imgPreviewUrl.value = imgSrc
+        showImageViewer.value = true
     }
 }
 
 
-const articlelike = (id, authorId, authorName, type) => {
+
+import debounce from '@/utils/debouncing';
+
+
+const articlelike = debounce((id, authorId, authorName, type) => {
     if (userS.isloginReLongin()) {
         notificationS.likeArticle(id, authorId, authorName, type)
-         // 根据 type 更新点赞状态
-         if (type === 1) {
+        // 根据 type 更新点赞状态
+        if (type === 1) {
             isnolikeArticle.value = true; // 设置为已点赞
             commentS.articleLike++;
             articleS.articleDto.likes++;
@@ -359,21 +361,9 @@ const articlelike = (id, authorId, authorName, type) => {
             commentS.articleLike--;
             articleS.articleDto.likes--;
         }
-
-        // 更新本地存储的操作状态
         behaviourAppStoreS.postoperation.set(props.postId, type);
-        // const newLikeState = isnolikeArticle.value ? 0 : 1;
-        // behaviourAppStoreS.postoperation.set(props.postId, newLikeState);
-        // // 更新文章点赞状态
-        // if (isnolikeArticle.value) {
-        //     commentS.articleLike--;
-        //     articleS.articleDto.likes--;
-        // } else {
-        //     commentS.articleLike++;
-        //     articleS.articleDto.likes++;
-        // }
     }
-}
+}, 500)
 
 
 /* 用户ID private Long entryId;
@@ -554,7 +544,7 @@ onMounted(async () => {
         addImageClickEvents();
 
         handletimer = setInterval(handleBeforeUnload, 10000); // 每5秒调用一次
-        
+
         observer.observe(mainTextRef.value); // 观察文章元素
         window.addEventListener('mousemove', handleActivity);
         window.addEventListener('scroll', handleActivity);
@@ -566,7 +556,8 @@ onMounted(async () => {
 
         if (userRead.value) {
             const { maxPosition, percentage } = userRead.value
-            if (maxPosition !== 100 && maxPosition === percentage) {
+            // if (maxPosition !== 100 && maxPosition === percentage) {
+            if (maxPosition !== 100 ) {
                 viewReadingPosition(percentage);
             }
         }

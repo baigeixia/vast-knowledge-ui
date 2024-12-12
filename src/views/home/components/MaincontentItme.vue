@@ -37,7 +37,7 @@
             </div>
             <div class="item-li" v-if="islocal && content.authorId == userinfoAppStores.userid">
                 <el-dropdown class="dropdown-menu" trigger="click">
-                    <div><i class="bi bi-nut-fill unifiedcolor"></i><span class="showfont">设置</span></div>
+                    <!-- <div><i class="bi bi-nut-fill unifiedcolor"></i><span class="showfont">设置</span></div> -->
                     <template #dropdown>
                         <el-dropdown-menu>
                             <el-dropdown-item @click="deleteid(content.id)">

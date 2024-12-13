@@ -87,7 +87,7 @@
 </template>
 
 <script setup>
-import { onMounted, ref, nextTick, computed, reactive } from "vue"
+import { onMounted, ref, nextTick, computed, reactive,watch } from "vue"
 import { escapeHtml } from '@/utils/escapeHtml'
 import { ElMessage } from 'element-plus'
 import UserInfoPopover from '@/components/UserInfoPopover.vue'
@@ -103,7 +103,7 @@ import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 import behaviourAppStore from "@/stores/collection/behaviour"
 const behaviourAppStoreS = behaviourAppStore();
-import { islogin} from '@/utils/userislogin';
+import { islogin } from '@/utils/userislogin';
 
 import { useRouter } from 'vue-router';
 
@@ -119,14 +119,14 @@ const openInNewTab = (contentid) => {
 }
 
 const emit = defineEmits(['deleteArticle']);
-const deleteid=async(id)=>{
+const deleteid = async (id) => {
     emit('deleteArticle', id);
 }
 const Articlelike = (id, authorId, authorName, type) => {
     if (userS.isloginReLongin()) {
-    notificationS.likeArticle(id, authorId, authorName, type)
-    behaviourAppStoreS.postoperation.set(props.content.id, noislikeArticle.value ? 0 : 1)
-    noislikeArticle.value ? props.content.likes-- : props.content.likes++
+        notificationS.likeArticle(id, authorId, authorName, type)
+        behaviourAppStoreS.postoperation.set(props.content.id, noislikeArticle.value ? 0 : 1)
+        noislikeArticle.value ? props.content.likes-- : props.content.likes++
     }
 }
 
@@ -135,12 +135,13 @@ const props = defineProps({
         type: Object, // 定义接收的数据类型
         required: true,// 是否必须传递
     },
-    islocal:{
+    islocal: {
         type: Boolean, // 定义接收的数据类型
         required: false,
     }
 });
 
+// 是否不点赞
 const noislikeArticle = computed(() => (behaviourAppStoreS.postoperation.get(props.content.id) ?? 1) == 1)
 
 
@@ -415,11 +416,12 @@ const report = (id) => {
                 margin-left: 4px;
             }
 
-            .unifiedcolor{
+            .unifiedcolor {
                 color: #8a919f;
             }
-            .showfont{
-                margin-left: 5px ;
+
+            .showfont {
+                margin-left: 5px;
             }
 
             .user-message {

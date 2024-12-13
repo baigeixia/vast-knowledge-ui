@@ -13,7 +13,7 @@
             </div>
             <el-tooltip content="点赞" placement="left" effect="light">
                 <div class=" panel-btn user-active" v-if="articleS.articleDto.authorId == userinfoAppStores.userid">
-                    <el-badge color="#b2b2b2" :show-zero='false' :value="Number(articleS.articleDto.likes)"
+                    <el-badge color="#b2b2b2" :show-zero='false' :value="Number(articleS.articleDto.likes?? 0) "
                         :offset="[10, 3]">
                         <i class="bi bi-heart-fill "></i>
                     </el-badge>
@@ -21,7 +21,7 @@
                 <div v-else class="panel-btn" :class="{ 'active': isActive }"
                     @click="articlelike(postId, articleS.articleDto.authorId, articleS.articleDto.authorName, 0)">
                     <el-badge :color="isActive ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
-                        :value="Number(articleS.articleDto.likes)" :offset="[10, 3]">
+                        :value="Number(articleS.articleDto.likes?? 0) " :offset="[10, 3]">
                         <i class="bi bi-heart-fill"></i>
                     </el-badge>
                 </div>
@@ -29,7 +29,7 @@
             <el-tooltip content="评论" placement="left" effect="light">
                 <div class="panel-btn" :class="{ 'active': drawer }" @click="drawer = true">
                     <el-badge :color="ismsg ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
-                        :value="Number(articleS.articleDto.comment)" :offset="[10, 3]">
+                        :value="Number(articleS.articleDto.comment?? 0) " :offset="[10, 3]">
                         <i class="bi bi-chat-left-text-fill"></i>
                     </el-badge>
                 </div>
@@ -37,13 +37,13 @@
             <el-tooltip content="收藏" placement="left" effect="light">
                 <div class="panel-btn user-active" v-if="articleS.articleDto.authorId == userinfoAppStores.userid">
                     <el-badge :color="(isfollow) ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
-                        :value="Number(articleS.articleDto.collection)" :offset="[10, 3]">
+                        :value="Number(articleS.articleDto.collection?? 0) " :offset="[10, 3]">
                         <i class="bi bi-star-fill"></i>
                     </el-badge>
                 </div>
                 <div v-else class="panel-btn" @click="collectOp()">
                     <el-badge :color="(isfollow) ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
-                        :value="Number(articleS.articleDto.collection)" :offset="[10, 3]">
+                        :value="Number(articleS.articleDto.collection?? 0) " :offset="[10, 3]">
                         <i class="bi bi-star-fill" :style="{ color: (isfollow) ? '#1e80ff' : '#b2b2b2' }"></i>
                     </el-badge>
                 </div>
@@ -62,34 +62,37 @@
         <el-container class="home-center">
             <el-container class="center-main">
                 <el-main class="center-main-text">
-                    <el-skeleton :loading="centermainloading" :rows="10" animated>
-                        <h1 class="article-title">{{ articleS.articleDto.title }}</h1>
+                    <el-skeleton :loading="centermainloading" :rows="10" animated v-if="articleS.articleDto">
+                        <h1 class="article-title">{{ articleS.articleDto.title ?? '无内容'}}</h1>
                         <div class="author-info-box">
                             <div class="author-name">
                                 <RouterLink :to="`/user/${articleS.articleDto.authorId}`">
-                                    {{ articleS.articleDto.authorName }}
+                                    {{ articleS.articleDto.authorName ??  '无内容'}}
                                 </RouterLink>
                             </div>
-                            <div class="meta-box">
-                                <div class="time">{{ $formatDateTime(articleS.articleDto.createdTime) }}</div>
+                            <div class="meta-box" >
+                                <div class="time">{{ $formatDateTime(articleS.articleDto.createdTime) ?? 0}}</div>
                                 <!-- <div class="time">{{ $formatDate(articleS.articleDto.createdTime) }}</div> -->
                                 <div class="read-time" v-if="articleS.articleDto.views > 0">
                                     <i class="bi bi-eye"></i>
-                                    <span>{{ articleS.articleDto.views }}</span>
+                                    <span>{{ articleS.articleDto.views ?? 0}}</span>
                                 </div>
                                 <div class="read-time" v-if="articleS.articleDto.comment > 0">
                                     <i class="bi bi-chat-right-text"></i>
-                                    <span>{{ articleS.articleDto.comment }}&nbsp;条评论</span>
+                                    <span>{{ articleS.articleDto.comment ?? 0}}&nbsp;条评论</span>
                                 </div>
                                 <div class="read-time" v-if="userRead && (userRead.readDuration / 60).toFixed(0) > 0">
                                     <i class="bi bi-clock"></i>
-                                    <span>阅读{{ (userRead.readDuration / 60).toFixed(0) }}分钟 </span>
+                                    <span>阅读{{ (userRead.readDuration / 60)?.toFixed(0) ?? 0}}分钟 </span>
                                 </div>
                             </div>
                         </div>
                         <!-- <p class="context-box" v-html="replaceImgWithTag(contentS.content.content)" ref="mainTextRef"></p> -->
-                        <div class="context-box" v-html="contentS.content.content" ref="mainTextRef"></div>
+                        <div class="context-box" v-html="contentS.content.content ?? '无内容'" ref="mainTextRef"></div>
                     </el-skeleton>
+                    <div class="context-erro" v-else>
+                        无文章内容
+                    </div>
 
                 </el-main>
                 <el-footer class="comment-end">
@@ -303,7 +306,7 @@ import useUserStore from "@/stores/admin/user";
 const userS = useUserStore()
 
 
-let handletimer = null;
+const handletimer = null;
 // 使用 Intersection Observer 监测文章是否在视口内
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -331,6 +334,8 @@ const addImageClickEvents = () => {
         img.classList.add('comment-img');
     });
 }
+
+
 // const imageOp=ref('')
 // const imageOpif=ref(false)
 const handleImageClick = (event) => {
@@ -352,16 +357,16 @@ const articlelike = debounce((id, authorId, authorName, type) => {
     if (userS.isloginReLongin()) {
         notificationS.likeArticle(id, authorId, authorName, type)
         // 根据 type 更新点赞状态
-        if (type === 1) {
-            isnolikeArticle.value = true; // 设置为已点赞
-            commentS.articleLike++;
-            articleS.articleDto.likes++;
-        } else if (type === 0) {
-            isnolikeArticle.value = false; // 设置为未点赞
-            commentS.articleLike--;
+        if (isActive.value) {
+            commentS.articleLike = 1;
+            behaviourAppStoreS.postoperation.set(props.postId, 1);
             articleS.articleDto.likes--;
+        } else {
+            commentS.articleLike = 0;
+            articleS.articleDto.likes++;
+            behaviourAppStoreS.postoperation.set(props.postId, 0);
         }
-        behaviourAppStoreS.postoperation.set(props.postId, type);
+
     }
 }, 500)
 
@@ -428,8 +433,8 @@ const props = defineProps({
     }
 })
 
-
-const isnolikeArticle = computed(() => behaviourAppStoreS.postoperation.get(props.postId) ?? false);
+// const noislikeArticle = computed(() => (behaviourAppStoreS.postoperation.get(props.postId) ?? 1) == 1)
+// const isnolikeArticle = computed(() => behaviourAppStoreS.postoperation.get(props.postId) ?? false);
 const isActive = computed(() => commentS.articleLike === 0);
 const authorInfo = ref({})
 
@@ -529,7 +534,7 @@ onMounted(async () => {
 
         userRead.value = await behaviourAppStoreS.getArticleInfo(postId)
 
-
+        let loadTime = (loadDuration.value / 1000).toFixed(2);
 
         await nextTick(() => {
             endTime = Date.now()
@@ -537,6 +542,11 @@ onMounted(async () => {
             startTimer()
             loadDuration.value = endTime - startTime;
             centermainloading.value = false
+
+            //用户id
+            console.log('开始阅读', id, postId, loadTime);
+            //阅读计算    
+            notificationS.userRead(id, postId, 0, 0, loadTime, 1);
 
         });
         codeLanguage()
@@ -557,18 +567,14 @@ onMounted(async () => {
         if (userRead.value) {
             const { maxPosition, percentage } = userRead.value
             // if (maxPosition !== 100 && maxPosition === percentage) {
-            if (maxPosition !== 100 ) {
+            if (maxPosition !== 100) {
                 viewReadingPosition(percentage);
             }
         }
 
 
         //加载时间
-        let loadTime = (loadDuration.value / 1000).toFixed(2);
-        //用户id
-        console.log('开始阅读', id, postId, loadTime);
-        //阅读计算    
-        notificationS.userRead(id, postId, 0, 0, loadTime);
+
     } catch (error) {
 
     } finally {
@@ -648,7 +654,7 @@ onUnmounted(() => {
 const upTitle = () => {
     document.title = articleS.articleDto.title;
 }
-
+//跳转触发
 const onDrawerOpen = async () => {
     let id = props.notificationId
     await maincommentS.commentListGet()
@@ -677,7 +683,44 @@ const onDrawerOpen = async () => {
         })
     }
 };
+//遍历code块
+// const codeLanguage = () => {
+//     hljs.highlightAll()
 
+//     const codeBlocks = document.querySelectorAll('pre code[class*="language-"]');
+
+//     codeBlocks.forEach((block) => {
+
+//         const match = block.className.match(/\blanguage-([a-zA-Z0-9-]+)\b/);
+//         if (match) {
+//             // 获取语言类别
+//             // const language = block.className.split('-')[1];
+//             const language = match[1];
+//             if (language.includes('undefined') || language.includes('nohighlight') || language.includes('plaintext')) {
+//                 return; // 跳出当前循环
+//             }
+
+//             // 创建语言标签元素
+//             const languageLabel = document.createElement('span');
+//             languageLabel.style.position = 'absolute';
+//             languageLabel.style.right = '10px';
+//             languageLabel.style.top = '5px';
+
+//             languageLabel.textContent = language;
+
+//             // 获取代码块的父元素
+//             const parentElement = block.parentNode;
+
+//             // 如果父元素存在，则设置父元素的 position 为 relative，并将语言标签插入到父元素的开头
+//             if (parentElement) {
+//                 parentElement.style.position = 'relative';  // 设置父元素的 position 为 relative
+//                 parentElement.insertBefore(languageLabel, parentElement.firstChild);  // 将语言标签插入到父元素的开头
+//             } else {
+//                 console.error('Unable to find parent element for block');
+//             }
+//         }
+//     });
+// }
 const codeLanguage = () => {
     hljs.highlightAll()
 
@@ -688,7 +731,6 @@ const codeLanguage = () => {
         const match = block.className.match(/\blanguage-([a-zA-Z0-9-]+)\b/);
         if (match) {
             // 获取语言类别
-            // const language = block.className.split('-')[1];
             const language = match[1];
             if (language.includes('undefined') || language.includes('nohighlight') || language.includes('plaintext')) {
                 return; // 跳出当前循环
@@ -699,22 +741,79 @@ const codeLanguage = () => {
             languageLabel.style.position = 'absolute';
             languageLabel.style.right = '10px';
             languageLabel.style.top = '5px';
-
+            languageLabel.style.fontSize = '12px';
+            languageLabel.style.backgroundColor = 'rgba(0, 0, 0, 0.7)';
+            languageLabel.style.color = 'white';
+            languageLabel.style.padding = '2px 5px';
+            languageLabel.style.borderRadius = '4px';
             languageLabel.textContent = language;
+
+            // 创建复制按钮
+            const copyButton = document.createElement('button');
+            copyButton.textContent = 'Copy';
+            copyButton.style.position = 'absolute';
+            copyButton.style.right = '10px';  // 距离右侧10px
+            copyButton.style.top = '30px';  // 距离顶部一定距离，避免与语言标签重叠
+            copyButton.style.fontSize = '12px';
+            copyButton.style.padding = '5px 10px';
+            copyButton.style.backgroundColor = '#007bff';
+            copyButton.style.color = 'white';
+            copyButton.style.border = 'none';
+            copyButton.style.borderRadius = '4px';
+            copyButton.style.cursor = 'pointer';
+
+            // 默认隐藏复制按钮
+            copyButton.style.opacity = '0';
+            copyButton.style.pointerEvents = 'none';
+            copyButton.style.transition = 'opacity 0.3s ease';
+
+            // 鼠标悬停时显示按钮
+            block.parentNode.style.position = 'relative'; // 设置代码块父元素的 position 为 relative
+            block.parentNode.addEventListener('mouseenter', () => {
+                copyButton.style.opacity = '1';
+                copyButton.style.pointerEvents = 'auto';
+            });
+
+            block.parentNode.addEventListener('mouseleave', () => {
+                copyButton.style.opacity = '0';
+                copyButton.style.pointerEvents = 'none';
+            });
+
+            // 复制按钮点击事件
+            copyButton.addEventListener('click', () => {
+                // 创建一个临时的 textarea 元素，用于复制内容
+                const textarea = document.createElement('textarea');
+                textarea.value = block.textContent; // 获取代码内容
+                document.body.appendChild(textarea);
+                textarea.select(); // 选中内容
+                document.execCommand('copy'); // 执行复制命令
+                document.body.removeChild(textarea); // 删除临时的 textarea
+
+                // 可选：给用户一个提示，表示已复制
+                copyButton.textContent = 'Copied!';
+                setTimeout(() => {
+                    copyButton.textContent = 'Copy';
+                }, 1500);
+            });
 
             // 获取代码块的父元素
             const parentElement = block.parentNode;
 
-            // 如果父元素存在，则设置父元素的 position 为 relative，并将语言标签插入到父元素的开头
+            // 如果父元素存在，则设置父元素的 position 为 relative，并将语言标签和复制按钮插入到父元素
             if (parentElement) {
                 parentElement.style.position = 'relative';  // 设置父元素的 position 为 relative
                 parentElement.insertBefore(languageLabel, parentElement.firstChild);  // 将语言标签插入到父元素的开头
+                parentElement.appendChild(copyButton); // 将复制按钮添加到父元素
             } else {
                 console.error('Unable to find parent element for block');
             }
         }
     });
 }
+
+
+
+
 
 
 const { y } = useScroll(window)
@@ -1072,6 +1171,14 @@ const replaceImgWithTag = (str) => {
 
         .center-main {
 
+            .context-erro{
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-size: 1rem;
+                 color: #8a919f;
+                //  height: 100vh; 
+            }
             .center-main-text {
                 background-color: #fff;
 
@@ -1096,7 +1203,7 @@ const replaceImgWithTag = (str) => {
 
 
                     :deep(.comment-img) {
-                        cursor: zoom-in;
+                        cursor: zoom-in !important;
                         width: 100%;
                         display: block;
                     }

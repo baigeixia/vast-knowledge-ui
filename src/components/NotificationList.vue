@@ -1,5 +1,5 @@
 <template>
-    <el-skeleton style="padding-top: 24px;" :rows="5" animated :loading="endLoading ">
+    <el-skeleton style="padding-top: 24px;" :rows="5" animated :loading="endLoading">
         <div class="listcontent-box" v-for=" list in  notificationList" :key="list.statisticsTime">
             <div class="notificationList-Item">
                 <div class="dateSplit">
@@ -12,38 +12,49 @@
                     <img class="notificationList-Item-icon" :src="extendicon">
                     <div class="list-itme-box">
                         <div class="list-itme-header " v-if="notificationType === 'comment'">
-                            <!-- <div class="itme-content-box" v-for=" actor in info.actors" :key="actor.id"> -->
                             <div class="itme-content-box">
-                                <div class="list-itme-content list-feedback"
+                                <div v-if="info.hide" class="list-itme-content ">
+                                    {{ info.title }}
+                                </div>
+                                <div v-else class="list-itme-content list-feedback"
                                     @click="opcontentinfo(info.id, info.commentId)">
                                     {{ info.title }}
                                 </div>
                                 <div class="content-box-start">
-                                    <user-info-popover :author="info.actors">
+                                    <span v-if="info.hide" class="username-hide">
+                                        <div> {{ info.actors.username }}</div>
+                                    </span>
+                                    <user-info-popover v-else :author="info.actors">
                                         <template v-slot:reference>
                                             <span class="username" @click="opuserinfo(actors.id)">
                                                 <div> {{ info.actors.username }}</div>
                                             </span>
                                         </template>
                                     </user-info-popover>
-                                    <div class="start-article" @click="opcontentinfo(info.id, info.commentId)">&nbsp;{{ info.actors.verb }} &middot;&nbsp; </div>
-                                    <time>{{ info.actors.replycontenttime }}</time>
+                                    <div v-if="info.hide">
+                                        &nbsp;{{ info.actors.verb }} &middot;&nbsp;
+                                    </div>
+                                    <div v-else class="start-article" @click="opcontentinfo(info.id, info.commentId)">
+                                        &nbsp;{{ info.actors.verb }} &middot;&nbsp;
+                                    </div>
+                                    <time>{{ info.actors.replyContentTime }}</time>
                                 </div>
                                 <div class="item-extendText">
                                     <div class="text-message"> {{ info.actors.replyContent }}</div>
-                                    <el-image class="text-img" @click="handleImageClick" v-if="info.actors.image"  :src="info.actors.image"></el-image>
+                                    <el-image class="text-img" @click="handleImageClick" v-if="info.actors.image"
+                                        :src="info.actors.image"></el-image>
                                 </div>
                             </div>
                         </div>
                         <div class="list-itme-header" v-if="notificationType === 'digg'">
-                            <div class="list-itme-content list-feedback"
+                            <div  class="list-itme-content list-feedback"
                                 @click="opcontentinfo(info.attachInfo.id, info.attachInfo.commentId)">
                                 {{ info.attachInfo.title }}
                             </div>
                             <div class="itme-content-box">
                                 <div class="content-box-start">
                                     <div v-for="(actor, index) in info.actors.slice(0, 10)" :key="actor.id">
-                                        <user-info-popover :author="actor">
+                                        <user-info-popover  :author="actor">
                                             <template v-slot:reference>
                                                 <span class="username" @click="opuserinfo(actor.id)">
                                                     {{ actor.username }}
@@ -99,7 +110,6 @@
                                         @click="opcontentinfo(info.attach_info.id)">
                                         《{{ info.attach_info.title }}》</div>
                                 </div>
-
                                 <div class="list-itme-content">
                                     <div class="replyMesg">
                                         {{ info.replyMesg.contentText }}
@@ -111,7 +121,7 @@
                 </div>
             </div>
         </div>
-        <el-skeleton style="padding-top: 24px;" :rows="5" animated :loading="upLoading "></el-skeleton>
+        <el-skeleton style="padding-top: 24px;" :rows="5" animated :loading="upLoading"></el-skeleton>
     </el-skeleton>
     <el-dialog v-if="dialogTableVisible" v-model="dialogTableVisible" width="700" :lock-scroll="true" top="2vh">
         <template #header="{ titleId, titleClass }">
@@ -151,7 +161,7 @@
         </div>
     </el-dialog>
     <el-image-viewer v-if="showImageViewer" :url-list="[imgPreviewUrl]" @close="showImageViewerclose"
-            :hide-on-click-modal="true">
+        :hide-on-click-modal="true">
     </el-image-viewer>
 </template>
 
@@ -379,18 +389,28 @@ const formattedTime = (time) => {
                             display: flex;
                             margin: 10px 0;
 
-                            .start-article{
+
+                            .start-article {
                                 cursor: pointer;
                             }
 
-                            .start-article:hover{
-                            color: #afb2b9;
+                            .start-article:hover {
+                                color: #afb2b9;
                             }
 
                             .username {
                                 cursor: pointer;
                                 color: #191b1f;
                                 font-weight: 600
+                            }
+
+                            .username-hide {
+                                color: #191b1f;
+                                font-weight: 600
+                            }
+
+                            .people-list-hide {
+                                margin: 0 5px;
                             }
 
                             .people-list {
@@ -414,10 +434,11 @@ const formattedTime = (time) => {
                             margin: 4px 0 6px;
                             padding-left: 10px;
                             border-left: 3px solid #9196a1;
-                            .text-img{
+
+                            .text-img {
                                 width: 100px;
-                                 height: 100px;
-                                 cursor: zoom-in;
+                                height: 100px;
+                                cursor: zoom-in;
 
                             }
                         }
@@ -463,4 +484,5 @@ const formattedTime = (time) => {
             line-height: 2rem;
         }
     }
-}</style>
+}
+</style>

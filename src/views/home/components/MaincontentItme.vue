@@ -197,6 +197,7 @@ const reportdialogClose = () => {
 const dislike = (id) => {
     console.log('不喜欢', id);
     ElMessage.success("已减少此类内容出现")
+    behaviourAppStoreS.saveUnlike(id)
 }
 
 

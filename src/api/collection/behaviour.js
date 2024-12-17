@@ -98,3 +98,13 @@ export const  clearAllApi =()=>{
         method: 'GET',
     })
 }
+
+export const  saveUnlikeApi =(id)=>{
+    return collectionRequest({
+        url: `/behaviour/unlike/saveUnlike`,
+        method: 'GET',
+        params:{
+            id:id
+        }
+    })
+}

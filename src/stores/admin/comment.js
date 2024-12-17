@@ -127,21 +127,21 @@ const commentStore = defineStore(
 
             if (comments && comments.length > 0) {
                 extractIds(comments)
-                try {
-                    const response = await getcommentLikeApi(entryId, idSet)
-                    if(response.data){
-                        articleCollect.value=response.data.articleCollect
-                        articleLike.value=response.data.articleLike
-                        const dataObject = response.data.commentLike;
-                        if (dataObject) {
-                            const dataMap = new Map(Object.entries(dataObject).map(([key, value]) => [key, value]));
-                            const mergedMap = new Map([...commentLikes.value, ...dataMap]);
-                            commentLikes.value = mergedMap;
-                        }
+            }
+            try {
+                const response = await getcommentLikeApi(entryId, idSet)
+                if(response.data){
+                    articleCollect.value=response.data.articleCollect
+                    articleLike.value=response.data.articleLike
+                    const dataObject = response.data.commentLike;
+                    if (dataObject) {
+                        const dataMap = new Map(Object.entries(dataObject).map(([key, value]) => [key, value]));
+                        const mergedMap = new Map([...commentLikes.value, ...dataMap]);
+                        commentLikes.value = mergedMap;
                     }
-                } catch (error) {
-                    console.error("Error fetching comment likes:", error);
                 }
+            } catch (error) {
+                console.error("Error fetching comment likes:", error);
             }
             idSet.clear();
         }

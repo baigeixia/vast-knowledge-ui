@@ -1,6 +1,6 @@
 import { gethomeList, infoArticle } from '@/api/admin/article'
 import { ref, computed ,reactive} from 'vue'
-import { getarticleLikeApi ,getdynamicsApi,userCollectListapi,getArticleInfoApi,getuserFootMarkListapi ,getreadsearchApi,clearAllApi} from '@/api/collection/behaviour'
+import { getarticleLikeApi ,getdynamicsApi,userCollectListapi,getArticleInfoApi,getuserFootMarkListapi ,getreadsearchApi,clearAllApi,saveUnlikeApi} from '@/api/collection/behaviour'
 import { defineStore } from 'pinia'
 
 const behaviourAppStore = defineStore(
@@ -66,6 +66,11 @@ const getdynamics=async (userid,page,size)=>{
     }
 
 
+    const saveUnlike=(id)=>{
+      saveUnlikeApi(id)
+    }
+
+
 
     return{
       newHomeListDataGetLike,
@@ -77,6 +82,7 @@ const getdynamics=async (userid,page,size)=>{
       dynamics,
       getreadsearch,
       clearAll,
+      saveUnlike,
     }
   })
 

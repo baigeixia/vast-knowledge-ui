@@ -180,7 +180,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch, onBeforeUnmount, nextTick } from 'vue';
+import { ref, onMounted, computed, watch, nextTick } from 'vue';
 import { ElMessage } from 'element-plus'
 import ChatChatBox from './components/ChatChatBox.vue';
 import { formatTime } from '@/utils/formDate'
@@ -223,7 +223,6 @@ onMounted(async () => {
     await newMsg(userid)
     // const data = await userinfoAppStores.getusergetInfo(props.participantId)
     // recentlist.value.unshift(data)
-
   }
 })
 

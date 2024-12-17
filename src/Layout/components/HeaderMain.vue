@@ -256,17 +256,19 @@ onMounted(async () => {
   const trending = await searchinfoS.getusersearchtrending();
   trendingTerms.value = trending
 
-  let index = 0;
+})
+
+let index = 0;
   const interval = setInterval(() => {
     index = (index + 1) % trendingTerms.value.length;
     placeholder.value = trendingTerms.value[index].hotWords.length > searchNumber ? trendingTerms.value[index].hotWords.substring(0, searchNumber) + '...' : trendingTerms.value[index].hotWords;
   }, 5000);
 
-  onBeforeUnmount(() => {
+onBeforeUnmount(() => {
+    if(interval){
     clearInterval(interval);
+  }
   });
-
-})
 const restaurants = ref([])
 
 const onInput = debounce(async () => {

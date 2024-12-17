@@ -14,11 +14,14 @@
         </ul>
       </div>
     </header>
-    <div  v-if="articleStore.articleList || articleStore.articleList?.records.length < 1 " class="top-content">
+    <div v-if="articleStore.articleList.records.length > 1 " class="top-content">
       <Maincontentlist :contents="articleStore.articleList.records"  :infinite-scroll-immediate="false"  v-infinite-scroll="articleStore.loadMore" :infinite-scroll-disabled="articleStore.loadingdisabled" />
     </div>
    <div class="no-content" v-else>
-    还没有内容
+      还没有内容
+   </div>
+   <div class="no-content" v-if="articleStore.noMore && articleStore.articleList.records.length > 1">
+      已经到底部了
    </div>
   </div>
 </template>
@@ -33,24 +36,28 @@ import articleAppStore from "@/stores/admin/article";
 const articleStore = articleAppStore()
 
 
-onMounted(()=>{
-  articleStore.isLoadingEnd=false
-  articleStore.page=1 
-  articleStore.articleList={}
-  articleStore.getarticleList()
+onMounted(async()=>{
+  initArticleList()
+  await articleStore.getarticleList()
   articleStore.noMore=false
 
   document.documentElement.style.overflowY = 'scroll';
 })
 
 const navigationtypeSwit = (type) => {
-  articleStore.isLoadingEnd=false
-  articleStore.page=1
+  initArticleList()
   articleStore.navigationtype = type
-  articleStore.articleList={}
   articleStore.getarticleList()
   articleStore.noMore=false
 
+}
+
+const initArticleList=()=>{
+  articleStore.isLoadingEnd=false
+  articleStore.page=1 
+  articleStore.articleList={
+    records:[]
+  }
 }
 
 </script>
@@ -74,8 +81,9 @@ const navigationtypeSwit = (type) => {
   .no-content{
     display: flex;
     justify-content: center;
-    margin: 20px 20px;
+    margin: 10px 10px;
     font-size: 16px;
+    color: #8a8d94;
   }
 
   .list-header {

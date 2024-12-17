@@ -1,5 +1,5 @@
 <template>
-    <el-container class="post-home-main">
+    <el-container v-if="contentS.content.content" class="post-home-main">
         <div class="suspended-panel" v-if="!centermainloading">
             <div class="panel-btn" v-if="y > 180">
                 <RouterLink :to="`/user/${articleS.articleDto.authorId}`">
@@ -13,7 +13,7 @@
             </div>
             <el-tooltip content="点赞" placement="left" effect="light">
                 <div class=" panel-btn user-active" v-if="articleS.articleDto.authorId == userinfoAppStores.userid">
-                    <el-badge color="#b2b2b2" :show-zero='false' :value="Number(articleS.articleDto.likes?? 0) "
+                    <el-badge color="#b2b2b2" :show-zero='false' :value="Number(articleS.articleDto.likes ?? 0)"
                         :offset="[10, 3]">
                         <i class="bi bi-heart-fill "></i>
                     </el-badge>
@@ -21,7 +21,7 @@
                 <div v-else class="panel-btn" :class="{ 'active': isActive }"
                     @click="articlelike(postId, articleS.articleDto.authorId, articleS.articleDto.authorName, 0)">
                     <el-badge :color="isActive ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
-                        :value="Number(articleS.articleDto.likes?? 0) " :offset="[10, 3]">
+                        :value="Number(articleS.articleDto.likes ?? 0)" :offset="[10, 3]">
                         <i class="bi bi-heart-fill"></i>
                     </el-badge>
                 </div>
@@ -29,22 +29,22 @@
             <el-tooltip content="评论" placement="left" effect="light">
                 <div class="panel-btn" :class="{ 'active': drawer }" @click="drawer = true">
                     <el-badge :color="ismsg ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
-                        :value="Number(articleS.articleDto.comment?? 0) " :offset="[10, 3]">
+                        :value="Number(articleS.articleDto.comment ?? 0)" :offset="[10, 3]">
                         <i class="bi bi-chat-left-text-fill"></i>
                     </el-badge>
                 </div>
             </el-tooltip>
             <el-tooltip content="收藏" placement="left" effect="light">
                 <div class="panel-btn user-active" v-if="articleS.articleDto.authorId == userinfoAppStores.userid">
-                    <el-badge :color="(isfollow) ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
-                        :value="Number(articleS.articleDto.collection?? 0) " :offset="[10, 3]">
+                    <el-badge :color="'#b2b2b2'" :show-zero='false'
+                        :value="Number(articleS.articleDto.collection ?? 0)" :offset="[10, 3]">
                         <i class="bi bi-star-fill"></i>
                     </el-badge>
                 </div>
                 <div v-else class="panel-btn" @click="collectOp()">
-                    <el-badge :color="(isfollow) ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
-                        :value="Number(articleS.articleDto.collection?? 0) " :offset="[10, 3]">
-                        <i class="bi bi-star-fill" :style="{ color: (isfollow) ? '#1e80ff' : '#b2b2b2' }"></i>
+                    <el-badge :color="(isCollect) ? '#1e80ff' : '#b2b2b2'" :show-zero='false'
+                        :value="Number(articleS.articleDto.collection ?? 0)" :offset="[10, 3]">
+                        <i class="bi bi-star-fill" :style="{ color: (isCollect) ? '#1e80ff' : '#b2b2b2' }"></i>
                     </el-badge>
                 </div>
             </el-tooltip>
@@ -63,27 +63,27 @@
             <el-container class="center-main">
                 <el-main class="center-main-text">
                     <el-skeleton :loading="centermainloading" :rows="10" animated v-if="articleS.articleDto">
-                        <h1 class="article-title">{{ articleS.articleDto.title ?? '无内容'}}</h1>
+                        <h1 class="article-title">{{ articleS.articleDto.title ?? '无内容' }}</h1>
                         <div class="author-info-box">
                             <div class="author-name">
                                 <RouterLink :to="`/user/${articleS.articleDto.authorId}`">
-                                    {{ articleS.articleDto.authorName ??  '无内容'}}
+                                    {{ articleS.articleDto.authorName ?? '无内容' }}
                                 </RouterLink>
                             </div>
-                            <div class="meta-box" >
-                                <div class="time">{{ $formatDateTime(articleS.articleDto.createdTime) ?? 0}}</div>
+                            <div class="meta-box">
+                                <div class="time">{{ $formatDateTime(articleS.articleDto.createdTime) ?? 0 }}</div>
                                 <!-- <div class="time">{{ $formatDate(articleS.articleDto.createdTime) }}</div> -->
                                 <div class="read-time" v-if="articleS.articleDto.views > 0">
                                     <i class="bi bi-eye"></i>
-                                    <span>{{ articleS.articleDto.views ?? 0}}</span>
+                                    <span>{{ articleS.articleDto.views ?? 0 }}</span>
                                 </div>
                                 <div class="read-time" v-if="articleS.articleDto.comment > 0">
                                     <i class="bi bi-chat-right-text"></i>
-                                    <span>{{ articleS.articleDto.comment ?? 0}}&nbsp;条评论</span>
+                                    <span>{{ articleS.articleDto.comment ?? 0 }}&nbsp;条评论</span>
                                 </div>
                                 <div class="read-time" v-if="userRead && (userRead.readDuration / 60).toFixed(0) > 0">
                                     <i class="bi bi-clock"></i>
-                                    <span>阅读{{ (userRead.readDuration / 60)?.toFixed(0) ?? 0}}分钟 </span>
+                                    <span>阅读{{ (userRead.readDuration / 60)?.toFixed(0) ?? 0 }}分钟 </span>
                                 </div>
                             </div>
                         </div>
@@ -272,6 +272,9 @@
             :hide-on-click-modal="true">
         </el-image-viewer>
     </el-container>
+    <el-container v-else class="post-home-main">
+        无内容
+    </el-container>
 </template>
 <script setup>
 import { ref, onMounted, computed, onBeforeUnmount, onUnmounted, watch, reactive, nextTick, watchEffect, isProxy, isReactive, isReadonly } from 'vue';
@@ -380,7 +383,7 @@ const articlelike = debounce((id, authorId, authorName, type) => {
 const mainTextRef = ref(null)
 const loadDuration = ref(0)
 
-const handleBeforeUnload = (event) => {
+const handleBeforeUnload = () => {
     //文章id
     let postId = props.postId
     //阅读时间
@@ -436,6 +439,8 @@ const props = defineProps({
 // const noislikeArticle = computed(() => (behaviourAppStoreS.postoperation.get(props.postId) ?? 1) == 1)
 // const isnolikeArticle = computed(() => behaviourAppStoreS.postoperation.get(props.postId) ?? false);
 const isActive = computed(() => commentS.articleLike === 0);
+const isCollect = computed(() => commentS.articleCollect);
+
 const authorInfo = ref({})
 
 
@@ -521,48 +526,48 @@ onMounted(async () => {
         await articleS.getinfoArticle(postId)
         await commentS.commentListGet()
         authorInfo.value = await userinfoAppStores.getusergetInfo(articleS.articleDto.authorId)
-
-        console.log(articleS.articleDto.authorId);
-        console.log(authorInfo.value);
         let id = authorInfo.value.id
         isLoadUser.value = getUserid() !== id
 
         if (isLoadUser.value) {
             const relationData = await userinfoAppStores.getInfoRelation(id)
             isfollow.value = relationData.follow
+
+            userRead.value = await behaviourAppStoreS.getArticleInfo(postId)
+
         }
 
-        userRead.value = await behaviourAppStoreS.getArticleInfo(postId)
 
         let loadTime = (loadDuration.value / 1000).toFixed(2);
 
         await nextTick(() => {
-            endTime = Date.now()
+            if (notificationId) {
+                drawer.value = true
+            }
             upTitle()
-            startTimer()
-            loadDuration.value = endTime - startTime;
-            centermainloading.value = false
+            if (isLoadUser.value) {
+                endTime = Date.now()
+                startTimer()
+                //阅读计算    
+                loadDuration.value = endTime - startTime;
+                centermainloading.value = false
+                notificationS.userRead(id, postId, 0, 0, loadTime, 1);
+            }
 
-            //用户id
-            console.log('开始阅读', id, postId, loadTime);
-            //阅读计算    
-            notificationS.userRead(id, postId, 0, 0, loadTime, 1);
 
         });
         codeLanguage()
         // replaceImg()
         addImageClickEvents();
 
-        handletimer = setInterval(handleBeforeUnload, 10000); // 每5秒调用一次
-
-        observer.observe(mainTextRef.value); // 观察文章元素
-        window.addEventListener('mousemove', handleActivity);
-        window.addEventListener('scroll', handleActivity);
-        window.addEventListener('beforeunload', handleBeforeUnload);
-
-        if (notificationId) {
-            drawer.value = true
+        if (isLoadUser.value) {
+            handletimer = setInterval(handleBeforeUnload, 10000); // 每5秒调用一次
+            observer.observe(mainTextRef.value); // 观察文章元素
+            window.addEventListener('mousemove', handleActivity);
+            window.addEventListener('scroll', handleActivity);
+            window.addEventListener('beforeunload', handleBeforeUnload);
         }
+
 
         if (userRead.value) {
             const { maxPosition, percentage } = userRead.value
@@ -835,9 +840,8 @@ const showImageViewerclose = () => {
 const collectOp = () => {
     if (userS.isloginReLongin()) {
         notificationS.userToCollection(articleS.articleDto.authorId, articleS.articleDto.authorName, props.postId)
-        // commentS.articleCollect = !commentS.articleCollect
-        isfollow.value = !isfollow.value
-        if (isfollow.value) {
+        commentS.articleCollect = !commentS.articleCollect
+        if (commentS.articleCollect) {
             console.log("11:" + articleS.articleDto.collection);
             articleS.articleDto.collection++;  // 增加 1
         } else {
@@ -849,6 +853,18 @@ const collectOp = () => {
 
 const share = () => {
     console.log('分享');
+    const currentUrl = window.location.href;
+
+// 尝试将链接复制到剪贴板
+navigator.clipboard.writeText(currentUrl).then(() => {
+    // 复制成功后提示用户
+    ElMessage.success('链接已成功复制到剪贴板！')
+}).catch(err => {
+    // 如果复制失败，提示用户
+    console.error('复制失败:', err);
+    ElMessage.warning('复制失败，请手动复制链接！')
+});
+
 }
 
 const report = () => {
@@ -1171,14 +1187,15 @@ const replaceImgWithTag = (str) => {
 
         .center-main {
 
-            .context-erro{
+            .context-erro {
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 font-size: 1rem;
-                 color: #8a919f;
+                color: #8a919f;
                 //  height: 100vh; 
             }
+
             .center-main-text {
                 background-color: #fff;
 

@@ -6,7 +6,9 @@ const articleAppStore = defineStore(
   'article', () => {
     const behaviourAppStoreS = behaviourAppStore()
 
-    const articleList = ref({})
+    const articleList = ref({
+      records:[],
+    })
     const page = ref(1)
     const pagesize = ref(10)
     const navigationtype = ref(0)

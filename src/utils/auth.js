@@ -19,7 +19,10 @@ export function removeToken() {
 const UserInfoIdKey = 'u-0-1'
 
 export function setUserid(id) {
-  return Cookies.set(UserInfoIdKey, id)
+  return Cookies.set(UserInfoIdKey, id,{
+    sameSite: 'None', 
+    secure: true,
+  })
 }
 
 export function getUserid() {
@@ -32,7 +35,10 @@ export function getUserid() {
 
 
 export function removeUserid() {
-  return Cookies.remove(UserInfoIdKey)
+  return Cookies.remove(UserInfoIdKey,{
+    sameSite: 'None', 
+    secure: true,
+  })
 }
 
 

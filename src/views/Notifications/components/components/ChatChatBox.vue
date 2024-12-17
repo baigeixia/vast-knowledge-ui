@@ -114,7 +114,7 @@ import { getToken, setToken, removeToken } from '@/utils/auth'
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
 
-const emit = defineEmits();
+const emit = defineEmits(['message-sent']);
 
 const poper = defineProps({
   boxuserid: {

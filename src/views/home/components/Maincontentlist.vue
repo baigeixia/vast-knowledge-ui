@@ -54,8 +54,8 @@
                     </div>
                 </div>
             </template>
-            <div class="content-skeleton-item" v-for="content in  contents" :key="content.id"  >
-                <MaincontentItme :content="content"/>
+            <div class="content-skeleton-item" v-for="content in  localContents" :key="content.id"  >
+                <MaincontentItme :content="content" @dislikeArticle="dislikeArticle"/>
             </div>
             <el-skeleton class="skeleton" animated :loading="articleS.isLoadingEnd && contents.length > 0">
                 <template #template>
@@ -85,6 +85,7 @@
 <script setup>
 import MaincontentItme from './MaincontentItme.vue';
 import articleAppStore from "@/stores/admin/article";
+import { ref } from 'vue';
 const articleS = articleAppStore()
 
 const props = defineProps({
@@ -94,6 +95,12 @@ const props = defineProps({
         default: () => []
     },
 });
+
+const localContents = ref([...props.contents]);
+
+const dislikeArticle =  (id) => {
+    localContents.value = localContents.value.filter(post => post.id !== id);
+}
 
 const hasBrowsedevent=(id)=>{
     markAsBrowsed(id)

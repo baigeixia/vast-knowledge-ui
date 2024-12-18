@@ -27,7 +27,7 @@
             <div class="post-time">
               <time>{{ $formatDateTime(post.createdTime) }}&nbsp;:&nbsp;创建时间</time>
             </div>
-            <MaincontentItme :content="post" :islocal="true" @deleteArticle="deleteArticle" />
+            <MaincontentItme :content="post" :islocal="true" @deleteArticle="deleteArticle"  />
           </div>
         </div>
         <div v-else class="user-activity-nodata">
@@ -75,8 +75,10 @@ const deleteArticle = async (id) => {
     message: '删除成功',
     type: 'success',
   })
-
 }
+
+
+
 const posts = ref(
   {
     records: [],

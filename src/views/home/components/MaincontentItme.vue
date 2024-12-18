@@ -118,10 +118,11 @@ const openInNewTab = (contentid) => {
 
 }
 
-const emit = defineEmits(['deleteArticle']);
+const emit = defineEmits(['deleteArticle','dislikeArticle']);
 const deleteid = async (id) => {
     emit('deleteArticle', id);
 }
+
 const Articlelike = (id, authorId, authorName, type) => {
     if (userS.isloginReLongin()) {
         notificationS.likeArticle(id, authorId, authorName, type)
@@ -194,10 +195,12 @@ const reportdialogClose = () => {
     reportuserid.value = ''
 }
 
+
 const dislike = (id) => {
     console.log('不喜欢', id);
-    ElMessage.success("已减少此类内容出现")
+    emit('dislikeArticle', id);
     behaviourAppStoreS.saveUnlike(id)
+    ElMessage.success("已减少此类内容出现")
 }
 
 

@@ -34,7 +34,7 @@ const userinfoAppStore = defineStore(
 
     const getusergetLocalInfo = async () => {
       const resp = await usergetInfo()
-      if(resp.data){
+      if(resp?.data){
         userLocalinfo.value = resp.data
         setUserid(resp.data.id)
         userid.value = resp.data?.id

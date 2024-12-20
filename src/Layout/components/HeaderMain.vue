@@ -244,11 +244,7 @@ onMounted(async () => {
     headerinput.value = query
   }
 
-  userinfo.value = getUserInfo()
-  if (!userinfo.value) {
-    await userinfoAppStores.getusergetLocalInfo()
-  }
-
+  await userinfoAppStores.getusergetLocalInfo()
 
   const usersearch = await searchinfoS.getusersearchinfo();
   searchHistory.value = usersearch
@@ -259,16 +255,32 @@ onMounted(async () => {
 })
 
 let index = 0;
-  const interval = setInterval(() => {
-    index = (index + 1) % trendingTerms.value.length;
-    placeholder.value = trendingTerms.value[index].hotWords.length > searchNumber ? trendingTerms.value[index].hotWords.substring(0, searchNumber) + '...' : trendingTerms.value[index].hotWords;
-  }, 5000);
+const interval = setInterval(() => {
+  if (trendingTerms.value.length === 0) {
+    clearInterval(interval); // 停止轮播
+    return; // 退出函数
+  }
+
+  // 更新索引
+  index = (index + 1) % trendingTerms.value.length;
+
+  // 确保每个元素都包含 hotWords
+  const hotWords = trendingTerms.value[index]?.hotWords || ''; // 使用可选链操作符
+
+  // 更新 placeholder
+  placeholder.value = hotWords.length > searchNumber
+    ? hotWords.substring(0, searchNumber) + '...'
+    : hotWords;
+
+  //   index = (index + 1) % trendingTerms.value.length;
+  // placeholder.value = trendingTerms.value[index].hotWords.length > searchNumber ? trendingTerms.value[index].hotWords.substring(0, searchNumber) + '...' : trendingTerms.value[index].hotWords;
+}, 5000);
 
 onBeforeUnmount(() => {
-    if(interval){
+  if (interval) {
     clearInterval(interval);
   }
-  });
+});
 const restaurants = ref([])
 
 const onInput = debounce(async () => {

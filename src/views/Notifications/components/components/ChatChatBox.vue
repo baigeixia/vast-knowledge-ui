@@ -169,7 +169,7 @@ watch(() => notificationS.upMsgdata, (newValue) => {
 
 const fromValue = {
   from: 'comment',
-  Authorization: getToken()
+  'user-authorization': getToken()
 }
 
 const imageUrl = ref('')

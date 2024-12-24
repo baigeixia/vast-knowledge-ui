@@ -80,7 +80,7 @@ const props = defineProps({
 
 const fromValue = {
     from: 'comment',
-    Authorization: getToken()
+    'user-authorization': getToken()
 }
 
 const uploadAction = "http://localhost:16003/dev-collection/dfs/dfs/upload"

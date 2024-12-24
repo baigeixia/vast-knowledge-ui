@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 import useUserStore from '@/stores/admin/user'
-const TokenKey = 'Admin-Token'
+const TokenKey = 'user-authorization'
 
 export function getToken() {
   const token =Cookies.get(TokenKey)

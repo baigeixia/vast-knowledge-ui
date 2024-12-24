@@ -13,10 +13,10 @@
     <div class="header-right">
       <div class="right-ul">
         <div class="right-li">
-          <el-input ref="searchInput" v-model="headerinput" style="width: 400px" :placeholder="placeholder"
+          <el-input ref="searchInput" v-model="headerinput" style="width: 400px" :placeholder="placeholder" 
             @input="onInput" class="header-input" @keyup.enter="headersearch" @focus="inputfocus()" @blur="inputblur()">
             <template #append>
-              <el-button class="header-search" @click="headersearch" icon="Search" />
+              <el-button class="header-search" icon="Search" @click="headersearch"/>
             </template>
           </el-input>
           <transition name="fade-slide" v-if="!headerinput">
@@ -303,16 +303,17 @@ const navigateToPublish = () => {
 const headersearch = async () => {
   let queryimput = headerinput.value
   if (!queryimput) {
-    queryimput = placeholder.value
+      queryimput = placeholder.value
+      headerinput.value=placeholder.value
   }
   if (queryimput !== sampletext) {
     // const query = encodeURIComponent('先活着再生活');
     if (queryimput) {
       jumppars(queryimput)
+      addLocalhistory(queryimput)
     }
   }
   searchInput.value.blur();
-  addLocalhistory(queryimput)
 
   // searchHistory.value = [
   //   addusersearchdata,
@@ -385,7 +386,6 @@ const searchesClick = (words) => {
   headerinput.value = words
   jumppars(words)
   addLocalhistory(words)
-
 }
 //删除单个
 const deleteSearch = (term) => {

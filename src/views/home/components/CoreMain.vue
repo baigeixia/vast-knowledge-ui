@@ -14,13 +14,13 @@
         </ul>
       </div>
     </header>
-    <div v-if="articleStore.articleList.records.length > 1 " class="top-content">
-      <Maincontentlist :contents="articleStore.articleList.records"  :infinite-scroll-immediate="false"  v-infinite-scroll="articleStore.loadMore" :infinite-scroll-disabled="articleStore.loadingdisabled" />
+    <div v-if="articleStore.articleList?.records?.length > 0 " class="top-content">
+      <Maincontentlist :contents="articleStore?.articleList?.records"  :infinite-scroll-immediate="false"  v-infinite-scroll="articleStore.loadMore" :infinite-scroll-disabled="articleStore.loadingdisabled" />
     </div>
    <div class="no-content" v-else>
       还没有内容
    </div>
-   <div class="no-content" v-if="articleStore.noMore && articleStore.articleList.records.length > 1">
+   <div class="no-content" v-if="articleStore.noMore && articleStore.articleList?.records?.length > 0">
       已经到底部了
    </div>
   </div>

@@ -14,6 +14,7 @@ import { getUserid } from '@/utils/auth'
         const userInfoPo = ref({})
         const userInfoPoLoading = ref(false)
         const isnotlogin = ref(false)
+        const isrefresh = ref(false)
 
         const login = (userInfo) => {
             return new Promise((resolve, reject) => {
@@ -36,7 +37,7 @@ import { getUserid } from '@/utils/auth'
                     isnotlogin.value = false;
                     // location.href='/'
                     window.location.reload();
-                    await  userinfoAppStores.getusergetLocalInfo()
+                    // await userinfoAppStores.getusergetLocalInfo()
                     
                     // history.pushState(null, '', window.location.href);
                     resolve(resp); // 成功时将结果传递给 Promise 的 resolve
@@ -74,6 +75,7 @@ import { getUserid } from '@/utils/auth'
             getUserInfoPo,
             userInfoPo,
             isloginReLongin,
+            isrefresh,
 
         }
     })

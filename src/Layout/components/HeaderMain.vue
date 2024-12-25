@@ -25,7 +25,7 @@
               <div class="trending-searches">
                 <h3>搜索发现</h3>
               </div>
-              <div class="itme-list" v-for="(term, index) in trendingTerms" :key="index"
+              <div  class="itme-list" v-for="(term, index) in trendingTerms" :key="index"
                 @click="searchesClick(term.hotWords)">
                 <div class="itme-text">
                   <span>{{ term.hotWords }}</span>
@@ -38,7 +38,7 @@
               <div class="search-history">
                 <div class="history-header">
                   <h3>搜索历史</h3>
-                  <button @click="clearHistory" v-if="searchHistory.length > 0"> <i class="bi bi-trash"></i>清空</button>
+                  <button @click="clearHistory" v-if="searchHistory?.length > 0"> <i class="bi bi-trash"></i>清空</button>
                 </div>
               </div>
               <div class="itme-list" v-for="(term, index) in searchHistory" :key="index"
@@ -247,10 +247,15 @@ onMounted(async () => {
   await userinfoAppStores.getusergetLocalInfo()
 
   const usersearch = await searchinfoS.getusersearchinfo();
-  searchHistory.value = usersearch
+  if(usersearch){
+    searchHistory.value = usersearch
+  }
 
   const trending = await searchinfoS.getusersearchtrending();
-  trendingTerms.value = trending
+  if(trending){
+    trendingTerms.value = trending
+  }
+
 
 })
 

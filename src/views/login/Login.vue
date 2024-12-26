@@ -11,29 +11,41 @@
       </div>
       <div class="login-dialog-form-right" v-loading="longinloading">
         <div class="login-dialog-title">
-          <span class="title-item " :class="{ 'tab--active': codeOrPas === 1 }" @click=" upcodeOrPas(1)">验证码登录</span>
-          <span class="title-item" :class="{ 'tab--active': codeOrPas === 2 }" @click=" upcodeOrPas(2)">密码登录</span>
+          <!-- <span class="title-item " :class="{ 'tab--active': codeOrPas === 1 }" @click=" upcodeOrPas(1)">验证码登录</span> -->
+          <span class="title-item" :class="{ 'tab--active': codeOrPas === 2 }" @click=" upcodeOrPas(2)">登录</span>
+          <span class="title-item " :class="{ 'tab--active': codeOrPas === 1 }" @click=" upcodeOrPas(1)">注册</span>
         </div>
         <div class="login-dialog-content">
           <el-form class="dialog-content-from" ref="contentFormRef" :model="loginform" :rules="rules">
             <el-form-item prop="email">
               <el-input class="content-input" placeholder="邮箱" v-model="loginform.email" />
             </el-form-item>
-            <el-form-item v-if="codeOrPas == 1" prop="waitcode">
-              <el-input class="content-input" placeholder="验证码" v-model="loginform.waitcode" />
-              <div v-if="!countingDown" class="smsInputButton" @click="startCountdown">获取邮箱验证码</div>
-              <div class="CountingDownButton " v-else>
-                {{ countdownSeconds }} 秒后可重发
-              </div>
-            </el-form-item>
-            <el-form-item v-if="codeOrPas == 2" prop="password">
+            <el-form-item prop="password">
+              <!-- <el-input class="content-input" placeholder="密码" v-model="loginform.waitcode" /> -->
               <el-input class="content-input" placeholder="密码" show-password v-model="loginform.password" />
+              <!-- <div v-if="!countingDown" class="smsInputButton" @click="startCountdown">获取邮箱验证码</div> -->
+              <!-- <div class="CountingDownButton " v-else>
+                {{ countdownSeconds }} 秒后可重发
+              </div> -->
+            </el-form-item>
+            <!-- <el-form-item v-if="codeOrPas == 2" prop="password">
+              <el-input class="content-input" placeholder="密码" show-password v-model="loginform.password" />
+            </el-form-item> -->
+            <el-form-item prop="waitcode">
+              <div class="code" >
+                <el-input  class="content-input" placeholder="验证码" v-model="loginform.waitcode" />
+                <div class="code-img" @click="upCodeimg">
+                  <img :src="'data:image/jpeg;base64,' + codeimgInfo?.img" alt="Image" title="获取验证码" />
+                </div>
+              </div>
             </el-form-item>
             <el-form-item class="onSubmit-button">
               <el-button type="primary" @click="onSubmit(contentFormRef)">
-                {{ codeOrPas === 1 ? '登录/注册' : '登录' }}
+                <!-- {{ codeOrPas === 1 ? '登录/注册' : '登录' }} -->
+                {{ codeOrPas === 1 ? '注册' : '登录' }}
               </el-button>
             </el-form-item>
+
           </el-form>
         </div>
 
@@ -107,20 +119,44 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive } from 'vue';
+import { ref, onMounted, reactive ,watch} from 'vue';
 import useUserStore from '@/stores/admin/user'
 const userStore = useUserStore()
 
-import {socket ,useSockets} from '@/utils/socketclient'
+import { socket, useSockets } from '@/utils/socketclient'
+import { ElMessage } from 'element-plus';
 
 const contentFormRef = ref(null);
 const codeOrPas = ref(1);
 const longinloading = ref(false);
 
+const codeimgInfo = ref({});
+
 const loginsocial = (type) => {
   //第三方登录
   console.log(type);
 }
+
+
+onMounted(async () => {
+  await refrshCodeImg()
+})
+
+
+const upCodeimg = async () => {
+  await refrshCodeImg()
+}
+
+const refrshCodeImg = async () => {
+  const resp = await userStore.getcodeimg()
+  codeimgInfo.value = resp
+}
+// watch(() =>userStore.isnotlogin, (newValue, oldValue) => {
+//   if(oldValue!=newValue){
+//      refrshCodeImg()
+//   }
+// });
+
 
 const onSubmit = async (formEl) => {
   if (!formEl) return
@@ -134,15 +170,35 @@ const onSubmit = async (formEl) => {
     });
 
     if (valid.valid) {
-      await userStore.login({ ...loginform, codeOrPas: codeOrPas.value });
-      // formEl.resetFields();
-      socket.connect();
-      useSockets()
+      const uuid = codeimgInfo.value.uuid
+
+      try {
+        const res = await userStore.login({ ...loginform, codeOrPas: codeOrPas.value, uuid: uuid });
+        console.log("res" + res);
+        codeimgInfo.value = {}
+
+        socket.connect();
+        useSockets()
+        window.location.reload();
+
+      } catch (error) {
+        await refrshCodeImg()
+        if ('Code Verification Error' == error.message) {
+          ElMessage.warning("验证码错误")
+        } else {
+          ElMessage.warning(error.message)
+        }
+      }
+
     } else {
       console.log('error submit!', valid.fields);
     }
   } catch (error) {
-    console.error('Error login:', error);
+    if ('Code Verification Error' == error.message) {
+      ElMessage.warning("验证码错误")
+      await refrshCodeImg()
+    }
+    // console.warn('Error login:', error);
   } finally {
     longinloading.value = false;
   }
@@ -197,7 +253,7 @@ const startCountdown = () => {
 
 const upcodeOrPas = (type) => {
   if (type !== codeOrPas.value) {
-    resetLoginForm()
+    // resetLoginForm()
     codeOrPas.value = type
   }
 }
@@ -266,12 +322,33 @@ const resetLoginForm = () => {
 
         .dialog-content-from {
           padding-top: 30px;
-        }
+
+          .code {
+
+            width: 100%;
+            display: flex;
+            // justify-content: space-between;
+            align-items: center;
+
+            .code-img {
+              cursor: pointer;
+              margin-left: 30px;
+
+              img {
+                height: 48px;
+              }
+            }
+          }
 
 
-        .onSubmit-button {
-          margin-top: 40px;
 
+
+          .onSubmit-button {
+            margin-top: 40px;
+
+
+
+          }
 
           .el-button {
             width: 100%;

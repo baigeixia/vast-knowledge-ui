@@ -8,7 +8,10 @@ export function getToken() {
 }
 
 export function setToken(token) {
-  return Cookies.set(TokenKey, token)
+  return Cookies.set(TokenKey, token,{
+    sameSite: 'None', 
+    secure: true,
+  })
 }
 
 export function removeToken() {
@@ -51,7 +54,10 @@ export function getUserInfo() {
 
 
 export function setUserInfo(info) {
-  return Cookies.set(UserInfoKey, JSON.stringify(info) || '')
+  return Cookies.set(UserInfoKey, JSON.stringify(info) || '',{
+    sameSite: 'None', 
+    secure: true,
+  })
 }
 
 

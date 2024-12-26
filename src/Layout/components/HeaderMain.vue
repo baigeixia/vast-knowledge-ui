@@ -13,10 +13,10 @@
     <div class="header-right">
       <div class="right-ul">
         <div class="right-li">
-          <el-input ref="searchInput" v-model="headerinput" style="width: 400px" :placeholder="placeholder" 
+          <el-input ref="searchInput" v-model="headerinput" style="width: 400px" :placeholder="placeholder"
             @input="onInput" class="header-input" @keyup.enter="headersearch" @focus="inputfocus()" @blur="inputblur()">
             <template #append>
-              <el-button class="header-search" icon="Search" @click="headersearch"/>
+              <el-button class="header-search" icon="Search" @click="headersearch" />
             </template>
           </el-input>
           <transition name="fade-slide" v-if="!headerinput">
@@ -25,7 +25,7 @@
               <div class="trending-searches">
                 <h3>搜索发现</h3>
               </div>
-              <div  class="itme-list" v-for="(term, index) in trendingTerms" :key="index"
+              <div class="itme-list" v-for="(term, index) in trendingTerms" :key="index"
                 @click="searchesClick(term.hotWords)">
                 <div class="itme-text">
                   <span>{{ term.hotWords }}</span>
@@ -192,6 +192,7 @@ const userinfoAppStores = userinfoAppStore();
 import useUserStore from '@/stores/admin/user'
 const userStore = useUserStore()
 
+
 import searchinfoAppStore from '@/stores/search/searchinfo'
 const searchinfoS = searchinfoAppStore()
 
@@ -215,9 +216,9 @@ const inputblur = () => {
 const userExit = () => {
   console.log("用户退出");
   ElMessageBox.confirm('是否要退出登录')
-    .then(() => {
+    .then(async () => {
+      await userStore.userExit()
       removeToken()
-      removeUserInfo()
       removeUserid()
       userinfoAppStores.userLocalinfo.value = {}
       userStore.isnotlogin = true
@@ -239,22 +240,29 @@ const searchHistory = ref([])
 const placeholder = ref(sampletext)
 
 onMounted(async () => {
-  const { query } = route.query
-  if (query) {
-    headerinput.value = query
+  try {
+    const { query } = route.query
+    if (query) {
+      headerinput.value = query
+    }
+
+    if (!userStore.isnotlogin) {
+      await userinfoAppStores.getusergetLocalInfo()
+
+      const usersearch = await searchinfoS.getusersearchinfo();
+      if (usersearch) {
+        searchHistory.value = usersearch
+      }
+
+      const trending = await searchinfoS.getusersearchtrending();
+      if (trending) {
+        trendingTerms.value = trending
+      }
+    }
+  } catch (error) {
+    console.error('Error in mounted hook:', error);
   }
 
-  await userinfoAppStores.getusergetLocalInfo()
-
-  const usersearch = await searchinfoS.getusersearchinfo();
-  if(usersearch){
-    searchHistory.value = usersearch
-  }
-
-  const trending = await searchinfoS.getusersearchtrending();
-  if(trending){
-    trendingTerms.value = trending
-  }
 
 
 })
@@ -308,8 +316,8 @@ const navigateToPublish = () => {
 const headersearch = async () => {
   let queryimput = headerinput.value
   if (!queryimput) {
-      queryimput = placeholder.value
-      headerinput.value=placeholder.value
+    queryimput = placeholder.value
+    headerinput.value = placeholder.value
   }
   if (queryimput !== sampletext) {
     // const query = encodeURIComponent('先活着再生活');

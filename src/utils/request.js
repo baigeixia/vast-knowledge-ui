@@ -1,10 +1,11 @@
 import axios from 'axios'
-import { getToken,setToken } from '@/utils/auth'
+import { getToken, setToken } from '@/utils/auth'
 import { ElNotification, ElMessageBox, ElMessage, ElLoading } from 'element-plus'
 import useUserStore from '@/stores/admin/user'
 import errorCode from '@/utils/errorCode'
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
+
 
 const systemRequest = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API_SYSTEM + '/dev-system',
@@ -46,7 +47,7 @@ function setupInterceptors(instance) {
 
   const queue = [];
 
-  instance.interceptors.response.use(res =>{
+  instance.interceptors.response.use(async res => {
     // 未设置状态码则默认成功状态
     const code = res.data.code || 200;
     // 获取错误信息
@@ -55,48 +56,33 @@ function setupInterceptors(instance) {
     if (res.request.responseType === 'blob' || res.request.responseType === 'arraybuffer') {
       return res.data
     }
-    const users= useUserStore()
+    const users = useUserStore()
+
     if (code === 401) {
       users.isnotlogin = true
       return Promise.reject('登录过期，请重新登录')
     } else if (code === 400) {
       console.log(res);
       let { data, config } = res;
-      console.log(users.isrefresh);
+      // 如果正在刷新token，加入队列
       if (users.isrefresh) {
         return new Promise((resolve) => {
-          queue.push({ config,resolve});
-          console.log('queue'+queue);
+          queue.push({ config, resolve });
+          console.log('queue', queue); // 优化为直接打印队列内容
         });
       }
-      users.isrefresh=true
-      const token =  refreshToken();
-      // console.log(res);
-      // if (res.status === 200) {
-      //   //当刷新成功后，遍历异步请求队列清空所有请求
-      //   queue.forEach(({ config, resolve }) => {
-      //     resolve(systemRequest(config,data));
-      //   });
-      //   return systemRequest(config);
-      // } else {
-      //  //刷新失败，则说明refresh_token过期，用户需要重新登录
-      //   users.isnotlogin = true
-      // }
-
-      users.isrefresh=false
-
-      return Promise.reject(new Error(msg))
-    }else if (code === 500) {
+      refreshToken()
+    } else if (code === 500) {
       // ElMessage({ message: msg, type: 'error' })
       return Promise.reject(new Error(msg))
     } else if (code === 601) {
       // ElMessage({ message: msg, type: 'warning' })
       return Promise.reject(new Error(msg))
-    } 
+    }
     else if (code !== 200) {
       // ElNotification.error({ title: msg })
       return Promise.reject(new Error(msg))
-    } 
+    }
     else {
       return Promise.resolve(res.data)
     }
@@ -116,11 +102,40 @@ function setupInterceptors(instance) {
 
 // 刷新token函数
 async function refreshToken() {
-  const token = await systemRequest.post("/user/refresh");
-  console.log(token);
-  // if(res){
-  //   setToken(res)
-  // }
+ // 开始刷新token
+ users.isrefresh = true;
+    
+ try {
+   const response = await systemRequest.post("/user/refresh");
+   
+   if (response.code === 200) {
+     const token = response.data;
+     setToken(token);
+
+     // 刷新成功后，遍历队列，执行所有等待请求
+     for (const { config, resolve } of queue) {
+       try {
+         const retryResponse = await systemRequest(config);
+         resolve(retryResponse); // 返回重试的请求结果
+       } catch (err) {
+         resolve(Promise.reject(err)); // 如果重试失败，也要resolve，防止队列卡住
+       }
+     }
+     queue.length = 0; // 清空队列
+     return systemRequest(config); // 重试当前请求
+   } else {
+     // 刷新失败，跳转到重新登录流程
+     users.isnotlogin = true;
+     throw new Error('Refresh token expired, please login again.');
+   }
+ } catch (err) {
+   console.error('Token refresh error:', err);
+   return Promise.reject(new Error('Token refresh failed'));
+ } finally {
+   users.isrefresh = false; // 无论如何，都将刷新标志位重置
+ }
+
+  return response.data;
 }
 
 

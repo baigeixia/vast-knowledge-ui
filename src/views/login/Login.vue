@@ -127,7 +127,7 @@ import { socket, useSockets } from '@/utils/socketclient'
 import { ElMessage } from 'element-plus';
 
 const contentFormRef = ref(null);
-const codeOrPas = ref(1);
+const codeOrPas = ref(2);
 const longinloading = ref(false);
 
 const codeimgInfo = ref({});

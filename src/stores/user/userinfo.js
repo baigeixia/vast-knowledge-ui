@@ -39,7 +39,7 @@ const userinfoAppStore = defineStore(
         setUserid(resp.data.id)
         userid.value = resp.data?.id
       }
-      return resp.data;
+      return resp?.data;
     }
 
     const upuserConfig = async (state, type) => {

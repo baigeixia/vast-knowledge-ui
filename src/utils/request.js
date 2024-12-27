@@ -71,7 +71,40 @@ function setupInterceptors(instance) {
           console.log('queue', queue); // 优化为直接打印队列内容
         });
       }
-      refreshToken()
+      // 开始刷新token
+      users.isrefresh = true;
+
+      try {
+        const response = await systemRequest.post("/user/refresh");
+
+        if (response.code === 200) {
+          const token = response.data;
+          console.log(token);
+          setToken(token);
+
+          // 刷新成功后，遍历队列，执行所有等待请求
+          for (const { config, resolve } of queue) {
+            try {
+              const retryResponse = await systemRequest(config);
+              resolve(retryResponse); // 返回重试的请求结果
+            } catch (err) {
+              resolve(Promise.reject(err)); // 如果重试失败，也要resolve，防止队列卡住
+            }
+          }
+          queue.length = 0; // 清空队列
+          return systemRequest(config); // 重试当前请求
+        } else {
+          // 刷新失败，跳转到重新登录流程
+          users.isnotlogin = true;
+          throw new Error('Refresh token expired, please login again.');
+        }
+      } catch (err) {
+        console.error('Token refresh error:', err);
+        return Promise.reject(new Error('Token refresh failed'));
+      } finally {
+        users.isrefresh = false; // 无论如何，都将刷新标志位重置
+      }
+
     } else if (code === 500) {
       // ElMessage({ message: msg, type: 'error' })
       return Promise.reject(new Error(msg))
@@ -98,44 +131,6 @@ function setupInterceptors(instance) {
     ElMessage({ message: message, type: 'error', duration: 5 * 1000 })
     return Promise.reject(error)
   });
-}
-
-// 刷新token函数
-async function refreshToken() {
- // 开始刷新token
- users.isrefresh = true;
-    
- try {
-   const response = await systemRequest.post("/user/refresh");
-   
-   if (response.code === 200) {
-     const token = response.data;
-     setToken(token);
-
-     // 刷新成功后，遍历队列，执行所有等待请求
-     for (const { config, resolve } of queue) {
-       try {
-         const retryResponse = await systemRequest(config);
-         resolve(retryResponse); // 返回重试的请求结果
-       } catch (err) {
-         resolve(Promise.reject(err)); // 如果重试失败，也要resolve，防止队列卡住
-       }
-     }
-     queue.length = 0; // 清空队列
-     return systemRequest(config); // 重试当前请求
-   } else {
-     // 刷新失败，跳转到重新登录流程
-     users.isnotlogin = true;
-     throw new Error('Refresh token expired, please login again.');
-   }
- } catch (err) {
-   console.error('Token refresh error:', err);
-   return Promise.reject(new Error('Token refresh failed'));
- } finally {
-   users.isrefresh = false; // 无论如何，都将刷新标志位重置
- }
-
-  return response.data;
 }
 
 

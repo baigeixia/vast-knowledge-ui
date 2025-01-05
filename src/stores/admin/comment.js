@@ -44,22 +44,16 @@ const commentStore = defineStore(
 
         const saveCommentReContent = async () => {
             const { commentId, commentRepayId, content, image, repayAuthorId, entryId } = commentReDto.value
-            try {
                 const response = await saveCommentRe(commentId, commentRepayId, content, image, repayAuthorId, entryId);
                 TemporaryComments.value = response.data
-            } catch (error) {
-                console.error('Failed to save comment:', error);
-            }
+           
         }
 
         const saveCommentContent = async () => {
             const { type, channelId, entryId, content, image, arAuthorId } = commentDto.value
-            try {
                 const response = await saveComment(type, channelId, entryId, content, image, arAuthorId);
                 TemporaryComments.value = response.data
-            } catch (error) {
-                console.error('Failed to save comment:', error);
-            }
+         
         }
 
 

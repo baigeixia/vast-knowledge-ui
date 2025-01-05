@@ -1,8 +1,8 @@
 <template>
     <div class="auth-card" :class="{ 'auth-card-hovered': isHovered, 'auth-card-focused': (isFocused || commentinput) }"
         @mouseover="isHovered = true" @mouseleave="isHovered = false">
-        <el-input ref="commentinputRef" :autosize="{ minRows: 2, maxRows: 10 }"  maxlength="500"
-            type="textarea" v-model="commentinput" :placeholder="inputplaceholder" clearable @focus="isFocused = true"
+        <el-input ref="commentinputRef" :autosize="{ minRows: 2, maxRows: 10 }" maxlength="500" type="textarea"
+            v-model="commentinput" :placeholder="inputplaceholder" clearable @focus="isFocused = true"
             @blur="isFocused = false" />
         <div v-if="imageUrl" class="small-preview-box">
             <img :src="imageUrl" alt="预览图片" class="small-preview-image" @click="showLargePreview">
@@ -20,20 +20,20 @@
                     </template>
                     <EmojiFileInput ref="EmojiFileInputRef" class="emoji-input" @emoji-click="commentinputfocus" />
                 </el-popover>
-               
+
                 <el-upload ref="fileInput" :action="uploadAction" :headers="fromValue" :show-file-list="false"
                     :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
-                    <div class="emoji-box" >
-                    <el-tooltip content="上传图片最大 10mb" placement="bottom">
-                        <i class="bi bi-card-image upload-icon"></i>
-                    </el-tooltip>
-                </div>
+                    <div class="emoji-box">
+                        <el-tooltip content="上传图片最大 10mb" placement="bottom">
+                            <i class="bi bi-card-image upload-icon"></i>
+                        </el-tooltip>
+                    </div>
                 </el-upload>
                 <!-- <input type="file" ref="fileInput" @change="handleFileChange" accept="image/*" style="display: none;"> -->
             </div>
             <div class="text-count-wrapper">
                 <span>{{ commentinput.length }}/500</span>
-                <el-button :disabled="!commentinput.trim().length >= 1 && !imageUrl"  @click="sendmessage">发送</el-button>
+                <el-button :disabled="!commentinput.trim().length >= 1 && !imageUrl" @click="sendmessage">发送</el-button>
             </div>
         </div>
         <el-dialog v-model:visible="dialogVisible" width="50%">
@@ -41,7 +41,7 @@
         </el-dialog>
     </div>
 </template>
-  
+
 <script setup>
 import { onMounted, ref } from 'vue';
 import { ElMessage } from 'element-plus'
@@ -80,20 +80,20 @@ const props = defineProps({
 
 const fromValue = {
     from: 'comment',
-    'user-authorization': getToken()
+    'authorization': getToken()
 }
 
 const uploadAction = "http://localhost:16003/dev-collection/dfs/dfs/upload"
 
 const handleAvatarSuccess = (response, uploadFile) => {
-    if(response?.data){
-        let image =response.data.url
+    if (response?.data) {
+        let image = response.data.url
         imageUrl.value = image
         console.log("imageUrl:" + imageUrl.value);
         ElMessage.success('已添加')
-    }else {
+    } else {
         // console.error("No file uploaded.");
-        ElMessage.error('文件上传失败:'+response.msg)
+        ElMessage.error('文件上传失败:' + response.msg)
 
     }
 }
@@ -142,7 +142,6 @@ const sendmessage = () => {
 
         const articleId = props.articleId
         commentS.commentReDto.entryId = articleId
-
         if (props.replyauthorId) {
             commentS.commentReDto.content = commentinput.value
             commentS.commentReDto.image = imageUrl.value
@@ -150,20 +149,41 @@ const sendmessage = () => {
             commentS.commentReDto.commentId = props.commentIdTop
             commentS.commentReDto.repayAuthorId = props.replyauthor.id
             commentS.commentDto.entryId = props.articleId
-            await commentS.saveCommentReContent()
-            commentS.resetCommentRe()
-            sendmessageAddVodataRe()
+            try {
+                const response = await commentS.saveCommentReContent()
+                console.log("response:" + response);
+                sendmessageAddVodataRe()
+                upcomment(true)
+
+            } catch (error) {
+                
+                ElMessage({
+                    message: error.message
+                    , type: 'warning'
+                })
+            } finally {
+                commentS.resetCommentRe()
+            }
+
         } else {
             commentS.commentDto.content = commentinput.value
             commentS.commentDto.arAuthorId = articleS.articleDto.authorId
             commentS.commentDto.entryId = props.articleId
             commentS.commentDto.image = imageUrl.value
-            await commentS.saveCommentContent()
-            sendmessageAddVodata()
-            commentS.resetComment()
+            try {
+                const response = await commentS.saveCommentContent()
+                console.log("response:" + response);
+                sendmessageAddVodata()
+                upcomment(true)
+            } catch (error) {
+                ElMessage({
+                    message: error.message
+                    , type: 'warning'
+                })
+            } finally {
+                commentS.resetComment()
+            }
         }
-
-        upcomment(true)
 
         imageUrl.value = ''
         commentinput.value = ''
@@ -285,7 +305,7 @@ const showLargePreview = () => {
 
 
 </script>
-  
+
 <style lang="scss" scoped>
 :deep(.el-textarea__inner) {
     // background-color: #f4f4f4;
@@ -469,4 +489,3 @@ const showLargePreview = () => {
     color: #1e80ff;
 }
 </style>
-  

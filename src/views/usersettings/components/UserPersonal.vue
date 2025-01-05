@@ -107,7 +107,7 @@ import { getUserInfo, setUserInfo, getToken } from '@/utils/auth'
 //头像容器
 const fromValue = {
     from: 'avatar',
-    'user-authorization': getToken()
+    'authorization': getToken()
 }
 
 // const uploadAction="http://localhost:19011/dfs/upload"

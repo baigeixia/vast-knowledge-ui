@@ -155,15 +155,16 @@ const sendmessage = () => {
                 sendmessageAddVodataRe()
                 upcomment(true)
 
+                commentS.resetComment()
+                imageUrl.value = ''
+                commentinput.value = ''
+                maincommentS.istime = null
             } catch (error) {
-                
                 ElMessage({
                     message: error.message
                     , type: 'warning'
                 })
-            } finally {
-                commentS.resetCommentRe()
-            }
+            } 
 
         } else {
             commentS.commentDto.content = commentinput.value
@@ -175,21 +176,22 @@ const sendmessage = () => {
                 console.log("response:" + response);
                 sendmessageAddVodata()
                 upcomment(true)
+
+                commentS.resetComment()
+                imageUrl.value = ''
+                commentinput.value = ''
+                maincommentS.istime = null
+
             } catch (error) {
                 ElMessage({
                     message: error.message
                     , type: 'warning'
                 })
-            } finally {
-                commentS.resetComment()
-            }
+            } 
         }
 
-        imageUrl.value = ''
-        commentinput.value = ''
         // commentS.commentHomeVo = {}
         // await commentS.commentListGet()
-        maincommentS.istime = null
 
     }, 300);
 

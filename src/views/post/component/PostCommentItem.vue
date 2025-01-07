@@ -19,6 +19,7 @@
                         </template>
                     </user-info-popover>
                     <span class="position">{{ comment.author.position }}</span>
+                    <span class="position">{{ comment.author?.location}}</span>
                 </div>
                 <div v-if="comment.reply" class="comment-name">
                     <i class="bi bi-caret-right-fill"></i>
@@ -30,6 +31,7 @@
                         </template>
                     </user-info-popover>
                     <span class="position">{{ comment.reply.position }}</span>
+                    <span class="position">{{ comment.reply?.location}}</span>
                 </div>
             </div>
             <div class="comment-text">

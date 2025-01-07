@@ -63,15 +63,15 @@
             <el-container class="center-main">
                 <el-main class="center-main-text">
                     <el-skeleton :loading="centermainloading" :rows="10" animated v-if="articleS.articleDto">
-                        <h1 class="article-title">{{ articleS.articleDto.title ?? '无内容' }}</h1>
+                        <h1 class="article-title">{{ articleS.articleDto.title }}</h1>
                         <div class="author-info-box">
                             <div class="author-name">
                                 <RouterLink :to="`/user/${articleS.articleDto.authorId}`">
-                                    {{ articleS.articleDto.authorName ?? '无内容' }}
+                                    {{ articleS.articleDto.authorName}}
                                 </RouterLink>
                             </div>
-                            <div class="meta-box">
-                                <div class="time">{{ $formatDateTime(articleS.articleDto.createdTime) ?? 0 }}</div>
+                            <div class="meta-box" v-if="articleS.articleDto" >
+                                <div class="time" v-if="articleS.articleDto.createdTime">{{ $formatDateTime(articleS.articleDto.createdTime)  }}</div>
                                 <!-- <div class="time">{{ $formatDate(articleS.articleDto.createdTime) }}</div> -->
                                 <div class="read-time" v-if="articleS.articleDto.views > 0">
                                     <i class="bi bi-eye"></i>
@@ -88,7 +88,7 @@
                             </div>
                         </div>
                         <!-- <p class="context-box" v-html="replaceImgWithTag(contentS.content.content)" ref="mainTextRef"></p> -->
-                        <div class="context-box" v-html="contentS.content.content ?? '无内容'" ref="mainTextRef"></div>
+                        <div class="context-box" v-html="contentS.content.content" ref="mainTextRef"></div>
                     </el-skeleton>
                     <div class="context-erro" v-else>
                         无文章内容
@@ -271,9 +271,6 @@
         <el-image-viewer v-if="showImageViewer" :url-list="[imgPreviewUrl]" @close="showImageViewerclose"
             :hide-on-click-modal="true">
         </el-image-viewer>
-    </el-container>
-    <el-container v-else class="post-home-main">
-        无内容
     </el-container>
 </template>
 <script setup>
@@ -521,7 +518,6 @@ onMounted(async () => {
             maincommentS.commentHomedrawerDto.type = 3
         }
         startTime = Date.now()
-
         await contentS.getContent(postId)
         await articleS.getinfoArticle(postId)
         await commentS.commentListGet()
@@ -607,9 +603,11 @@ const replaceImg = () => {
 let isScrolling;
 
 const viewReadingPosition = (percentage) => {
-    if (!mainTextRef.value) return;
+     // 获取元素
 
-    const element = mainTextRef.value; // 获取元素
+    const element = mainTextRef.value;
+    if (!element) return;
+
     const elementHeight = element.scrollHeight; // 元素的总高度
     const targetScrollPosition = (percentage / 100) * elementHeight; // 计算目标滚动位置
 

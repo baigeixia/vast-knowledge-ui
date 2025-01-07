@@ -22,9 +22,9 @@ const contentStore = defineStore(
     }
 
       
-    const getContent = (id) => {
-        return new Promise((resolve, reject) => {
-            getInfoContent(
+    const getContent = async (id) => {
+        return await new  Promise (async (resolve, reject) => {
+          await getInfoContent(
               id
             ).then((res) => {
                 content.value ={

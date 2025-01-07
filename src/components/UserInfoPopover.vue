@@ -24,16 +24,21 @@
                         <div class="info-name" :title="authorInfor?.username"> {{ authorInfor?.name }}</div>
                         <!-- <div class="info-position" :title="authorInfor?.position"> {{ authorInfor?.position }}</div> -->
                         <div class="info-position" :title="authorInfor?.position"> {{ authorInfor?.introduction }}</div>
+                        <div class="info-location" v-if=" authorInfor.location">
+                            <div class="item-name">所在地:</div>
+                            <div class="item-count">{{ authorInfor.location}}</div>
+                        </div>
                     </div>
                     <div class="meta-row">
                         <div class="item">
                             <div class="item-name">粉丝</div>
-                            <div class="item-count">{{ authorInfor?.fans }}</div>
+                            <div class="item-count">{{ authorInfor?.fans ?? 0 }}</div>
                         </div>
                         <div class="item">
                             <div class="item-name">关注者</div>
-                            <div class="item-count">{{ authorInfor?.follows }}</div>
+                            <div class="item-count">{{ authorInfor?.follows ?? 0 }}</div>
                         </div>
+                   
                     </div>
                     <div class="operate-btn">
                         <el-button @click="followedButton(authorInfor.id, authorInfor.name)"
@@ -191,6 +196,9 @@ const userpopovershow = async () => {
                     overflow: hidden;
                     text-overflow: ellipsis;
                     white-space: nowrap;
+                }
+                .info-location{
+                    font-size: 10px;
                 }
             }
 

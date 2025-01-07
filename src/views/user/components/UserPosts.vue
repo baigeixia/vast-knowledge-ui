@@ -20,14 +20,13 @@
         <el-skeleton-item style="width: 40%;" variant="text" />
       </template>
       <div>
-
         <div class="itme-List" v-infinite-scroll="loadMore" :infinite-scroll-immediate="false"
           :infinite-scroll-disabled="loadingdisabled" v-if="posts.records && posts.records.length > 0">
           <div class="content-skeleton-item" v-for="post in posts.records" :key="post.id">
             <div class="post-time">
               <time>{{ $formatDateTime(post.createdTime) }}&nbsp;:&nbsp;创建时间</time>
             </div>
-            <MaincontentItme :content="post" :islocal="true" @deleteArticle="deleteArticle"  />
+            <MaincontentItme :content="post"   />
           </div>
         </div>
         <div v-else class="user-activity-nodata">
@@ -68,14 +67,6 @@ const props = defineProps({
   }
 })
 
-const deleteArticle = async (id) => {
-  await articleStore.deleteOne(id)
-  posts.value.records = posts.value.records.filter(post => post.id !== id);
-  ElMessage({
-    message: '删除成功',
-    type: 'success',
-  })
-}
 
 
 

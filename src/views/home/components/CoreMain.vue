@@ -87,7 +87,7 @@ const initArticleList=()=>{
   }
 
   .list-header {
-    padding: 1rem 1.66rem;
+    padding: 0.8rem 1.2rem;
     border-bottom: 1px solid #f2f3f5;
 
     .list {

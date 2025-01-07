@@ -1,7 +1,7 @@
 <template>
   <div class="main-left">
     <div class="side-wrapper" >
-      <div class="item-wrap " :class="{'search-top': ishide}" v-if="channelStore?.channellist?.length > 0">
+      <div class="item-wrap " :class="{'search-top': ishide}" v-if="channelStore.channellist?.length > 0">
         <div class="item-content" :class="{'is-active' : articleStore.tagType ===  itme.id }" v-for="itme in channelStore.channellist" :key="itme.id"  @click="tabSwit(itme.id)">
           <div class="item">
             <el-icon>
@@ -29,7 +29,6 @@ const page =ref(1)
 onMounted(() => channelStore.getchannellist())
 
 const tabSwit = (id) => {
-
     if(articleStore.tagType===id){
       articleStore.tagType=0
     }else{

@@ -35,18 +35,6 @@
                 <i class="bi" :class="iconClass"></i>
                 <span> {{ content.likes }}</span>
             </div>
-            <div class="item-li" v-if="islocal && content.authorId == userinfoAppStores.userid">
-                <el-dropdown class="dropdown-menu" trigger="click">
-                    <!-- <div><i class="bi bi-nut-fill unifiedcolor"></i><span class="showfont">设置</span></div> -->
-                    <template #dropdown>
-                        <el-dropdown-menu>
-                            <el-dropdown-item @click="deleteid(content.id)">
-                                <div>删除</div>
-                            </el-dropdown-item>
-                        </el-dropdown-menu>
-                    </template>
-                </el-dropdown>
-            </div>
             <div class="item-li" v-if="islogin">
                 <el-dropdown class="dropdown-menu" trigger="click">
                     <div><i class="bi bi-three-dots dots"></i></div>
@@ -118,10 +106,8 @@ const openInNewTab = (contentid) => {
 
 }
 
-const emit = defineEmits(['deleteArticle','dislikeArticle']);
-const deleteid = async (id) => {
-    emit('deleteArticle', id);
-}
+const emit = defineEmits(['dislikeArticle']);
+
 
 const Articlelike = (id, authorId, authorName, type) => {
     if (userS.isloginReLongin()) {
@@ -137,7 +123,7 @@ const props = defineProps({
         required: true,// 是否必须传递
     },
     islocal: {
-        type: Boolean, // 定义接收的数据类型
+        type: Boolean, // 是本地的
         required: false,
     }
 });
@@ -208,7 +194,6 @@ const report = (id) => {
     reportdialog.value = true
     reportuserid.value = id
 }
-
 
 
 

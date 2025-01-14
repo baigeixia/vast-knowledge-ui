@@ -1,8 +1,8 @@
-import { coreRequest ,systemRequest} from '@/utils/request'
+import { request } from '@/utils/request'
 
 
 export const  searchInfoApi =(query,type,sort,period,page,size)=>{
-    return coreRequest({
+    return request({
         url: '/search/search/searchInfo',
         method: 'GET',
         params:{
@@ -17,7 +17,7 @@ export const  searchInfoApi =(query,type,sort,period,page,size)=>{
 }
 
 export const  searchUserInfoApi =(query,type,sort,period,page,size)=>{
-    return systemRequest({
+    return request({
         url: '/user/info/search',
         method: 'GET',
         params:{

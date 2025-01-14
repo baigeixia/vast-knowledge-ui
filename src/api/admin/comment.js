@@ -1,7 +1,7 @@
-import { coreRequest } from '@/utils/request'
+import { request } from '@/utils/request'
 
 export function saveComment(type,channelId,entryId,content,image,arAuthorId) {
-    return coreRequest({
+    return request({
       url: '/comment/Comment/saveComment',
       method: 'POST',
       data:{
@@ -16,7 +16,7 @@ export function saveComment(type,channelId,entryId,content,image,arAuthorId) {
 }
 
 export function saveCommentRe(commentId,commentRepayId,content,image,repayAuthorId,entryId) {
-  return coreRequest({
+  return request({
     url: '/comment/CommentRepay/saveCommentRe',
     method: 'POST',
     data:{
@@ -32,7 +32,7 @@ export function saveCommentRe(commentId,commentRepayId,content,image,repayAuthor
 
 
 export function getCommentList(entryId,type,page,size,notificationId) {
-  return coreRequest({
+  return request({
     url: '/comment/Comment/getCommentList',
     method: 'GET',
     params:{
@@ -47,7 +47,7 @@ export function getCommentList(entryId,type,page,size,notificationId) {
 
 
 export function getCommentReList(type,commentId,page,size) {
-  return coreRequest({
+  return request({
     url: '/comment/CommentRepay/getCommentReList',
     method: 'GET',
     params:{

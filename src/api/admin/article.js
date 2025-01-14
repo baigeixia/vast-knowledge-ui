@@ -1,7 +1,7 @@
-import { coreRequest } from '@/utils/request'
+import { request } from '@/utils/request'
 
 export function gethomeList(page,size,tag,type) {
-    return coreRequest({
+    return request({
       url: '/article/article/homeList',
       method: 'GET',
       params:{
@@ -15,7 +15,7 @@ export function gethomeList(page,size,tag,type) {
 
 
 export function infoArticle(id) {
-  return coreRequest({
+  return request({
     url: '/article/article/info',
     method: 'GET',
     params:{
@@ -25,7 +25,7 @@ export function infoArticle(id) {
 }
 
 export function postsapi(userId,page,size,type) {
-  return coreRequest({
+  return request({
     url: '/article/article/posts',
     method: 'GET',
     params:{
@@ -38,7 +38,7 @@ export function postsapi(userId,page,size,type) {
 }
 
 export function deleteOneApi(id) {
-  return coreRequest({
+  return request({
     url: '/article/article/deleteOne',
     method: 'DELETE',
     params:{

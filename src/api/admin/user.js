@@ -1,8 +1,8 @@
-import { systemRequest } from '@/utils/request'
+import { request } from '@/utils/request'
 
 
 export function getUserInfo(id) {
-    return systemRequest({
+    return request({
       url: `/user/info/getInfo`,
       method: 'GET',
       params:{

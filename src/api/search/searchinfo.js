@@ -1,7 +1,7 @@
-import { coreRequest ,systemRequest} from '@/utils/request'
+import { request } from '@/utils/request'
 
 export const  getusersearchinfoApi =()=>{
-    return coreRequest({
+    return request({
         url: `/search/search/userSearch`,
         method: 'GET',
     })
@@ -10,7 +10,7 @@ export const  getusersearchinfoApi =()=>{
 
 
 export const  addusersearchinfoApi =(query)=>{
-    return coreRequest({
+    return request({
         url: `/search/search/addUserSearch`,
         method: 'GET',
         params:{
@@ -20,7 +20,7 @@ export const  addusersearchinfoApi =(query)=>{
 }
 
 export const  getusersearchtrendingapi =()=>{
-    return coreRequest({
+    return request({
         url: `/search/hot/trending`,
         method: 'GET',
     })
@@ -28,7 +28,7 @@ export const  getusersearchtrendingapi =()=>{
 
 
 export const  rmHistoryapi =(id)=>{
-    return coreRequest({
+    return request({
         url: `/search/search/rmHistory`,
         method: 'DELETE',
         params:{
@@ -38,14 +38,14 @@ export const  rmHistoryapi =(id)=>{
 }
 
 export const  rmHistoryAllapi =()=>{
-    return coreRequest({
+    return request({
         url: `/search/search/rmHistoryAll`,
         method: 'DELETE',
     })
 }
 
 export const  associatelistapi =(text)=>{
-    return coreRequest({
+    return request({
         url: `/search/associate/list`,
         method: 'GET',
         params:{

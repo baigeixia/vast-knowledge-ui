@@ -1,11 +1,11 @@
-import { collectionRequest } from '@/utils/request'
+import { request } from '@/utils/request'
 
 
 export function dfsUploadApi(file, fromValue) {
     const formData = new FormData();
     formData.append('file', file);
 
-    return collectionRequest({
+    return request({
         method: 'POST',
         url: '/dfs/dfs/upload',
         headers: {

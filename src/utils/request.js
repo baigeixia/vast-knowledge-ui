@@ -6,6 +6,11 @@ import errorCode from '@/utils/errorCode'
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 
+request
+const request = axios.create({
+  baseURL: import.meta.env.VITE_APP_BASE_API_SYSTEM + '/dev-system',
+  timeout: 5000
+})
 
 const systemRequest = axios.create({
   baseURL: import.meta.env.VITE_APP_BASE_API_SYSTEM + '/dev-system',
@@ -25,9 +30,7 @@ const collectionRequest = axios.create({
 })
 
 
-setupInterceptors(systemRequest)
-setupInterceptors(coreRequest)
-setupInterceptors(collectionRequest)
+setupInterceptors(request)
 
 
 function setupInterceptors(instance) {
@@ -75,7 +78,7 @@ function setupInterceptors(instance) {
       users.isrefresh = true;
 
       try {
-        const response = await systemRequest.post("/user/refresh");
+        const response = await request.post("/user/refresh");
 
         if (response.code === 200) {
           const token = response.data;
@@ -85,14 +88,14 @@ function setupInterceptors(instance) {
           // 刷新成功后，遍历队列，执行所有等待请求
           for (const { config, resolve } of queue) {
             try {
-              const retryResponse = await systemRequest(config);
+              const retryResponse = await request(config);
               resolve(retryResponse); // 返回重试的请求结果
             } catch (err) {
               resolve(Promise.reject(err)); // 如果重试失败，也要resolve，防止队列卡住
             }
           }
           queue.length = 0; // 清空队列
-          return systemRequest(config); // 重试当前请求
+          return request(config); // 重试当前请求
         } else {
           // 刷新失败，跳转到重新登录流程
           users.isnotlogin = true;
@@ -135,5 +138,5 @@ function setupInterceptors(instance) {
 
 
 
-export { collectionRequest, systemRequest, coreRequest }
+export { request }
 

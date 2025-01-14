@@ -1,9 +1,9 @@
-import { coreRequest } from '@/utils/request'
+import { request } from '@/utils/request'
 
 
 
 export function getInfoContent(id) {
-  return coreRequest({
+  return request({
     url: '/article/Content/getInfo',
     method: 'GET',
     params: {

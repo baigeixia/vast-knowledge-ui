@@ -1,8 +1,8 @@
-import { systemRequest } from '@/utils/request'
+import { request } from '@/utils/request'
 
 
 export const  usergetInfo =(userid)=>{
-    return systemRequest({
+    return request({
         url: `/user/info/getInfo`,
         method: 'GET',
         params:{
@@ -13,7 +13,7 @@ export const  usergetInfo =(userid)=>{
 }
 
 export const  InfoRelationApi =(userid)=>{
-    return systemRequest({
+    return request({
         url: `/user/info/InfoRelation`,
         method: 'GET',
         params:{
@@ -22,7 +22,7 @@ export const  InfoRelationApi =(userid)=>{
     })
 }
 export const  upuserConfigApi =(state,type)=>{
-    return systemRequest({
+    return request({
         url: `/user/info/userConfig/${type}`,
         method: 'GET',
         params:{
@@ -33,7 +33,7 @@ export const  upuserConfigApi =(state,type)=>{
 
 
 export const  upuserInfoApi =(from)=>{
-    return systemRequest({
+    return request({
         url: `/user/info/upInfo`,
         method: 'POST',
         data:{
@@ -44,7 +44,7 @@ export const  upuserInfoApi =(from)=>{
 
 
 export const  userfollowersListApi =(userId,page,size)=>{
-    return systemRequest({
+    return request({
         url: `/user/fan/list`,
         method: 'GET',
         params:{
@@ -56,7 +56,7 @@ export const  userfollowersListApi =(userId,page,size)=>{
 }
 
 export const  userFollowingListApi =(userId,page,size)=>{
-    return systemRequest({
+    return request({
         url: `/user/follow/list`,
         method: 'GET',
         params:{

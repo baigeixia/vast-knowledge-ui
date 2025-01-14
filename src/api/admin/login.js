@@ -1,8 +1,8 @@
-import { systemRequest } from '@/utils/request'
+import { request } from '@/utils/request'
 
 
 export function securityLogin({email,password,waitCode,codeOrPas,uuid}) {
-    return systemRequest({
+    return request({
       url: '/user/login',
       method: 'POST',
       headers:{
@@ -19,7 +19,7 @@ export function securityLogin({email,password,waitCode,codeOrPas,uuid}) {
 
 
 export function securitylogout() {
-  return systemRequest({
+  return request({
     url: '/user/logout',
     method: 'DELETE',
   })
@@ -28,7 +28,7 @@ export function securitylogout() {
 
 
 export function getcodeimgApi() {
-  return systemRequest({
+  return request({
     url: '/system/code',
     method: 'GET',
   })

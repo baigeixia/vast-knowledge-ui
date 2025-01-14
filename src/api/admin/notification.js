@@ -1,7 +1,7 @@
-import { coreRequest ,collectionRequest ,systemRequest} from '@/utils/request'
+import { request} from '@/utils/request'
 
 export function getCommentNotification(page,size) {
-    return coreRequest({
+    return request({
       url: '/comment/Comment/notification',
       method: 'GET',
       params:{
@@ -12,7 +12,7 @@ export function getCommentNotification(page,size) {
 }
 
 export function getLikeNotification(page,size) {
-  return collectionRequest({
+  return request({
     url: '/behaviour/likes/list',
     method: 'GET',
     params:{
@@ -24,7 +24,7 @@ export function getLikeNotification(page,size) {
 
 
 export function getfollowNotification(page,size) {
-  return collectionRequest({
+  return request({
     url: '/behaviour/follow/list',
     method: 'GET',
     params:{
@@ -36,7 +36,7 @@ export function getfollowNotification(page,size) {
 
 
 export function getImList(type,page,size) {
-  return systemRequest({
+  return request({
     url: '/user/letter/list',
     method: 'GET',
     params:{
@@ -48,7 +48,7 @@ export function getImList(type,page,size) {
 }
 
 export function getmsgListdata(userId,page,size) {
-  return systemRequest({
+  return request({
     url: '/user/letter/msgList',
     method: 'GET',
     params:{
@@ -61,7 +61,7 @@ export function getmsgListdata(userId,page,size) {
 
 
 export function setclearUnreadMsg(userId) {
-  return systemRequest({
+  return request({
     url: '/user/letter/clearUnreadMsg',
     method: 'GET',
     params:{
@@ -71,7 +71,7 @@ export function setclearUnreadMsg(userId) {
 }
 
 export function setdelMsg(msgId) {
-  return systemRequest({
+  return request({
     url: '/user/letter/delMsg',
     method: 'DELETE',
     params:{

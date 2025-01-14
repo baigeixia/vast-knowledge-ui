@@ -6,9 +6,8 @@ import errorCode from '@/utils/errorCode'
 
 axios.defaults.headers['Content-Type'] = 'application/json;charset=utf-8'
 
-request
 const request = axios.create({
-  baseURL: import.meta.env.VITE_APP_BASE_API_SYSTEM + '/dev-system',
+  baseURL: import.meta.env.VITE_APP_BASE_API_SYSTEM ,
   timeout: 5000
 })
 

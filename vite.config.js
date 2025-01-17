@@ -2,8 +2,6 @@ import { fileURLToPath, URL } from 'node:url'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
-
-
 import { defineConfig, loadEnv } from 'vite'
 import vue from '@vitejs/plugin-vue'
 
@@ -33,26 +31,23 @@ export default defineConfig(({ mode, command }) =>{
         target: 'http://localhost:16001' ,
         changeOrigin: true,
       },
-      '/dev-core': {
-        target: 'http://localhost:16002',
-        changeOrigin: true,
-      },
-      '/dev-collection': {
-        target: 'http://localhost:16003',
-        changeOrigin: true,
-      },
     }
-    // proxy: {
-    //   '/dev-collection': 'http://localhost:16003',
-    //   '/dev-core': 'http://localhost:16002',
-    //   '/dev-system': 'http://localhost:16001',
-    // }
   },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url)),
       '~': fileURLToPath(new URL('./', import.meta.url)),
     }
-  }
+  },
+  rollupOptions: {
+    output: {
+      manualChunks: {
+        // 将 lodash 单独打包
+        lodash: ['lodash'],
+        // 将 vue 相关库单独打包
+        vue: ['vue', 'vue-router', 'vuex'],
+      },
+    },
+  },
  }
 })

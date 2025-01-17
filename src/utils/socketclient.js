@@ -12,7 +12,7 @@ const config = {
   }
 }
 
-export const socket = io('localhost:9090',
+export const socket = io('wss://aidighub.com:19090',
   {
     ...config,
   });

@@ -276,8 +276,8 @@
 <script setup>
 import { ref, onMounted, computed, onBeforeUnmount, onUnmounted, watch, reactive, nextTick, watchEffect, isProxy, isReactive, isReadonly } from 'vue';
 import { useScroll } from '@vueuse/core'
-import PostComment from './component/PostComment.vue';
-import PostCommentItem from './component/PostCommentItem.vue';
+// import PostComment from './component/PostComment.vue';
+// import PostCommentItem from './component/PostCommentItem.vue';
 import hljs from 'highlight.js/lib/common';
 import 'highlight.js/styles/github.css';
 import { escapeHtml } from '@/utils/escapeHtml'
@@ -285,7 +285,6 @@ import { defineAsyncComponent } from 'vue';
 import contentStore from "@/stores/admin/content";
 import commentStore from "@/stores/admin/comment";
 const commentS = commentStore()
-
 import maincommentAppStore from "@/stores/admin/maincomment";
 const contentS = contentStore()
 import articleAppStore from "@/stores/admin/article";
@@ -295,15 +294,18 @@ import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 import behaviourAppStore from "@/stores/collection/behaviour"
 const behaviourAppStoreS = behaviourAppStore();
-
 import { getUserid } from '@/utils/auth'
-
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
-
 import { islogin } from '@/utils/userislogin';
 import useUserStore from "@/stores/admin/user";
 const userS = useUserStore()
+import debounce from '@/utils/debouncing';
+
+
+const PostComment = () => import('./component/PostComment.vue');
+const PostCommentItem = () => import('./component/PostCommentItem.vue');
+const PostCommentItemAsync = defineAsyncComponent(() => import('./component/PostCommentItem.vue'));
 
 
 const handletimer = null;
@@ -350,7 +352,6 @@ const handleImageClick = (event) => {
 
 
 
-import debounce from '@/utils/debouncing';
 
 
 const articlelike = debounce((id, authorId, authorName, type) => {
@@ -420,7 +421,7 @@ const percentagecount = () => {
     return Math.min(Math.max(percentageRead, 0), 100); // 限制百分比在 0 到 100 之间
 }
 
-const PostCommentItemAsync = defineAsyncComponent(() => import('./component/PostCommentItem.vue'));
+
 const props = defineProps({
     postId: {
         type: String,

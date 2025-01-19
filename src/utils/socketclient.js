@@ -12,10 +12,16 @@ const config = {
   }
 }
 
-export const socket = io('wss://aidighub.com:19090',
-  {
-    ...config,
-  });
+// export const socket = io('wss://aidighub.com:19090',
+//   {
+//     ...config,
+//   });
+
+  export const socket = io('localhost:9090',
+    {
+      ...config,
+    });
+
 
 export function useSockets() {
   // 在组件挂载时设置重连尝试逻辑

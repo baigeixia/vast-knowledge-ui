@@ -126,7 +126,7 @@
                     </div>
                     <div class="comment-list" v-infinite-scroll="commentS.loadMore" :infinite-scroll-immediate="false"
                         :infinite-scroll-disabled="commentS.Loadingdisabled">
-                        <PostCommentItemAsync :isSubComments="true" v-for="comment in commentS.commentHomeVo.comments"
+                        <PostCommentItem :isSubComments="true" v-for="comment in commentS.commentHomeVo.comments"
                             :key="comment.id" :comment="comment" :articleid="postId" :commentIdTop="comment.id" />
                     </div>
                     <div v-if="commentS.isLoadingEnd" class="dot-container">
@@ -276,20 +276,18 @@
 <script setup>
 import { ref, onMounted, computed, onBeforeUnmount, onUnmounted, watch, reactive, nextTick, watchEffect, isProxy, isReactive, isReadonly } from 'vue';
 import { useScroll } from '@vueuse/core'
-// import PostComment from './component/PostComment.vue';
-// import PostCommentItem from './component/PostCommentItem.vue';
-import hljs from 'highlight.js/lib/common';
-import 'highlight.js/styles/github.css';
+// import hljs from 'highlight.js/lib/common';
+// import 'highlight.js/styles/github.css';
 import { escapeHtml } from '@/utils/escapeHtml'
 import { defineAsyncComponent } from 'vue';
-import contentStore from "@/stores/admin/content";
 import commentStore from "@/stores/admin/comment";
 const commentS = commentStore()
 import maincommentAppStore from "@/stores/admin/maincomment";
+const maincommentS = maincommentAppStore()
+import contentStore from "@/stores/admin/content";
 const contentS = contentStore()
 import articleAppStore from "@/stores/admin/article";
 const articleS = articleAppStore()
-const maincommentS = maincommentAppStore()
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 import behaviourAppStore from "@/stores/collection/behaviour"
@@ -303,9 +301,9 @@ const userS = useUserStore()
 import debounce from '@/utils/debouncing';
 
 
-const PostComment = () => import('./component/PostComment.vue');
-const PostCommentItem = () => import('./component/PostCommentItem.vue');
-const PostCommentItemAsync = defineAsyncComponent(() => import('./component/PostCommentItem.vue'));
+const PostComment = defineAsyncComponent(() => import('./component/PostComment.vue'));
+const PostCommentItem = defineAsyncComponent(() => import('./component/PostCommentItem.vue'));
+
 
 
 const handletimer = null;
@@ -434,8 +432,6 @@ const props = defineProps({
     }
 })
 
-// const noislikeArticle = computed(() => (behaviourAppStoreS.postoperation.get(props.postId) ?? 1) == 1)
-// const isnolikeArticle = computed(() => behaviourAppStoreS.postoperation.get(props.postId) ?? false);
 const isActive = computed(() => commentS.articleLike === 0);
 const isCollect = computed(() => commentS.articleCollect);
 
@@ -726,7 +722,8 @@ const onDrawerOpen = async () => {
 //     });
 // }
 const codeLanguage = () => {
-    hljs.highlightAll()
+    // hljs.highlightAll()
+    loadHighlightJS()
 
     const codeBlocks = document.querySelectorAll('pre code[class*="language-"]');
 
@@ -815,6 +812,14 @@ const codeLanguage = () => {
     });
 }
 
+const loadHighlightJS = () => {
+ // 动态导入 highlight.js 并返回 promise
+ return import('highlight.js').then((module) => {
+    const hljs = module.default; // hljs 的实际引用
+    import('highlight.js/styles/github.css'); // 延迟加载样式
+    hljs.highlightAll(); // 执行高亮
+  });
+};
 
 
 

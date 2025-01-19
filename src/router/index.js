@@ -7,16 +7,16 @@ import useUserStore from '@/stores/admin/user'
 
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(),
   routes: [
     {
       path: '/',
       name: '',
-      component: import('../Layout/index.vue'),
+      component: () => import('../Layout/index.vue'),
       children: [
         {
           path: '',
-          component:import('../views/home/index.vue') ,
+          component:() => import('../views/home/index.vue') ,
         },
         {
           path: '/footmark',

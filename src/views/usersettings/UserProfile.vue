@@ -15,17 +15,17 @@
                 <Postcard />
               </el-icon>个人资料</div>
           </RouterLink>
-          <RouterLink to="account">
+          <!-- <RouterLink to="account">
             <div class="nav-item" :class="{'active': isActive('/user/settings/account')}"><el-icon>
                 <User />
               </el-icon>账号设置</div>
-          </RouterLink>
+          </RouterLink> -->
           <!-- <RouterLink to="common">
             <div class="nav-item" :class="{'active': isActive('/user/settings/common')}"><el-icon>
                 <Setting />
               </el-icon>通用设置</div>
           </RouterLink> -->
-          <RouterLink to="message">
+          <!-- <RouterLink to="message">
             <div class="nav-item" :class="{'active': isActive('/user/settings/message')}"><el-icon>
                 <ChatDotRound />
               </el-icon>消息设置</div>
@@ -34,7 +34,7 @@
             <div class="nav-item" :class="{'active': isActive('/user/settings/block')}"><el-icon>
                 <MuteNotification />
               </el-icon>屏蔽管理</div>
-          </RouterLink>
+          </RouterLink> -->
         </el-aside>
         <el-main class="main-box">
           <RouterView></RouterView>

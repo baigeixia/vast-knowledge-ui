@@ -78,7 +78,7 @@
 import { onMounted, ref, nextTick, computed, reactive,watch } from "vue"
 import { escapeHtml } from '@/utils/escapeHtml'
 import { ElMessage } from 'element-plus'
-// import UserInfoPopover from '@/components/UserInfoPopover.vue'
+import UserInfoPopover from '@/components/UserInfoPopover.vue'
 import useUserStore from "@/stores/admin/user";
 const userS = useUserStore()
 import notificationAppStore from "@/stores/admin/notification";
@@ -94,8 +94,14 @@ const behaviourAppStoreS = behaviourAppStore();
 import { islogin } from '@/utils/userislogin';
 
 import { useRouter } from 'vue-router';
+<<<<<<< HEAD
 import { defineAsyncComponent } from 'vue'
 const UserInfoPopover = defineAsyncComponent(() => import("@/components/UserInfoPopover.vue"))
+=======
+
+// const UserInfoPopover = () => import('@/components/UserInfoPopover.vue');
+
+>>>>>>> 03fb23ddd1713b467c7f6b9fbc85b62f8a441381
 
 const router = useRouter();
 

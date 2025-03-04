@@ -276,19 +276,22 @@
 <script setup>
 import { ref, onMounted, computed, onBeforeUnmount, onUnmounted, watch, reactive, nextTick, watchEffect, isProxy, isReactive, isReadonly } from 'vue';
 import { useScroll } from '@vueuse/core'
-// import PostComment from './component/PostComment.vue';
-// import PostCommentItem from './component/PostCommentItem.vue';
-import hljs from 'highlight.js/lib/common';
-import 'highlight.js/styles/github.css';
+// import hljs from 'highlight.js/lib/common';
+// import 'highlight.js/styles/github.css';
 import { escapeHtml } from '@/utils/escapeHtml'
+<<<<<<< HEAD
 import contentStore from "@/stores/admin/content";
+=======
+import { defineAsyncComponent } from 'vue';
+>>>>>>> 03fb23ddd1713b467c7f6b9fbc85b62f8a441381
 import commentStore from "@/stores/admin/comment";
 const commentS = commentStore()
 import maincommentAppStore from "@/stores/admin/maincomment";
+const maincommentS = maincommentAppStore()
+import contentStore from "@/stores/admin/content";
 const contentS = contentStore()
 import articleAppStore from "@/stores/admin/article";
 const articleS = articleAppStore()
-const maincommentS = maincommentAppStore()
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 import behaviourAppStore from "@/stores/collection/behaviour"
@@ -303,8 +306,13 @@ import debounce from '@/utils/debouncing';
 import { defineAsyncComponent } from 'vue'
 
 
+<<<<<<< HEAD
 const PostCommentItem = defineAsyncComponent(() => import("./component/PostCommentItem.vue"))
 const PostComment = defineAsyncComponent(() => import("./component/PostComment.vue"))
+=======
+const PostComment = defineAsyncComponent(() => import('./component/PostComment.vue'));
+const PostCommentItem = defineAsyncComponent(() => import('./component/PostCommentItem.vue'));
+>>>>>>> 03fb23ddd1713b467c7f6b9fbc85b62f8a441381
 
 
 
@@ -434,8 +442,6 @@ const props = defineProps({
     }
 })
 
-// const noislikeArticle = computed(() => (behaviourAppStoreS.postoperation.get(props.postId) ?? 1) == 1)
-// const isnolikeArticle = computed(() => behaviourAppStoreS.postoperation.get(props.postId) ?? false);
 const isActive = computed(() => commentS.articleLike === 0);
 const isCollect = computed(() => commentS.articleCollect);
 
@@ -726,7 +732,8 @@ const onDrawerOpen = async () => {
 //     });
 // }
 const codeLanguage = () => {
-    hljs.highlightAll()
+    // hljs.highlightAll()
+    loadHighlightJS()
 
     const codeBlocks = document.querySelectorAll('pre code[class*="language-"]');
 
@@ -815,6 +822,14 @@ const codeLanguage = () => {
     });
 }
 
+const loadHighlightJS = () => {
+ // 动态导入 highlight.js 并返回 promise
+ return import('highlight.js').then((module) => {
+    const hljs = module.default; // hljs 的实际引用
+    import('highlight.js/styles/github.css'); // 延迟加载样式
+    hljs.highlightAll(); // 执行高亮
+  });
+};
 
 
 

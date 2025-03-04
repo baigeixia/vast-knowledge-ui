@@ -98,8 +98,8 @@
 </template>
 <script setup>
 import { ref, onMounted, computed, nextTick, toRaw } from 'vue';
-// import UserInfoPopover from '@/components/UserInfoPopover.vue'
-// import PostComment from './PostComment.vue';
+import UserInfoPopover from '@/components/UserInfoPopover.vue'
+import PostComment from './PostComment.vue';
 import { escapeHtml } from '@/utils/escapeHtml'
 import maincommentAppStore from '@/stores/admin/maincomment'
 const maincommentS = maincommentAppStore()

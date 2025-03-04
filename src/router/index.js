@@ -7,7 +7,7 @@ import useUserStore from '@/stores/admin/user'
 
 
 const router = createRouter({
-  history: createWebHistory(import.meta.env.BASE_URL),
+  history: createWebHistory(),
   routes: [
     {
       path: '/',

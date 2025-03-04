@@ -1,6 +1,6 @@
 <template>
     <div class="content-list">
-        <el-skeleton class="skeleton" animated :loading="articleS.isLoadingEnd && !contents.length  ">
+        <el-skeleton class="skeleton" animated :loading="articleS.isLoadingEnd && contents.length < 1">
             <template #template>
                 <div class="main-skeleton">
                     <el-skeleton-item variant="h1" />
@@ -54,8 +54,8 @@
                     </div>
                 </div>
             </template>
-            <div class="content-skeleton-item" v-for="content in  localContents" :key="content.id"  >
-                <MaincontentItme :content="content" @dislikeArticle="dislikeArticle"/>
+            <div class="content-skeleton-item" v-for="contentinfo in contents" :key="contents.id"  >
+                <MaincontentItme :content="contentinfo" @dislikeArticle="dislikeArticle"/>
             </div>
             <el-skeleton class="skeleton" animated :loading="articleS.isLoadingEnd && contents.length > 0">
                 <template #template>
@@ -96,10 +96,10 @@ const props = defineProps({
     },
 });
 
-const localContents = ref([...props.contents]);
+// const localContents = ref(props.contents);
 
-const dislikeArticle =  (id) => {
-    localContents.value = localContents.value.filter(post => post.id !== id);
+const dislikeArticle = (id) => {
+    // props.contents=props.contents.filter(post => post.id !== id);
 }
 
 const hasBrowsedevent=(id)=>{

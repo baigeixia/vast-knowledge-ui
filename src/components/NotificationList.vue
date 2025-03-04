@@ -167,7 +167,7 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-// import UserInfoPopover from '@/components/UserInfoPopover.vue'
+import UserInfoPopover from '@/components/UserInfoPopover.vue'
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
 import { useRouter } from 'vue-router';

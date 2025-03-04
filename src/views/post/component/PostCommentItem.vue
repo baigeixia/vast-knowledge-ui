@@ -98,7 +98,7 @@
 </template>
 <script setup>
 import { ref, onMounted, computed, nextTick, toRaw } from 'vue';
-import PostComment from './PostComment.vue';
+// import PostComment from './PostComment.vue';
 import { escapeHtml } from '@/utils/escapeHtml'
 import maincommentAppStore from '@/stores/admin/maincomment'
 const maincommentS = maincommentAppStore()
@@ -112,10 +112,7 @@ import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 import debounce from '@/utils/debouncing';
 import { defineAsyncComponent } from 'vue'
-// const UserInfoPopover = defineAsyncComponent(() => import("@/components/UserInfoPopover.vue"))
 const PostComment = defineAsyncComponent(() => import("./PostComment.vue"))
-
-// const PostComment = () => import('./PostComment.vue');
 
 const props = defineProps({
     comment: {

@@ -198,6 +198,11 @@ const userpopovershow = async () => {
                     white-space: nowrap;
                 }
                 .info-location{
+                    margin: 5px 0 5px 0;
+                display: flex;
+                align-items: center;
+                // justify-content: center;
+                
                     font-size: 10px;
                 }
             }

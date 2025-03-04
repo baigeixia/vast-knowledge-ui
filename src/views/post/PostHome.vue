@@ -280,7 +280,7 @@ import { useScroll } from '@vueuse/core'
 // import 'highlight.js/styles/github.css';
 import { escapeHtml } from '@/utils/escapeHtml'
 // import contentStore from "@/stores/admin/content";
-import { defineAsyncComponent } from 'vue';
+// import { defineAsyncComponent } from 'vue';
 import commentStore from "@/stores/admin/comment";
 const commentS = commentStore()
 import maincommentAppStore from "@/stores/admin/maincomment";

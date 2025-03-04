@@ -112,9 +112,12 @@ const userS = useUserStore()
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 import debounce from '@/utils/debouncing';
+import { defineAsyncComponent } from 'vue'
+const UserInfoPopover = defineAsyncComponent(() => import("@/components/UserInfoPopover.vue"))
+const PostComment = defineAsyncComponent(() => import("./PostComment.vue"))
 
-const UserInfoPopover = () => import('@/components/UserInfoPopover.vue');
-const PostComment = () => import('./PostComment.vue');
+// const UserInfoPopover = () => import('@/components/UserInfoPopover.vue');
+// const PostComment = () => import('./PostComment.vue');
 
 const props = defineProps({
     comment: {

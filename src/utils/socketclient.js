@@ -12,7 +12,9 @@ const config = {
   }
 }
 
-export const socket = io('wss://aidighub.com:19090',
+const socketApiUrl = import.meta.env.VITE_APP_BASE_SOCKETIO_API;
+export const socket = io(
+  socketApiUrl,
   {
     ...config,
   });

@@ -40,13 +40,17 @@
 <script setup>
 import { ref, watch, reactive } from "vue"
 import HeaderMain from './components/HeaderMain.vue'
-import ExternalLinkGuard from '@/Layout/components/ExternalLinkGuard.vue';
+// import ExternalLinkGuard from '@/Layout/components/ExternalLinkGuard.vue';
 import { useScroll } from '@vueuse/core'
 import { ishide } from '@/components/Publicvariables'
 import Login from '@/views/login/Login.vue'
 
 import feedbackAppStore from "@/stores/user/feedback";
 const feedbackAppStores = feedbackAppStore()
+
+import { defineAsyncComponent } from 'vue'
+const ExternalLinkGuard = defineAsyncComponent(() => import("@/Layout/components/ExternalLinkGuard.vue"))
+
 
 
 const { y } = useScroll(window)

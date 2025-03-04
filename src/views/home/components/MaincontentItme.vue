@@ -94,9 +94,8 @@ const behaviourAppStoreS = behaviourAppStore();
 import { islogin } from '@/utils/userislogin';
 
 import { useRouter } from 'vue-router';
-
-const UserInfoPopover = () => import('@/components/UserInfoPopover.vue');
-
+import { defineAsyncComponent } from 'vue'
+const UserInfoPopover = defineAsyncComponent(() => import("@/components/UserInfoPopover.vue"))
 
 const router = useRouter();
 

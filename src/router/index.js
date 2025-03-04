@@ -12,11 +12,11 @@ const router = createRouter({
     {
       path: '/',
       name: '',
-      component: import('../Layout/index.vue'),
+      component: () => import('../Layout/index.vue'),
       children: [
         {
           path: '',
-          component:import('../views/home/index.vue') ,
+          component:() => import('../views/home/index.vue') ,
         },
         {
           path: '/footmark',

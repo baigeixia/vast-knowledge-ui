@@ -8,7 +8,7 @@ import vue from '@vitejs/plugin-vue'
 // https://vitejs.dev/config/
 export default defineConfig(({ mode, command }) =>{
   const env = loadEnv(mode, process.cwd())
-  const { VITE_APP_BASE_API_SYSTEM ,VITE_APP_BASE_API_CORE,VITE_APP_BASE_API_COLLECTION} = env
+  const { VITE_APP_BASE_API} = env
  
  return{
   plugins: [
@@ -27,9 +27,10 @@ export default defineConfig(({ mode, command }) =>{
     open: true,
     proxy: {
       // https://cn.vitejs.dev/config/#server-proxy
-      '/dev-system': {
-        target: 'http://localhost:16001' ,
+      '/api': {
+        target: VITE_APP_BASE_API ,
         changeOrigin: true,
+        rewrite: (p) => p.replace(/^\/api/, '')
       },
     }
   },

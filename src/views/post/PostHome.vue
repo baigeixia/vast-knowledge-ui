@@ -126,7 +126,7 @@
                     </div>
                     <div class="comment-list" v-infinite-scroll="commentS.loadMore" :infinite-scroll-immediate="false"
                         :infinite-scroll-disabled="commentS.Loadingdisabled">
-                        <PostCommentItemAsync :isSubComments="true" v-for="comment in commentS.commentHomeVo.comments"
+                        <PostCommentItem :isSubComments="true" v-for="comment in commentS.commentHomeVo.comments"
                             :key="comment.id" :comment="comment" :articleid="postId" :commentIdTop="comment.id" />
                     </div>
                     <div v-if="commentS.isLoadingEnd" class="dot-container">
@@ -281,7 +281,6 @@ import { useScroll } from '@vueuse/core'
 import hljs from 'highlight.js/lib/common';
 import 'highlight.js/styles/github.css';
 import { escapeHtml } from '@/utils/escapeHtml'
-import { defineAsyncComponent } from 'vue';
 import contentStore from "@/stores/admin/content";
 import commentStore from "@/stores/admin/comment";
 const commentS = commentStore()
@@ -301,11 +300,12 @@ import { islogin } from '@/utils/userislogin';
 import useUserStore from "@/stores/admin/user";
 const userS = useUserStore()
 import debounce from '@/utils/debouncing';
+import { defineAsyncComponent } from 'vue'
 
 
-const PostComment = () => import('./component/PostComment.vue');
-const PostCommentItem = () => import('./component/PostCommentItem.vue');
-const PostCommentItemAsync = defineAsyncComponent(() => import('./component/PostCommentItem.vue'));
+const PostCommentItem = defineAsyncComponent(() => import("./component/PostCommentItem.vue"))
+const PostComment = defineAsyncComponent(() => import("./component/PostComment.vue"))
+
 
 
 const handletimer = null;

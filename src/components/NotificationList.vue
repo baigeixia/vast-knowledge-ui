@@ -174,8 +174,10 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 const dialogTableVisible = ref(false)
 const dialoguserlist = ref([])
+import { defineAsyncComponent } from 'vue'
+const UserInfoPopover = defineAsyncComponent(() => import("@/components/UserInfoPopover.vue"))
 
-const UserInfoPopover = () => import('@/components/UserInfoPopover.vue');
+// const UserInfoPopover = () => import('@/components/UserInfoPopover.vue');
 
 
 const opuserinfo = (id) => {

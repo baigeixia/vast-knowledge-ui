@@ -54,7 +54,7 @@
                     </div>
                 </div>
             </template>
-            <div class="content-skeleton-item" v-for="contentinfo in contents" :key="contents.id"  >
+            <div class="content-skeleton-item" v-for="contentinfo in contents" :key="contentinfo.id"  >
                 <MaincontentItme :content="contentinfo" @dislikeArticle="dislikeArticle"/>
             </div>
             <el-skeleton class="skeleton" animated :loading="articleS.isLoadingEnd && contents.length > 0">

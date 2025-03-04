@@ -12,25 +12,16 @@ const config = {
   }
 }
 
-<<<<<<< HEAD
 const socketApiUrl = import.meta.env.VITE_APP_BASE_SOCKETIO_API;
 export const socket = io(
   socketApiUrl,
   {
     ...config,
   });
-=======
 // export const socket = io('wss://aidighub.com:19090',
 //   {
 //     ...config,
 //   });
-
-  export const socket = io('localhost:9090',
-    {
-      ...config,
-    });
-
->>>>>>> 03fb23ddd1713b467c7f6b9fbc85b62f8a441381
 
 export function useSockets() {
   // 在组件挂载时设置重连尝试逻辑

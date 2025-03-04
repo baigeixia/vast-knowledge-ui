@@ -94,15 +94,9 @@ const behaviourAppStoreS = behaviourAppStore();
 import { islogin } from '@/utils/userislogin';
 
 import { useRouter } from 'vue-router';
-<<<<<<< HEAD
 import { defineAsyncComponent } from 'vue'
 const UserInfoPopover = defineAsyncComponent(() => import("@/components/UserInfoPopover.vue"))
-=======
-
 // const UserInfoPopover = () => import('@/components/UserInfoPopover.vue');
-
->>>>>>> 03fb23ddd1713b467c7f6b9fbc85b62f8a441381
-
 const router = useRouter();
 
 const openInNewTab = (contentid) => {

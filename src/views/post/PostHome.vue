@@ -279,11 +279,8 @@ import { useScroll } from '@vueuse/core'
 // import hljs from 'highlight.js/lib/common';
 // import 'highlight.js/styles/github.css';
 import { escapeHtml } from '@/utils/escapeHtml'
-<<<<<<< HEAD
-import contentStore from "@/stores/admin/content";
-=======
+// import contentStore from "@/stores/admin/content";
 import { defineAsyncComponent } from 'vue';
->>>>>>> 03fb23ddd1713b467c7f6b9fbc85b62f8a441381
 import commentStore from "@/stores/admin/comment";
 const commentS = commentStore()
 import maincommentAppStore from "@/stores/admin/maincomment";
@@ -306,13 +303,8 @@ import debounce from '@/utils/debouncing';
 import { defineAsyncComponent } from 'vue'
 
 
-<<<<<<< HEAD
 const PostCommentItem = defineAsyncComponent(() => import("./component/PostCommentItem.vue"))
 const PostComment = defineAsyncComponent(() => import("./component/PostComment.vue"))
-=======
-const PostComment = defineAsyncComponent(() => import('./component/PostComment.vue'));
-const PostCommentItem = defineAsyncComponent(() => import('./component/PostCommentItem.vue'));
->>>>>>> 03fb23ddd1713b467c7f6b9fbc85b62f8a441381
 
 
 

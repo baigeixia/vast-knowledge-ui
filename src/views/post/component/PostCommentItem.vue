@@ -2,34 +2,34 @@
     <!-- <div class="comment-item" :id="vice ? comment.id : null"> -->
     <div class="comment-item" :id="vice ? comment.id : null">
         <div class="comment-avatar">
-            <user-info-popover :author="comment.author">
+            <UserInfoPopover :author="comment.author">
                 <template v-slot:reference>
                     <img class="avatar" :src="comment.author.avatar" alt="avatar" />
                 </template>
-            </user-info-popover>
+            </UserInfoPopover>
         </div>
         <div class="comment-content">
             <div class="comment-header">
                 <div class="comment-name">
-                    <user-info-popover :author="comment.author">
+                    <UserInfoPopover :author="comment.author">
                         <template v-slot:reference>
                             <span class="username">
                                 {{ comment.author.username }}
                             </span>
                         </template>
-                    </user-info-popover>
+                    </UserInfoPopover>
                     <span class="position">{{ comment.author.position }}</span>
                     <span class="position">{{ comment.author?.location}}</span>
                 </div>
                 <div v-if="comment.reply" class="comment-name">
                     <i class="bi bi-caret-right-fill"></i>
-                    <user-info-popover :author="comment.reply">
+                    <UserInfoPopover :author="comment.reply">
                         <template v-slot:reference>
                             <span class="username">
                                 {{ comment.reply.username }}
                             </span>
                         </template>
-                    </user-info-popover>
+                    </UserInfoPopover>
                     <span class="position">{{ comment.reply.position }}</span>
                     <span class="position">{{ comment.reply?.location}}</span>
                 </div>
@@ -98,7 +98,6 @@
 </template>
 <script setup>
 import { ref, onMounted, computed, nextTick, toRaw } from 'vue';
-import UserInfoPopover from '@/components/UserInfoPopover.vue'
 import PostComment from './PostComment.vue';
 import { escapeHtml } from '@/utils/escapeHtml'
 import maincommentAppStore from '@/stores/admin/maincomment'
@@ -113,10 +112,9 @@ import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 import debounce from '@/utils/debouncing';
 import { defineAsyncComponent } from 'vue'
-const UserInfoPopover = defineAsyncComponent(() => import("@/components/UserInfoPopover.vue"))
+// const UserInfoPopover = defineAsyncComponent(() => import("@/components/UserInfoPopover.vue"))
 const PostComment = defineAsyncComponent(() => import("./PostComment.vue"))
 
-// const UserInfoPopover = () => import('@/components/UserInfoPopover.vue');
 // const PostComment = () => import('./PostComment.vue');
 
 const props = defineProps({

@@ -24,13 +24,13 @@
                                     <span v-if="info.hide" class="username-hide">
                                         <div> {{ info.actors.username }}</div>
                                     </span>
-                                    <user-info-popover v-else :author="info.actors">
+                                    <UserInfoPopover v-else :author="info.actors">
                                         <template v-slot:reference>
                                             <span class="username" @click="opuserinfo(actors.id)">
                                                 <div> {{ info.actors.username }}</div>
                                             </span>
                                         </template>
-                                    </user-info-popover>
+                                    </UserInfoPopover>
                                     <div v-if="info.hide">
                                         &nbsp;{{ info.actors.verb }} &middot;&nbsp;
                                     </div>
@@ -54,14 +54,14 @@
                             <div class="itme-content-box">
                                 <div class="content-box-start">
                                     <div v-for="(actor, index) in info.actors.slice(0, 10)" :key="actor.id">
-                                        <user-info-popover  :author="actor">
+                                        <UserInfoPopover  :author="actor">
                                             <template v-slot:reference>
                                                 <span class="username" @click="opuserinfo(actor.id)">
                                                     {{ actor.username }}
                                                     <span v-if="index < info.actors.length - 1 && index < 9">、</span>
                                                 </span>
                                             </template>
-                                        </user-info-popover>
+                                        </UserInfoPopover>
                                     </div>
                                     <span class="people-list" @click="opdialogTableVisible(info.actors)"
                                         v-if="info.mergeCount > 3">
@@ -81,14 +81,14 @@
                                 </div>
                                 <div class="content-box-start">
                                     <div v-for="(actor, index) in info.actors" :key="actor.id">
-                                        <user-info-popover :author="actor">
+                                        <UserInfoPopover :author="actor">
                                             <template v-slot:reference>
                                                 <span class="username" @click="opuserinfo(actor.id)">
                                                     {{ actor.username }}
                                                     <span v-if="index < info.actors.length - 1 && index < 9">、</span>
                                                 </span>
                                             </template>
-                                        </user-info-popover>
+                                        </UserInfoPopover>
                                         <!-- index从0开始，所以判断index小于9时才显示分隔符 -->
                                     </div>
                                     <span class="people-list" @click="opdialogTableVisible(info.actors)"
@@ -133,22 +133,22 @@
             <div class="list-item-box" v-for=" actor in dialoguserlist" :key="actor.id">
                 <div class="ContentItem">
                     <div class="ContentItem-image">
-                        <user-info-popover :author="actor">
+                        <UserInfoPopover :author="actor">
                             <template v-slot:reference>
                                 <img class="image-box" :src="actor.avatar" alt="avatar" />
                             </template>
-                        </user-info-popover>
+                        </UserInfoPopover>
                         <!-- <img class="image-box" :src="actor.avatar" alt="avatar" /> -->
                     </div>
                     <div class="ContentItem-head">
                         <div class="UserItem-title">
-                            <user-info-popover :author="actor">
+                            <UserInfoPopover :author="actor">
                                 <template v-slot:reference>
                                     <span class="UserItem-title-username" @click="opuserinfo(actor.id)">
                                         {{ actor.username }}
                                     </span>
                                 </template>
-                            </user-info-popover>
+                            </UserInfoPopover>
                         </div>
                         <div class="ContentItem-status"></div>
                     </div>
@@ -167,15 +167,15 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
-import UserInfoPopover from '@/components/UserInfoPopover.vue'
+// import UserInfoPopover from '@/components/UserInfoPopover.vue'
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
 import { useRouter } from 'vue-router';
 const router = useRouter();
 const dialogTableVisible = ref(false)
 const dialoguserlist = ref([])
-import { defineAsyncComponent } from 'vue'
-const UserInfoPopover = defineAsyncComponent(() => import("@/components/UserInfoPopover.vue"))
+// import { defineAsyncComponent } from 'vue'
+// const UserInfoPopover = defineAsyncComponent(() => import("@/components/UserInfoPopover.vue"))
 
 // const UserInfoPopover = () => import('@/components/UserInfoPopover.vue');
 

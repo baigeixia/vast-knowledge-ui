@@ -7,77 +7,67 @@ import vue from '@vitejs/plugin-vue'
 import visualizer from 'rollup-plugin-visualizer';
 import viteCompression from 'vite-plugin-compression';
 // https://vitejs.dev/config/
-export default defineConfig(({ mode, command }) =>{
+export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd())
-<<<<<<< HEAD
-  const { VITE_APP_BASE_API} = env
- 
-=======
-  const { VITE_APP_BASE_API,Vk_BUILD_COMPRESS,VITE_APP_ENV} = env
- // 判断是否是生产环境
+  const { VITE_APP_BASE_API, Vk_BUILD_COMPRESS } = env
+  // 判断是否是生产环境
   const isProduction = mode === 'production'
 
   const compress = Vk_BUILD_COMPRESS === 'gzip' ? 'gzip' : Vk_BUILD_COMPRESS === 'brotli' ? 'brotli' : null;
->>>>>>> 03fb23ddd1713b467c7f6b9fbc85b62f8a441381
- return{
-  plugins: [
-    vue(),
-    AutoImport({
-      resolvers: [ElementPlusResolver()],
-    }),
-    Components({
-      resolvers: [ElementPlusResolver()],
-    }),
-    visualizer.default({ // 使用 .default()
+  return {
+    plugins: [
+      vue(),
+      AutoImport({
+        resolvers: [ElementPlusResolver()],
+      }),
+      Components({
+        resolvers: [ElementPlusResolver()],
+      }),
+      visualizer.default({ // 使用 .default()
+        open: true,
+        gzipSize: true,
+        brotliSize: true,
+        filename: 'stats.html',
+      }),
+      viteCompression({
+        algorithm: 'gzip',
+      }),
+    ],
+    server: {
+      port: 8080,
+      host: true,
       open: true,
-      gzipSize: true,
-      brotliSize: true,
-      filename: 'stats.html',
-    }),
-    viteCompression({
-      algorithm: 'gzip',
-    }),
-  ],
-  server: {
-    port: 8080,
-    host: true,
-    open: true,
-    proxy: {
-      // https://cn.vitejs.dev/config/#server-proxy
-      '/api': {
-        target: VITE_APP_BASE_API ,
-        changeOrigin: true,
-<<<<<<< HEAD
-        rewrite: (p) => p.replace(/^\/api/, '')
-=======
-        rewrite: (path) =>{
-          debugger
-          if(!isProduction){
-            return path.replace(/^\/api/, ''); // 移除 /api 前缀
-          }
-          return path; // 在生产环境中返回原始路径
+      proxy: {
+        // https://cn.vitejs.dev/config/#server-proxy
+        '/api': {
+          target: VITE_APP_BASE_API,
+          changeOrigin: true,
+          rewrite: (path) => {
+            if (!isProduction) {
+              return path.replace(/^\/api/, ''); // 移除 /api 前缀
+            }
+            return path; // 在生产环境中返回原始路径
+          },
         },
->>>>>>> 03fb23ddd1713b467c7f6b9fbc85b62f8a441381
-      },
-    }
-  },
-  resolve: {
-    alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url)),
-      '~': fileURLToPath(new URL('./', import.meta.url)),
-    }
-  },
-  build: {
-    rollupOptions: {
-      output: {
-        manualChunks(id) {
-          // 将 node_modules 中的依赖单独打包
-          if (id.includes('node_modules')) {
-            return 'vendor'; // 所有 node_modules 中的依赖会打包到一个单独的 vendor 文件
-          }
+      }
+    },
+    resolve: {
+      alias: {
+        '@': fileURLToPath(new URL('./src', import.meta.url)),
+        '~': fileURLToPath(new URL('./', import.meta.url)),
+      }
+    },
+    build: {
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            // 将 node_modules 中的依赖单独打包
+            if (id.includes('node_modules')) {
+              return 'vendor'; // 所有 node_modules 中的依赖会打包到一个单独的 vendor 文件
+            }
+          },
         },
       },
     },
-  },
- }
+  }
 })

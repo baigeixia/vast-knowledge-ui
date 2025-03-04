@@ -4,7 +4,7 @@
             <div class="ContentItem">
                 <div class="ContentItem-head">
                     <div class="UserItem-title">
-                        <user-info-popover :author="info">
+                        <UserInfoPopover :author="info">
                             <template v-slot:reference>
                                 <div class="ContentItem-info">
                                     <div class="ContentItem-image">
@@ -23,7 +23,7 @@
                                     </div>
                                 </div>
                             </template>
-                        </user-info-popover>
+                        </UserInfoPopover>
                     </div>
 
                 </div>

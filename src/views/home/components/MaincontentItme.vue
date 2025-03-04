@@ -10,7 +10,7 @@
     <div class="row-footer">
         <div class="action-list">
             <div class="item-li">
-                <user-info-popover :authorid="content.authorId">
+                <UserInfoPopover :authorid="content.authorId">
                     <template v-slot:reference>
                         <RouterLink :to="`/user/${content.authorId}`" class="user-message">
                             <span class="user-popover">
@@ -18,7 +18,7 @@
                             </span>
                         </RouterLink>
                     </template>
-                </user-info-popover>
+                </UserInfoPopover>
             </div>
             <div class="item-li view">
                 <el-icon>
@@ -78,7 +78,6 @@
 import { onMounted, ref, nextTick, computed, reactive,watch } from "vue"
 import { escapeHtml } from '@/utils/escapeHtml'
 import { ElMessage } from 'element-plus'
-import UserInfoPopover from '@/components/UserInfoPopover.vue'
 import useUserStore from "@/stores/admin/user";
 const userS = useUserStore()
 import notificationAppStore from "@/stores/admin/notification";
@@ -94,9 +93,9 @@ const behaviourAppStoreS = behaviourAppStore();
 import { islogin } from '@/utils/userislogin';
 
 import { useRouter } from 'vue-router';
-import { defineAsyncComponent } from 'vue'
-const UserInfoPopover = defineAsyncComponent(() => import("@/components/UserInfoPopover.vue"))
-// const UserInfoPopover = () => import('@/components/UserInfoPopover.vue');
+// import { defineAsyncComponent } from 'vue'
+// const UserInfoPopover = defineAsyncComponent(() => import("@/components/UserInfoPopover.vue"))
+
 const router = useRouter();
 
 const openInNewTab = (contentid) => {

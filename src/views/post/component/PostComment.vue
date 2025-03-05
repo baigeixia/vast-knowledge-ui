@@ -83,7 +83,7 @@ const fromValue = {
     'authorization': getToken()
 }
 
-const uploadAction = "http://localhost:16003/dev-collection/dfs/dfs/upload"
+const uploadAction = "http://localhost:16001/dfs/dfs/upload"
 
 const handleAvatarSuccess = (response, uploadFile) => {
     if (response?.data) {

@@ -88,6 +88,8 @@ import articleAppStore from "@/stores/admin/article";
 import { ref } from 'vue';
 const articleS = articleAppStore()
 
+
+
 const props = defineProps({
     contents: {
         type: Array, // 定义接收的数据类型
@@ -99,6 +101,7 @@ const props = defineProps({
 // const localContents = ref(props.contents);
 
 const dislikeArticle = (id) => {
+    articleS.articleList.records=articleS.articleList?.records?.filter(post => post.id !== id)
     // props.contents=props.contents.filter(post => post.id !== id);
 }
 

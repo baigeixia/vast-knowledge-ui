@@ -139,7 +139,7 @@ const notificationAppStore = defineStore(
     }, 500)
 
     const userRead = debounce((entryId,articleId,readDuration,percentage,loadDuration,count = 0) => {
-      console.log("read",entryId,articleId,readDuration,percentage,loadDuration,count);
+      // console.log("read",entryId,articleId,readDuration,percentage,loadDuration,count);
       socketEmit("read", {
         entryId: entryId,
         articleId: articleId,

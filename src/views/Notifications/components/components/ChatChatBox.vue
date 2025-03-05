@@ -340,7 +340,7 @@ const handleClick = () => {
 
 
 const handleFileChange = (event) => {
-  debugger
+  
 
   const file = event.target.files[0]
   if (!file) return

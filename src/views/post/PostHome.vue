@@ -36,8 +36,8 @@
             </el-tooltip>
             <el-tooltip content="收藏" placement="left" effect="light">
                 <div class="panel-btn user-active" v-if="articleS.articleDto.authorId == userinfoAppStores.userid">
-                    <el-badge :color="'#b2b2b2'" :show-zero='false'
-                        :value="Number(articleS.articleDto.collection ?? 0)" :offset="[10, 3]">
+                    <el-badge :color="'#b2b2b2'" :show-zero='false' :value="Number(articleS.articleDto.collection ?? 0)"
+                        :offset="[10, 3]">
                         <i class="bi bi-star-fill"></i>
                     </el-badge>
                 </div>
@@ -67,11 +67,12 @@
                         <div class="author-info-box">
                             <div class="author-name">
                                 <RouterLink :to="`/user/${articleS.articleDto.authorId}`">
-                                    {{ articleS.articleDto.authorName}}
+                                    {{ articleS.articleDto.authorName }}
                                 </RouterLink>
                             </div>
-                            <div class="meta-box" v-if="articleS.articleDto" >
-                                <div class="time" v-if="articleS.articleDto.createdTime">{{ $formatDateTime(articleS.articleDto.createdTime)  }}</div>
+                            <div class="meta-box" v-if="articleS.articleDto">
+                                <div class="time" v-if="articleS.articleDto.createdTime">{{
+                                    $formatDateTime(articleS.articleDto.createdTime) }}</div>
                                 <!-- <div class="time">{{ $formatDate(articleS.articleDto.createdTime) }}</div> -->
                                 <div class="read-time" v-if="articleS.articleDto.views > 0">
                                     <i class="bi bi-eye"></i>
@@ -302,13 +303,10 @@ const userS = useUserStore()
 import debounce from '@/utils/debouncing';
 import { defineAsyncComponent } from 'vue'
 
-
 const PostCommentItem = defineAsyncComponent(() => import("./component/PostCommentItem.vue"))
 const PostComment = defineAsyncComponent(() => import("./component/PostComment.vue"))
 
-
-
-const handletimer = null;
+const handletimer = ref(null);
 // 使用 Intersection Observer 监测文章是否在视口内
 const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -317,8 +315,8 @@ const observer = new IntersectionObserver((entries) => {
 });
 
 onBeforeUnmount(() => {
-    if (handletimer) {
-        clearInterval(handletimer);
+    if (handletimer.value) {
+        clearInterval(handletimer.value);
     }
     stopTimer();
     if (observer) {
@@ -329,7 +327,7 @@ onBeforeUnmount(() => {
     window.removeEventListener('beforeunload', handleBeforeUnload);
 })
 
-const addImageClickEvents = () => {
+const addImageClickEvents = async () => {
     const images = mainTextRef.value.querySelectorAll('img');
     images.forEach((img) => {
         img.addEventListener('click', handleImageClick);
@@ -510,12 +508,11 @@ onMounted(async () => {
         maincommentS.commentHomedrawerDto.notificationId = notificationId
         maincommentS.commentHomedrawerDto.entryId = postId
 
-
-
         if (notificationId) {
             // commentS.commentHomeDto.type = 3
             maincommentS.commentHomedrawerDto.type = 3
         }
+
         startTime = Date.now()
         await contentS.getContent(postId)
         await articleS.getinfoArticle(postId)
@@ -529,59 +526,70 @@ onMounted(async () => {
             isfollow.value = relationData.follow
 
             userRead.value = await behaviourAppStoreS.getArticleInfo(postId)
-
         }
-
 
         let loadTime = (loadDuration.value / 1000).toFixed(2);
 
-        await nextTick(() => {
+        nextTick(() => {
             if (notificationId) {
                 drawer.value = true
             }
+
             upTitle()
+
             if (isLoadUser.value) {
                 endTime = Date.now()
-                startTimer()
                 //阅读计算    
+                startTimer()
                 loadDuration.value = endTime - startTime;
                 centermainloading.value = false
                 notificationS.userRead(id, postId, 0, 0, loadTime, 1);
             }
 
+            setTimeout(() => {
+                codeLanguage();
+                addImageClickEvents();
+
+
+                if (isLoadUser.value) {
+                    // handleBeforeUnload()
+                    handletimer.value = setInterval(handleBeforeUnload, 10000); // 每10秒调用一次
+                    if (mainTextRef.value) {
+                        observer.observe(mainTextRef.value); // 观察文章元素
+                    }
+                    window.addEventListener('mousemove', handleActivity);
+                    window.addEventListener('scroll', handleActivity);
+                    window.addEventListener('beforeunload', handleBeforeUnload);
+                }
+
+
+                if (userRead.value) {
+                    const { maxPosition, percentage } = userRead.value
+                    // if (maxPosition !== 100 && maxPosition === percentage) {
+                    if (maxPosition !== 100) {
+                        viewReadingPosition(percentage);
+                    }
+                }
+
+            }, 0);
+
 
         });
-        codeLanguage()
-        // replaceImg()
-        addImageClickEvents();
-
-        if (isLoadUser.value) {
-            handletimer = setInterval(handleBeforeUnload, 10000); // 每5秒调用一次
-            observer.observe(mainTextRef.value); // 观察文章元素
-            window.addEventListener('mousemove', handleActivity);
-            window.addEventListener('scroll', handleActivity);
-            window.addEventListener('beforeunload', handleBeforeUnload);
-        }
 
 
-        if (userRead.value) {
-            const { maxPosition, percentage } = userRead.value
-            // if (maxPosition !== 100 && maxPosition === percentage) {
-            if (maxPosition !== 100) {
-                viewReadingPosition(percentage);
-            }
-        }
 
 
-        //加载时间
+
+
 
     } catch (error) {
-
+        console.log(error);
     } finally {
         centermainloading.value = false
     }
 
 })
+
 
 const replaceImg = () => {
     const images = document.querySelectorAll('img');
@@ -602,7 +610,7 @@ const replaceImg = () => {
 let isScrolling;
 
 const viewReadingPosition = (percentage) => {
-     // 获取元素
+    // 获取元素
 
     const element = mainTextRef.value;
     if (!element) return;
@@ -685,53 +693,16 @@ const onDrawerOpen = async () => {
         })
     }
 };
-//遍历code块
-// const codeLanguage = () => {
-//     hljs.highlightAll()
 
-//     const codeBlocks = document.querySelectorAll('pre code[class*="language-"]');
-
-//     codeBlocks.forEach((block) => {
-
-//         const match = block.className.match(/\blanguage-([a-zA-Z0-9-]+)\b/);
-//         if (match) {
-//             // 获取语言类别
-//             // const language = block.className.split('-')[1];
-//             const language = match[1];
-//             if (language.includes('undefined') || language.includes('nohighlight') || language.includes('plaintext')) {
-//                 return; // 跳出当前循环
-//             }
-
-//             // 创建语言标签元素
-//             const languageLabel = document.createElement('span');
-//             languageLabel.style.position = 'absolute';
-//             languageLabel.style.right = '10px';
-//             languageLabel.style.top = '5px';
-
-//             languageLabel.textContent = language;
-
-//             // 获取代码块的父元素
-//             const parentElement = block.parentNode;
-
-//             // 如果父元素存在，则设置父元素的 position 为 relative，并将语言标签插入到父元素的开头
-//             if (parentElement) {
-//                 parentElement.style.position = 'relative';  // 设置父元素的 position 为 relative
-//                 parentElement.insertBefore(languageLabel, parentElement.firstChild);  // 将语言标签插入到父元素的开头
-//             } else {
-//                 console.error('Unable to find parent element for block');
-//             }
-//         }
-//     });
-// }
-const codeLanguage = () => {
+const codeLanguage = async () => {
     // hljs.highlightAll()
+
     loadHighlightJS()
 
     const codeBlocks = document.querySelectorAll('pre code[class*="language-"]');
-
     codeBlocks.forEach((block) => {
-
         const match = block.className.match(/\blanguage-([a-zA-Z0-9-]+)\b/);
+
         if (match) {
             // 获取语言类别
             const language = match[1];
@@ -783,20 +754,36 @@ const codeLanguage = () => {
             });
 
             // 复制按钮点击事件
-            copyButton.addEventListener('click', () => {
-                // 创建一个临时的 textarea 元素，用于复制内容
-                const textarea = document.createElement('textarea');
-                textarea.value = block.textContent; // 获取代码内容
-                document.body.appendChild(textarea);
-                textarea.select(); // 选中内容
-                document.execCommand('copy'); // 执行复制命令
-                document.body.removeChild(textarea); // 删除临时的 textarea
 
-                // 可选：给用户一个提示，表示已复制
-                copyButton.textContent = 'Copied!';
-                setTimeout(() => {
-                    copyButton.textContent = 'Copy';
-                }, 1500);
+            copyButton.addEventListener('click', () => {
+                const text = block.textContent; // 获取代码内容
+
+                if (navigator.clipboard) {
+                    // 使用 Clipboard API 复制内容
+                    navigator.clipboard.writeText(text).then(() => {
+                        // 可选：给用户一个提示，表示已复制
+                        copyButton.textContent = 'Copied!';
+                        setTimeout(() => {
+                            copyButton.textContent = 'Copy';
+                        }, 1500);
+                    }).catch((err) => {
+                        console.error('复制失败:', err);
+                    });
+                } else {
+                    // 如果 Clipboard API 不可用，使用旧方法
+                    const textarea = document.createElement('textarea');
+                    textarea.value = text; // 设置要复制的文本
+                    document.body.appendChild(textarea);
+                    textarea.select(); // 选中内容
+                    document.execCommand('copy'); // 执行复制命令
+                    document.body.removeChild(textarea); // 删除临时的 textarea
+
+                    // 给用户提示
+                    copyButton.textContent = 'Copied!';
+                    setTimeout(() => {
+                        copyButton.textContent = 'Copy';
+                    }, 1500);
+                }
             });
 
             // 获取代码块的父元素
@@ -814,16 +801,13 @@ const codeLanguage = () => {
     });
 }
 
-const loadHighlightJS = () => {
- // 动态导入 highlight.js 并返回 promise
- return import('highlight.js').then((module) => {
+const loadHighlightJS = async () => {
+    // 动态导入 highlight.js 并返回 promise
+    const module = await import('highlight.js');
     const hljs = module.default; // hljs 的实际引用
     import('highlight.js/styles/github.css'); // 延迟加载样式
     hljs.highlightAll(); // 执行高亮
-  });
 };
-
-
 
 
 
@@ -861,41 +845,21 @@ const share = () => {
     console.log('分享');
     const currentUrl = window.location.href;
 
-// 尝试将链接复制到剪贴板
-navigator.clipboard.writeText(currentUrl).then(() => {
-    // 复制成功后提示用户
-    ElMessage.success('链接已成功复制到剪贴板！')
-}).catch(err => {
-    // 如果复制失败，提示用户
-    console.error('复制失败:', err);
-    ElMessage.warning('复制失败，请手动复制链接！')
-});
+    // 尝试将链接复制到剪贴板
+    navigator.clipboard.writeText(currentUrl).then(() => {
+        // 复制成功后提示用户
+        ElMessage.success('链接已成功复制到剪贴板！')
+    }).catch(err => {
+        // 如果复制失败，提示用户
+        console.error('复制失败:', err);
+        ElMessage.warning('复制失败，请手动复制链接！')
+    });
 
 }
 
 const report = () => {
     console.log('举报');
 }
-
-
-// window.previewImg = (url) => {
-//     imgPreviewUrl.value = url
-//     showImageViewer.value = true
-//     document.body.style.overflow = 'hidden';
-// }
-
-
-const replaceImgWithTag = (str) => {
-    // if (str) {
-    //     return str.replace(/<img\s+src="([^"]+)"[^>]*>/g, (match, src) => {
-    //         console.log('match'+match);
-    //         return `<img class="comment-img" onclick="previewImg('${src}')" src=${src}>`;
-    //     });
-    // }
-    // const reg = /^(https?|ftp):\/\/([a-zA-Z0-9.-]+(:[a-zA-Z0-9.&%$-]+)*@)*((25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9][0-9]?)(\.(25[0-5]|2[0-4][0-9]|1[0-9]{2}|[1-9]?[0-9])){3}|([a-zA-Z0-9-]+\.)*[a-zA-Z0-9-]+\.(com|edu|gov|int|mil|net|org|biz|arpa|info|name|pro|aero|coop|museum|[a-zA-Z]{2}))(:[0-9]+)*(\/($|[a-zA-Z0-9.,?'\\+&%$#=~_-]+))*$/
-
-}
-
 
 
 </script>

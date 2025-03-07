@@ -241,7 +241,7 @@
                     </div>
                     <div class="comment-list-wrapper">
                         <div class="comment-list-header">
-                            <div class="item" :class="{ 'active': maincommentS.commentHomedrawerDto.type === 0 }"
+                                <div class="item" :class="{ 'active': maincommentS.commentHomedrawerDto.type === 0 }"
                                 @click="upheaderTagdrawer(0)"><span>最热</span>
                             </div>
                             <div class="item" :class="{ 'active': maincommentS.commentHomedrawerDto.type === 1 }"
@@ -249,8 +249,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="comment-list" v-infinite-scroll="maincommentS.loadMore" :infinite-scroll-immediate="false"
-                        :infinite-scroll-disabled="maincommentS.Loadingdisabled">
+                    <div class="comment-list" v-infinite-scroll="maincommentS.loadMore"
+                        :infinite-scroll-immediate="false" :infinite-scroll-disabled="maincommentS.Loadingdisabled">
                         <PostCommentItem :isSubComments="true" :vice="true"
                             v-for="comment in maincommentS.commentHomedrawerVo.comments" :key="comment.id"
                             :comment="comment" :articleid="postId" :commentIdTop="comment.id" />
@@ -489,6 +489,27 @@ const handleActivity = () => {
 };
 
 
+// 当标签页获得焦点时
+window.addEventListener("focus", function () {
+
+        if (!handletimer.value) {
+            // console.log('设置定时器');
+            // 设置新的定时器
+            handletimer.value = setInterval(handleBeforeUnload, 10000); // 10秒后开始持续调用
+        }
+     
+});
+
+// 当标签页失去焦点时
+window.addEventListener("blur", function () {
+    // console.log("标签页失去焦点，页面处于非活动状态");
+    //失去可以直接先关闭
+    if (handletimer.value) {
+        // console.log('取消定时器定时器');
+        clearInterval(handletimer.value);
+        handletimer.value = null;
+    }
+});
 
 
 
@@ -521,6 +542,7 @@ onMounted(async () => {
         let id = authorInfo.value.id
         isLoadUser.value = getUserid() !== id
 
+
         if (isLoadUser.value) {
             const relationData = await userinfoAppStores.getInfoRelation(id)
             isfollow.value = relationData.follow
@@ -552,8 +574,8 @@ onMounted(async () => {
 
 
                 if (isLoadUser.value) {
-                    // handleBeforeUnload()
-                    handletimer.value = setInterval(handleBeforeUnload, 10000); // 每10秒调用一次
+                    handleBeforeUnload(); // 先调用一次
+                    handletimer.value = setInterval(handleBeforeUnload, 10000); // 10秒后开始持续调用
                     if (mainTextRef.value) {
                         observer.observe(mainTextRef.value); // 观察文章元素
                     }
@@ -575,13 +597,6 @@ onMounted(async () => {
 
 
         });
-
-
-
-
-
-
-
     } catch (error) {
         console.log(error);
     } finally {

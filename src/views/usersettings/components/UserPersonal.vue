@@ -111,7 +111,7 @@ const fromValue = {
 }
 
 // const uploadAction="http://localhost:19011/dfs/upload"
-const uploadAction = "http://localhost:16003/dev-collection/dfs/dfs/upload"
+const uploadAction = "http://localhost:16001/dfs/dfs/upload"
 
 
 const pageTitle = ref('个人设置');

@@ -1,6 +1,6 @@
 <template>
   <div class="main-header-box">
-    <a class="logo" href="/">logo</a>
+    <a class="logo" href="/"><img src="@/assets/img/logo.svg" alt="logo" width="64" height="30"></a>
     <div class="header-title">
       <div class="title-ul">
         <RouterLink to="/">

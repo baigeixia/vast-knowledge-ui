@@ -1,144 +1,104 @@
 pipeline {
     agent any
     environment {
-        tag = "latest"
         ali_url = "registry.cn-shenzhen.aliyuncs.com"
         ali_project_name = "vk-25"
-        ali_credentialsId = "d45925ed-beea-4f73-87ba-432b8e9db465"
+        ali_credentialsId = "2bbf117e-0bfd-406d-95e1-9d9d593474c7"
+        git_auth_id = "2b317317-386b-4924-90e3-b3c78eb83c4d"
     }
 
     tools {
-        node 'Maven 3.8.8'
-        jdk 'JDK 21'
+        nodejs 'node22.2'
     }
 
     stages {
-       stage('Check JAVA_HOME') {
-			steps {
-				script {
-					// 打印 JAVA_HOME
-					sh 'echo $JAVA_HOME'
-					// 打印 Java 版本
-					sh '$JAVA_HOME/bin/java -version'
-				}
-			}
-		}
-        stage('克隆代码') {
+        stage('Check Node.js') {
             steps {
-                git credentialsId: '255712a3-6ca4-4692-851f-5d801b325938', url: 'https://gitee.com/tsitsiharry/vast-knowledge.git'
-            }
-        }
-        stage('编译公共模块') {
-            steps {
-                sh 'mvn clean package'  // 编译并打包
+                script {
+                    // 打印 Node.js 版本
+                    sh 'node -v'
+                    // 打印 npm 版本
+                    sh 'npm -v'
+                }
             }
         }
 
-        stage('编译并部署选择的服务') {
+       stage('Install Specific Yarn Version') {
             steps {
                 script {
-                    // 确保 server_name 被正确赋值
+                    // 确保安装 1.22.22 版本的 Yarn
+                    sh 'npm install -g yarn@1.22.22'
+                }
+            }
+        }
+
+        stage('构建并部署服务') {
+            steps {
+                script {
+
+                    // 服务名称@访问端口 admin-ui |  ui | wemedia-ui
                     if (!server_name || server_name.trim().isEmpty()) {
                         error "server_name 不能为空"
                     }
 
-                    // 处理服务名称
-                    def parts = server_name.split('@')
-                    if (parts.size() != 2) {
-                        error "server_name 格式不正确，应为 'module@part'"
-                    }
-                    //服务名称
-                    def service = parts[0]
-                    //服务端口
-                    def service_part = parts[1]
-                    //服务名称 简称
-                    def mirror_name = service.split('-')[-1]
+                    def service = "vast-knowledge-${server_name}"
 
-                   //目录结构调整
-                    def servicePath = service
-					if (service != 'vast-knowledge-gateway') {
-						servicePath = "vast-knowledge-service/${service}"
-					}
+                    git credentialsId: git_auth_id, url: "https://gitee.com/tsitsiharry/${service}.git"
 
-					 // 编译并构建镜像
-                    sh "mvn -f ${servicePath} clean package"
-                    def imageName = "${mirror_name}:${tag}"
+                    def tag = env.BUILD_NUMBER
 
+                    // yarn打包
+                    sh "yarn build"
+
+                    // Containerd构建镜像
+                    def full_image_name = "${ali_url}/${ali_project_name}/${service}:${tag}"
                     sh """
-                        # 删除旧镜像（如果存在）
-                        docker rmi -f ${imageName} || true
-                        # 构建新镜像
-                        docker build --no-cache -t ${imageName} -f ${servicePath}/Dockerfile ${servicePath}
+                        echo "开始构建镜像: ${full_image_name}"
+                        ctr image rm ${full_image_name} || true
+                        ctr image build -t ${full_image_name} \
+                            --build-arg JAR_FILE=target/*.jar \
+                            -f Dockerfile .
                     """
 
-                    sh "docker tag ${imageName} ${ali_url}/${ali_project_name}/${mirror_name}:${tag}"
-
-                    // 登录到阿里云 Docker Registry
-                    withCredentials([usernamePassword(credentialsId: ali_credentialsId, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
-                        sh '''
-                            echo "$DOCKER_PASSWORD" | docker login --username="$DOCKER_USERNAME" --password-stdin ${ali_url}
-                        '''
-                    }
-
                     // 推送镜像
-                    sh "docker push ${ali_url}/${ali_project_name}/${mirror_name}:${tag}"
-
-                    // 删除本地镜像
-                    def imageId = sh(script: "docker images -q ${imageName}", returnStdout: true).trim()
-                    if (imageId) {
-                        sh "docker rmi -f ${imageId}"
+                    withCredentials([usernamePassword(
+                        credentialsId: ali_credentialsId,
+                        usernameVariable: 'USERNAME',
+                        passwordVariable: 'PASSWORD')]) {
+                        sh """
+                            ctr images rm \$(ctr images ls | grep ${ali_url} | awk '{print \$1}')
+                            ctr images pull --user \$USERNAME:\$PASSWORD ${full_image_name}
+                            ctr images push ${full_image_name} --skip-verify
+                        """
                     }
 
-                    // 定义推送服务器映射
-                    def pushServerMap = [
-                        'gateway':'local',
-                        'system':'local',
-                        'user':'local',
-                        'analyze':'ali_server',
-                        'dfs':'ali_server',
-                        'behaviour':'ali_server',
-                        'article':'tx_server',
-                        'search':'tx_server',
-                        'comment':'tx_server2',
-                        'wemedia':'tx_server2'
-                    ]
+                  sh """
+                      sed -i 's#\${IMAGE_TAG}#${tag}#' './deploy.yml'
+                  """
 
-                    def push_server = pushServerMap.get(mirror_name)
-                    echo "push_server: ${push_server}"
-                    if (!push_server) {
-                        error "push_server 错误，检查pushServerMap是否对应"
-                    }
+                  kubernetesDeploy(
+                      configs: "./deploy.yml",
+                      kubeconfigId: "${k8s_auth}"
+                  )
 
-                    // 根据推送服务器类型执行不同的部署命令
-                    if (push_server == 'local') {
-                        sh "/opt/jenkins_shell/deploy.sh $ali_url $ali_project_name $mirror_name ${tag} ${service_part}"
-                    } else {
-						echo "publishers_server: ${push_server}"
-                        sshPublisher(publishers: [sshPublisherDesc(configName: "${push_server}", transfers: [
-                            sshTransfer(
-                                cleanRemote: false,
-                                execCommand: "/opt/jenkins_shell/deploy.sh $ali_url $ali_project_name $mirror_name ${tag} ${service_part}",
-                                execTimeout: 120000,
-                                verbose: true
-                            )
-                        ], usePromotionTimestamp: false, verbose: true)])
-                    }
                 }
             }
         }
+
     }
 
     post {
         always {
-            sh 'docker image prune -f'  // 清理无用的 Docker 镜像
+            // 清理containerd镜像
+            sh 'ctr images ls -q | xargs -I{} ctr images rm {} || true'
         }
 
         success {
-            echo 'Build and Deployment succeeded!'
+            slackSend color: 'good', message: "部署成功: ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
         }
 
         failure {
-            echo 'Build or Deployment failed.'
+            slackSend color: 'danger', message: "部署失败: ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
         }
     }
 }

@@ -1,22 +1,10 @@
-# 第一阶段：构建前端应用
-FROM alibaba-cloud-linux-3-registry.cn-hangzhou.cr.aliyuncs.com/alinux3/node:20.16  as build
-
-WORKDIR /app
-
-# 复制 package.json 和 yarn.lock 先行安装依赖，避免不必要的重新安装
-COPY package.json yarn.lock ./
-# 使用 --frozen-lockfile 保证依赖版本一致
-RUN yarn install --frozen-lockfile  
-
-# 然后复制其他代码并构建项目
-COPY . .
-RUN yarn buil
-
-# 第二阶段：运行前端应用
+# 使用 Nginx 作为基础镜像
 FROM alibaba-cloud-linux-3-registry.cn-hangzhou.cr.aliyuncs.com/alinux3/nginx_optimized
+# 复制 Jenkins 中构建好的 dist 目录到 Nginx 的根目录
+COPY ./dist /usr/share/nginx/html
 
-COPY --from=build /app/dist /usr/share/nginx/html
-
+# 暴露 Nginx 端口
 EXPOSE 80
 
+# 启动 Nginx
 CMD ["nginx", "-g", "daemon off;"]

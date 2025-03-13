@@ -129,8 +129,8 @@
                         <div class="item-count">0</div>
                     </div> -->
                     <div class="more-item">
-                        <div class="item-title">加入于</div>
-                        <div class="item-count">{{ $formatDate(userinfoHome.createdTime) }}</div>
+                        <div class="item-title">出生于</div>
+                        <div class="item-count">{{ $formatDate(userinfoHome.birthday	) }}</div>
                     </div>
                 </div>
             </div>

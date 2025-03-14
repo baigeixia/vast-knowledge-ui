@@ -5,6 +5,7 @@ pipeline {
         ali_project_name = "vk-25"
         ali_credentialsId = "2bbf117e-0bfd-406d-95e1-9d9d593474c7"
         git_auth_id = "2b317317-386b-4924-90e3-b3c78eb83c4d"
+        k8s_auth="9b8dc7ae-5f04-4172-b148-e7822e397c6a"
     }
 
     tools {
@@ -45,47 +46,69 @@ pipeline {
 
                     def service = "vast-knowledge-${server_name}"
 
+                    echo "开始拉取:${service}"
+
                     git credentialsId: git_auth_id, url: "https://gitee.com/tsitsiharry/${service}.git"
 
                     def tag = env.BUILD_NUMBER
+
+                                        sh "pwd"
+
 
                     // yarn打包
                     sh "yarn install --frozen-lockfile "
                     sh "yarn build"
 
-                    def imageName = "${mirror_name}:${tag}"
+                    def imageName = "${service}:${tag}"
                     def pushImage = "${ali_url}/${ali_project_name}/${imageName}"
+
+                    echo "处理image:${imageName}"
+                    echo "push 路径检查:${pushImage}"
+
                     sh """
-                        # 删除旧镜像（如果存在）
-                        nerdctl --namespace=k8s.io rmi -f ${imageName} || true
+                        echo "图像开始构建"
                         # 构建新镜像
-                        nerdctl --namespace=k8s.io build --no-cache -t ${imageName} -f ${servicePath}/Dockerfile ${servicePath}
+                        nerdctl --namespace=k8s.io build --no-cache -t ${imageName} -f Dockerfile . 
+                         echo "图像构建完成。"
                     """
 
                     // 打标签
+                    sh "echo '标记图像： ${imageName} with ${pushImage}'"
                     sh "nerdctl --namespace=k8s.io tag ${imageName} ${pushImage}"
+                    echo "标记完成： ${imageName} -> ${pushImage}"
 
                     // 登录到阿里云 Registry
                     withCredentials([usernamePassword(credentialsId: ali_credentialsId, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                         sh '''
-                            nerdctl login --username="$DOCKER_USERNAME" --password="$DOCKER_PASSWORD" ${ali_url}
+                            echo "$DOCKER_PASSWORD" | nerdctl login -u=$DOCKER_USERNAME --password-stdin registry.cn-shenzhen.aliyuncs.com
                         '''
                     }
 
+                    echo "Login to Aliyun registry successful."
+
                     // 推送镜像
+                    echo "推送镜像: ${pushImage}"
                     sh "nerdctl --namespace=k8s.io push ${pushImage}"
+                    echo "推送完成: ${pushImage}"
+
 
                     // 删除本地镜像
+                    sh "echo '删除本地镜像: ${imageName} and ${pushImage}'"
                     sh "nerdctl --namespace=k8s.io rmi -f ${imageName} ${pushImage}"
+                    sh "echo '删除本地镜像完成'"
+
 
                     sh """
-                        sed -i 's#\${IMAGE_TAG}#${tag}#' './deploy.yml'
+                        echo "使用新的图像标签更新 deploy.yml: ${tag}"
+                        sed -i 's#\${IMAGE_TAG}#${tag}#' 'deploy.yml'
+                        echo "deploy.yml 使用新标签更新: ${tag}"
                     """
+                    
+                    
+                    withKubeConfig( credentialsId: k8s_auth,  serverUrl: 'https://kubernetes.default.svc.cluster.local') {
+                           sh "kubectl apply -f deploy.yaml"
+                    }
 
-                  kubernetesDeploy(
-                      configs: "./deploy.yml",
-                      kubeconfigId: "${k8s_auth}"
-                  )
 
                 }
             }
@@ -100,11 +123,11 @@ pipeline {
         }
 
         success {
-            slackSend color: 'good', message: "部署成功: ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
+            echo "部署成功: ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
         }
 
         failure {
-            slackSend color: 'danger', message: "部署失败: ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
+            echo "部署失败: ${env.JOB_NAME} [${env.BUILD_NUMBER}]"
         }
     }
 }

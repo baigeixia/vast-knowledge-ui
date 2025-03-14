@@ -50,39 +50,37 @@ pipeline {
                     def tag = env.BUILD_NUMBER
 
                     // yarn打包
+                    sh "yarn install --frozen-lockfile "
                     sh "yarn build"
 
                     def imageName = "${mirror_name}:${tag}"
                     def pushImage = "${ali_url}/${ali_project_name}/${imageName}"
-                    // docker构建镜像
                     sh """
                         # 删除旧镜像（如果存在）
-                        docker rmi -f ${imageName} || true
+                        nerdctl --namespace=k8s.io rmi -f ${imageName} || true
                         # 构建新镜像
-                        docker build --no-cache -t ${imageName} -f Dockerfile .
+                        nerdctl --namespace=k8s.io build --no-cache -t ${imageName} -f ${servicePath}/Dockerfile ${servicePath}
                     """
 
-                    sh "docker tag ${imageName} ${pushImage}"
+                    // 打标签
+                    sh "nerdctl --namespace=k8s.io tag ${imageName} ${pushImage}"
 
-                    // 登录到阿里云 Docker Registry
+                    // 登录到阿里云 Registry
                     withCredentials([usernamePassword(credentialsId: ali_credentialsId, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
                         sh '''
-                            echo "$DOCKER_PASSWORD" | docker login --username="$DOCKER_USERNAME" --password-stdin ${ali_url}
+                            nerdctl login --username="$DOCKER_USERNAME" --password="$DOCKER_PASSWORD" ${ali_url}
                         '''
                     }
 
                     // 推送镜像
-                    sh "docker push ${pushImage}"
+                    sh "nerdctl --namespace=k8s.io push ${pushImage}"
 
                     // 删除本地镜像
-                    def imageId = sh(script: "docker images -q ${imageName}", returnStdout: true).trim()
-                    if (imageId) {
-                        sh "docker rmi -f ${imageId}"
-                    }
+                    sh "nerdctl --namespace=k8s.io rmi -f ${imageName} ${pushImage}"
 
-                  sh """
-                      sed -i 's#\${IMAGE_TAG}#${tag}#' './deploy.yml'
-                  """
+                    sh """
+                        sed -i 's#\${IMAGE_TAG}#${tag}#' './deploy.yml'
+                    """
 
                   kubernetesDeploy(
                       configs: "./deploy.yml",
@@ -97,8 +95,8 @@ pipeline {
 
     post {
         always {
-            // 清理containerd镜像
-            sh 'ctr images ls -q | xargs -I{} ctr images rm {} || true'
+                // 清理 containerd 镜像
+            sh 'nerdctl --namespace=k8s.io image prune -f'  // 清理无用的 containerd 镜像
         }
 
         success {

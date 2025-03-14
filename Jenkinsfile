@@ -9,6 +9,8 @@ pipeline {
 
     tools {
         nodejs 'node22.2'
+        dockerTool 'docker:stable'
+
     }
 
     stages {
@@ -50,26 +52,32 @@ pipeline {
                     // yarn打包
                     sh "yarn build"
 
-                    // Containerd构建镜像
-                    def full_image_name = "${ali_url}/${ali_project_name}/${service}:${tag}"
+                    def imageName = "${mirror_name}:${tag}"
+                    def pushImage = "${ali_url}/${ali_project_name}/${imageName}"
+                    // docker构建镜像
                     sh """
-                        echo "开始构建镜像: ${full_image_name}"
-                        ctr image rm ${full_image_name} || true
-                        ctr image build -t ${full_image_name} \
-                            --build-arg JAR_FILE=target/*.jar \
-                            -f Dockerfile .
+                        # 删除旧镜像（如果存在）
+                        docker rmi -f ${imageName} || true
+                        # 构建新镜像
+                        docker build --no-cache -t ${imageName} -f Dockerfile .
                     """
 
+                    sh "docker tag ${imageName} ${pushImage}"
+
+                    // 登录到阿里云 Docker Registry
+                    withCredentials([usernamePassword(credentialsId: ali_credentialsId, passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {
+                        sh '''
+                            echo "$DOCKER_PASSWORD" | docker login --username="$DOCKER_USERNAME" --password-stdin ${ali_url}
+                        '''
+                    }
+
                     // 推送镜像
-                    withCredentials([usernamePassword(
-                        credentialsId: ali_credentialsId,
-                        usernameVariable: 'USERNAME',
-                        passwordVariable: 'PASSWORD')]) {
-                        sh """
-                            ctr images rm \$(ctr images ls | grep ${ali_url} | awk '{print \$1}')
-                            ctr images pull --user \$USERNAME:\$PASSWORD ${full_image_name}
-                            ctr images push ${full_image_name} --skip-verify
-                        """
+                    sh "docker push ${pushImage}"
+
+                    // 删除本地镜像
+                    def imageId = sh(script: "docker images -q ${imageName}", returnStdout: true).trim()
+                    if (imageId) {
+                        sh "docker rmi -f ${imageId}"
                     }
 
                   sh """

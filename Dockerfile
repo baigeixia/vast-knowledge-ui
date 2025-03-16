@@ -1,5 +1,5 @@
 # 使用 Nginx 作为基础镜像
-FROM alibaba-cloud-linux-3-registry.cn-hangzhou.cr.aliyuncs.com/alinux3/nginx_optimized
+FROM alibaba-cloud-linux-3-registry.cn-hangzhou.cr.aliyuncs.com/alinux3/nginx_optimized:20240221-1.20.1-2.3.0
 # 复制 Jenkins 中构建好的 dist 目录到 Nginx 的根目录
 COPY ./dist /usr/share/nginx/html
 

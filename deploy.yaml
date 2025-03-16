@@ -58,7 +58,7 @@ spec:
     spec:
       containers:
         - name: ui
-          image: registry.cn-shenzhen.aliyuncs.com/vk-25/vk-dev-ui:${IMAGE_TAG}  # 使用适合的版本
+          image: registry.cn-shenzhen.aliyuncs.com/vk-25/vast-knowledge-ui:${IMAGE_TAG}  # 使用适合的版本
           env:
             - name: TZ
               value: "Asia/Shanghai"  # 设置时区为上海

@@ -9,7 +9,7 @@ import viteCompression from 'vite-plugin-compression';
 // https://vitejs.dev/config/
 export default defineConfig(({ mode, command }) => {
   const env = loadEnv(mode, process.cwd())
-  const { VITE_APP_BASE_API, Vk_BUILD_COMPRESS } = env
+  const { VITE_APP_BASE_URL, Vk_BUILD_COMPRESS } = env
   // 判断是否是生产环境
   const isProduction = mode === 'production'
 
@@ -40,7 +40,7 @@ export default defineConfig(({ mode, command }) => {
       proxy: {
         // https://cn.vitejs.dev/config/#server-proxy
         '/api': {
-          target: VITE_APP_BASE_API,
+          target: VITE_APP_BASE_URL,
           changeOrigin: true,
           rewrite: (path) => {
             if (!isProduction) {

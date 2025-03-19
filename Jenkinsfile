@@ -52,7 +52,6 @@ pipeline {
 
                     def tag = env.BUILD_NUMBER
 
-                                        sh "pwd"
 
 
                     // yarn打包
@@ -64,6 +63,9 @@ pipeline {
 
                     echo "处理image:${imageName}"
                     echo "push 路径检查:${pushImage}"
+     
+                    sh "pwd"
+
 
                     sh """
                         echo "图像开始构建"
@@ -100,14 +102,13 @@ pipeline {
 
                     sh """
                         echo "使用新的图像标签更新 deploy.yml: ${tag}"
-                        sed -i 's#\${IMAGE_TAG}#${tag}#' 'deploy.yml'
+                        sed -i 's#\${IMAGE_TAG}#${tag}#' 'deploy.yaml'
                         echo "deploy.yml 使用新标签更新: ${tag}"
+
                     """
                     
                     
-                    withKubeConfig( credentialsId: k8s_auth,  serverUrl: 'https://kubernetes.default.svc.cluster.local') {
-                           sh "kubectl apply -f deploy.yaml"
-                    }
+                   sh "kubectl apply -f deploy.yaml"
 
 
                 }

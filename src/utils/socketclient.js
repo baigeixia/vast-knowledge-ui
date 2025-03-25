@@ -6,7 +6,7 @@ const config = {
   reconnectionDelayMax: 10000,
   // autoConnect: false,
   // forceNew: true,
-  path: "/batch/",
+  path: "/batch/behaviour",
   auth: {
     token: getToken()
   }

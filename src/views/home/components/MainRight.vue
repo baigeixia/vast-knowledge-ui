@@ -87,7 +87,28 @@
           <a href="/" class="link"><span>协议</span></a>
         </div>
       </div>
+
+      <hr style="border: 0.5px solid #ccc;">
+
+      <div class="more-list">
+        <div class="more-datails registration">
+          <a href="https://beian.miit.gov.cn/" class="link " target="_blank" rel="noopener noreferrer">
+            赣 ICP 备2025053496号-1
+          </a>
+        </div>
+      </div>
+      <!-- <div class="more-list">
+        <div class="more-datails">
+          <a href="https://beian.miit.gov.cn/" class="link" target="_blank" rel="noopener noreferrer">
+            <img src="//lf-web-assets.juejin.cn/obj/juejin-web/xitu_juejin_web/img/police.d0289dc.png" alt="police"
+              style="vertical-align:middle;">
+            赣 ICP 备2025053496号-1
+          </a>
+        </div>
+      </div> -->
+
     </el-footer>
+
 
   </div>
 </template>
@@ -127,10 +148,11 @@ import { ref } from "vue"
       align-items: center;
       font-size: 16px;
       color: #8a919f;
-      .el-icon{
+
+      .el-icon {
         margin-right: 5px;
       }
-      
+
 
     }
 
@@ -142,10 +164,10 @@ import { ref } from "vue"
 
   .context-main {
     display: flex;
-      align-items: center;
-      justify-content: space-between;
+    align-items: center;
+    justify-content: space-between;
     padding: 12px 0;
-    
+
 
     .main-itme {
       color: #252933;
@@ -175,7 +197,7 @@ import { ref } from "vue"
 
   .signin-tip {
     border-radius: 8px;
-  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
+    box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.1);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -198,6 +220,9 @@ import { ref } from "vue"
   .aside-footer {
     // background-color: #fff;
     padding: 0;
+    .Menu-divider{
+      border-bottom: 1px solid var(#eaeced);
+    }
 
     .more-list {
       box-sizing: border-box;
@@ -229,12 +254,16 @@ import { ref } from "vue"
           box-sizing: border-box;
 
           margin: 0px 5px 0px 0px;
+
           span {
             padding-right: 5px;
           }
         }
+        
       }
-
+      .registration{
+          justify-content: center;
+        }
 
       .link :hover {
         color: #09408e;

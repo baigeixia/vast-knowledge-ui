@@ -44,9 +44,9 @@ export default defineConfig(({ mode, command }) => {
           changeOrigin: true,
           rewrite: (path) => {
             if (!isProduction) {
-              return path.replace(/^\/api/, ''); // 移除 /api 前缀
+              return path.replace(/^\/api/, ''); 
             }
-            return path; // 在生产环境中返回原始路径
+            return path; 
           },
         },
       }

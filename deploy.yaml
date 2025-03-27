@@ -125,7 +125,13 @@ spec:
           volumeMounts:
             - mountPath: /var/log/nginx
               name: log-volume
+            - name: nginx-conf-volume
+              mountPath: /etc/nginx/
       volumes:
+        - name: nginx-conf-volume
+          hostPath:
+            path: /mnt/data/configs/ui
+            type: DirectoryOrCreate
         - name: log-volume
           hostPath:
             path: /mnt/data/logs/ui

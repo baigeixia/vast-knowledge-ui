@@ -9,8 +9,10 @@ export function getToken() {
 
 export function setToken(token) {
   return Cookies.set(TokenKey, token,{
-    sameSite: 'None', 
     secure: true,
+    domain: '.aidighub.com',
+    path: '/',
+    expires: 7   
   })
 }
 

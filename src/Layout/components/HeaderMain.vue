@@ -364,22 +364,24 @@ const jumppars = (queryimput) => {
 
 
 const item_TO_WE = (type) => {
-  const BackendAdd= import.meta.env.VITE_APP_BACKEND_ADD
-  if (type === 1) {
-    // window.location.href = 'http://localhost:8081/';
-    window.open(BackendAdd, '_blank');
-  } else if (type === 2) {
-    // window.location.href = 'http://localhost:8081/publish';
-    window.open(`${BackendAdd}/publish`, '_blank');
-  } else if (type === 3) {
-    // window.location.href = 'http://localhost:8081/news';
-    window.open(`${BackendAdd}/news`, '_blank');
-  } else if (type === 4) {
-    // window.location.href = 'http://localhost:8081/material';
-    window.open(`${BackendAdd}/material`, '_blank');
-  } else if (type === 5) {
-    // window.location.href = 'http://localhost:8081/fans';
-    window.open(`${BackendAdd}/fans`, '_blank');
+  const BackendAdd = import.meta.env.VITE_APP_BACKEND_ADD
+  // 定义一个映射对象
+  const pathMap = {
+    1: BackendAdd,
+    2: `${BackendAdd}/publish`,
+    3: `${BackendAdd}/news`,
+    4: `${BackendAdd}/material`,
+    5: `${BackendAdd}/fans`,
+  };
+
+  // 获取对应的路径
+  const path = pathMap[type];
+
+  // 如果有对应的路径，打开新窗口
+  if (path) {
+    window.open(path, '_blank');
+  } else {
+    console.error('Invalid type, no corresponding path found.');
   }
 
 }

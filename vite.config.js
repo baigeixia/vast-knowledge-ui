@@ -31,6 +31,7 @@ export default defineConfig(({ mode, command }) => {
       }),
       viteCompression({
         algorithm: 'gzip',
+        threshold: 10240,
         // algorithm: 'brotliCompress',
         // ext: '.br',
         verbose: true, // 打印详细信息

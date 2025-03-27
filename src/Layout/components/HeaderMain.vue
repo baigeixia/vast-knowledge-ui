@@ -364,21 +364,22 @@ const jumppars = (queryimput) => {
 
 
 const item_TO_WE = (type) => {
+  const BackendAdd= import.meta.env.VITE_APP_BACKEND_ADD
   if (type === 1) {
     // window.location.href = 'http://localhost:8081/';
-    window.open('http://localhost:8081/', '_blank');
+    window.open(BackendAdd, '_blank');
   } else if (type === 2) {
     // window.location.href = 'http://localhost:8081/publish';
-    window.open('http://localhost:8081/publish', '_blank');
+    window.open(`'${BackendAdd}/publish'`, '_blank');
   } else if (type === 3) {
     // window.location.href = 'http://localhost:8081/news';
-    window.open('http://localhost:8081/news', '_blank');
+    window.open(`'${BackendAdd}/news'`, '_blank');
   } else if (type === 4) {
     // window.location.href = 'http://localhost:8081/material';
-    window.open('http://localhost:8081/material', '_blank');
+    window.open(`'${BackendAdd}/material'`, '_blank');
   } else if (type === 5) {
     // window.location.href = 'http://localhost:8081/fans';
-    window.open('http://localhost:8081/fans', '_blank');
+    window.open(`'${BackendAdd}/fans'`, '_blank');
   }
 
 }

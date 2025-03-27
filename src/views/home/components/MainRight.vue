@@ -1,6 +1,6 @@
 <template>
   <div class="main-right">
-    <div class="signin-tip box-standard">
+    <!-- <div class="signin-tip box-standard">
       <div class="text-left">
         <div class="context-start">
           上午好！
@@ -10,8 +10,8 @@
         </div>
       </div>
       <el-button>去签到</el-button>
-    </div>
-    <div class=" box-standard">
+    </div> -->
+    <!-- <div class=" box-standard">
       <div class="context-title">
         <div class="context">推荐话题</div>
         <div class="context-refresh" style="cursor: pointer">
@@ -51,7 +51,7 @@
         </a>
         <div class="main-text-heat">7.6m</div>
       </div>
-    </div>
+    </div> -->
     <el-footer class="aside-footer">
       <div class="more-list">
         <div class="more-title">
@@ -119,7 +119,7 @@ import { ref } from "vue"
 
 <style lang="scss" scoped>
 .main-right {
-  flex: 5;
+  flex: 6;
 
   .box-standard {
     border-radius: 8px;
@@ -220,6 +220,7 @@ import { ref } from "vue"
   .aside-footer {
     // background-color: #fff;
     padding: 0;
+    
     .Menu-divider{
       border-bottom: 1px solid var(#eaeced);
     }

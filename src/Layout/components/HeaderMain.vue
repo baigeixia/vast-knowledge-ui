@@ -101,11 +101,11 @@
                   </el-icon><el-badge :is-dot="notificationS.isim" :show-zero="false" :offset="[10, 5]">
                     私信
                   </el-badge></el-dropdown-item></RouterLink>
-              <RouterLink to="/notifications/system"><el-dropdown-item><el-icon>
+              <!-- <RouterLink to="/notifications/system"><el-dropdown-item><el-icon>
                     <Bell />
                   </el-icon><el-badge :is-dot="notificationS.issystem" :show-zero="false" :offset="[10, 5]">
                     系统通知
-                  </el-badge></el-dropdown-item></RouterLink>
+                  </el-badge></el-dropdown-item></RouterLink> -->
             </el-dropdown-menu>
           </template>
         </el-dropdown>
@@ -215,7 +215,7 @@ const inputblur = () => {
 
 const userExit = () => {
   console.log("用户退出");
-  ElMessageBox.confirm('是否要退出登录')
+  ElMessageBox.confirm('是否要退出登录', "提示")
     .then(async () => {
       await userStore.userExit()
       removeToken()

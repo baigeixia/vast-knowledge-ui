@@ -28,12 +28,12 @@
                         私信
                     </el-badge></el-button>
             </RouterLink>
-            <RouterLink class="header-link" to="/notifications/system">
+            <!-- <RouterLink class="header-link" to="/notifications/system">
                 <el-button :class="{ 'tabs': true, 'active': isActive('/notifications/system') }" size="large" link>
                     <el-badge :is-dot="notificationS.issystem" :show-zero="false" :offset="[1, 10]">
                         系统通知
                     </el-badge></el-button>
-            </RouterLink>
+            </RouterLink> -->
         </div>
         <div class="chat-view">
             <el-skeleton animated :loading="false">

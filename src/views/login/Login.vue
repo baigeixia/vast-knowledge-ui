@@ -16,7 +16,7 @@
           <span class="title-item " :class="{ 'tab--active': codeOrPas === 1 }" @click=" upcodeOrPas(1)">注册</span>
         </div>
         <div class="login-dialog-content">
-          <el-form class="dialog-content-from" ref="contentFormRef" :model="loginform" :rules="rules">
+          <el-form class="dialog-content-from" ref="contentFormRef" :model="loginform" :rules="rules" >
             <el-form-item prop="email">
               <el-input class="content-input" placeholder="邮箱" v-model="loginform.email" />
             </el-form-item>
@@ -33,7 +33,7 @@
             </el-form-item> -->
             <el-form-item prop="waitcode">
               <div class="code" >
-                <el-input  class="content-input" placeholder="验证码" v-model="loginform.waitcode" />
+                <el-input  class="content-input" placeholder="验证码" v-model="loginform.waitcode" @keydown.enter="onSubmit(contentFormRef)"/>
                 <div class="code-img" @click="upCodeimg">
                   <img :src="'data:image/jpeg;base64,' + codeimgInfo?.img" alt="Image" title="获取验证码" />
                 </div>

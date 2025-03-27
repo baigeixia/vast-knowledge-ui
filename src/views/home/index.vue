@@ -5,15 +5,15 @@
 </template>
 
 <script setup name="Home">
-// import CoreMain from './components/CoreMain.vue'
-// import MainLeft from './components/MainLeft.vue'
-// import MainRight from './components/MainRight.vue'
+import CoreMain from './components/CoreMain.vue'
+import MainLeft from './components/MainLeft.vue'
+import MainRight from './components/MainRight.vue'
 import { ref, onMounted,defineAsyncComponent } from 'vue';
 import ExternalLinkGuard from '@/Layout/components/ExternalLinkGuard.vue';
 
-const CoreMain = defineAsyncComponent(() => import("./components/CoreMain.vue"))
-const MainLeft = defineAsyncComponent(() => import("./components/MainLeft.vue"))
-const MainRight = defineAsyncComponent(() => import("./components/MainRight.vue"))
+// const CoreMain = defineAsyncComponent(() => import("./components/CoreMain.vue"))
+// const MainLeft = defineAsyncComponent(() => import("./components/MainLeft.vue"))
+// const MainRight = defineAsyncComponent(() => import("./components/MainRight.vue"))
 
 
 const pageTitle = ref('首页');

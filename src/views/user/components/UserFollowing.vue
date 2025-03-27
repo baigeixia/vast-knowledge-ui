@@ -42,9 +42,12 @@
 </template>
   
 <script setup>
-import { ref, onMounted ,nextTick} from 'vue';
-import Followingheader from './Followingheader.vue'
-import UserdialogTable from '@/components/UserdialogTable.vue'
+import { ref, onMounted ,nextTick,defineAsyncComponent} from 'vue';
+
+
+const Followingheader = defineAsyncComponent(() => import("./Followingheader.vue"))
+const UserdialogTable = defineAsyncComponent(() => import("@/components/UserdialogTable.vue"))
+
 
 const pageTitle = '关注';
 onMounted(async () => {

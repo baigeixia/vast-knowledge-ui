@@ -45,14 +45,15 @@
 </template>
   
 <script setup>
-import MaincontentItme from '@/views/home/components/MaincontentItme.vue'
-import { ref, onMounted, nextTick } from 'vue';
+import { ref, onMounted, nextTick ,defineAsyncComponent} from 'vue';
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 import { getUserid } from '@/utils/auth'
 
 import behaviourAppStore from "@/stores/collection/behaviour"
 const behaviourAppStoreS = behaviourAppStore();
+
+const MaincontentItme = defineAsyncComponent(() => import("@/views/home/components/MaincontentItme.vue"))
 
 
 const props = defineProps({

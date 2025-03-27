@@ -180,11 +180,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch, nextTick } from 'vue';
+import { ref, onMounted, computed, watch, nextTick ,defineAsyncComponent} from 'vue';
 import { ElMessage } from 'element-plus'
-import ChatChatBox from './components/ChatChatBox.vue';
+// import ChatChatBox from './components/ChatChatBox.vue';
 import { formatTime } from '@/utils/formDate'
-
+const ChatChatBox = defineAsyncComponent(() => import("./components/ChatChatBox.vue"))
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
 

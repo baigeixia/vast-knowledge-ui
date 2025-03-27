@@ -65,10 +65,10 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watchEffect, reactive, watch, toRaw } from "vue"
+import { ref, onMounted, watchEffect, reactive, watch, toRaw ,defineAsyncComponent} from "vue"
 import { ishide } from '@/components/Publicvariables'
 import { useRouter } from 'vue-router';
-import Maincontentlist from '@/views/home/components/Maincontentlist.vue'
+// import Maincontentlist from '@/views/home/components/Maincontentlist.vue'
 import { channelAppStore } from "@/stores/admin/channel";
 const maincontent = channelAppStore()
 import articleAppStore from "@/stores/admin/article";
@@ -79,7 +79,7 @@ const searchS = searchAppStore()
 
 import UserdialogTable from '@/components/UserdialogTable.vue'
 
-
+const Maincontentlist = defineAsyncComponent(() => import("@/views/home/components/Maincontentlist.vue"))
 const router = useRouter();
 const isLoading = ref(false)
 const options = [

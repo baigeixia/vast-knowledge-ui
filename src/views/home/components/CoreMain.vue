@@ -26,14 +26,16 @@
   </div>
 </template>
 <script setup>
-import { ref, computed ,onMounted} from "vue"
-import Maincontentlist from './Maincontentlist.vue'
+import { ref, computed ,onMounted,defineAsyncComponent} from "vue"
+// import Maincontentlist from './Maincontentlist.vue'
 
 import { channelAppStore } from "@/stores/admin/channel";
 const  maincontent=channelAppStore()
 
 import articleAppStore from "@/stores/admin/article";
 const articleStore = articleAppStore()
+
+const Maincontentlist = defineAsyncComponent(() => import("./Maincontentlist.vue"))
 
 
 onMounted(async()=>{

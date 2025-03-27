@@ -9,11 +9,12 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import NotificationList from '@/components/NotificationList.vue'
+import { ref, onMounted ,defineAsyncComponent} from 'vue';
+// import NotificationList from '@/components/NotificationList.vue'
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
 
+const NotificationList = defineAsyncComponent(() => import("@/components/NotificationList.vue"))
 
 const extendicon = ref('https://pica.zhimg.com/v2-bbe4688083199733e8e64d0fc447791d_200x0.png?source=582e62d4')
 const verb = ref('关注了您')

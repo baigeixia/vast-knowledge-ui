@@ -83,11 +83,11 @@
 </template>
 
 <script setup>
-import MaincontentItme from './MaincontentItme.vue';
+import { ref,defineAsyncComponent  } from 'vue';
 import articleAppStore from "@/stores/admin/article";
-import { ref } from 'vue';
 const articleS = articleAppStore()
 
+const MaincontentItme = defineAsyncComponent(() => import("./MaincontentItme.vue"))
 
 
 const props = defineProps({

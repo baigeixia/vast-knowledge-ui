@@ -43,9 +43,9 @@
 </template>
 
 <script setup>
-import { onMounted, ref } from 'vue';
+import { onMounted, ref ,defineAsyncComponent} from 'vue';
 import { ElMessage } from 'element-plus'
-import EmojiFileInput from '@/Layout/components/EmojiFileInput.vue';
+// import EmojiFileInput from '@/Layout/components/EmojiFileInput.vue';
 import commentStore from "@/stores/admin/comment";
 const commentS = commentStore()
 import maincommentAppStore from "@/stores/admin/maincomment";
@@ -55,7 +55,7 @@ const articleS = articleAppStore()
 import notificationAppStore from "@/stores/admin/notification";
 import { getUserid, getToken } from '@/utils/auth';
 const notificationS = notificationAppStore()
-
+const NotificationList = defineAsyncComponent(() => import("@/Layout/components/EmojiFileInput.vue"))
 import { islogin } from '@/utils/userislogin';
 
 const props = defineProps({

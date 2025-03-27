@@ -69,13 +69,17 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onBeforeUnmount } from "vue"
-import MaincontentItme from '../home/components/MaincontentItme.vue';
-import Maincontentlist from '../home/components/Maincontentlist.vue';
+import { ref, onMounted, onBeforeUnmount,defineAsyncComponent } from "vue"
+// import MaincontentItme from '../home/components/MaincontentItme.vue';
+// import Maincontentlist from '../home/components/Maincontentlist.vue';
 import articleAppStore from "@/stores/admin/article";
 const articleStore = articleAppStore()
 import behaviourAppStore from "@/stores/collection/behaviour"
 const behaviourAppStoreS = behaviourAppStore();
+
+const MaincontentItme = defineAsyncComponent(() => import("../home/components/MaincontentItme.vue"))
+const Maincontentlist = defineAsyncComponent(() => import("../home/components/Maincontentlist.vue"))
+
 const searchinput = ref('')
 const page = ref(1)
 const size = ref(5)

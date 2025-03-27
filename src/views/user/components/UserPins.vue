@@ -46,13 +46,15 @@
 </template>
   
 <script setup>
-import MaincontentItme from '@/views/home/components/MaincontentItme.vue'
-import { ref, onMounted, reactive, nextTick, watch } from 'vue';
+import { ref, onMounted, reactive, nextTick, watch,defineAsyncComponent } from 'vue';
 import behaviourAppStore from "@/stores/collection/behaviour"
 const behaviourAppStoreS = behaviourAppStore();
 import { getUserid } from '@/utils/auth'
 import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
+
+const MaincontentItme = defineAsyncComponent(() => import("@/views/home/components/MaincontentItme.vue"))
+
 const props = defineProps({
   userid: {
     type: String,

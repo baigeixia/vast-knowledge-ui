@@ -24,13 +24,16 @@ export default defineConfig(({ mode, command }) => {
         resolvers: [ElementPlusResolver()],
       }),
       visualizer.default({ // 使用 .default()
-        open: true,
+        open: false,
         gzipSize: true,
         brotliSize: true,
         filename: 'stats.html',
       }),
       viteCompression({
-        algorithm: 'gzip',
+        // algorithm: 'gzip',
+        algorithm: 'brotliCompress',
+        ext: '.br',
+        verbose: true, // 打印详细信息
       }),
     ],
     server: {
@@ -58,6 +61,10 @@ export default defineConfig(({ mode, command }) => {
       }
     },
     build: {
+      minify: 'esbuild',
+      esbuild: {
+        drop: ['console'],  // 这会移除所有的 console 语句
+      },
       rollupOptions: {
         output: {
           manualChunks(id) {

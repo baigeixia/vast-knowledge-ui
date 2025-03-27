@@ -104,13 +104,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, nextTick, watch } from "vue"
-import EmojiFileInput from '@/Layout/components/EmojiFileInput.vue';
+import { ref, onMounted, nextTick, watch,defineAsyncComponent } from "vue"
+// import EmojiFileInput from '@/Layout/components/EmojiFileInput.vue';
 import { escapeHtml } from '@/utils/escapeHtml'
 import { safeHtml } from '@/utils/domPurifyConfig'
 import { formatMessageTime, getCurrentTime } from '@/utils/formDate'
 import { getToken, setToken, removeToken } from '@/utils/auth'
-
+const EmojiFileInput = defineAsyncComponent(() => import("@/Layout/components/EmojiFileInput.vue"))
 import notificationAppStore from "@/stores/admin/notification";
 const notificationS = notificationAppStore()
 

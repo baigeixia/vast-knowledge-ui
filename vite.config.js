@@ -30,9 +30,9 @@ export default defineConfig(({ mode, command }) => {
         filename: 'stats.html',
       }),
       viteCompression({
-        algorithm: 'gzip',
-        // algorithm: 'brotliCompress',
-        // ext: '.br',
+        // algorithm: 'gzip',
+        algorithm: 'brotliCompress',
+        ext: '.br',
         verbose: true, // 打印详细信息
       }),
     ],

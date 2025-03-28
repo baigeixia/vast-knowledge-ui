@@ -7,13 +7,28 @@ export function getToken() {
   return token ? token : ''
 }
 
+
+// 获取 Cookie 设置的公共函数
+function getCookieOptions() {
+  const isProduction = process.env.NODE_ENV === 'production';
+
+  const options = {
+    secure: isProduction,     // 生产环境启用 Secure（HTTPS）
+    path: '/',                // 全路径共享
+    expires: 2,               // 2 天有效期
+    sameSite: isProduction ? 'Lax' : 'Strict'  // 本地开发 Strict，生产环境 Lax
+  };
+
+  // 只在生产环境设置 domain
+  if (isProduction) {
+    options.domain = '.aidighub.com';
+  }
+
+  return options;
+}
+
 export function setToken(token) {
-  return Cookies.set(TokenKey, token,{
-    sameSite: 'None', 
-    secure: true,
-    path: '/',
-    expires: 7   
-  })
+  return Cookies.set(TokenKey, token, getCookieOptions())
 }
 
 export function removeToken() {
@@ -24,10 +39,7 @@ export function removeToken() {
 const UserInfoIdKey = 'u-0-1'
 
 export function setUserid(id) {
-  return Cookies.set(UserInfoIdKey, id,{
-    sameSite: 'None', 
-    secure: true,
-  })
+  return Cookies.set(UserInfoIdKey, id,getCookieOptions())
 }
 
 export function getUserid() {
@@ -56,10 +68,7 @@ export function getUserInfo() {
 
 
 export function setUserInfo(info) {
-  return Cookies.set(UserInfoKey, JSON.stringify(info) || '',{
-    sameSite: 'None', 
-    secure: true,
-  })
+  return Cookies.set(UserInfoKey, JSON.stringify(info) || '',getCookieOptions())
 }
 
 

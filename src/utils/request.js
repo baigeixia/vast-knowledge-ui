@@ -118,7 +118,8 @@ function setupInterceptors(instance) {
   });
 }
 
+const uploadUrl=`${request.defaults.baseURL}/dfs/dfs/upload`
 
 
-export { request }
+export { request,uploadUrl}
 

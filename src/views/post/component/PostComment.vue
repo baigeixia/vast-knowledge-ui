@@ -21,7 +21,7 @@
                     <EmojiFileInput ref="EmojiFileInputRef" class="emoji-input" @emoji-click="commentinputfocus" />
                 </el-popover>
 
-                <el-upload ref="fileInput" :action="uploadAction" :headers="fromValue" :show-file-list="false"
+                <el-upload ref="fileInput" :action="uploadUrl" :headers="fromValue" :show-file-list="false"
                     :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
                     <div class="emoji-box">
                         <el-tooltip content="上传图片最大 10mb" placement="bottom">
@@ -57,6 +57,7 @@ import { getUserid, getToken } from '@/utils/auth';
 const notificationS = notificationAppStore()
 const NotificationList = defineAsyncComponent(() => import("@/Layout/components/EmojiFileInput.vue"))
 import { islogin } from '@/utils/userislogin';
+import { uploadUrl } from '@/utils/request'
 
 const props = defineProps({
     articleId: {
@@ -83,7 +84,7 @@ const fromValue = {
     'authorization': getToken()
 }
 
-const uploadAction = "http://localhost:16001/dfs/dfs/upload"
+// const uploadAction = "http://localhost:16001/dfs/dfs/upload"
 
 const handleAvatarSuccess = (response, uploadFile) => {
     if (response?.data) {

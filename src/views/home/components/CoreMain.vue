@@ -47,11 +47,12 @@ onMounted(async()=>{
 })
 
 const navigationtypeSwit = (type) => {
-  initArticleList()
+  if(articleStore.navigationtype != type ){
+    initArticleList()
+  }
   articleStore.navigationtype = type
   articleStore.getarticleList()
   articleStore.noMore=false
-
 }
 
 const initArticleList=()=>{

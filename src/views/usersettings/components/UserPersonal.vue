@@ -73,7 +73,7 @@
             </div>
             <div class="avatar-input">
                 <div class="avatar-upload">
-                    <el-upload class="avatar-uploader" :action="uploadAction" :headers="fromValue" :show-file-list="false"
+                    <el-upload class="avatar-uploader" :action="uploadUrl" :headers="fromValue" :show-file-list="false"
                         :on-success="handleAvatarSuccess" :before-upload="beforeAvatarUpload">
                         <!-- <div :style="{ backgroundImage: `url(${avatarUrl})` }" class="avatar-background"></div> -->
                         <!-- <img class="avatar-background" :src="avatarUrl" alt=""> -->
@@ -103,6 +103,7 @@ import userinfoAppStore from "@/stores/user/userinfo"
 const userinfoAppStores = userinfoAppStore();
 
 import { getUserInfo, setUserInfo, getToken } from '@/utils/auth'
+import { uploadUrl } from '@/utils/request'
 
 //头像容器
 const fromValue = {
@@ -111,7 +112,7 @@ const fromValue = {
 }
 
 // const uploadAction="http://localhost:19011/dfs/upload"
-const uploadAction = "http://localhost:16001/dfs/dfs/upload"
+// const uploadAction = "http://localhost:16001/dfs/dfs/upload"
 
 
 const pageTitle = ref('个人设置');

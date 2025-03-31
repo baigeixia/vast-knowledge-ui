@@ -1,4 +1,4 @@
-import { gethomeList, infoArticle,postsapi,deleteOneApi } from '@/api/admin/article'
+import { gethomeList, infoArticle, postsapi, deleteOneApi } from '@/api/admin/article'
 import { ref, computed, reactive } from 'vue'
 import { defineStore } from 'pinia'
 import behaviourAppStore from '../collection/behaviour'
@@ -7,7 +7,7 @@ const articleAppStore = defineStore(
     const behaviourAppStoreS = behaviourAppStore()
 
     const articleList = ref({
-      records:[],
+      records: [],
     })
     const page = ref(1)
     const pagesize = ref(10)
@@ -32,10 +32,11 @@ const articleAppStore = defineStore(
     const getarticleList = async () => {
       if (isLoadingEnd.value) return;
       isLoadingEnd.value = true;
+
       try {
         console.log(tagType.value);
-        console.log('navigationtype',navigationtype.value);
-        const resp = await gethomeList(page.value, pagesize.value, tagType.value,navigationtype.value)
+        console.log('navigationtype', navigationtype.value);
+        const resp = await gethomeList(page.value, pagesize.value, tagType.value, navigationtype.value)
 
         if (Array.isArray(resp.data?.records) && resp.data?.records.length === 0) {
           noMore.value = true
@@ -47,7 +48,7 @@ const articleAppStore = defineStore(
 
         const newRecords = Array.isArray(resp.data?.records) ? resp.data.records : [];
 
- 
+
         const existingRecords = Array.isArray(articleList.value.records) ? articleList.value.records : [];
 
 
@@ -64,12 +65,10 @@ const articleAppStore = defineStore(
 
         const ids = resp.data?.records ? resp.data?.records.map(article => article.id) : []
         await behaviourAppStoreS.newHomeListDataGetLike(ids)
-
-      } catch (error) {
-        // console.error('Error loading more data:', error);
       } finally {
         isLoadingEnd.value = false;
       }
+
 
     }
 
@@ -81,18 +80,18 @@ const articleAppStore = defineStore(
       }
     }
 
-    const getuserArticleList=async(userId,page,size,type)=>{
-      const resp= await postsapi(userId,page,size,type)
+    const getuserArticleList = async (userId, page, size, type) => {
+      const resp = await postsapi(userId, page, size, type)
       return resp.data
     }
 
-    
-    const deleteOne=async(userId,page,size,type)=>{
-      const resp= await deleteOneApi(userId,page,size,type)
+
+    const deleteOne = async (userId, page, size, type) => {
+      const resp = await deleteOneApi(userId, page, size, type)
       return resp.data
     }
 
-  
+
     return {
       articleList,
       articleDto,

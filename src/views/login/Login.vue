@@ -119,7 +119,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive ,watch} from 'vue';
+import { ref, onMounted, reactive ,watch, nextTick} from 'vue';
 import useUserStore from '@/stores/admin/user'
 const userStore = useUserStore()
 
@@ -138,8 +138,11 @@ const loginsocial = (type) => {
 }
 
 
-onMounted(async () => {
-  await refrshCodeImg()
+onMounted(() => {
+  nextTick(()=>{
+    refrshCodeImg()
+  })
+
 })
 
 
@@ -178,7 +181,7 @@ const onSubmit = async (formEl) => {
         codeimgInfo.value = {}
 
         socket.connect();
-        useSockets()
+        // useSockets()
         window.location.reload();
 
       } catch (error) {

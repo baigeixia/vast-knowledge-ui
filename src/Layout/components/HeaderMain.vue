@@ -8,6 +8,11 @@
             <i>首页</i>
           </div>
         </RouterLink>
+        <RouterLink to="/ai">
+          <div class="title-li active" :class="{ 'isactive': route.path === '/ai' }">
+            <i>Ai</i>
+          </div>
+        </RouterLink>
       </div>
     </div>
     <div class="header-right">

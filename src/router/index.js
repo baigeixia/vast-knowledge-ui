@@ -19,6 +19,11 @@ const router = createRouter({
           component: () => import('../views/footmark/UserFootmark.vue')
         },
         {
+          path: '/ai',
+          name: 'ai',
+          component: () => import('../views/ai/AiHome.vue'),
+        },
+        {
           path: '/notifications',
           name: 'notifications',
           component: () => import('../views/notifications/Notification.vue'),

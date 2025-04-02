@@ -33,7 +33,7 @@
                 </div>
             </template>
         </el-dialog>
-        <Login />
+        <Login v-if="userStore.isnotlogin"/>
     </el-container>
 </template>
 
@@ -42,6 +42,8 @@ import { ref, watch, reactive,defineAsyncComponent } from "vue"
 // import HeaderMain from './components/HeaderMain.vue'
 import { useScroll } from '@vueuse/core'
 import { ishide } from '@/components/Publicvariables'
+import useUserStore from '@/stores/admin/user'
+const userStore = useUserStore()
 // import Login from '@/views/login/Login.vue'
 import feedbackAppStore from "@/stores/user/feedback";
 const feedbackAppStores = feedbackAppStore()

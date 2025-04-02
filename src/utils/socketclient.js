@@ -29,11 +29,6 @@ export function useSockets() {
     reconnectAttempt(socket);
   });
 
-  // 在组件卸载时断开连接
-  onUnmounted(() => {
-    socket.disconnect();
-  });
-
   function reconnectAttempt(socket) {
     socket.on("reconnect_attempt", (attempt) => {
       console.log('重新连接尝试 attempt:', attempt);
@@ -43,6 +38,11 @@ export function useSockets() {
       }
     });
   }
+
+   // 在组件卸载时断开连接
+   onUnmounted(() => {
+    socket.disconnect();
+  });
 }
 
 

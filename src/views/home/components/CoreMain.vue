@@ -3,63 +3,64 @@
     <header class="list-header">
       <div class="list">
         <ul class="list-ul">
-          <li class="list-li" :class="{' is-active' :  articleStore.navigationtype === 0 }" @click="navigationtypeSwit(0)">
+          <li class="list-li" :class="{ ' is-active': articleStore.navigationtype === 0 }"
+            @click="navigationtypeSwit(0)">
             <!-- <a href="/"></a> -->
-            <RouterLink to="/" > 推荐</RouterLink>
+            <RouterLink to="/"> 推荐</RouterLink>
           </li>
-          <li class="list-li" :class="{' is-active' :  articleStore.navigationtype === 1 }"  @click="navigationtypeSwit(1)">
+          <li class="list-li" :class="{ ' is-active': articleStore.navigationtype === 1 }"
+            @click="navigationtypeSwit(1)">
             <!-- <a href="/">最新</a> -->
             <RouterLink to="/"> 最新</RouterLink>
           </li>
         </ul>
       </div>
     </header>
-    <div  class="top-content" >
-      <Maincontentlist :contents="articleStore.articleList?.records"  :infinite-scroll-immediate="false"  v-infinite-scroll="articleStore.loadMore" :infinite-scroll-disabled="articleStore.loadingdisabled" />
+    <div class="top-content">
+      <Maincontentlist v-if="articleStore.articleList?.records.length > 0" :contents="articleStore.articleList.records" :infinite-scroll-immediate="false"
+        v-infinite-scroll="articleStore.loadMore" :infinite-scroll-disabled="articleStore.loadingdisabled" />
     </div>
-   <div class="no-content" v-if="articleStore.articleList?.records.length<1 &&  !articleStore.isLoadingEnd">
+    <div class="no-content" v-if="articleStore.articleList?.records.length < 1 && !articleStore.isLoadingEnd">
       还没有内容
-   </div>
-   <div class="no-content" v-if="articleStore.noMore && articleStore.articleList?.records?.length > 0">
+    </div>
+    <div class="no-content" v-if="articleStore.noMore && articleStore.articleList?.records?.length > 0">
       已经到底部了
-   </div>
+    </div>
   </div>
 </template>
 <script setup>
-import { ref, computed ,onMounted,defineAsyncComponent} from "vue"
-// import Maincontentlist from './Maincontentlist.vue'
-
-import { channelAppStore } from "@/stores/admin/channel";
-const  maincontent=channelAppStore()
-
+import { ref, computed, onMounted, defineAsyncComponent, nextTick } from "vue"
 import articleAppStore from "@/stores/admin/article";
 const articleStore = articleAppStore()
 
 const Maincontentlist = defineAsyncComponent(() => import("./Maincontentlist.vue"))
 
 
-onMounted(async()=>{
-  initArticleList()
-  await articleStore.getarticleList()
-  articleStore.noMore=false
+onMounted( () => {
+  initArticleList();
+  nextTick(async()=>{
+    await articleStore.getarticleList()
+  })
+  articleStore.noMore = false
 
   document.documentElement.style.overflowY = 'scroll';
 })
 
 const navigationtypeSwit = (type) => {
-  if(articleStore.navigationtype != type ){
-    initArticleList()
-  }
-  articleStore.navigationtype = type
-  articleStore.getarticleList()
-  articleStore.noMore=false
+    if (articleStore.navigationtype !== type ) {
+      initArticleList();
+    }
+  
+    articleStore.navigationtype = type;
+    articleStore.getarticleList();
+    articleStore.noMore = false;
 }
 
-const initArticleList=()=>{
-  articleStore.isLoadingEnd=false
-  articleStore.page=1 
-  articleStore.articleList={
-    records:[]
+const initArticleList = () => {
+  articleStore.isLoadingEnd = false
+  articleStore.page = 1
+  articleStore.articleList = {
+    records: []
   }
 }
 
@@ -81,7 +82,8 @@ const initArticleList=()=>{
   .top-content {
     padding: 10px;
   }
-  .no-content{
+
+  .no-content {
     display: flex;
     justify-content: center;
     margin: 10px 10px;

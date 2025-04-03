@@ -125,9 +125,9 @@ const totop = () => {
 
 .bo-wen {
     overflow: hidden;
-    min-height: 925px;
+    // min-height: 925px;
+    // min-width: 1100px;
     background-color: #f2f3f5;
-    min-width: 1100px;
 
     .guard-box {
        :deep(a) {

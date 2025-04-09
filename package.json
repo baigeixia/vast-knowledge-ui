@@ -23,8 +23,6 @@
     "sass": "^1.77.4",
     "socket.io-client": "^4.7.5",
     "vue": "^3.4.21",
-    "vue-element-plus-x": "^1.0.81",
-    "vue-markdown-render": "^2.2.1",
     "vue-router": "^4.3.0",
     "vue3-emoji-picker": "^1.1.8"
   },

@@ -22,8 +22,8 @@
                 <el-scrollbar class="box-text">
                     <div class="list-text" v-for=" itme in 100 " :key="itme">
                         <div class="list-itme" @click="isNewChat = false">
-                            <div class="itme-text">
-                                {{ `text ${itme}` }}
+                            <div :title="itme" class="itme-text">
+                                {{ `texttexttexttexttexttexttexttexttexttexttexttexttexttexttexttext ${itme}` }}
                             </div>
 
                             <el-dropdown class="itme-icon" popper-class="itme-icon-popper" placement="bottom"
@@ -59,20 +59,36 @@
             <div class="chat-container">
                 <div class="messages-box" ref="typewriterRef">
                     <div class="text-typewriter">
-                        <!-- <VueMarkdown :source="evText" /> -->
-                        <!-- <Bubble class="text-bubble" content="Hi, good morning, I'm fine!" placement="end" />
-                        <Typewriter :content="evText" :is-markdown="true" /> -->
+                        <AiMarkdown></AiMarkdown>
                     </div>
                 </div>
-                <div class="new-wrap" v-show="isNewChat">
-                    有什么可以帮忙的？
-                </div>
+
                 <div class="input-area" :class="{ 'input-area-center': isNewChat }">
-                    <!-- <Sender v-model:value="senderValue" :auto-size="{ minRows: 3, maxRows: 10 }" placeholder="询问任何内容"
-                        clearable :loading="senderLoading" @submit="handleSubmit" @cancel="handleCancel" /> -->
-                    <el-input v-model="senderValue" style="width: 240px" :rows="2" type="textarea"
-                        placeholder="Please input" />
-                    <el-button @click="handleSubmit">发送</el-button>
+                    <div class="new-wrap" v-show="isNewChat">
+                        有什么可以帮忙的？
+                    </div>
+                    <div class="input-external">
+                        <div class="input-text">
+                            <el-input class="internal-textarea" v-model="senderValue"
+                                :autosize="{ minRows: 2, maxRows: 10 }" type="textarea" placeholder="询问任何内容"
+                                maxlength="2000" resize="none" />
+                        </div>
+                        <div class="input-bottom">
+                            <div class="input-bottom-start">
+                                <div class="bottom-icon" @click="isthink = !isthink"
+                                    :class="{ 'bottom-icon-isthink': isthink }">
+                                    <el-icon>
+                                        <Cpu />
+                                    </el-icon>
+                                    <p>深度思考</p>
+                                </div>
+                            </div>
+                            <div :style="{ backgroundColor: senderValue ? '#000' : '#d7d7d7' }" class="input-bottom-end">
+                                <i class="bi bi-caret-up-fill"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- <el-button @click="handleSubmit">发送</el-button> -->
                 </div>
                 <div class="tips-text">内容由 AI 生成，请仔细甄别</div>
             </div>
@@ -81,10 +97,13 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue"
+import { onMounted, ref, watch } from "vue"
 import { fetchEventSource } from '@microsoft/fetch-event-source';
+import AiMarkdown from './components/AiMarkdown.vue'
+
 
 const selectedItems = ref({})
+const isthink = ref(false)
 const isCollapse = ref(false)
 const isNewChat = ref(false)
 const senderLoading = ref(false)
@@ -93,17 +112,13 @@ const senderValue = ref('')
 const evText = ref('')
 const typewriterRef = ref(null)
 
+
 //新聊天
 const newchatclick = () => {
     isNewChat.value = true
 
 }
-const test = () => {
-    console.log(1111);
-}
-const test2 = () => {
-    console.log(222);
-}
+
 const handleOpen = () => {
     isCollapse.value = !isCollapse.value
 }
@@ -158,12 +173,74 @@ const getreply = async () => {
 </script>
 
 <style lang="scss" scoped>
+
+
 :deep(.itme-icon-popper) {
-    .el-dropdown-menu__item:hover {
-        background-color: #dfdfdf;
-        color: #000;
+    top: 25px;
+    border-radius: 15px;
+    --el-border-radius-base: 15px;
+    --el-dropdown-menuItem-hover-fill: #f5f5f5;
+    --el-dropdown-menuItem-hover-color: #000;
+
+    .el-dropdown-menu__item {
+        display: flex;
+        justify-content: center;
+        margin: 5px;
     }
+
+    .el-dropdown-menu__item:hover {
+        border-radius: 10px;
+
+    }
+
+    .el-popper__arrow {
+        display: none;
+    }
+
 }
+
+:deep(.internal-textarea) {
+    font-size: 16px;
+    color: #000;
+
+    .el-textarea__inner {
+        border: none;
+        box-shadow: none;
+        outline: none;
+        overflow-y: auto;
+
+        scrollbar-width: thin;
+        /* 滚动条宽度：‘auto’ | ‘thin’ | ‘none’ */
+        scrollbar-color: #888 #f1f1f1;
+    }
+
+    .el-textarea__inner::-webkit-scrollbar {
+        width: 8px;
+        /* 设置滚动条宽度 */
+    }
+
+    .el-textarea__inner::-webkit-scrollbar-track {
+        background-color: #f1f1f1;
+        /* 轨道背景色 */
+        border-radius: 4px;
+        /* 圆角 */
+    }
+
+    .el-textarea__inner::-webkit-scrollbar-thumb {
+        background-color: #888;
+        /* 滑块背景色 */
+        border-radius: 4px;
+        /* 圆角 */
+    }
+
+    .el-textarea__inner::-webkit-scrollbar-thumb:hover {
+        background-color: #555;
+        /* 悬浮时的背景色 */
+    }
+
+}
+
+
 
 .home-box {
     height: 100vh;
@@ -190,18 +267,19 @@ const getreply = async () => {
 
 
     .left-box {
-        // position: relative;
         padding-left: 10px;
+        background-color: #f9f9f9;
 
 
 
         .left-List-box {
-            transform: scaleX(0);
-            transform-origin: left;
+            // transform: scaleX(0);
+            // transform-origin: left;
             width: 0;
             overflow: hidden;
             background-color: #fff;
-            transition: transform 0.4s ease, width 0.5s ease-in-out;
+            // transition: transform 0.4s ease, width 0.5s ease-in-out;
+            transition: width 0.5s ease-in-out;
             height: 100%;
             border-right: 1px solid #e4e7ed;
             position: relative;
@@ -241,6 +319,8 @@ const getreply = async () => {
                 .list-text {
                     margin-right: 10px;
 
+
+
                     .list-itme {
                         position: relative;
                         display: flex;
@@ -252,8 +332,15 @@ const getreply = async () => {
                         margin: 10px;
                         cursor: pointer;
                         border-radius: 8px;
-                        padding: calc(var(--spacing)*2);
                         white-space: nowrap;
+
+                        .itme-text {
+                            padding-right: 20px;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                        }
+
+
 
                         .itme-icon {
                             padding: 5px;
@@ -290,12 +377,15 @@ const getreply = async () => {
                 justify-content: center;
                 border-top: 1px solid #e4e7ed;
                 height: 60px;
+                white-space: nowrap;
+
             }
 
         }
 
         .is-left-open {
-            transform: scaleX(1);
+            // transform: scaleX(1);
+            background-color: #f9f9f9;
             width: 260px;
         }
 
@@ -350,6 +440,9 @@ const getreply = async () => {
                 .text-typewriter {
                     margin: auto;
                     width: 60%;
+                    font-family: 'Courier New', monospace;
+
+
 
                     .text-bubble {
                         margin: 40px 20px;
@@ -358,16 +451,6 @@ const getreply = async () => {
 
             }
 
-            .new-wrap {
-                position: absolute;
-                margin: auto;
-                // bottom: 70%;
-                font-size: 28px;
-                color: #000;
-                font-weight: bold;
-                left: 50%;
-                top: 20%;
-            }
 
             .input-area {
                 position: sticky;
@@ -376,6 +459,106 @@ const getreply = async () => {
                 width: 60%;
                 margin: auto;
                 transition: bottom 0.5s ease-in-out;
+
+
+                .new-wrap {
+                    display: flex;
+                    justify-content: center;
+                    margin-bottom: 30px;
+                    font-weight: bold;
+                    // left: 50%;
+                    // top: 20%;
+                    // position: absolute;
+                    // margin: auto;
+                    // bottom: 70%;
+                    font-size: 28px;
+                    color: #000;
+                }
+
+
+                .input-external {
+                    padding: 12px;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: flex-start;
+                    align-items: flex-start;
+                    border-radius: 24px;
+                    box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.1);
+
+                    .input-text {
+                        width: 100%;
+                        padding: 5px 0 5px 10px;
+
+                    }
+
+                    .input-bottom {
+                        height: 36px;
+                        width: 100%;
+                        display: flex;
+                        justify-content: space-between;
+                        align-items: center;
+
+                        .input-bottom-end {
+                            cursor: pointer;
+                            width: 32px; // 圆的宽度
+                            height: 32px; // 圆的高度
+                            border-radius: 50%;
+                            background-color: #d7d7d7;
+                            display: flex; // 使图标居中
+                            justify-content: center;
+                            align-items: center;
+
+                            i {
+                                color: #f4f4f4;
+                                font-size: 16px;
+                            }
+                        }
+
+                        .bottom-icon {
+                            cursor: pointer;
+                            border-radius: 24px;
+                            border: 1px solid #e4e7ed;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            padding: 5px;
+                            margin-right: 5px;
+
+                            i {
+                                font-size: 16px;
+                            }
+
+                            p {
+                                margin-left: 5px;
+                            }
+                        }
+
+                        .bottom-icon-isthink {
+                            background-color: #c4dbf8;
+
+                            i {
+                                color: #4d6bfe;
+                            }
+
+                            p {
+                                color: #4d6bfe;
+                            }
+                        }
+
+                        .bottom-icon:not(.bottom-icon-isthink):hover {
+                            background-color: #f9f9f9;
+                        }
+
+                        // .input-bottom-start{
+                        //     margin-right: 60px;
+                        // }
+
+                        // .input-bottom-end{
+
+                        // }
+                    }
+
+                }
             }
 
             .input-area-center {

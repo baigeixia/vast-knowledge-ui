@@ -179,8 +179,9 @@ const onSubmit = async (formEl) => {
         const res = await userStore.login({ ...loginform, codeOrPas: codeOrPas.value, uuid: uuid });
         console.log("res" + res);
         codeimgInfo.value = {}
-
+        
         socket.connect();
+
         // useSockets()
         window.location.reload();
 

@@ -59,10 +59,9 @@
             <div class="chat-container">
                 <div class="messages-box" ref="typewriterRef">
                     <div class="text-typewriter">
-                        <AiMarkdown></AiMarkdown>
+                        <article class="html-highlight  markdown-body" v-html="htmltext"></article>
                     </div>
                 </div>
-
                 <div class="input-area" :class="{ 'input-area-center': isNewChat }">
                     <div class="new-wrap" v-show="isNewChat">
                         有什么可以帮忙的？
@@ -71,7 +70,7 @@
                         <div class="input-text">
                             <el-input class="internal-textarea" v-model="senderValue"
                                 :autosize="{ minRows: 2, maxRows: 10 }" type="textarea" placeholder="询问任何内容"
-                                maxlength="2000" resize="none" />
+                                resize="none" />
                         </div>
                         <div class="input-bottom">
                             <div class="input-bottom-start">
@@ -83,7 +82,12 @@
                                     <p>深度思考</p>
                                 </div>
                             </div>
-                            <div :style="{ backgroundColor: senderValue ? '#000' : '#d7d7d7' }" class="input-bottom-end">
+                            <!-- <el-button circle  class="input-bottom-end" :class="{'max-number':isMaxSender, 'sender': senderValue}">
+                                <i class="bi bi-caret-up-fill" ></i>
+                            </el-button> -->
+                            <div class="input-bottom-end" @click="handleSubmit"
+                                :class="{ 'sender': senderValue && !isMaxSender }"
+                                :style="{ pointerEvents: isMaxSender || !senderValue ? 'none' : 'auto' }">
                                 <i class="bi bi-caret-up-fill"></i>
                             </div>
                         </div>
@@ -97,10 +101,14 @@
 </template>
 
 <script setup>
-import { onMounted, ref, watch } from "vue"
+import { nextTick, onMounted, ref, watch } from "vue"
+// import AiMarkdown from './components/AiMarkdown.vue'
 import { fetchEventSource } from '@microsoft/fetch-event-source';
-import AiMarkdown from './components/AiMarkdown.vue'
-
+import { marked } from 'marked';
+import { safeHtml } from '@/utils/domPurifyConfig'
+import hljs from 'highlight.js';
+import 'github-markdown-css';
+import 'highlight.js/styles/a11y-light.css';
 
 const selectedItems = ref({})
 const isthink = ref(false)
@@ -109,9 +117,65 @@ const isNewChat = ref(false)
 const senderLoading = ref(false)
 const timeValue = ref(null)
 const senderValue = ref('')
-const evText = ref('')
 const typewriterRef = ref(null)
 
+const isMaxSender = ref(false)
+
+//html输出
+const htmltext = ref('')
+const markedtext = ref('')
+
+onMounted(() => {
+    const markdownContent = `
+以下是使用Java实现输出"Hello, World!"的简单代码示例及详细解释：
+
+### 代码示例
+\`\`\`java
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!");
+    }
+}
+\`\`\`
+
+### 代码解释
+1. **\`public class HelloWorld\`**：定义了一个公共类（class），类名是\`HelloWorld\`。在Java中，类是代码的基本组织单元，一个Java源文件（\`.java\`）中最多只能有一个\`public\`类，并且该类的名称必须与源文件名相同（包括大小写）。
+2. **\`public static void main(String[] args)\`**：这是Java程序的入口点方法。\`public\`表示该方法是公共的，可以被外部访问；\`static\`意味着它属于类本身，而不是类的实例，可以在不创建类的对象的情况下直接调用；\`void\`表示该方法没有返回值；\`main\`是方法名，这是Java虚拟机（JVM）在启动程序时寻找的特定方法名；\`String[] args\`是一个字符串数组，用于接收命令行参数。
+3. **\`System.out.println("Hello, World!");\`**：这是输出语句。\`System\`是Java提供的一个类，它包含了一些与系统相关的属性和方法；\`out\`是\`System\`类的一个静态成员变量，它是一个\`PrintStream\`类型的对象，用于标准输出（通常是控制台）；\`println\`是\`PrintStream\`类的一个方法，用于打印指定的字符串并换行。
+
+### 编译和运行步骤
+1. **编写代码**：将上述代码复制到一个文本编辑器中，保存为\`HelloWorld.java\`文件。确保文件名与类名一致，并且文件扩展名为\`.java\`。
+2. **编译代码**：打开命令行终端，切换到保存\`HelloWorld.java\`文件的目录，然后执行以下命令进行编译：
+\`\`\`bash
+javac HelloWorld.java
+\`\`\`
+如果编译成功，会在同一目录下生成一个名为\`HelloWorld.class\`的字节码文件。
+3. **运行程序**：在命令行中继续执行以下命令来运行程序：
+\`\`\`bash
+java HelloWorld
+\`\`\`
+执行后，会在控制台输出\`Hello, World!\`。 
+`;
+
+    // const markdownContent = `# 🔥 Typewriter 实例方法-事件 \n 😄 使你的打字器可高度定制化。\n - 更方便的控制打字器的状态 \n - 列表项 **粗体文本** 和 *斜体文本* \n \`\`\`javascript \n // 🙉 控制台可以查看相关打日志\n console.log('Hello, world!');console.log('Hello, world!');console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); \n \`\`\``
+    const html = marked.parse(markdownContent);
+    // DOMPurify.sanitize(html)
+    htmltext.value = safeHtml(html)
+
+    nextTick(() => {
+        hljs.highlightAll();
+    })
+    // loadHighlightJS()
+})
+
+
+
+
+watch(senderValue, () => {
+    if (senderValue.value.length > 20000) {
+        isMaxSender.value = true
+    }
+})
 
 //新聊天
 const newchatclick = () => {
@@ -124,6 +188,10 @@ const handleOpen = () => {
 }
 
 function handleSubmit(value) {
+    if (isMaxSender.value) {
+        ElMessage.warning(`字数过大`)
+    }
+
     ElMessage.info(`发送中`)
     senderLoading.value = true
     timeValue.value = setTimeout(() => {
@@ -138,15 +206,19 @@ function handleSubmit(value) {
 }
 
 // 监听 evText 的变化，触发滚动
-watch(evText, () => {
+watch(htmltext, () => {
     const typewriterElement = typewriterRef.value;
     if (typewriterElement) {
-        // 获取到内容区域
+        // 获取到内容区域的总高度和可视区域的高度
         const scrollHeight = typewriterElement.scrollHeight;
         const clientHeight = typewriterElement.clientHeight;
+        const scrollTop = typewriterElement.scrollTop;
 
-        // 如果滚动条接近底部，则自动滚动
-        if (scrollHeight > clientHeight) {
+        // 判断当前滚动条是否已经接近底部
+        const isAtBottom = scrollHeight - clientHeight <= scrollTop + 1;
+
+        // 如果已经在底部，才自动滚动到底部
+        if (isAtBottom) {
             typewriterElement.scrollTop = scrollHeight - clientHeight;
         }
     }
@@ -162,18 +234,73 @@ function handleCancel() {
 
 
 const getreply = async () => {
-    await fetchEventSource(`http://localhost:19010/chat/stream-chat?message=${senderValue.value}`, {
-        onmessage(ev) {
-            console.log(ev.data);
-            evText.value = evText.value + ev.data
+    await fetchEventSource(`http://localhost:19010/chat/stream-chat2?message=${senderValue.value}`, {
+        async onopen(response) {
+            console.log("response", response);
+            if (response.ok && response.headers.get('content-type') === 'text/event-stream') {
+                console.log("EventStream opened");
+                return;
+            } else {
+                console.error("Error in connection");
+                throw new Error("Connection error");
+            }
+        },
+        onclose() {
+            // if the server closes the connection unexpectedly, retry:
+            console.log("EventStream onclose");
+            console.log(markedtext.value);
+        },
+        onmessage(msg) {
+            console.log("msg:",msg);
+            console.log(msg.data);
+
+            if  (!msg.data ) {
+                msg.data   = '\n'
+            }
+
+            markedtext.value = markedtext.value + msg.data
+
+            const html = marked.parse(markedtext.value);
+            // console.log(html);
+            htmltext.value = safeHtml(html)
+
+            typeWriterEffect(msg.data);
+        },
+        onerror(err) {
+            console.error("Stream error", err);
         }
     })
 }
 
+const typeWriterEffect = (newText) => {
+    let index = 0;
+    const speed = 100; // 每个字的输出间隔，单位毫秒
+    const currentText = ref('');
+
+    // 使用递归逐字输出
+    function type() {
+        if (index < newText.length) {
+            currentText.value += newText.charAt(index); // 每次添加一个字符
+            index++;
+            nextTick(() => {
+                const lastElement = htmltext.value.lastElementChild;
+                // 每次更新视图后进行代码高亮
+                if (lastElement) {
+                    hljs.highlightElement(lastElement); // 高亮新增的代码块
+                }
+                
+                // hljs.highlightElement();
+            });
+            setTimeout(type, speed); // 延时递归
+        }
+    }
+    type(); // 启动逐字输出
+};
+
 </script>
 
 <style lang="scss" scoped>
-
+@import "@/assets/styles/highlight.scss";
 
 :deep(.itme-icon-popper) {
     top: 25px;
@@ -201,13 +328,14 @@ const getreply = async () => {
 
 :deep(.internal-textarea) {
     font-size: 16px;
-    color: #000;
 
     .el-textarea__inner {
         border: none;
         box-shadow: none;
         outline: none;
         overflow-y: auto;
+        color: #000;
+
 
         scrollbar-width: thin;
         /* 滚动条宽度：‘auto’ | ‘thin’ | ‘none’ */
@@ -487,7 +615,7 @@ const getreply = async () => {
 
                     .input-text {
                         width: 100%;
-                        padding: 5px 0 5px 10px;
+                        // padding: 5px 0 5px 10px;
 
                     }
 
@@ -512,6 +640,14 @@ const getreply = async () => {
                                 color: #f4f4f4;
                                 font-size: 16px;
                             }
+                        }
+
+                        .max-number {
+                            background-color: #d7d7d7;
+                        }
+
+                        .sender {
+                            background-color: #000;
                         }
 
                         .bottom-icon {

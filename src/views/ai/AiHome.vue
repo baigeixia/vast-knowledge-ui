@@ -1,6 +1,6 @@
 <template>
     <div class="home-box">
-        <el-tooltip class="box-item" effect="dark" content="关闭边框" :placement="isCollapse ? 'right' : 'bottom'"
+        <el-tooltip class="box-item" effect="dark" :content="isCollapse? '关闭边框':'打开边框'" :placement="isCollapse ? 'right' : 'bottom'"
             :show-after="250" :hide-after="0">
             <div class="left-open" @click="handleOpen">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
@@ -59,7 +59,10 @@
             <div class="chat-container">
                 <div class="messages-box" ref="typewriterRef">
                     <div class="text-typewriter">
-                        <article class="html-highlight  markdown-body" v-html="htmltext"></article>
+                        <div class="reasoning-text">
+                            <article class="reasoning-html markdown-body" v-html="reasoninghtmltext"></article>
+                        </div>
+                        <article  class="html-highlight  markdown-body" v-html="htmltext"></article>
                     </div>
                 </div>
                 <div class="input-area" :class="{ 'input-area-center': isNewChat }">
@@ -68,7 +71,7 @@
                     </div>
                     <div class="input-external">
                         <div class="input-text">
-                            <el-input class="internal-textarea" v-model="senderValue"
+                            <el-input class="internal-textarea" v-model="senderValue" @keydown.enter="handleEnter"
                                 :autosize="{ minRows: 2, maxRows: 10 }" type="textarea" placeholder="询问任何内容"
                                 resize="none" />
                         </div>
@@ -82,9 +85,6 @@
                                     <p>深度思考</p>
                                 </div>
                             </div>
-                            <!-- <el-button circle  class="input-bottom-end" :class="{'max-number':isMaxSender, 'sender': senderValue}">
-                                <i class="bi bi-caret-up-fill" ></i>
-                            </el-button> -->
                             <div class="input-bottom-end" @click="handleSubmit"
                                 :class="{ 'sender': senderValue && !isMaxSender }"
                                 :style="{ pointerEvents: isMaxSender || !senderValue ? 'none' : 'auto' }">
@@ -104,13 +104,24 @@
 import { nextTick, onMounted, ref, watch } from "vue"
 // import AiMarkdown from './components/AiMarkdown.vue'
 import { fetchEventSource } from '@microsoft/fetch-event-source';
-import { marked } from 'marked';
+import { Marked  } from 'marked';
 import { safeHtml } from '@/utils/domPurifyConfig'
 import hljs from 'highlight.js';
 import 'github-markdown-css';
 import 'highlight.js/styles/a11y-light.css';
+import { markedHighlight } from "marked-highlight";
 
-const selectedItems = ref({})
+const marked = new Marked(
+  markedHighlight({
+	emptyLangClass: 'hljs',
+    langPrefix: 'hljs language-',
+    highlight(code, lang, info) {
+      const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+      return hljs.highlight(code, { language }).value;
+    }
+  })
+)
+
 const isthink = ref(false)
 const isCollapse = ref(false)
 const isNewChat = ref(false)
@@ -118,43 +129,43 @@ const senderLoading = ref(false)
 const timeValue = ref(null)
 const senderValue = ref('')
 const typewriterRef = ref(null)
-
 const isMaxSender = ref(false)
+
+//输出
 
 //html输出
 const htmltext = ref('')
 const markedtext = ref('')
 
-onMounted(() => {
-    const markdownContent = `
-以下是使用Java实现输出"Hello, World!"的简单代码示例及详细解释：
+const reasoninghtmltext = ref('')
+const reasoningContent = ref('')
 
-### 代码示例
+
+onMounted(() => {
+
+
+    const markdownContent = `
+以下是一个简单的Java "Hello, World!" 程序示例：
+
 \`\`\`java
 public class HelloWorld {
     public static void main(String[] args) {
-        System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!"); System.out.println("Hello, World!");
+        System.out.println("Hello, World!");
     }
 }
 \`\`\`
 
-### 代码解释
-1. **\`public class HelloWorld\`**：定义了一个公共类（class），类名是\`HelloWorld\`。在Java中，类是代码的基本组织单元，一个Java源文件（\`.java\`）中最多只能有一个\`public\`类，并且该类的名称必须与源文件名相同（包括大小写）。
-2. **\`public static void main(String[] args)\`**：这是Java程序的入口点方法。\`public\`表示该方法是公共的，可以被外部访问；\`static\`意味着它属于类本身，而不是类的实例，可以在不创建类的对象的情况下直接调用；\`void\`表示该方法没有返回值；\`main\`是方法名，这是Java虚拟机（JVM）在启动程序时寻找的特定方法名；\`String[] args\`是一个字符串数组，用于接收命令行参数。
-3. **\`System.out.println("Hello, World!");\`**：这是输出语句。\`System\`是Java提供的一个类，它包含了一些与系统相关的属性和方法；\`out\`是\`System\`类的一个静态成员变量，它是一个\`PrintStream\`类型的对象，用于标准输出（通常是控制台）；\`println\`是\`PrintStream\`类的一个方法，用于打印指定的字符串并换行。
+### 代码解释：
+1. **\`public class HelloWorld\`**：定义了一个公共类（class），类名是 \`HelloWorld\`。在Java中，类是一个基本的封装单元，用于组织代码和数据。类名需要与保存代码的文件名（不包括文件扩展名）一致，所以保存这个代码的文件应该命名为 \`HelloWorld.java\`。
+2. **\`public static void main(String[] args)\`**：这是Java程序的入口点。\`public\` 表示该方法具有公共访问权限；\`static\` 意味着可以在不创建类的实例的情况下调用该方法；\`void\` 表示该方法不返回任何值；\`main\` 是方法名，Java虚拟机（JVM）会从这个方法开始执行程序；\`String[] args\` 是一个字符串类型的数组，用于接收命令行参数。
+3. **\`System.out.println("Hello, World!");\`**：这行代码使用 \`System.out\` 对象的 \`println\` 方法在控制台打印出 "Hello, World!" 字符串，并在打印后换行。\`System\` 是Java标准库中一个预定义的类，\`out\` 是 \`System\` 类的一个静态成员，代表标准输出流，\`println\` 方法用于输出指定的内容。
 
-### 编译和运行步骤
-1. **编写代码**：将上述代码复制到一个文本编辑器中，保存为\`HelloWorld.java\`文件。确保文件名与类名一致，并且文件扩展名为\`.java\`。
-2. **编译代码**：打开命令行终端，切换到保存\`HelloWorld.java\`文件的目录，然后执行以下命令进行编译：
-\`\`\`bash
-javac HelloWorld.java
-\`\`\`
-如果编译成功，会在同一目录下生成一个名为\`HelloWorld.class\`的字节码文件。
-3. **运行程序**：在命令行中继续执行以下命令来运行程序：
-\`\`\`bash
-java HelloWorld
-\`\`\`
-执行后，会在控制台输出\`Hello, World!\`。 
+### 运行步骤：
+1. 将上述代码复制到文本编辑器中，保存为 \`HelloWorld.java\` 文件。
+2. 打开命令行终端（在Windows上是命令提示符或PowerShell，在Linux和macOS上是终端）。
+3. 使用 \`cd\` 命令切换到保存 \`HelloWorld.java\` 文件的目录。
+4. 执行 \`javac HelloWorld.java\` 命令来编译Java源文件，这会生成一个字节码文件 \`HelloWorld.class\`。
+5. 编译成功后，执行 \`java HelloWorld\` 命令来运行程序，此时会在命令行中看到输出 "Hello, World!"。 
 `;
 
     // const markdownContent = `# 🔥 Typewriter 实例方法-事件 \n 😄 使你的打字器可高度定制化。\n - 更方便的控制打字器的状态 \n - 列表项 **粗体文本** 和 *斜体文本* \n \`\`\`javascript \n // 🙉 控制台可以查看相关打日志\n console.log('Hello, world!');console.log('Hello, world!');console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); \n \`\`\``
@@ -162,10 +173,6 @@ java HelloWorld
     // DOMPurify.sanitize(html)
     htmltext.value = safeHtml(html)
 
-    nextTick(() => {
-        hljs.highlightAll();
-    })
-    // loadHighlightJS()
 })
 
 
@@ -205,6 +212,17 @@ function handleSubmit(value) {
     }, 3500)
 }
 
+const handleEnter = (event) => {
+    // 如果按下了 Shift 键，则允许换行
+    if (event.shiftKey) {
+        // 不做任何操作，允许换行
+        return;
+    }
+    // 否则，阻止换行并触发提交
+    event.preventDefault();
+    handleSubmit();
+}
+
 // 监听 evText 的变化，触发滚动
 watch(htmltext, () => {
     const typewriterElement = typewriterRef.value;
@@ -232,9 +250,9 @@ function handleCancel() {
     ElMessage.info(`取消发送`)
 }
 
-
 const getreply = async () => {
     await fetchEventSource(`http://localhost:19010/chat/stream-chat2?message=${senderValue.value}`, {
+        openWhenHidden: true,
         async onopen(response) {
             console.log("response", response);
             if (response.ok && response.headers.get('content-type') === 'text/event-stream') {
@@ -248,23 +266,19 @@ const getreply = async () => {
         onclose() {
             // if the server closes the connection unexpectedly, retry:
             console.log("EventStream onclose");
-            console.log(markedtext.value);
+            // console.log(markedtext.value);
         },
         onmessage(msg) {
-            console.log("msg:",msg);
-            console.log(msg.data);
-
-            if  (!msg.data ) {
-                msg.data   = '\n'
+            const message = JSON.parse(msg.data)
+            if (message?.r) {
+                reasoningContent.value = reasoningContent.value + message.r
+                const html = marked.parse(reasoningContent.value);
+                reasoninghtmltext.value = safeHtml(html)
+            } else {
+                markedtext.value = markedtext.value + message.v
+                const html = marked.parse(markedtext.value);
+                htmltext.value = safeHtml(html)
             }
-
-            markedtext.value = markedtext.value + msg.data
-
-            const html = marked.parse(markedtext.value);
-            // console.log(html);
-            htmltext.value = safeHtml(html)
-
-            typeWriterEffect(msg.data);
         },
         onerror(err) {
             console.error("Stream error", err);
@@ -272,30 +286,6 @@ const getreply = async () => {
     })
 }
 
-const typeWriterEffect = (newText) => {
-    let index = 0;
-    const speed = 100; // 每个字的输出间隔，单位毫秒
-    const currentText = ref('');
-
-    // 使用递归逐字输出
-    function type() {
-        if (index < newText.length) {
-            currentText.value += newText.charAt(index); // 每次添加一个字符
-            index++;
-            nextTick(() => {
-                const lastElement = htmltext.value.lastElementChild;
-                // 每次更新视图后进行代码高亮
-                if (lastElement) {
-                    hljs.highlightElement(lastElement); // 高亮新增的代码块
-                }
-                
-                // hljs.highlightElement();
-            });
-            setTimeout(type, speed); // 延时递归
-        }
-    }
-    type(); // 启动逐字输出
-};
 
 </script>
 
@@ -569,6 +559,19 @@ const typeWriterEffect = (newText) => {
                     margin: auto;
                     width: 60%;
                     font-family: 'Courier New', monospace;
+
+                    .reasoning-text {
+                        border-left: 2px solid #e5e5e5;
+                        color: #8b8b8b;
+                        padding: 0 0 0 13px;
+                        line-height: 26px;
+                        margin: 1em 0;
+
+                        .reasoning-html {
+                            font-size: 14px;
+                            color: #8b8b8b;
+                        }
+                    }
 
 
 

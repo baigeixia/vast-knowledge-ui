@@ -1,7 +1,7 @@
 <template>
     <div class="home-box">
-        <el-tooltip class="box-item" effect="dark" :content="isCollapse? '关闭边框':'打开边框'" :placement="isCollapse ? 'right' : 'bottom'"
-            :show-after="250" :hide-after="0">
+        <el-tooltip class="box-item" effect="dark" :content="isCollapse ? '关闭边框' : '打开边框'"
+            :placement="isCollapse ? 'right' : 'bottom'" :show-after="250" :hide-after="0">
             <div class="left-open" @click="handleOpen">
                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"
                     class="icon-xl-heavy max-md:hidden">
@@ -62,7 +62,7 @@
                         <div class="reasoning-text">
                             <article class="reasoning-html markdown-body" v-html="reasoninghtmltext"></article>
                         </div>
-                        <article  class="html-highlight  markdown-body" v-html="htmltext"></article>
+                        <article class="html-highlight  markdown-body" v-html="htmltext"></article>
                     </div>
                 </div>
                 <div class="input-area" :class="{ 'input-area-center': isNewChat }">
@@ -104,7 +104,7 @@
 import { nextTick, onMounted, ref, watch } from "vue"
 // import AiMarkdown from './components/AiMarkdown.vue'
 import { fetchEventSource } from '@microsoft/fetch-event-source';
-import { Marked  } from 'marked';
+import { Marked } from 'marked';
 import { safeHtml } from '@/utils/domPurifyConfig'
 import hljs from 'highlight.js';
 import 'github-markdown-css';
@@ -112,14 +112,14 @@ import 'highlight.js/styles/a11y-light.css';
 import { markedHighlight } from "marked-highlight";
 
 const marked = new Marked(
-  markedHighlight({
-	emptyLangClass: 'hljs',
-    langPrefix: 'hljs language-',
-    highlight(code, lang, info) {
-      const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-      return hljs.highlight(code, { language }).value;
-    }
-  })
+    markedHighlight({
+        emptyLangClass: 'hljs',
+        langPrefix: 'hljs language-',
+        highlight(code, lang, info) {
+            const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+            return hljs.highlight(code, { language }).value;
+        }
+    })
 )
 
 const isthink = ref(false)
@@ -251,8 +251,16 @@ function handleCancel() {
 }
 
 const getreply = async () => {
-    await fetchEventSource(`http://localhost:19010/chat/stream-chat2?message=${senderValue.value}`, {
+    await fetchEventSource(`http://localhost:19010/chat/stream-chat`, {
         openWhenHidden: true,
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            prompt: senderValue.value,
+            searchEnabled: 1,
+        }),
         async onopen(response) {
             console.log("response", response);
             if (response.ok && response.headers.get('content-type') === 'text/event-stream') {
@@ -270,11 +278,16 @@ const getreply = async () => {
         },
         onmessage(msg) {
             const message = JSON.parse(msg.data)
-            if (message?.r) {
+            // console.log("message:"+message.r);
+            if (message?.s) {
+                //搜索
+                const searchInfo = message.s
+                
+            } else if (message?.r) {
                 reasoningContent.value = reasoningContent.value + message.r
                 const html = marked.parse(reasoningContent.value);
                 reasoninghtmltext.value = safeHtml(html)
-            } else {
+            } else if(message?.v) {
                 markedtext.value = markedtext.value + message.v
                 const html = marked.parse(markedtext.value);
                 htmltext.value = safeHtml(html)

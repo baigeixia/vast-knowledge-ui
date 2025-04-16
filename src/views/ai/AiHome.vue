@@ -49,12 +49,31 @@
                 </div>
             </div>
         </div>
+        
         <div class="text-base">
             <div class="text-base-header">
                 <div class="logo">
                     <img src="https://static.deepseek.com/static/logo.3a7b4c4e.svg" alt="logo">
                 </div>
-                <div class="model">DeepSeek-R1</div>
+                <div class="model">
+                    <el-dropdown class="dropdown-model" popper-class="itme-icon-popper" placement="bottom" trigger="click"
+                        :teleported="false" :persistent="false">
+                        <div class="display-model">
+                            <span class="name"> {{ aimodelAppS?.topModel.modelName }}</span>
+                            <div class="icon">
+                                <i class="bi bi-chevron-compact-down"></i>
+                            </div>
+                        </div>
+                        <template #dropdown>
+                            <el-dropdown-menu>
+                                <el-dropdown-item v-for="item in aimodelAppS.modelList" :key="item.id"
+                                    @click="upTopModel(item)">
+                                    {{ item.modelName }}
+                                </el-dropdown-item>
+                            </el-dropdown-menu>
+                        </template>
+                    </el-dropdown>
+                </div>
             </div>
             <div class="chat-container">
                 <div class="messages-box" ref="typewriterRef">
@@ -71,23 +90,22 @@
                     </div>
                     <div class="input-external">
                         <div class="input-text">
-                            <el-input class="internal-textarea" v-model="senderValue" @keydown.enter="handleEnter"
+                            <el-input class="internal-textarea" v-model="info.prompt" @keydown.enter="handleEnter"
                                 :autosize="{ minRows: 2, maxRows: 10 }" type="textarea" placeholder="询问任何内容"
                                 resize="none" />
                         </div>
                         <div class="input-bottom">
                             <div class="input-bottom-start">
-                                <div class="bottom-icon" @click="isthink = !isthink"
-                                    :class="{ 'bottom-icon-isthink': isthink }">
+                                <div class="bottom-icon" @click="info.thinkingEnabled = !info.thinkingEnabled"
+                                    :class="{ 'bottom-icon-isthink': info.thinkingEnabled }">
                                     <el-icon>
                                         <Cpu />
                                     </el-icon>
                                     <p>深度思考</p>
                                 </div>
                             </div>
-                            <div class="input-bottom-end" @click="handleSubmit"
-                                :class="{ 'sender': senderValue && !isMaxSender }"
-                                :style="{ pointerEvents: isMaxSender || !senderValue ? 'none' : 'auto' }">
+                            <div class="input-bottom-end" @click="canSubmit ? handleSubmit() : null"
+                                :class="{ 'sender': canSubmit }" :style="{ pointerEvents: canSubmit ? 'auto' : 'none' }">
                                 <i class="bi bi-caret-up-fill"></i>
                             </div>
                         </div>
@@ -101,7 +119,7 @@
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref, watch } from "vue"
+import { nextTick, onMounted, ref, watch, reactive, computed, toRaw } from "vue"
 // import AiMarkdown from './components/AiMarkdown.vue'
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { Marked } from 'marked';
@@ -110,6 +128,10 @@ import hljs from 'highlight.js';
 import 'github-markdown-css';
 import 'highlight.js/styles/a11y-light.css';
 import { markedHighlight } from "marked-highlight";
+import aimodelAppStore from '@/stores/ai/model'
+import aimessageAppStore from '@/stores/ai/message'
+const aimodelAppS = aimodelAppStore()
+const aimessageAppS = aimessageAppStore()
 
 const marked = new Marked(
     markedHighlight({
@@ -122,94 +144,130 @@ const marked = new Marked(
     })
 )
 
-const isthink = ref(false)
+// 发送内容对象
+const info = reactive({
+    chatSessionId: null,
+    parentMessageId: null,
+    modelId: null,
+    prompt: null,
+    refFileIds: null,
+    thinkingEnabled: true,
+    searchEnabled: false,
+})
+
+// 模型列表
+
+// 输出框是否可用
+const canSubmit = computed(() => {
+    return info.prompt && info.prompt.length <= 20000;
+})
+
+// 侧边控制
 const isCollapse = ref(false)
+//新窗口
 const isNewChat = ref(false)
+// 消息加载
 const senderLoading = ref(false)
-const timeValue = ref(null)
-const senderValue = ref('')
+//显示区域 ref
 const typewriterRef = ref(null)
-const isMaxSender = ref(false)
 
-//输出
-
-//html输出
+//内容文本html
 const htmltext = ref('')
+//内容文本markedtext
 const markedtext = ref('')
 
+//深度思考html
 const reasoninghtmltext = ref('')
+//深度思考markedtext
 const reasoningContent = ref('')
 
+const props = defineProps({
+    chatid: {
+        type: String,
+        required: false,
+        default: ''
+    },
+})
 
 onMounted(() => {
+    //初始化位置 新聊天
+    isNewChat.value = true
+    // 默认打开侧边
+    isCollapse.value = true
 
+    //获取之前 侧边 列表数据  
+    //获取模型数据
+    aimodelAppS.getModelList()
 
-    const markdownContent = `
-以下是一个简单的Java "Hello, World!" 程序示例：
+    const chatid= props.chatid
+    console.log("chatid",chatid);
 
-\`\`\`java
-public class HelloWorld {
-    public static void main(String[] args) {
-        System.out.println("Hello, World!");
-    }
+    //初始化赋值
+    nextTick(() => {
+        info.modelId = aimodelAppS.topModel.id
+        if(chatid){
+            info.chatSessionId = chatid
+            // newChart(chatid)
+        }
+    })
+})
+
+const upTopModel = (model) => {
+    aimodelAppS.topModel = model
+    //模型id更新
+    info.modelId = model.id
 }
-\`\`\`
 
-### 代码解释：
-1. **\`public class HelloWorld\`**：定义了一个公共类（class），类名是 \`HelloWorld\`。在Java中，类是一个基本的封装单元，用于组织代码和数据。类名需要与保存代码的文件名（不包括文件扩展名）一致，所以保存这个代码的文件应该命名为 \`HelloWorld.java\`。
-2. **\`public static void main(String[] args)\`**：这是Java程序的入口点。\`public\` 表示该方法具有公共访问权限；\`static\` 意味着可以在不创建类的实例的情况下调用该方法；\`void\` 表示该方法不返回任何值；\`main\` 是方法名，Java虚拟机（JVM）会从这个方法开始执行程序；\`String[] args\` 是一个字符串类型的数组，用于接收命令行参数。
-3. **\`System.out.println("Hello, World!");\`**：这行代码使用 \`System.out\` 对象的 \`println\` 方法在控制台打印出 "Hello, World!" 字符串，并在打印后换行。\`System\` 是Java标准库中一个预定义的类，\`out\` 是 \`System\` 类的一个静态成员，代表标准输出流，\`println\` 方法用于输出指定的内容。
-
-### 运行步骤：
-1. 将上述代码复制到文本编辑器中，保存为 \`HelloWorld.java\` 文件。
-2. 打开命令行终端（在Windows上是命令提示符或PowerShell，在Linux和macOS上是终端）。
-3. 使用 \`cd\` 命令切换到保存 \`HelloWorld.java\` 文件的目录。
-4. 执行 \`javac HelloWorld.java\` 命令来编译Java源文件，这会生成一个字节码文件 \`HelloWorld.class\`。
-5. 编译成功后，执行 \`java HelloWorld\` 命令来运行程序，此时会在命令行中看到输出 "Hello, World!"。 
-`;
-
-    // const markdownContent = `# 🔥 Typewriter 实例方法-事件 \n 😄 使你的打字器可高度定制化。\n - 更方便的控制打字器的状态 \n - 列表项 **粗体文本** 和 *斜体文本* \n \`\`\`javascript \n // 🙉 控制台可以查看相关打日志\n console.log('Hello, world!');console.log('Hello, world!');console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); console.log('Hello, world!'); \n \`\`\``
-    const html = marked.parse(markdownContent);
-    // DOMPurify.sanitize(html)
-    htmltext.value = safeHtml(html)
-
-})
-
-
-
-
-watch(senderValue, () => {
-    if (senderValue.value.length > 20000) {
-        isMaxSender.value = true
-    }
-})
-
-//新聊天
+//新聊天 
 const newchatclick = () => {
     isNewChat.value = true
-
+    info.chatSessionId = null
+    info.parentMessageId = null
 }
 
+//侧边控制
 const handleOpen = () => {
     isCollapse.value = !isCollapse.value
 }
 
-function handleSubmit(value) {
-    if (isMaxSender.value) {
+// 发送间隔
+let timeValue = null
+// 发送 内容
+function handleSubmit() {
+    if (!info.prompt) {
+        ElMessage.warning(`发点什么吧`)
+        return
+    }
+    if (!canSubmit.value) {
         ElMessage.warning(`字数过大`)
+        return
+    }
+    //新窗口
+    if (isNewChat.value) {
+        isNewChat.value = false
+        newChart()
     }
 
-    ElMessage.info(`发送中`)
+    // 发送内容 侧边收起
+    isCollapse.value = false
+    // 开启加载
     senderLoading.value = true
-    timeValue.value = setTimeout(() => {
+
+    timeValue = setTimeout(() => {
         // 可以在控制台 查看打印结果
-        console.log('submit-> value：', value)
-        console.log('submit-> senderValue', senderValue.value)
+        console.log('submit-> info.prompt', info.prompt)
         getreply()
         senderLoading.value = false
-        ElMessage.success(`发送成功`)
-        senderValue.value = ''
+        info.prompt = null
     }, 3500)
+}
+
+const newChart = async(id) => {
+    const chatinfo =await aimessageAppS.createChat(id)
+    console.log("chatinfo",chatinfo);
+    info.chatSessionId = chatinfo.id
+    info.parentMessageId = chatinfo.currentMessageId
+    return chatinfo
 }
 
 const handleEnter = (event) => {
@@ -224,31 +282,36 @@ const handleEnter = (event) => {
 }
 
 // 监听 evText 的变化，触发滚动
-watch(htmltext, () => {
-    const typewriterElement = typewriterRef.value;
-    if (typewriterElement) {
-        // 获取到内容区域的总高度和可视区域的高度
-        const scrollHeight = typewriterElement.scrollHeight;
-        const clientHeight = typewriterElement.clientHeight;
-        const scrollTop = typewriterElement.scrollTop;
+// watch(htmltext, () => {
+//     const typewriterElement = typewriterRef.value;
+//     if (typewriterElement) {
+//         // 获取到内容区域的总高度和可视区域的高度
+//         const scrollHeight = typewriterElement.scrollHeight;
+//         const clientHeight = typewriterElement.clientHeight;
+//         const scrollTop = typewriterElement.scrollTop;
 
-        // 判断当前滚动条是否已经接近底部
-        const isAtBottom = scrollHeight - clientHeight <= scrollTop + 1;
+//         // 判断当前滚动条是否已经接近底部
+//         const isAtBottom = scrollHeight - clientHeight <= scrollTop + 1;
 
-        // 如果已经在底部，才自动滚动到底部
-        if (isAtBottom) {
-            typewriterElement.scrollTop = scrollHeight - clientHeight;
-        }
-    }
-});
+//         // 如果已经在底部，才自动滚动到底部
+//         if (isAtBottom) {
+//             typewriterElement.scrollTop = scrollHeight - clientHeight;
+//         }
+//     }
+// });
 
 function handleCancel() {
     senderLoading.value = false
-    if (timeValue.value)
-        clearTimeout(timeValue.value)
-    timeValue.value = null
+    if (timeValue)
+        clearTimeout(timeValue)
+    timeValue = null
     ElMessage.info(`取消发送`)
 }
+
+class RetriableError extends Error { }
+class FatalError extends Error { }
+const maxRetries = 5;
+let retryCount = 0;
 
 const getreply = async () => {
     await fetchEventSource(`http://localhost:19010/chat/stream-chat`, {
@@ -257,44 +320,75 @@ const getreply = async () => {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-            prompt: senderValue.value,
-            searchEnabled: 1,
-        }),
+        body: JSON.stringify(toRaw(info)),
         async onopen(response) {
-            console.log("response", response);
-            if (response.ok && response.headers.get('content-type') === 'text/event-stream') {
-                console.log("EventStream opened");
+            const contentType = response.headers.get('content-type');
+
+            if (response.ok && contentType === 'text/event-stream') {
+                retryCount = 0; // reset retry count on success
                 return;
-            } else {
-                console.error("Error in connection");
-                throw new Error("Connection error");
             }
-        },
-        onclose() {
-            // if the server closes the connection unexpectedly, retry:
-            console.log("EventStream onclose");
-            // console.log(markedtext.value);
+
+            // Non-retriable errors:
+            if (response.status >= 400 && response.status < 500 && response.status !== 429) {
+                throw new FatalError(`Client error: ${response.status}`);
+            }
+
+            // 5xx errors are considered fatal in your case:
+            if (response.status >= 500) {
+                throw new FatalError(`Server error: ${response.status}`);
+            }
+
+            // Other retriable cases (like 429, network error, etc.)
+            throw new RetriableError(`Temporary issue: ${response.status}`);
         },
         onmessage(msg) {
+            if (msg.event === 'FatalError') {
+                throw new FatalError(msg.data);
+            }
+
             const message = JSON.parse(msg.data)
-            // console.log("message:"+message.r);
+
             if (message?.s) {
                 //搜索
                 const searchInfo = message.s
-                
+
             } else if (message?.r) {
                 reasoningContent.value = reasoningContent.value + message.r
                 const html = marked.parse(reasoningContent.value);
                 reasoninghtmltext.value = safeHtml(html)
-            } else if(message?.v) {
+            } else if (message?.v) {
                 markedtext.value = markedtext.value + message.v
                 const html = marked.parse(markedtext.value);
                 htmltext.value = safeHtml(html)
             }
         },
+        onclose() {
+            console.log("EventStream onclose");
+            // if (streamEndedNormally) {
+            //     console.log("连接正常关闭");
+            //     // 不抛错，不重试
+            // } else {
+            //     console.warn("连接异常中断，准备重试");
+            //     throw new RetriableError("连接异常关闭");
+            // }
+            // throw new RetriableError("Connection closed");
+        },
         onerror(err) {
-            console.error("Stream error", err);
+            console.log("err：", err.message);
+
+            if (err instanceof FatalError) {
+                console.error("Fatal error, stopping:", err.message);
+                throw err; // stops retry
+            }
+
+            retryCount++;
+            console.warn(`Retry attempt ${retryCount}/${maxRetries}`);
+
+            if (retryCount >= maxRetries) {
+                console.error("Max retries reached, stopping.");
+                throw new FatalError("Too many retries");
+            }
         }
     })
 }
@@ -552,6 +646,28 @@ const getreply = async () => {
                 margin-left: 16px;
                 font-weight: 500;
                 color: #303133;
+
+                .dropdown-model {
+                    .display-model {
+
+                        padding: 10px;
+                        color: #000;
+                        display: flex;
+                        cursor: pointer;
+
+                        .name {
+                            margin-right: 10px;
+                        }
+                    }
+
+                    .display-model:hover {
+                        box-shadow: 0px 5px 25px rgba(0, 0, 0, 0.1);
+                        background-color: #e7e6e6;
+                        border-radius: 18px;
+
+                    }
+                }
+
             }
         }
 

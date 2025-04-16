@@ -167,9 +167,12 @@ const router = createRouter({
       ]
     },
     {
-      path: '/ai',
+      path: '/ai/:chatid?',
       name: 'ai',
       component: () => import('../views/ai/AiHome.vue'),
+      props: route => ({
+        chatid: route.params.chatid
+      }),
     },
     {
       path: '/login',

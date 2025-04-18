@@ -5,7 +5,7 @@ export const  createChatApi =(chatSessionId)=>{
         url: '/chat/create',
         method: 'post',
         data:{
-            chatSessionId:''
+            chatSessionId:chatSessionId
         }
     })
 }

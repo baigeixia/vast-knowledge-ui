@@ -20,27 +20,35 @@
                     </div>
                 </div>
                 <el-scrollbar class="box-text">
-                    <div class="list-text" v-for=" itme in 100 " :key="itme">
-                        <div class="list-itme" @click="isNewChat = false">
-                            <div :title="itme" class="itme-text">
-                                {{ `texttexttexttexttexttexttexttexttexttexttexttexttexttexttexttext ${itme}` }}
+                    <div class="box-text-list" v-infinite-scroll="listscroll" :infinite-scroll-immediate="false"
+                        :infinite-scroll-disabled="InfoPage.noMore">
+                        <div class="list-text" :class="{ active: info.chatSessionId === itme.id }"
+                            v-for=" itme in userList.records" :key="itme.id">
+                            <div class="list-itme" @click="toChat(itme)">
+                                <!-- <div class="itme-text " v-if="editingTitleId === itme.id"> -->
+                                <div class="itme-text itme-text-input" v-if="editingTitleId === itme.id">
+                                    <el-input v-model="newTitle" size="small" @blur="confirmRename(itme)"
+                                        @keyup.enter="confirmRename(itme)" />
+                                </div>
+                                <div v-else :title="itme.title" class="itme-text">
+                                    {{ itme.title }}
+                                </div>
+
+                                <el-dropdown class="itme-icon" popper-class="itme-icon-popper" placement="bottom"
+                                    trigger="click" :teleported="false" :persistent="false">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                        <path fill="currentColor" fill-rule="evenodd"
+                                            d="M3 12a2 2 0 1 1 4 0 2 2 0 0 1-4 0m7 0a2 2 0 1 1 4 0 2 2 0 0 1-4 0m7 0a2 2 0 1 1 4 0 2 2 0 0 1-4 0"
+                                            clip-rule="evenodd"></path>
+                                    </svg>
+                                    <template #dropdown>
+                                        <el-dropdown-menu>
+                                            <el-dropdown-item @click="upTitle(itme)">重命名</el-dropdown-item>
+                                            <el-dropdown-item @click="deTitle(itme)">删除</el-dropdown-item>
+                                        </el-dropdown-menu>
+                                    </template>
+                                </el-dropdown>
                             </div>
-
-                            <el-dropdown class="itme-icon" popper-class="itme-icon-popper" placement="bottom"
-                                trigger="click" :teleported="false" :persistent="false">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                    <path fill="currentColor" fill-rule="evenodd"
-                                        d="M3 12a2 2 0 1 1 4 0 2 2 0 0 1-4 0m7 0a2 2 0 1 1 4 0 2 2 0 0 1-4 0m7 0a2 2 0 1 1 4 0 2 2 0 0 1-4 0"
-                                        clip-rule="evenodd"></path>
-                                </svg>
-                                <template #dropdown>
-                                    <el-dropdown-menu>
-                                        <el-dropdown-item>重命名</el-dropdown-item>
-                                        <el-dropdown-item>删除</el-dropdown-item>
-                                    </el-dropdown-menu>
-                                </template>
-                            </el-dropdown>
-
                         </div>
                     </div>
                 </el-scrollbar>
@@ -49,12 +57,14 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="text-base">
             <div class="text-base-header">
-                <div class="logo">
-                    <img src="https://static.deepseek.com/static/logo.3a7b4c4e.svg" alt="logo">
-                </div>
+                <RouterLink to="/">
+                    <div class="logo">
+                        <img src="/src/assets/img/logo.svg" alt="logo">
+                    </div>
+                </RouterLink>
                 <div class="model">
                     <el-dropdown class="dropdown-model" popper-class="itme-icon-popper" placement="bottom" trigger="click"
                         :teleported="false" :persistent="false">
@@ -76,12 +86,20 @@
                 </div>
             </div>
             <div class="chat-container">
-                <div class="messages-box" ref="typewriterRef">
-                    <div class="text-typewriter">
+                <div class="messages-box" ref="messagesRef">
+                    <div class="text-typewriter" :class="{ 'text-typewriter-right': item.role === 'user' }"
+                        v-for=" item  in aiInfoAppS.conversationList?.content" :key="item.id">
                         <div class="reasoning-text">
-                            <article class="reasoning-html markdown-body" v-html="reasoninghtmltext"></article>
+                            <article class="reasoning-html markdown-body" v-html="markedHtml(item.thinkingContent)">
+                            </article>
                         </div>
-                        <article class="html-highlight  markdown-body" v-html="htmltext"></article>
+                        <article class=" html-right html-highlight  markdown-body" v-html="markedHtml(item.content)">
+                        </article>
+                    </div>
+                    <div class="assistant-loading" v-if="senderLoading">
+                        <div class="typing-indicator">
+                            <span></span><span></span><span></span>
+                        </div>
                     </div>
                 </div>
                 <div class="input-area" :class="{ 'input-area-center': isNewChat }">
@@ -90,23 +108,26 @@
                     </div>
                     <div class="input-external">
                         <div class="input-text">
-                            <el-input class="internal-textarea" v-model="info.prompt" @keydown.enter="handleEnter"
+                            <el-input class="internal-textarea" v-model="inputContent" @keydown.enter="handleEnter"
                                 :autosize="{ minRows: 2, maxRows: 10 }" type="textarea" placeholder="询问任何内容"
                                 resize="none" />
                         </div>
                         <div class="input-bottom">
                             <div class="input-bottom-start">
-                                <div class="bottom-icon" @click="info.thinkingEnabled = !info.thinkingEnabled"
+                                <div class="bottom-icon" @click="clickthinking()"
                                     :class="{ 'bottom-icon-isthink': info.thinkingEnabled }">
-                                    <el-icon>
+                                    <!-- <el-icon>
                                         <Cpu />
-                                    </el-icon>
+                                    </el-icon> -->
+                                    <i class="bi bi-infinity"></i>
                                     <p>深度思考</p>
                                 </div>
                             </div>
-                            <div class="input-bottom-end" @click="canSubmit ? handleSubmit() : null"
-                                :class="{ 'sender': canSubmit }" :style="{ pointerEvents: canSubmit ? 'auto' : 'none' }">
-                                <i class="bi bi-caret-up-fill"></i>
+                            <div class="input-bottom-end" @click="canSubmit && !senderLoading ? handleSubmit() : null"
+                                :class="{ 'sender': canSubmit || senderLoading }"
+                                :style="{ pointerEvents: canSubmit ? 'auto' : 'none' }">
+                                <i v-if="senderLoading" class="bi bi-diamond"></i>
+                                <i v-else class="bi bi-caret-up-fill"></i>
                             </div>
                         </div>
                     </div>
@@ -115,6 +136,28 @@
                 <div class="tips-text">内容由 AI 生成，请仔细甄别</div>
             </div>
         </div>
+
+        <el-dialog class="box-dialog" v-model="dialogVisible" top="35vh" width="500" :before-close="handleClose">
+            <template #header>
+                <div class="box-dialog-header">
+                    <span>删除聊天？</span>
+                </div>
+            </template>
+            <template #default>
+                <div class="box-dialog-default">
+                    这会删除
+                    <span>{{ `“${dialogdeTitle}”。` }}</span>
+                </div>
+            </template>
+            <template #footer>
+                <div class="dialog-footer">
+                    <el-button class="close" @click="handleClose" round>取消</el-button>
+                    <el-button class="delete" type="danger" round @click="handledelete">
+                        删除
+                    </el-button>
+                </div>
+            </template>
+        </el-dialog>
     </div>
 </template>
 
@@ -124,14 +167,20 @@ import { nextTick, onMounted, ref, watch, reactive, computed, toRaw } from "vue"
 import { fetchEventSource } from '@microsoft/fetch-event-source';
 import { Marked } from 'marked';
 import { safeHtml } from '@/utils/domPurifyConfig'
+import { ElNotification } from 'element-plus'
 import hljs from 'highlight.js';
 import 'github-markdown-css';
 import 'highlight.js/styles/a11y-light.css';
 import { markedHighlight } from "marked-highlight";
 import aimodelAppStore from '@/stores/ai/model'
 import aimessageAppStore from '@/stores/ai/message'
+import aiInfoAppStore from '@/stores/ai/info'
 const aimodelAppS = aimodelAppStore()
 const aimessageAppS = aimessageAppStore()
+const aiInfoAppS = aiInfoAppStore()
+import { h } from 'vue'
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
 const marked = new Marked(
     markedHighlight({
@@ -151,35 +200,50 @@ const info = reactive({
     modelId: null,
     prompt: null,
     refFileIds: null,
-    thinkingEnabled: true,
+    thinkingEnabled: false,
     searchEnabled: false,
 })
 
-// 模型列表
+const InfoPage = reactive({
+    loading: false,
+    noMore: false,
+    offset: 1,
+    limit: 15,
+})
+
+const conversationPage = reactive({
+    loading: false,
+    noMore: false,
+    offset: 0,
+    limit: 6,
+})
+
+
+// const conversationList = ref({
+//     content: []
+// })
+const userList = ref({})
+
+const dialogVisible = ref(false)
+const dialogdeTitle = ref('')
 
 // 输出框是否可用
 const canSubmit = computed(() => {
-    return info.prompt && info.prompt.length <= 20000;
+    return inputContent.value && inputContent.value.length <= 20000;
 })
 
 // 侧边控制
-const isCollapse = ref(false)
+const isCollapse = ref(true)
 //新窗口
 const isNewChat = ref(false)
 // 消息加载
 const senderLoading = ref(false)
-//显示区域 ref
-const typewriterRef = ref(null)
 
-//内容文本html
-const htmltext = ref('')
-//内容文本markedtext
-const markedtext = ref('')
+const editingTitleId = ref(null)
+const newTitle = ref(null)
+const messagesRef = ref(null)
+const inputContent = ref('')
 
-//深度思考html
-const reasoninghtmltext = ref('')
-//深度思考markedtext
-const reasoningContent = ref('')
 
 const props = defineProps({
     chatid: {
@@ -189,40 +253,211 @@ const props = defineProps({
     },
 })
 
-onMounted(() => {
-    //初始化位置 新聊天
-    isNewChat.value = true
-    // 默认打开侧边
-    isCollapse.value = true
+watch(
+    () => props.chatid,
+    (newVal, oldVal) => {
+        if (newVal) {
+            getConversationList(newVal)
+            scrollToLastMessage()
+        }
+    },
+)
 
-    //获取之前 侧边 列表数据  
-    //获取模型数据
-    aimodelAppS.getModelList()
+onMounted(async () => {
+    document.title = 'AiDigHub'
+     getModelS()
+     getUserList()
+    const chatid = props.chatid
+    if (chatid) {
+        //有值获取消息列表
+        newChart(chatid)
+        getConversationList(chatid)
+    } else {
+        // 新聊天
+        isNewChat.value = true
+        // 默认打开侧边
+        isCollapse.value = true
+    }
 
-    const chatid= props.chatid
-    console.log("chatid",chatid);
-
-    //初始化赋值
     nextTick(() => {
-        info.modelId = aimodelAppS.topModel.id
-        if(chatid){
-            info.chatSessionId = chatid
-            // newChart(chatid)
+        if (messagesRef.value) {
+            messagesRef.value.scrollTop = messagesRef.value.scrollHeight
         }
     })
+
 })
+// 顶部加载
+// const handleScroll = async () => {
+//     const message = messagesRef.value;
+//     let heightup = message.scrollHeight
+//     // 如果没有在加载更多数据且滚动接近顶部
+//     if (!conversationPage.loading && message.scrollTop < 10) {
+//         console.log(11111);
+
+//         await Conversationlistscroll()
+//         nextTick(() => {
+//             messagesRef.value.scrollTop = (messagesRef.value.scrollHeight - heightup) - 70
+//         });
+//     }
+// }
+
+const upTitle = (itme) => {
+    editingTitleId.value = itme.id
+    newTitle.value = itme.title // 预填原始值
+}
+
+const deTitle = (itme) => {
+    dialogVisible.value = true
+    dialogdeTitle.value = itme.title // 预填原始值
+}
+
+const handleClose = () => {
+    dialogVisible.value = false
+    dialogdeTitle.value = ''
+}
+const handledelete = () => {
+    dialogVisible.value = false
+}
+
+const confirmRename = async (itme) => {
+    if (!newTitle.value.trim()) {
+        ElMessage.warning('标题不能为空')
+        return
+    }
+
+    // 调用接口或本地更新
+    itme.title = newTitle.value.trim()
+    // await api.updateTitle(itme.id, newTitle.value)
+
+    editingTitleId.value = null
+    newTitle.value = ''
+}
+
+
+const Conversationlistscroll = async () => {
+    if (!conversationPage.noMore) {
+        conversationPage.offset = conversationPage.offset + 1
+        await getConversationList(info.chatSessionId);
+    }
+}
+
+const getConversationList = async (id) => {
+    const conversationData = await aiInfoAppS.getConversation(id, conversationPage.offset, conversationPage.limit)
+    if (conversationData) {
+        conversationPage.noMore = conversationData.hasNext ?? false
+        if (conversationData.infoData?.currentMessageId != 1) {
+            if (!aiInfoAppS.conversationList || aiInfoAppS.conversationList.content === 0) {
+                // 如果为空，直接赋值
+                aiInfoAppS.conversationList = infoData
+            } else {
+                // 如果不为空，将新数据合并
+                aiInfoAppS.conversationList = {
+                    ...aiInfoAppS.conversationList,
+                    content: [...aiInfoAppS.conversationList.content, ...conversationData.content]
+                }
+            }
+
+            // aiInfoAppS.conversationList = conversationData
+        }
+    } else {
+        router.push({ name: 'ai' })
+    }
+}
+
+const getUserList = async () => {
+    const infoData = await aiInfoAppS.getInfolist(InfoPage.offset, InfoPage.limit)
+    if (!infoData || infoData?.records.length === 0) {
+        InfoPage.noMore = true
+    } else {
+        if (!userList.value.records || userList.value.records.length === 0) {
+            // 如果为空，直接赋值
+            userList.value = infoData
+        } else {
+            // 如果不为空，将新数据合并到 records 中
+            userList.value.records = [...userList.value.records, ...infoData.records];
+        }
+    }
+}
+
+
+const listscroll = async () => {
+    if (!InfoPage.noMore) {
+        InfoPage.offset = InfoPage.offset + 1
+        await getUserList();
+    }
+}
+
+const getModelS = async () => {
+    await aimodelAppS.getModelList()
+    const { id, isThink, isSearch } = aimodelAppS.topModel
+    info.modelId = id
+    info.thinkingEnabled = isThink
+    info.searchEnabled = isSearch
+
+}
+
+const clickthinking = () => {
+    const { isThink, modelName } = aimodelAppS.topModel
+    if (isThink) {
+        info.thinkingEnabled = !info.thinkingEnabled
+    } else {
+        ElNotification({
+            message: h('i', { style: 'color: teal; --el-notification-width: none;' }, `${modelName}不支持深度思考`),
+            duration: 1500,
+        })
+    }
+}
 
 const upTopModel = (model) => {
     aimodelAppS.topModel = model
     //模型id更新
-    info.modelId = model.id
+    const { id, isThink, isSearch } = model
+    info.modelId = id
+    info.thinkingEnabled = isThink
+    info.searchEnabled = isSearch
 }
 
+const toChat = async (itme) => {
+    // console.log(itme.title);
+    if (itme.id === info.chatSessionId) return
+    isNewChat.value = false
+    conversationPage.offset = 0
+    conversationPage.limit = 6
+
+    info.chatSessionId = itme.id
+    info.parentMessageId = itme.currentMessageId
+
+
+
+    aiInfoAppS.conversationList = {
+        content: []
+    }
+
+    router.push({
+        name: 'ai',
+        params: { chatid: itme.id }
+    })
+
+    document.title = itme.title
+
+
+    // await getConversationList(itme.id)
+
+}
 //新聊天 
 const newchatclick = () => {
     isNewChat.value = true
     info.chatSessionId = null
     info.parentMessageId = null
+
+    // conversationList.value = {
+    //     content: []
+    // }
+    aiInfoAppS.conversationList = {
+        content: []
+    }
+
+    router.push({ name: 'ai' })
 }
 
 //侧边控制
@@ -233,41 +468,68 @@ const handleOpen = () => {
 // 发送间隔
 let timeValue = null
 // 发送 内容
-function handleSubmit() {
-    if (!info.prompt) {
+const handleSubmit = async () => {
+    if (!inputContent) {
         ElMessage.warning(`发点什么吧`)
+
         return
     }
     if (!canSubmit.value) {
         ElMessage.warning(`字数过大`)
         return
     }
+    // 禁用发送按钮
+    canSubmit.value = false
+
+    // 清除之前的定时器，防止多次触发
+    if (timeValue) {
+        clearTimeout(timeValue)
+        timeValue = null
+    }
+
     //新窗口
     if (isNewChat.value) {
         isNewChat.value = false
-        newChart()
+        await newChart()
     }
 
     // 发送内容 侧边收起
-    isCollapse.value = false
+    // isCollapse.value = false
     // 开启加载
-    senderLoading.value = true
 
-    timeValue = setTimeout(() => {
+    timeValue = setTimeout(async () => {
         // 可以在控制台 查看打印结果
-        console.log('submit-> info.prompt', info.prompt)
-        getreply()
-        senderLoading.value = false
-        info.prompt = null
-    }, 3500)
+        console.log('submit-> inputContent', inputContent.value)
+        try {
+            info.prompt = inputContent.value
+            inputContent.value = ''
+            getreply()
+            info.prompt = null
+        } catch (error) {
+            console.error('获取回复失败:', error)
+            ElMessage.error('发送失败，请稍后重试')
+        } finally {
+            canSubmit.value = true
+            timeValue = null
+            // info.parentMessageId = (info.parentMessageId) ? 1 : info.parentMessageId + 1
+            info.parentMessageId = info.parentMessageId + 1
+        }
+    }, 100)
 }
 
-const newChart = async(id) => {
-    const chatinfo =await aimessageAppS.createChat(id)
-    console.log("chatinfo",chatinfo);
+const newChart = async (id) => {
+    const chatinfo = await aimessageAppS.createChat(id)
+    if (!chatinfo) router.push({
+        name: 'ai',
+    })
+
     info.chatSessionId = chatinfo.id
     info.parentMessageId = chatinfo.currentMessageId
-    return chatinfo
+    router.push({
+        name: 'ai',
+        params: { chatid: chatinfo.id }
+    })
+    // return chatinfo
 }
 
 const handleEnter = (event) => {
@@ -281,118 +543,151 @@ const handleEnter = (event) => {
     handleSubmit();
 }
 
-// 监听 evText 的变化，触发滚动
-// watch(htmltext, () => {
-//     const typewriterElement = typewriterRef.value;
-//     if (typewriterElement) {
-//         // 获取到内容区域的总高度和可视区域的高度
-//         const scrollHeight = typewriterElement.scrollHeight;
-//         const clientHeight = typewriterElement.clientHeight;
-//         const scrollTop = typewriterElement.scrollTop;
-
-//         // 判断当前滚动条是否已经接近底部
-//         const isAtBottom = scrollHeight - clientHeight <= scrollTop + 1;
-
-//         // 如果已经在底部，才自动滚动到底部
-//         if (isAtBottom) {
-//             typewriterElement.scrollTop = scrollHeight - clientHeight;
-//         }
-//     }
-// });
-
-function handleCancel() {
-    senderLoading.value = false
-    if (timeValue)
-        clearTimeout(timeValue)
-    timeValue = null
-    ElMessage.info(`取消发送`)
-}
-
 class RetriableError extends Error { }
 class FatalError extends Error { }
 const maxRetries = 5;
 let retryCount = 0;
 
 const getreply = async () => {
-    await fetchEventSource(`http://localhost:19010/chat/stream-chat`, {
-        openWhenHidden: true,
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(toRaw(info)),
-        async onopen(response) {
-            const contentType = response.headers.get('content-type');
+    if (senderLoading.value) return
 
-            if (response.ok && contentType === 'text/event-stream') {
-                retryCount = 0; // reset retry count on success
-                return;
-            }
+    senderLoading.value = true
 
-            // Non-retriable errors:
-            if (response.status >= 400 && response.status < 500 && response.status !== 429) {
-                throw new FatalError(`Client error: ${response.status}`);
-            }
-
-            // 5xx errors are considered fatal in your case:
-            if (response.status >= 500) {
-                throw new FatalError(`Server error: ${response.status}`);
-            }
-
-            // Other retriable cases (like 429, network error, etc.)
-            throw new RetriableError(`Temporary issue: ${response.status}`);
-        },
-        onmessage(msg) {
-            if (msg.event === 'FatalError') {
-                throw new FatalError(msg.data);
-            }
-
-            const message = JSON.parse(msg.data)
-
-            if (message?.s) {
-                //搜索
-                const searchInfo = message.s
-
-            } else if (message?.r) {
-                reasoningContent.value = reasoningContent.value + message.r
-                const html = marked.parse(reasoningContent.value);
-                reasoninghtmltext.value = safeHtml(html)
-            } else if (message?.v) {
-                markedtext.value = markedtext.value + message.v
-                const html = marked.parse(markedtext.value);
-                htmltext.value = safeHtml(html)
-            }
-        },
-        onclose() {
-            console.log("EventStream onclose");
-            // if (streamEndedNormally) {
-            //     console.log("连接正常关闭");
-            //     // 不抛错，不重试
-            // } else {
-            //     console.warn("连接异常中断，准备重试");
-            //     throw new RetriableError("连接异常关闭");
-            // }
-            // throw new RetriableError("Connection closed");
-        },
-        onerror(err) {
-            console.log("err：", err.message);
-
-            if (err instanceof FatalError) {
-                console.error("Fatal error, stopping:", err.message);
-                throw err; // stops retry
-            }
-
-            retryCount++;
-            console.warn(`Retry attempt ${retryCount}/${maxRetries}`);
-
-            if (retryCount >= maxRetries) {
-                console.error("Max retries reached, stopping.");
-                throw new FatalError("Too many retries");
-            }
-        }
+    aiInfoAppS.conversationList.content.push({
+        role: 'user',
+        infoId: info.chatSessionId,
+        content: info.prompt
     })
+
+    scrollToLastMessage()
+
+    aiInfoAppS.conversationList.content.push({
+        role: 'assistant',
+        infoId: info.chatSessionId,
+        thinkingContent: '',
+        content: ''
+    })
+    try {
+
+        await fetchEventSource(`http://localhost:19010/chat/stream-chat`, {
+            openWhenHidden: true,
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(toRaw(info)),
+            async onopen(response) {
+                const contentType = response.headers.get('content-type');
+
+                if (response.ok && contentType === 'text/event-stream') {
+                    retryCount = 0; // reset retry count on success
+                    return;
+                }
+
+                // Non-retriable errors:
+                if (response.status >= 400 && response.status < 500 && response.status !== 429) {
+                    throw new FatalError(`Client error: ${response.status}`);
+                }
+
+                // 5xx errors are considered fatal in your case:
+                if (response.status >= 500) {
+                    throw new FatalError(`Server error: ${response.status}`);
+                }
+
+                // Other retriable cases (like 429, network error, etc.)
+                throw new RetriableError(`Temporary issue: ${response.status}`);
+            },
+            onmessage(msg) {
+                if (msg.event === 'FatalError') {
+                    throw new FatalError(msg.data);
+                }
+                const message = JSON.parse(msg.data)
+
+                if (message?.r) {
+                    appendToLastAssistant(info.chatSessionId, 'thinkingContent', message.r);
+                } else if (message?.v) {
+                    appendToLastAssistant(info.chatSessionId, 'content', message.v);
+                }
+            },
+            onclose() {
+                console.log("EventStream onclose");
+                if (info.parentMessageId == 1) {
+                    getUserList()
+                }
+                info.parentMessageId = info.parentMessageId + 1
+                // if (streamEndedNormally) {
+                //     console.log("连接正常关闭");
+                //     // 不抛错，不重试
+                // } else {
+                //     console.warn("连接异常中断，准备重试");
+                //     throw new RetriableError("连接异常关闭");
+                // }
+                // throw new RetriableError("Connection closed");
+            },
+            onerror(err) {
+                console.log("err：", err.message);
+                throw new FatalError("Too many retries");
+
+                // if (err instanceof FatalError) {
+                //     console.error("Fatal error, stopping:", err.message);
+                //     throw err; // stops retry
+                // }
+
+                // retryCount++;
+                // console.warn(`Retry attempt ${retryCount}/${maxRetries}`);
+
+                // if (retryCount >= maxRetries) {
+                //     console.error("Max retries reached, stopping.");
+                //     throw new FatalError("Too many retries");
+                // }
+            }
+        })
+
+    } finally {
+        senderLoading.value = false
+    }
 }
 
+const appendToLastAssistant = (id, key, value) => {
+    // const target = conversationList.value.content.slice().reverse().find(
+    //     item => item.role === 'assistant' && item.infoId === id
+    // )
+    const target = aiInfoAppS.conversationList.content.slice().reverse().find(
+        item => item.role === 'assistant' && item.infoId === id
+    )
+    if (target) {
+        target[key] = (target[key] || '') + value
+    }
+}
+
+const markedHtml = (content) => {
+    if (content) {
+        const html = marked.parse(content);
+        return safeHtml(html)
+    }
+}
+
+// watch(() => aiInfoAppS.conversationList?.content, () => {
+//     scrollToLastMessage()
+// });
+
+const scrollToLastMessage =  () => {
+     nextTick(() => {
+        const container = messagesRef.value;
+        debugger
+        if (container) {
+            container.scrollTop = container.scrollHeight;
+        }
+
+        // const lastMessage = messagesRef.value?.querySelectorAll('.text-typewriter.text-typewriter-right');
+        // const lastElement = lastMessage[lastMessage.length - 1];
+        // console.log("lastMessage:", lastMessage);
+        // if (lastElement) {
+        //     lastElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // }
+    })
+
+}
 
 </script>
 
@@ -405,6 +700,7 @@ const getreply = async () => {
     --el-border-radius-base: 15px;
     --el-dropdown-menuItem-hover-fill: #f5f5f5;
     --el-dropdown-menuItem-hover-color: #000;
+
 
     .el-dropdown-menu__item {
         display: flex;
@@ -473,6 +769,38 @@ const getreply = async () => {
     display: flex;
     background: #fff;
     position: relative;
+
+    :deep(.box-dialog) {
+        border-radius: 24px;
+
+        .box-dialog-header {
+            font-weight: bold;
+            font-size: 1.2rem;
+            color: #000;
+        }
+
+        .box-dialog-default {
+            font-size: 1rem;
+            color: #000;
+
+            span {
+                font-weight: bold;
+            }
+        }
+
+        .dialog-footer {
+            .close {
+                --el-button-hover-border-color: #ececec;
+                --el-button-hover-bg-color: #ececec;
+                --el-button-hover-text-color: #000;
+            }
+
+            .delete {
+                --el-button-hover-border-color: #911e1b;
+                --el-button-hover-bg-color: #911e1b;
+            }
+        }
+    }
 
     .left-open {
         position: absolute;
@@ -565,6 +893,15 @@ const getreply = async () => {
                             text-overflow: ellipsis;
                         }
 
+                        .itme-text-input {
+                            width: 80%;
+
+                            .el-input {
+                                width: 100%;
+                                /* 让宽度填满父容器 */
+                            }
+                        }
+
 
 
                         .itme-icon {
@@ -581,6 +918,15 @@ const getreply = async () => {
                     }
 
 
+                }
+
+                .list-text.active {
+                    border-radius: 10px;
+                    background-color: #ececec;
+                }
+
+                .list-text.active .itme-icon {
+                    display: inline-block;
                 }
 
                 .list-text:hover {
@@ -625,7 +971,6 @@ const getreply = async () => {
         min-width: 0;
         flex-shrink: 0;
 
-
         .text-base-header {
             height: 60px;
             display: flex;
@@ -635,8 +980,9 @@ const getreply = async () => {
             border-bottom: 1px solid #e4e7ed;
 
 
-
             .logo {
+                cursor: pointer;
+
                 img {
                     height: 32px;
                 }
@@ -685,7 +1031,7 @@ const getreply = async () => {
                 padding: 20px;
 
                 .text-typewriter {
-                    margin: auto;
+                    margin: 20px auto;
                     width: 60%;
                     font-family: 'Courier New', monospace;
 
@@ -706,6 +1052,61 @@ const getreply = async () => {
 
                     .text-bubble {
                         margin: 40px 20px;
+                    }
+                }
+
+                .assistant-loading {
+                    width: 60%;
+                    margin: auto;
+
+                    .typing-indicator {
+                        display: flex;
+                        gap: 4px;
+                        padding: 10px 16px;
+                        justify-content: flex-start;
+                    }
+
+                    .typing-indicator span {
+                        width: 8px;
+                        height: 8px;
+                        background-color: #999;
+                        border-radius: 50%;
+                        animation: blink 1.4s infinite both;
+                    }
+
+                    .typing-indicator span:nth-child(2) {
+                        animation-delay: 0.2s;
+                    }
+
+                    .typing-indicator span:nth-child(3) {
+                        animation-delay: 0.4s;
+                    }
+
+                    @keyframes blink {
+
+                        0%,
+                        80%,
+                        100% {
+                            opacity: 0;
+                        }
+
+                        40% {
+                            opacity: 1;
+                        }
+                    }
+                }
+
+                .text-typewriter-right {
+                    text-align: right;
+                    // direction: rtl;
+
+                    .html-right {
+                        max-width: 50%;
+                        background-color: #f4f4f4;
+                        padding: 15px;
+                        border-radius: 1.5rem;
+                        display: inline-block;
+                        word-wrap: break-word;
                     }
                 }
 

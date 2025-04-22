@@ -21,7 +21,7 @@
                 </div>
                 <el-scrollbar class="box-text">
                     <div class="box-text-list" v-infinite-scroll="listscroll" :infinite-scroll-immediate="false"
-                        :infinite-scroll-disabled="InfoPage.noMore">
+                        :infinite-scroll-disabled="InfoPage.noMore" :infinite-scroll-distance="25">
                         <div class="list-text" :class="{ active: info.chatSessionId === itme.id }"
                             v-for=" itme in userList.records" :key="itme.id">
                             <div class="list-itme" @click="toChat(itme)">
@@ -31,11 +31,11 @@
                                         @keyup.enter="confirmRename(itme)" />
                                 </div>
                                 <div v-else :title="itme.title" class="itme-text">
-                                    {{ itme.title }}
+                                    {{ !itme.title ? "无标题" : itme.title }}
                                 </div>
 
                                 <el-dropdown class="itme-icon" popper-class="itme-icon-popper" placement="bottom"
-                                    trigger="click" :teleported="false" :persistent="false">
+                                    trigger="click" :teleported="false" :persistent="false" @click.stop.prevent>
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                                         <path fill="currentColor" fill-rule="evenodd"
                                             d="M3 12a2 2 0 1 1 4 0 2 2 0 0 1-4 0m7 0a2 2 0 1 1 4 0 2 2 0 0 1-4 0m7 0a2 2 0 1 1 4 0 2 2 0 0 1-4 0"
@@ -43,14 +43,23 @@
                                     </svg>
                                     <template #dropdown>
                                         <el-dropdown-menu>
-                                            <el-dropdown-item @click="upTitle(itme)">重命名</el-dropdown-item>
-                                            <el-dropdown-item @click="deTitle(itme)">删除</el-dropdown-item>
+                                            <el-dropdown-item @click.stop="upTitle(itme)">重命名</el-dropdown-item>
+                                            <el-dropdown-item @click.stop="deTitle(itme)">删除</el-dropdown-item>
                                         </el-dropdown-menu>
                                     </template>
                                 </el-dropdown>
                             </div>
                         </div>
+                        <div v-if="InfoPage.loading" class="loading-animation  loading-bottom ">
+                            <div class="dot-pulse"></div>
+                            <div class="dot-pulse"></div>
+                            <div class="dot-pulse"></div>
+                            <div class="dot-pulse"></div>
+                            <div class="dot-pulse"></div>
+                            <div class="dot-pulse"></div>
+                        </div>
                     </div>
+
                 </el-scrollbar>
                 <div class="box-bottom">
                     bottom
@@ -85,16 +94,26 @@
                     </el-dropdown>
                 </div>
             </div>
+
             <div class="chat-container">
-                <div class="messages-box" ref="messagesRef">
+                <div class="messages-box" ref="messagesRef" @scroll="handleScroll">
+                    <div v-if="conversationPage.loading" class="loading-animation">
+                        <div class="dot-pulse"></div>
+                        <div class="dot-pulse"></div>
+                        <div class="dot-pulse"></div>
+                        <div class="dot-pulse"></div>
+                        <div class="dot-pulse"></div>
+                        <div class="dot-pulse"></div>
+                    </div>
                     <div class="text-typewriter" :class="{ 'text-typewriter-right': item.role === 'user' }"
-                        v-for=" item  in aiInfoAppS.conversationList?.content" :key="item.id">
+                        v-for=" (item, index)  in aiInfoAppS.conversationList?.content" :key="item.id" :data-id="item.id">
                         <div class="reasoning-text">
                             <article class="reasoning-html markdown-body" v-html="markedHtml(item.thinkingContent)">
                             </article>
                         </div>
                         <article class=" html-right html-highlight  markdown-body" v-html="markedHtml(item.content)">
                         </article>
+                        <div v-if="index === aiInfoAppS.conversationList?.content.length - 1" ref="bottomMarker"></div>
                     </div>
                     <div class="assistant-loading" v-if="senderLoading">
                         <div class="typing-indicator">
@@ -127,6 +146,7 @@
                                 :class="{ 'sender': canSubmit || senderLoading }"
                                 :style="{ pointerEvents: canSubmit ? 'auto' : 'none' }">
                                 <i v-if="senderLoading" class="bi bi-diamond"></i>
+                                <!-- <i v-else class="bi bi-stop-circle-fill"></i> -->
                                 <i v-else class="bi bi-caret-up-fill"></i>
                             </div>
                         </div>
@@ -162,10 +182,10 @@
 </template>
 
 <script setup>
-import { nextTick, onMounted, ref, watch, reactive, computed, toRaw } from "vue"
+import { nextTick, onMounted, ref, watch, reactive, computed, toRaw, onUpdated } from "vue"
 // import AiMarkdown from './components/AiMarkdown.vue'
 import { fetchEventSource } from '@microsoft/fetch-event-source';
-import { Marked } from 'marked';
+import { Marked, Renderer } from 'marked';
 import { safeHtml } from '@/utils/domPurifyConfig'
 import { ElNotification } from 'element-plus'
 import hljs from 'highlight.js';
@@ -178,20 +198,86 @@ import aiInfoAppStore from '@/stores/ai/info'
 const aimodelAppS = aimodelAppStore()
 const aimessageAppS = aimessageAppStore()
 const aiInfoAppS = aiInfoAppStore()
-import { h } from 'vue'
 import { useRouter } from 'vue-router';
 const router = useRouter();
 
+// const marked = new Marked(
+//     markedHighlight({
+//         emptyLangClass: 'hljs',
+//         langPrefix: 'hljs language-',
+//         highlight(code, lang, info) {
+//             const language = hljs.getLanguage(lang) ? lang : 'plaintext';
+//             return hljs.highlight(code, { language }).value;
+//         }
+//     })
+// )
+
+const renderer = new Renderer();
+
+renderer.code = (code) => {
+    const validLang = code.lang ? code.lang : 'plaintext';
+    return `
+    <div class="code-block">
+      <div class="code-block-wrap">
+        <div class="code-toolbar">
+            <span class="lang-label">${validLang}</span>
+            <button class="copy-btn"><i class="bi bi-files"></i>复制</button>
+        </div>
+      </div>
+      <pre><code class="hljs language-${validLang}">${code.text}</code></pre>
+    </div>
+  `;
+};
+
 const marked = new Marked(
     markedHighlight({
-        emptyLangClass: 'hljs',
-        langPrefix: 'hljs language-',
         highlight(code, lang, info) {
-            const language = hljs.getLanguage(lang) ? lang : 'plaintext';
-            return hljs.highlight(code, { language }).value;
+            const validLang = hljs.getLanguage(lang) ? lang : 'plaintext'
+            const highlighted = hljs.highlight(code, { language: validLang }).value
+            return highlighted;
         }
-    })
+    }),
+    { renderer }
 )
+
+
+
+// document.addEventListener('click', function (e) {
+//     if (e.target.classList.contains('copy-btn')) {
+//         const code = e.target.closest('.code-block').querySelector('code').innerText;
+//         navigator.clipboard.writeText(code).then(() => {
+//             e.target.innerHTML = '<i class="bi bi-check2"></i> 已复制';
+//             setTimeout(() => {
+//                 e.target.innerHTML = '<i class="bi bi-files"></i> 复制';
+//             }, 1000);
+//         });
+//     }
+// });
+
+document.addEventListener('click', function (e) {
+    const copyBtn = e.target.closest('.copy-btn'); // 关键改动
+    if (copyBtn) {
+        const code = copyBtn.closest('.code-block').querySelector('code').innerText;
+        navigator.clipboard.writeText(code).then(() => {
+            copyBtn.innerHTML = '<i class="bi bi-check2"></i> 已复制';
+            setTimeout(() => {
+                copyBtn.innerHTML = '<i class="bi bi-files"></i> 复制';
+            }, 1000);
+        });
+    }
+});
+
+
+function handleCopyClick(e) {
+    const btn = e.target.closest('.copy-btn')
+    if (btn) {
+        const code = decodeURIComponent(btn.getAttribute('data-code'))
+        navigator.clipboard.writeText(code).then(() => {
+            btn.innerText = '已复制'
+            setTimeout(() => (btn.innerText = '复制'), 1500)
+        })
+    }
+}
 
 // 发送内容对象
 const info = reactive({
@@ -218,10 +304,6 @@ const conversationPage = reactive({
     limit: 6,
 })
 
-
-// const conversationList = ref({
-//     content: []
-// })
 const userList = ref({})
 
 const dialogVisible = ref(false)
@@ -241,9 +323,12 @@ const senderLoading = ref(false)
 
 const editingTitleId = ref(null)
 const newTitle = ref(null)
-const messagesRef = ref(null)
 const inputContent = ref('')
 
+const messagesRef = ref(null)
+
+
+const bottomMarker = ref(null) // 最后一个元素的 ref
 
 const props = defineProps({
     chatid: {
@@ -253,53 +338,119 @@ const props = defineProps({
     },
 })
 
+let hasScrolledToBottom = false
+
+onUpdated(() => {
+    if (hasScrolledToBottom) return;
+    nextTick(() => {
+        if (bottomMarker.value) {
+            console.log("bottomMarker.value", bottomMarker.value);
+            if (bottomMarker.value[0]) {
+                bottomMarker.value[0].scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                })
+
+                hasScrolledToBottom = true;
+            }
+        }
+    })
+})
+
+// watch(
+//     () => bottomMarker.value,
+//     () => {
+//         nextTick(() => {
+//             if (bottomMarker.value) {
+//                 console.log("bottomMarker.value",bottomMarker.value);
+//                 if (bottomMarker.value[0]) {
+//                     bottomMarker.value[0].scrollIntoView({
+//                         behavior: 'smooth',
+//                         block: 'start',
+//                     })
+//                 }
+//             }
+//         })
+//     },
+// )
+
+
 watch(
     () => props.chatid,
     (newVal, oldVal) => {
         if (newVal) {
-            getConversationList(newVal)
-            scrollToLastMessage()
+            getConversationList(newVal, true)
+            hasScrolledToBottom = false;
         }
     },
 )
 
 onMounted(async () => {
-    document.title = 'AiDigHub'
-     getModelS()
-     getUserList()
+
+    aiInfoAppS.conversationList={
+        content:[]
+    }
+
+    document.title = "AiDigHub"
+    getModelS()
+    getUserList()
     const chatid = props.chatid
     if (chatid) {
         //有值获取消息列表
         newChart(chatid)
-        getConversationList(chatid)
+        getConversationList(chatid, true)
     } else {
         // 新聊天
         isNewChat.value = true
         // 默认打开侧边
         isCollapse.value = true
     }
-
-    nextTick(() => {
-        if (messagesRef.value) {
-            messagesRef.value.scrollTop = messagesRef.value.scrollHeight
-        }
-    })
-
+    // nextTick(() => {
+    //     //顶部加载
+    //     messagesRef.value.addEventListener('scroll', handleScroll)
+    // })
 })
-// 顶部加载
-// const handleScroll = async () => {
-//     const message = messagesRef.value;
-//     let heightup = message.scrollHeight
-//     // 如果没有在加载更多数据且滚动接近顶部
-//     if (!conversationPage.loading && message.scrollTop < 10) {
-//         console.log(11111);
 
-//         await Conversationlistscroll()
-//         nextTick(() => {
-//             messagesRef.value.scrollTop = (messagesRef.value.scrollHeight - heightup) - 70
-//         });
-//     }
-// }
+let timeScroll = null;
+// 顶部加载
+const handleScroll = () => {
+    if (messagesRef.value) {
+        if (messagesRef.value.scrollTop >= 10) return;
+    }
+
+    if (conversationPage.noMore) {
+        return
+    }
+
+    if (timeScroll) {
+        clearTimeout(timeScroll)
+        timeScroll = null
+    }
+
+
+    timeScroll = setTimeout(async () => {
+        if (conversationPage.loading) return;
+
+        conversationPage.loading = true
+
+        const message = messagesRef.value;
+        const oldHeight = message.scrollHeight;
+
+        if (message.scrollTop < 10) {
+            try {
+                await Conversationlistscroll()
+                nextTick(() => {
+                    message.scrollTop = (message.scrollHeight - oldHeight) - 70;
+                });
+            } catch (e) {
+                console.error("加载对话失败", e)
+            }
+        }
+
+        conversationPage.loading = false
+
+    }, 300)
+}
 
 const upTitle = (itme) => {
     editingTitleId.value = itme.id
@@ -337,24 +488,37 @@ const confirmRename = async (itme) => {
 const Conversationlistscroll = async () => {
     if (!conversationPage.noMore) {
         conversationPage.offset = conversationPage.offset + 1
-        await getConversationList(info.chatSessionId);
+        await getConversationList(info.chatSessionId, false);
+        //顶部加载  从上 填充数据
+        // const conversationData = await aiInfoAppS.getConversation(id, conversationPage.offset, conversationPage.limit)
+
     }
 }
 
-const getConversationList = async (id) => {
+const getConversationList = async (id, isReply) => {
     const conversationData = await aiInfoAppS.getConversation(id, conversationPage.offset, conversationPage.limit)
     if (conversationData) {
-        conversationPage.noMore = conversationData.hasNext ?? false
+        conversationPage.noMore = !conversationData.hasNext ?? false
         if (conversationData.infoData?.currentMessageId != 1) {
+            document.title = conversationData.infoData.title
             if (!aiInfoAppS.conversationList || aiInfoAppS.conversationList.content === 0) {
                 // 如果为空，直接赋值
                 aiInfoAppS.conversationList = infoData
             } else {
                 // 如果不为空，将新数据合并
-                aiInfoAppS.conversationList = {
-                    ...aiInfoAppS.conversationList,
-                    content: [...aiInfoAppS.conversationList.content, ...conversationData.content]
+                if (isReply) {
+                    aiInfoAppS.conversationList = {
+                        ...aiInfoAppS.conversationList,
+                        content: [...aiInfoAppS.conversationList.content, ...conversationData.content,]
+                    }
+                } else {
+                    //加载
+                    aiInfoAppS.conversationList = {
+                        ...aiInfoAppS.conversationList,
+                        content: [...conversationData.content, ...aiInfoAppS.conversationList.content]
+                    }
                 }
+
             }
 
             // aiInfoAppS.conversationList = conversationData
@@ -379,13 +543,28 @@ const getUserList = async () => {
     }
 }
 
-
+let timeInfoPage = null;
 const listscroll = async () => {
-    if (!InfoPage.noMore) {
+    if (InfoPage.loading || InfoPage.noMore) return;
+
+    if (timeInfoPage) {
+        clearTimeout(timeInfoPage)
+        timeInfoPage = null
+    }
+
+
+    timeInfoPage = setTimeout(async () => {
+        if (InfoPage.loading) return;
+        InfoPage.loading = true
+
         InfoPage.offset = InfoPage.offset + 1
         await getUserList();
-    }
+
+        InfoPage.loading = false
+    }, 300)
 }
+
+
 
 const getModelS = async () => {
     await aimodelAppS.getModelList()
@@ -428,7 +607,6 @@ const toChat = async (itme) => {
     info.parentMessageId = itme.currentMessageId
 
 
-
     aiInfoAppS.conversationList = {
         content: []
     }
@@ -446,6 +624,8 @@ const toChat = async (itme) => {
 }
 //新聊天 
 const newchatclick = () => {
+    document.title = "新聊天"
+
     isNewChat.value = true
     info.chatSessionId = null
     info.parentMessageId = null
@@ -559,7 +739,6 @@ const getreply = async () => {
         content: info.prompt
     })
 
-    scrollToLastMessage()
 
     aiInfoAppS.conversationList.content.push({
         role: 'assistant',
@@ -667,25 +846,12 @@ const markedHtml = (content) => {
     }
 }
 
-// watch(() => aiInfoAppS.conversationList?.content, () => {
-//     scrollToLastMessage()
-// });
-
-const scrollToLastMessage =  () => {
-     nextTick(() => {
-        const container = messagesRef.value;
-        debugger
-        if (container) {
-            container.scrollTop = container.scrollHeight;
+const scrollToLastMessage = async () => {
+    nextTick(() => {
+        if (bottomMarker.value) {
+            bottomMarker.value.scrollIntoView({ behavior: 'smooth' });
         }
-
-        // const lastMessage = messagesRef.value?.querySelectorAll('.text-typewriter.text-typewriter-right');
-        // const lastElement = lastMessage[lastMessage.length - 1];
-        // console.log("lastMessage:", lastMessage);
-        // if (lastElement) {
-        //     lastElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        // }
-    })
+    });
 
 }
 
@@ -693,6 +859,17 @@ const scrollToLastMessage =  () => {
 
 <style lang="scss" scoped>
 @import "@/assets/styles/highlight.scss";
+@import "@/assets/styles/loading.scss";
+
+.loading-bottom {
+    min-height: 60px;
+    position: static;
+    transform: none;
+    bottom: 0;
+    left: 0;
+    top: 0;
+    // padding: 20px 0;
+}
 
 :deep(.itme-icon-popper) {
     top: 25px;
@@ -869,58 +1046,78 @@ const scrollToLastMessage =  () => {
                 // flex-grow: 1;
                 overflow-y: auto;
 
-                .list-text {
-                    margin-right: 10px;
+                .box-text-list {
+
+
+                    .list-text {
+                        margin-right: 10px;
 
 
 
-                    .list-itme {
-                        position: relative;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        text-align: center;
-                        border-radius: 4px;
-                        height: 50px;
-                        margin: 10px;
-                        cursor: pointer;
-                        border-radius: 8px;
-                        white-space: nowrap;
+                        .list-itme {
+                            position: relative;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            text-align: center;
+                            border-radius: 4px;
+                            height: 50px;
+                            margin: 10px;
+                            cursor: pointer;
+                            border-radius: 8px;
+                            white-space: nowrap;
 
-                        .itme-text {
-                            padding-right: 20px;
-                            overflow: hidden;
-                            text-overflow: ellipsis;
-                        }
-
-                        .itme-text-input {
-                            width: 80%;
-
-                            .el-input {
-                                width: 100%;
-                                /* 让宽度填满父容器 */
+                            .itme-text {
+                                padding-right: 20px;
+                                overflow: hidden;
+                                text-overflow: ellipsis;
                             }
-                        }
+
+                            .itme-text-input {
+                                width: 80%;
+
+                                .el-input {
+                                    width: 100%;
+                                    /* 让宽度填满父容器 */
+                                }
+                            }
 
 
 
-                        .itme-icon {
-                            padding: 5px;
-                            display: none;
-                            position: absolute;
-                            left: 90%;
-                            font-size: 16px;
-                            width: 16px;
-                            height: 16px;
+                            .itme-icon {
+                                // pointer-events: none;
+                                // padding: 10px;
+                                display: none;
+                                position: absolute;
+                                left: 90%;
+                                font-size: 16px;
+                                width: 16px;
+                                height: 16px;
+                                // visibility: hidden;
+                                // pointer-events: none;
+                                // transition: opacity 0.2s ease;
+                            }
+
+
                         }
 
 
                     }
-
-
                 }
 
+                // .list-text:hover .itme-icon,
+                // .list-text.active .itme-icon {
+                //     display: inline-block;
+                // }
+
                 .list-text.active {
+                    border-radius: 10px;
+                    background-color: #ececec;
+                }
+
+
+
+                .list-text:hover {
                     border-radius: 10px;
                     background-color: #ececec;
                 }
@@ -929,12 +1126,14 @@ const scrollToLastMessage =  () => {
                     display: inline-block;
                 }
 
-                .list-text:hover {
-                    border-radius: 10px;
-                    background-color: #ececec;
+                // .list-text:hover .itme-icon {
+                //     display: inline-block;
+                // }
+                .list-text:active .list-itme .itme-icon {
+                    display: inline-block;
                 }
 
-                .list-text:hover .itme-icon {
+                .list-text:hover .list-itme .itme-icon {
                     display: inline-block;
                 }
 
@@ -1028,7 +1227,8 @@ const scrollToLastMessage =  () => {
             .messages-box {
                 flex: 1;
                 overflow-y: auto;
-                padding: 20px;
+                // padding: 0 20px 20px 20px;
+
 
                 .text-typewriter {
                     margin: 20px auto;

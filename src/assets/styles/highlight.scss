@@ -11,15 +11,65 @@
   }
 
   :deep(pre) {
-    padding: 0;
-    border: 1px solid #e4e7ed;
-    border-radius: 8px;
-    background-color: #f9f9f9;
+    // padding: 0;
+    // border: 1px solid #e4e7ed;
+    // border-radius: 8px;
+    // background-color: #f9f9f9;
     overflow-x: auto;
     code {
       word-break: break-all;
+      padding: 0;
+      // span{
+      //   margin: 2px;
+      // }
+    }
+  }
+}
+
+:deep(.code-block) {
+  position: relative;
+  color: #494949;
+  border: 1px solid #e4e7ed;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  margin-bottom: 1rem;
+
+  .code-block-wrap {
+    background-color: #f9f9f9;
+    position: sticky;
+    top: 0; /* 顶部空间 */
+  }
+
+  .code-toolbar {
+    color: #494949;
+    display: flex;
+    justify-content: space-between; /* 左右对齐 */
+    padding: 5px 16px;
+    align-items: center;
+    z-index: 1;
+    font-size: 14px;
+  }
+
+  /* 代码语言标签 */
+  .lang-label {
+    color: #494949;
+  }
+
+  /* 复制按钮 */
+  .copy-btn {
+    background-color: #f9f9f9;
+    color: #494949;
+    border: none;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 5px 10px;
+    i{
+      margin-right: 4px;
     }
   }
 
- 
+  pre {
+    background-color: #f9f9f9;
+    margin-bottom: 0;
+  }
 }

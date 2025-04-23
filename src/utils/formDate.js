@@ -93,3 +93,23 @@ export function formatMessageTime(messageTime) {
     // 默认格式
     return messageDate.toLocaleString([], dateOptions);
 }
+
+
+export function getTimeGroup(createdAt) {
+  const now = new Date();
+  const diffInMs = now - new Date(createdAt); // 时间差，单位为毫秒
+
+  const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24)); // 计算相差的天数
+
+  if (diffInDays === 0) {
+      return '今天';
+  } else if (diffInDays === 1) {
+      return '昨天';
+  } else if (diffInDays <= 7) {
+      return '7天前';
+  } else if (diffInDays <= 30) {
+      return '30天前';
+  } else {
+      return '更久';
+  }
+}

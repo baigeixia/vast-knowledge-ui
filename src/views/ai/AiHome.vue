@@ -22,32 +22,35 @@
                 <el-scrollbar class="box-text">
                     <div class="box-text-list" v-infinite-scroll="listscroll" :infinite-scroll-immediate="false"
                         :infinite-scroll-disabled="InfoPage.noMore" :infinite-scroll-distance="25">
-                        <div class="list-text" :class="{ active: info.chatSessionId === itme.id }"
-                            v-for=" itme in userList.records" :key="itme.id">
-                            <div class="list-itme" @click="toChat(itme)">
-                                <!-- <div class="itme-text " v-if="editingTitleId === itme.id"> -->
-                                <div class="itme-text itme-text-input" v-if="editingTitleId === itme.id">
-                                    <el-input v-model="newTitle" size="small" @blur="confirmRename(itme)"
-                                        @keyup.enter="confirmRename(itme)" />
-                                </div>
-                                <div v-else :title="itme.title" class="itme-text">
-                                    {{ !itme.title ? "无标题" : itme.title }}
-                                </div>
+                        <div v-for="(group, groupName) in groups " :key="groupName">
+                            <div class="group-title" v-if="group.length > 0">{{ groupName }}</div>
+                            <div class="list-text" :class="{ active: info.chatSessionId === itme.id }"
+                                v-for=" itme in group" :key="itme.id">
+                                <div class="list-itme" @click="toChat(itme)">
+                                    <!-- <div class="itme-text " v-if="editingTitleId === itme.id"> -->
+                                    <div class="itme-text itme-text-input" v-if="editingTitleId === itme.id">
+                                        <el-input v-model="newTitle" size="small" @blur="confirmRename(itme)"
+                                            @keyup.enter="confirmRename(itme)" />
+                                    </div>
+                                    <div v-else :title="itme.title" class="itme-text">
+                                        {{ !itme.title ? "无标题" : itme.title }}
+                                    </div>
 
-                                <el-dropdown class="itme-icon" popper-class="itme-icon-popper" placement="bottom"
-                                    trigger="click" :teleported="false" :persistent="false" @click.stop.prevent>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                                        <path fill="currentColor" fill-rule="evenodd"
-                                            d="M3 12a2 2 0 1 1 4 0 2 2 0 0 1-4 0m7 0a2 2 0 1 1 4 0 2 2 0 0 1-4 0m7 0a2 2 0 1 1 4 0 2 2 0 0 1-4 0"
-                                            clip-rule="evenodd"></path>
-                                    </svg>
-                                    <template #dropdown>
-                                        <el-dropdown-menu>
-                                            <el-dropdown-item @click.stop="upTitle(itme)">重命名</el-dropdown-item>
-                                            <el-dropdown-item @click.stop="deTitle(itme)">删除</el-dropdown-item>
-                                        </el-dropdown-menu>
-                                    </template>
-                                </el-dropdown>
+                                    <el-dropdown class="itme-icon" popper-class="itme-icon-popper" placement="bottom"
+                                        trigger="click" :teleported="false" :persistent="false" @click.stop.prevent>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                            <path fill="currentColor" fill-rule="evenodd"
+                                                d="M3 12a2 2 0 1 1 4 0 2 2 0 0 1-4 0m7 0a2 2 0 1 1 4 0 2 2 0 0 1-4 0m7 0a2 2 0 1 1 4 0 2 2 0 0 1-4 0"
+                                                clip-rule="evenodd"></path>
+                                        </svg>
+                                        <template #dropdown>
+                                            <el-dropdown-menu>
+                                                <el-dropdown-item @click.stop="upTitle(itme)">重命名</el-dropdown-item>
+                                                <el-dropdown-item @click.stop="deTitle(itme)">删除</el-dropdown-item>
+                                            </el-dropdown-menu>
+                                        </template>
+                                    </el-dropdown>
+                                </div>
                             </div>
                         </div>
                         <div v-if="InfoPage.loading" class="loading-animation  loading-bottom ">
@@ -59,7 +62,6 @@
                             <div class="dot-pulse"></div>
                         </div>
                     </div>
-
                 </el-scrollbar>
                 <div class="box-bottom">
                     bottom
@@ -200,6 +202,9 @@ const aimessageAppS = aimessageAppStore()
 const aiInfoAppS = aiInfoAppStore()
 import { useRouter } from 'vue-router';
 const router = useRouter();
+import { getToken } from '@/utils/auth'
+import { getTimeGroup } from '@/utils/formDate'
+
 
 // const marked = new Marked(
 //     markedHighlight({
@@ -211,6 +216,14 @@ const router = useRouter();
 //         }
 //     })
 // )
+
+const groups = ref({
+    '今天': [],
+    '昨天': [],
+    '7天前': [],
+    '30天前': [],
+    '更久': []
+});
 
 const renderer = new Renderer();
 
@@ -381,14 +394,15 @@ watch(
         if (newVal) {
             getConversationList(newVal, true)
             hasScrolledToBottom = false;
+
         }
     },
 )
 
 onMounted(async () => {
 
-    aiInfoAppS.conversationList={
-        content:[]
+    aiInfoAppS.conversationList = {
+        content: []
     }
 
     document.title = "AiDigHub"
@@ -528,12 +542,22 @@ const getConversationList = async (id, isReply) => {
     }
 }
 
-const getUserList = async () => {
+const getUserList = async (isResh = false) => {
+    if (InfoPage.noMore && !isResh) return
+
+    const newgroups = {
+        '今天': [],
+        '昨天': [],
+        '7天前': [],
+        '30天前': [],
+        '更久': []
+    }
+
     const infoData = await aiInfoAppS.getInfolist(InfoPage.offset, InfoPage.limit)
     if (!infoData || infoData?.records.length === 0) {
         InfoPage.noMore = true
     } else {
-        if (!userList.value.records || userList.value.records.length === 0) {
+        if (isResh || !userList.value.records || userList.value.records.length === 0) {
             // 如果为空，直接赋值
             userList.value = infoData
         } else {
@@ -541,6 +565,15 @@ const getUserList = async () => {
             userList.value.records = [...userList.value.records, ...infoData.records];
         }
     }
+
+    userList.value?.records.forEach(itme => {
+        // groups.value[group]=[]
+        const group = getTimeGroup(itme.creatingTime);
+        newgroups[group].push(itme);
+    });
+
+    groups.value = newgroups;
+
 }
 
 let timeInfoPage = null;
@@ -568,10 +601,13 @@ const listscroll = async () => {
 
 const getModelS = async () => {
     await aimodelAppS.getModelList()
-    const { id, isThink, isSearch } = aimodelAppS.topModel
+    if(aimodelAppS.topModel){
+        const { id, isThink, isSearch } = aimodelAppS.topModel
     info.modelId = id
     info.thinkingEnabled = isThink
     info.searchEnabled = isSearch
+    }
+   
 
 }
 
@@ -746,14 +782,15 @@ const getreply = async () => {
         thinkingContent: '',
         content: ''
     })
-    try {
 
+    try {
         await fetchEventSource(`http://localhost:19010/chat/stream-chat`, {
             openWhenHidden: true,
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
+            // 'authorization': getToken(),
             body: JSON.stringify(toRaw(info)),
             async onopen(response) {
                 const contentType = response.headers.get('content-type');
@@ -790,8 +827,8 @@ const getreply = async () => {
             },
             onclose() {
                 console.log("EventStream onclose");
-                if (info.parentMessageId == 1) {
-                    getUserList()
+                if (info.parentMessageId === 2) {
+                    getUserList(true)
                 }
                 info.parentMessageId = info.parentMessageId + 1
                 // if (streamEndedNormally) {
@@ -1048,6 +1085,24 @@ const scrollToLastMessage = async () => {
 
                 .box-text-list {
 
+
+                    .group-title {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        text-align: center;
+                        height: 50px;
+                        margin: 10px;
+                        font-weight: bold;
+                        color: #000;
+                        // border-bottom: 1px solid #e4e7ed;
+                        border-top: 1px solid #e4e7ed;
+                    }
+
+                    // .group-title:first-child {
+                    //     border-top: none;
+                    //     /* 取消第一个 .group-title 的 border-top */
+                    // }
 
                     .list-text {
                         margin-right: 10px;

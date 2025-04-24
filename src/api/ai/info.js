@@ -3,7 +3,7 @@ import { request } from '@/utils/request'
 
 export const  getInfolistApi =(offset,limit)=>{
     return request({
-        url: `/chatInfo/list`,
+        url: `/ai/chatInfo/list`,
         method: 'GET',
         params:{
             offset:offset,
@@ -14,7 +14,7 @@ export const  getInfolistApi =(offset,limit)=>{
 
 export const  getconversationApi =(id,offset,limit)=>{
     return request({
-        url: `/chatInfo/conversation/${id}`,
+        url: `/ai/chatInfo/conversation/${id}`,
         method: 'GET',
         params:{
             offset:offset,

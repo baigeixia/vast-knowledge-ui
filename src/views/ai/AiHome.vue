@@ -788,9 +788,9 @@ const getreply = async () => {
             openWhenHidden: true,
             method: 'POST',
             headers: {
+                'authorization': getToken(),
                 'Content-Type': 'application/json',
             },
-            // 'authorization': getToken(),
             body: JSON.stringify(toRaw(info)),
             async onopen(response) {
                 const contentType = response.headers.get('content-type');

@@ -784,7 +784,7 @@ const getreply = async () => {
     })
 
     try {
-        await fetchEventSource(`http://localhost:19010/chat/stream-chat`, {
+        await fetchEventSource(`${import.meta.env.VITE_APP_BASE_API}/chat/stream-chat`, {
             openWhenHidden: true,
             method: 'POST',
             headers: {

@@ -45,8 +45,8 @@
                                         </svg>
                                         <template #dropdown>
                                             <el-dropdown-menu>
-                                                <el-dropdown-item @click.stop="upTitle(itme)">重命名</el-dropdown-item>
-                                                <el-dropdown-item @click.stop="deTitle(itme)">删除</el-dropdown-item>
+                                                <el-dropdown-item @click.stop="upTitleclick(itme)">重命名</el-dropdown-item>
+                                                <el-dropdown-item @click.stop="deTitleclick(itme)">删除</el-dropdown-item>
                                             </el-dropdown-menu>
                                         </template>
                                     </el-dropdown>
@@ -168,7 +168,7 @@
             <template #default>
                 <div class="box-dialog-default">
                     这会删除
-                    <span>{{ `“${dialogdeTitle}”。` }}</span>
+                    <span>{{ `“${dialogdeTitle.title ?? ""}”。` }}</span>
                 </div>
             </template>
             <template #footer>
@@ -320,7 +320,10 @@ const conversationPage = reactive({
 const userList = ref({})
 
 const dialogVisible = ref(false)
-const dialogdeTitle = ref('')
+const dialogdeTitle = reactive({
+    id: '',
+    title: '',
+})
 
 // 输出框是否可用
 const canSubmit = computed(() => {
@@ -466,21 +469,26 @@ const handleScroll = () => {
     }, 300)
 }
 
-const upTitle = (itme) => {
+const upTitleclick = async (itme) => {
     editingTitleId.value = itme.id
     newTitle.value = itme.title // 预填原始值
+
 }
 
-const deTitle = (itme) => {
+const deTitleclick = (itme) => {
     dialogVisible.value = true
-    dialogdeTitle.value = itme.title // 预填原始值
+    dialogdeTitle.id = itme.id // 预填原始值
+    dialogdeTitle.title = itme.title // 预填原始值
 }
 
 const handleClose = () => {
     dialogVisible.value = false
-    dialogdeTitle.value = ''
+    dialogdeTitle.title = ''
 }
-const handledelete = () => {
+const handledelete = async () => {
+    await aimessageAppS.deChat(dialogdeTitle.id)
+    getUserList(true)
+
     dialogVisible.value = false
 }
 
@@ -491,7 +499,11 @@ const confirmRename = async (itme) => {
     }
 
     // 调用接口或本地更新
+
     itme.title = newTitle.value.trim()
+
+    await aimessageAppS.upTitle(itme.id, itme.title)
+
     // await api.updateTitle(itme.id, newTitle.value)
 
     editingTitleId.value = null
@@ -601,13 +613,13 @@ const listscroll = async () => {
 
 const getModelS = async () => {
     await aimodelAppS.getModelList()
-    if(aimodelAppS.topModel){
+    if (aimodelAppS.topModel) {
         const { id, isThink, isSearch } = aimodelAppS.topModel
-    info.modelId = id
-    info.thinkingEnabled = isThink
-    info.searchEnabled = isSearch
+        info.modelId = id
+        info.thinkingEnabled = isThink
+        info.searchEnabled = isSearch
     }
-   
+
 
 }
 

@@ -1,17 +1,17 @@
 import { defineStore } from 'pinia'
 import { ref, computed, reactive } from 'vue'
-import { createChatApi, } from '@/api/ai/message'
+import { createChatApi, upTitleApi, deChatApi } from '@/api/ai/message'
 
 
 const aimessageAppStore = defineStore(
     'aimessage', () => {
 
-        const currentInfo=ref({})
+        const currentInfo = ref({})
 
         const createChat = async (chatSessionId) => {
             try {
                 const rep = await createChatApi(chatSessionId)
-                currentInfo.value=rep.data
+                currentInfo.value = rep.data
 
                 return rep.data
             } catch (e) {
@@ -21,9 +21,27 @@ const aimessageAppStore = defineStore(
         }
 
 
+        const upTitle = async (id, title) => {
+            try {
+                await upTitleApi(id, title)
+            } catch (e) {
+                console.error('重命名失败', e)
+            }
+        }
+
+        const deChat = async (id) => {
+            try {
+                await deChatApi(id)
+            } catch (e) {
+                console.error('删除消息失败', e)
+            }
+        }
+
         return {
             createChat,
             currentInfo,
+            upTitle,
+            deChat,
         }
     })
 
